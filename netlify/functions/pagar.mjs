@@ -20,16 +20,19 @@ export default async (req) => {
 
   try {
     if (metodo === "pix") {
-      const p = await mp("/v1/payments", {
+      const valor = PRECO.toFixed(2);
+      const o = await mp("/v1/orders", {
         metodo: "POST", idem: id,
         corpo: {
-          transaction_amount: PRECO, description: DESCRICAO, payment_method_id: "pix",
-          payer: { email }, external_reference: id,
-          notification_url: site.startsWith("https://") ? site + "/api/aviso" : undefined,
+          type: "online", processing_mode: "automatic", total_amount: valor, external_reference: id,
+          payer: { email },
+          transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT30M" }] },
         },
       });
-      const t = (p.point_of_interaction || {}).transaction_data || {};
-      return resposta({ id, chave, pix: { qr: t.qr_code_base64, copia: t.qr_code } });
+      reg.mpOrder = o.id;
+      await loja().setJSON("c/" + id, reg);
+      const pm = (((o.transactions || {}).payments || [])[0] || {}).payment_method || {};
+      return resposta({ id, chave, pix: { qr: pm.qr_code_base64, copia: pm.qr_code } });
     }
     const pref = await mp("/checkout/preferences", {
       metodo: "POST", idem: id,

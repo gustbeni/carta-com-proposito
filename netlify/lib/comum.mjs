@@ -42,12 +42,25 @@ export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
 }
 
 // procura no Mercado Pago um pagamento aprovado para esta carta
+// Pix: API de Orders (reg.mpOrder). Cartão: Checkout Pro (busca de pagamentos por external_reference).
 export async function confirmarPagamento(id, reg) {
   if (reg.pago) return true;
-  const j = await mp("/v1/payments/search?sort=date_created&criteria=desc&external_reference=" + encodeURIComponent(id));
-  const ok = (j.results || []).find(p => p.status === "approved" && p.external_reference === id && Number(p.transaction_amount) >= PRECO - 0.01);
-  if (!ok) return false;
-  reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = ok.id;
+  let aprovado = null;
+  if (reg.mpOrder) {
+    try {
+      const o = await mp("/v1/orders/" + encodeURIComponent(reg.mpOrder));
+      if (o.external_reference === id && o.status === "processed" && Number(o.total_amount) >= PRECO - 0.01) aprovado = o.id;
+    } catch (e) {}
+  }
+  if (!aprovado) {
+    try {
+      const j = await mp("/v1/payments/search?sort=date_created&criteria=desc&external_reference=" + encodeURIComponent(id));
+      const ok = (j.results || []).find(p => p.status === "approved" && p.external_reference === id && Number(p.transaction_amount) >= PRECO - 0.01);
+      if (ok) aprovado = ok.id;
+    } catch (e) {}
+  }
+  if (!aprovado) return false;
+  reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado;
   await loja().setJSON("c/" + id, reg);
   return true;
 }
