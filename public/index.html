@@ -1000,6 +1000,7 @@ function mostrarCarta(P,cardMusica){
   const oc=OCASIOES[P.o]||OCASIOES.namoro, partes=[], add=n=>{ c.appendChild(n); partes.push(n); return n; };
   add(el("p","occ surge",oc.nome));
   add(el("h1","surge",(P.ti||"").trim()||oc.titulo.replace("{para}",P.p||"meu amor")));
+  { const rol=criarRoleta(); if(rol) add(rol); }
   if(P.fotos&&P.fotos.length){ const pol=el("div","polaroides surge"); P.fotos.forEach((src,i)=>{ const f=el("figure","pol"); f.style.margin="0"; const im=document.createElement("img"); im.src=src; im.alt="Foto do casal"; f.appendChild(im); f.appendChild(el("span",null,(P.fc&&P.fc[i])||"")); pol.appendChild(f); }); add(pol); }
   if(cardMusica) add(cardMusica);
   const tj=P.dt?tempoJuntos(P.dt):null;
@@ -1009,7 +1010,6 @@ function mostrarCarta(P,cardMusica){
   (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ add(el("span","orn surge")); const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
   if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
   if(P.m) add(el("p","gmsg surge",P.m));
-  { const rol=criarRoleta(); if(rol) add(rol); }
   if(P.or&&ORACOES[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl","Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d)),el("span","amem","AMÉM")); add(o); }
   if(P.d) add(el("p","gassin surge","Com amor, "+P.d));
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
