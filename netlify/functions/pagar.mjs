@@ -21,14 +21,19 @@ export default async (req) => {
   try {
     if (metodo === "pix") {
       const valor = PRECO.toFixed(2);
-      const o = await mp("/v1/orders", {
-        metodo: "POST", idem: id,
-        corpo: {
-          type: "online", processing_mode: "automatic", total_amount: valor, external_reference: id,
-          payer: { email },
-          transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT30M" }] },
-        },
-      });
+      const pedidoMP = {
+        type: "online", processing_mode: "automatic", total_amount: valor, external_reference: id,
+        description: DESCRICAO,
+        payer: { email },
+        items: [{ title: DESCRICAO, unit_price: valor, quantity: 1, description: "Carta on-line com QR code" }],
+        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT30M" }] },
+      };
+      let o;
+      try { o = await mp("/v1/orders", { metodo: "POST", idem: id, corpo: pedidoMP }); }
+      catch (e) { // se o Mercado Pago recusar o nome do produto, cria sem ele para não perder a venda
+        delete pedidoMP.items; delete pedidoMP.description;
+        o = await mp("/v1/orders", { metodo: "POST", idem: id + "b", corpo: pedidoMP });
+      }
       reg.mpOrder = o.id;
       await loja().setJSON("c/" + id, reg);
       const pm = (((o.transactions || {}).payments || [])[0] || {}).payment_method || {};
