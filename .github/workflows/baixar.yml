@@ -1,0 +1,27 @@
+name: baixar-imagens
+on:
+  push:
+    paths: ["ads/urls.txt"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar
+        run: |
+          mkdir -p ads/img
+          while read -r nome url; do
+            [ -z "$nome" ] && continue
+            [ -f "ads/img/$nome" ] && continue
+            curl -sSfL "$url" -o "ads/img/$nome" || echo "falhou $nome"
+          done < ads/urls.txt
+      - name: Salvar
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add ads/img
+          git commit -m "Imagens dos anúncios [skip netlify]" || exit 0
+          git push
