@@ -1131,7 +1131,7 @@ function blocoNumeros(tj,am){
   box.appendChild(el("p","desde",(am?"Amigos desde ":"Juntos desde ")+tj.ini.toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric"})));
   const itens=el("div","itens"), dias=Math.max(1,tj.total);
   const lista=am?[["🤝",dias,dias===1?"dia de amizade":"dias de amizade"],["🙏",dias,dias===1?"dia orando um pelo outro":"dias orando um pelo outro"],["⏳",dias*24,"horas de amizade"]]
-    :[["🌅",dias,dias===1?"manhã em que meu amor se renovou":"manhãs em que meu amor se renovou"],["🙏",dias,dias===1?"noite orando um pelo outro":"noites orando um pelo outro"],["❤️",dias*24,"horas de amor"]];
+    :[["⏳",dias,dias===1?"manhã em que meu amor se renovou":"manhãs em que meu amor se renovou"],["🙏",dias,dias===1?"noite orando um pelo outro":"noites orando um pelo outro"],["❤️",dias*24,"horas de amor"]];
   lista.forEach(([ic,v,t])=>{
     const it=el("div","item"), tx=el("div"), b=el("b",null,"0"); b.dataset.alvo=v; tx.append(b,el("span",null,t)); it.append(el("i",null,ic),tx); itens.appendChild(it); });
   box.appendChild(itens);
