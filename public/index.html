@@ -219,6 +219,40 @@ canvas.coracoes { position: fixed; inset: 0; width: 100%; height: 100%; pointer-
 .marco-prox p b { color: var(--g1); font-family: var(--display); font-size: 1.25rem; font-weight: 600; }
 .barra { height: 10px; border-radius: 999px; background: rgb(255 255 255 / .12); overflow: hidden; }
 .barra span { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--g2), #f0d28c); transition: width 1.8s cubic-bezier(.2,.7,.2,1); }
+
+/* ===== elementos bíblicos ===== */
+body { background-image: radial-gradient(120% 60% at 50% -10%, rgb(220 179 108 / .14), transparent 60%); background-attachment: fixed; }
+.brand .cruz-selo { color: var(--gold); }
+.hero { position: relative; }
+.hero > div:last-child { position: relative; }
+.hero > div:last-child::before { content: ""; position: absolute; left: 50%; top: 42%; width: 140%; aspect-ratio: 1; transform: translate(-50%,-50%); background: repeating-conic-gradient(from 0deg, rgb(220 179 108 / .13) 0deg 4deg, transparent 4deg 14deg); -webkit-mask: radial-gradient(circle, #000 18%, transparent 62%); mask: radial-gradient(circle, #000 18%, transparent 62%); pointer-events: none; z-index: -1; animation: raios 60s linear infinite; }
+@keyframes raios { to { transform: translate(-50%,-50%) rotate(360deg); } }
+.ornamento { display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--gold); }
+.ornamento::before, .ornamento::after { content: ""; height: 1px; width: min(90px, 22vw); background: linear-gradient(90deg, transparent, currentColor); }
+.ornamento::after { transform: scaleX(-1); }
+.ornamento svg { width: 18px; height: 18px; flex: none; }
+.sec h2 { display: grid; gap: 10px; }
+.faixa-verso { text-align: center; padding: 34px 12px 40px; display: grid; gap: 12px; border-top: 1px solid var(--line); }
+.faixa-verso p { font-family: var(--display); font-style: italic; font-size: clamp(1.35rem, 4.8vw, 1.9rem); line-height: 1.35; max-width: 30em; margin-inline: auto; }
+.faixa-verso span { font-size: .8rem; letter-spacing: .16em; font-weight: 800; color: var(--gold); }
+.passos li::before { content: none; }
+.passos .ic { width: 44px; height: 44px; border-radius: 14px; background: var(--soft); color: var(--wine); display: grid; place-items: center; }
+.passos .ic svg { width: 26px; height: 26px; }
+footer .verso-rodape { font-family: var(--display); font-style: italic; font-size: 1.1rem; color: var(--ink); text-align: center; display: grid; gap: 4px; padding-bottom: 8px; }
+footer .verso-rodape span { font-family: var(--body); font-style: normal; font-size: .75rem; letter-spacing: .14em; font-weight: 800; color: var(--gold); }
+/* carta */
+.orn { width: auto; height: auto; background: none; display: flex; align-items: center; gap: 10px; color: var(--g1); }
+.orn::before, .orn::after { content: ""; width: 48px; height: 1px; background: linear-gradient(90deg, transparent, currentColor); }
+.orn::after { transform: scaleX(-1); }
+.orn i { width: 9px; height: 13px; background: currentColor; clip-path: polygon(38% 0, 62% 0, 62% 28%, 100% 28%, 100% 46%, 62% 46%, 62% 100%, 38% 100%, 38% 46%, 0 46%, 0 28%, 38% 28%); }
+.gift::after { content: ""; position: fixed; left: 50%; top: -30vh; width: 160vw; height: 90vh; transform: translateX(-50%); background: conic-gradient(from 160deg at 50% 0%, transparent 0deg, rgb(255 236 200 / .07) 8deg, transparent 16deg, rgb(255 236 200 / .05) 24deg, transparent 32deg, rgb(255 236 200 / .07) 40deg, transparent 48deg); -webkit-mask: linear-gradient(#000 30%, transparent 95%); mask: linear-gradient(#000 30%, transparent 95%); pointer-events: none; z-index: 0; }
+.env .selo svg { width: 26px; height: 26px; color: #f6d9c0; }
+.pomba { position: fixed; left: -80px; top: 18vh; width: 64px; z-index: 30; pointer-events: none; animation: voo 6s ease-in-out forwards; }
+.pomba svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 4px 10px rgb(0 0 0 / .3)); }
+.pomba .asa { transform-origin: 30px 26px; animation: bater .45s ease-in-out infinite alternate; }
+@keyframes voo { 0% { transform: translate(0,0); opacity: 0; } 10% { opacity: 1; } 50% { transform: translate(55vw,-4vh); } 90% { opacity: 1; } 100% { transform: translate(115vw,-12vh); opacity: 0; } }
+@keyframes bater { from { transform: rotate(8deg); } to { transform: rotate(-28deg) scaleY(.8); } }
+@media (prefers-reduced-motion: reduce) { .hero > div:last-child::before, .pomba { animation: none; } .pomba { display: none; } }
 /* ===== assinatura de amigo ===== */
 .gassin.amigo { text-align: center; margin-top: 4px; display: grid; gap: 4px; }
 .gassin.amigo .l1 { font-size: 1.05rem; opacity: .9; }
@@ -343,7 +377,7 @@ button:disabled { opacity: .6; cursor: progress; }
 
 <div class="wrap" id="loja">
   <header class="topbar">
-    <div class="brand"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="11" width="38" height="27" rx="4"/><path d="M5 14l19 13 19-13"/><path d="M24 34c-5-3.5-8-6-8-9a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3-3 5.5-8 9z" fill="currentColor" stroke="none" opacity=".9"/></svg>Carta com Propósito</div>
+    <div class="brand"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="11" width="38" height="27" rx="4"/><path d="M5 14l19 13 19-13"/><circle cx="24" cy="29" r="7" fill="currentColor" stroke="none"/><path d="M24 25v8M21 28h6" stroke="var(--bg)" stroke-width="2"/></svg>Carta com Propósito</div>
     <a class="pill-cta" href="#criar" data-vai="criar">Criar carta</a>
   </header>
 
@@ -375,17 +409,19 @@ button:disabled { opacity: .6; cursor: progress; }
     </div>
   </section>
 
+  <div class="faixa-verso"><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span><p>“Acima de tudo, porém, revesti-vos do amor, que é o vínculo da perfeição.”</p><span>COLOSSENSES 3:14</span></div>
+
   <section class="sec">
-    <h2>Como funciona</h2>
+    <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Como funciona</h2>
     <ol class="passos">
-      <li><b>Monte a carta</b><p>Escolha a ocasião, os versículos, a data em que começaram e escreva do seu jeito.</p></li>
-      <li><b>Veja como fica</b><p>Abra a prévia e confira tudo antes de pagar.</p></li>
-      <li><b>Mande para o seu amor</b><p>Receba um cartão com QR code. Imprima e entregue junto com um presente, ou mande a imagem. A pessoa aponta a câmera e a carta abre.</p></li>
+      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h15a3 3 0 0 1 3 3v2h-5"/><path d="M22 10v15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-2h14"/><path d="M9 5a3 3 0 0 0-3 3v15"/><path d="M11 13h7M11 17h7"/></svg></span><b>Monte a carta</b><p>Escolha a ocasião, os versículos, a data em que começaram e escreva do seu jeito.</p></li>
+      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 9c-3-3-9-3-11 0v15c2-3 8-3 11 0 3-3 9-3 11 0V9c-2-3-8-3-11 0z"/><path d="M16 9v15"/><path d="M21 12v5M19 14h4"/></svg></span><b>Veja como fica</b><p>Abra a prévia e confira tudo antes de pagar.</p></li>
+      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="24" height="17" rx="3"/><path d="M4 10l12 8 12-8"/><circle cx="16" cy="20" r="4.5" fill="currentColor" stroke="none"/><path d="M16 17.5v5M14 19.5h4" stroke="var(--soft)" stroke-width="1.6"/></svg></span><b>Mande para quem você ama</b><p>Receba um cartão com QR code. Imprima e entregue junto com um presente, ou mande a imagem. A pessoa aponta a câmera e a carta abre.</p></li>
     </ol>
   </section>
 
   <section class="sec" id="criar">
-    <h2>Crie a sua carta</h2>
+    <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Crie a sua carta</h2>
     <p class="lead">Você só paga quando estiver do jeito que você quer. O que você preencher fica salvo neste aparelho.</p>
     <div class="criador">
       <div class="form">
@@ -525,7 +561,7 @@ button:disabled { opacity: .6; cursor: progress; }
   </section>
 
   <section class="sec">
-    <h2>Perguntas frequentes</h2>
+    <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Perguntas frequentes</h2>
     <div class="faq">
       <details><summary>Como meu amor recebe a carta?</summary><p>Você recebe um cartão com QR code. Imprima e entregue junto com flores ou um presente, ou mande a imagem pelo WhatsApp. É só apontar a câmera do celular que a carta abre.</p></details>
       <details><summary>Precisa baixar alguma coisa?</summary><p>Não. A carta abre direto no navegador do celular ou do computador.</p></details>
@@ -539,6 +575,7 @@ button:disabled { opacity: .6; cursor: progress; }
   </section>
 
   <footer>
+    <p class="verso-rodape">“O amor nunca falha.”<span>1 CORÍNTIOS 13:8</span></p>
     <p><b>Privacidade:</b> não pedimos cadastro. Enquanto você monta, a carta fica salva só no seu aparelho. Depois do pagamento, ela fica guardada no nosso site para abrir pelo QR code, e só quem tem o QR code ou o link consegue ver. O pagamento é feito pelo Mercado Pago, que tem a própria política de privacidade; usamos o seu e-mail só para o comprovante.</p>
     <p>Versículos: Bíblia Livre (BLIVRE), de Diego Santos, Mario Sérgio e Marco Teles, licença <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br" target="_blank" rel="noopener">CC BY 4.0</a>, fonte <a href="https://ebible.org/porbr2018/copyright.htm" target="_blank" rel="noopener">eBible.org</a>, com pequenas correções e trechos destacados. Os autores não endossam este site.</p>
   </footer>
@@ -1001,7 +1038,7 @@ function abrirCarta(P,{previa=false}={}){
   const inner=$("gInner"); inner.innerHTML=""; inner.style.alignContent="";
   const env=el("button","envelope"); env.setAttribute("aria-label","Abrir a carta");
   env.innerHTML=`<span class="para">Para</span><span class="nome"></span><span class="env"><span class="aba"></span><span class="selo"></span></span><span class="toque">Toque para abrir</span>`;
-  env.querySelector(".nome").textContent=P.p||"você"; env.querySelector(".selo").textContent=(P.d||"♥").trim().charAt(0).toUpperCase();
+  env.querySelector(".nome").textContent=P.p||"você"; env.querySelector(".selo").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>';
   inner.appendChild(env);
   if(P.ml) Som.preparar(P.ml);
   let cardMusica=null;
@@ -1109,7 +1146,11 @@ function animarNumeros(box){
   box.querySelectorAll(".item").forEach((it,i)=>setTimeout(()=>{ it.classList.add("on"); contar(it); }, reduz()?0:i*450));
   const f=box.querySelector(".barra span"); if(f) setTimeout(()=>{ f.style.width=(Math.round(+f.dataset.prog*100))+"%"; }, reduz()?0:1500);
 }
+function soltarPomba(){ if(reduz()) return; const d=document.createElement("div"); d.className="pomba"; d.setAttribute("aria-hidden","true");
+  d.innerHTML='<svg viewBox="0 0 64 44"><path d="M8 28c6-2 12-1 18 1 8 3 16 3 22-2l8-6-4 8c-4 7-12 11-22 11-9 0-17-4-22-12z" fill="#fffaf0"/><path d="M48 25c2-4 6-6 10-5l-4 3z" fill="#e7b04f"/><circle cx="50" cy="22" r="1.4" fill="#2a1418"/><path class="asa" d="M30 26C24 16 22 8 26 2c6 6 10 14 10 24z" fill="#f3ead8"/><path d="M8 28l-6-4 4 8z" fill="#fffaf0"/><path d="M40 34c4 2 8 2 11 0" stroke="#7aa35a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M46 34l2-3M43 35l1-3" stroke="#7aa35a" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  document.body.appendChild(d); setTimeout(()=>d.remove(),6500); }
 function mostrarCarta(P,cardMusica){
+  setTimeout(soltarPomba,600);
   const inner=$("gInner"), c=el("div","carta"); inner.appendChild(c); inner.style.alignContent="start";
   const oc=OCASIOES[P.o]||OCASIOES.namoro, partes=[], add=n=>{ c.appendChild(n); partes.push(n); return n; };
   add(el("p","occ surge",oc.nome));
@@ -1119,7 +1160,7 @@ function mostrarCarta(P,cardMusica){
   if(cardMusica) add(cardMusica);
   const tj=P.dt?tempoJuntos(P.dt):null;
   if(tj){ const nb=blocoNumeros(tj,ehAmigo(P.o)); add(nb); }
-  (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ add(el("span","orn surge")); const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
+  (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ { const o=el("span","orn surge"); o.appendChild(el("i")); add(o); } const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
   if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
   if(P.m) add(el("p","gmsg surge",P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
