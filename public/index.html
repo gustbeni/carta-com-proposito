@@ -219,6 +219,10 @@ canvas.coracoes { position: fixed; inset: 0; width: 100%; height: 100%; pointer-
 .marco-prox p b { color: var(--g1); font-family: var(--display); font-size: 1.25rem; font-weight: 600; }
 .barra { height: 10px; border-radius: 999px; background: rgb(255 255 255 / .12); overflow: hidden; }
 .barra span { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--g2), #f0d28c); transition: width 1.8s cubic-bezier(.2,.7,.2,1); }
+/* ===== assinatura de amigo ===== */
+.gassin.amigo { text-align: center; margin-top: 4px; display: grid; gap: 4px; }
+.gassin.amigo .l1 { font-size: 1.05rem; opacity: .9; }
+.gassin.amigo .nome { font-size: 1.6rem; }
 /* ===== tipo de carta ===== */
 .tipos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .tipo { display: grid; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--card); }
@@ -706,7 +710,7 @@ function lerMusica(url){
   return null;
 }
 /* ===== fotos: encolhidas no aparelho para caber no link ===== */
-const FOTO_LADO=260, FOTO_MAX=9000;
+const FOTO_LADO=480, FOTO_MAX=45000;
 function carregarImagem(file){ return new Promise((ok,erro)=>{ const url=URL.createObjectURL(file); const img=new Image(); img.onload=()=>{ ok(img); setTimeout(()=>URL.revokeObjectURL(url),1000); }; img.onerror=()=>{ URL.revokeObjectURL(url); erro(new Error("imagem")); }; img.src=url; }); }
 async function fotoGrande(img){
   const lado=Math.min(img.naturalWidth,img.naturalHeight), sx=(img.naturalWidth-lado)/2, sy=(img.naturalHeight-lado)/2, tam=Math.min(1400,lado);
@@ -1119,7 +1123,7 @@ function mostrarCarta(P,cardMusica){
   if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
   if(P.m) add(el("p","gmsg surge",P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
-  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin surge"); a.append(document.createTextNode(assinaturaAmigo(P.sx)+","),document.createElement("br"),document.createTextNode(P.d)); add(a); } else add(el("p","gassin surge","Com amor, "+P.d)); }
+  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com amor, "+P.d)); }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
   if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
   else if(fone){ const a=el("span","resp-btn","Responder com carinho"); fim.appendChild(a); }
@@ -1211,7 +1215,7 @@ function fotoExemplo(tipo){
 EXEMPLO.fotos=[0,1,2].map(fotoExemplo); EXEMPLO.fc=["Nosso primeiro pôr do sol","Exemplo de foto","No parque"];
 $("verExemplo").addEventListener("click",()=>abrirCarta(EXEMPLO,{previa:true}));
 $("mockAbrir").addEventListener("click",()=>abrirCarta(EXEMPLO,{previa:true}));
-$("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||"data:image/jpeg;base64,"+f.d):null).filter(Boolean); abrirCarta(P,{previa:!liberado}); });
+$("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); abrirCarta(P,{previa:!liberado}); });
 document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=>{ const alvo=$(a.dataset.vai); if(!alvo) return; e.preventDefault(); alvo.scrollIntoView({behavior:"smooth"}); }));
 
 (async function(){ let m=null; try{ m=location.pathname.match(/\/c\/([A-Za-z0-9_-]{8,40})\/?$/); }catch(e){}
