@@ -400,6 +400,7 @@ button:disabled { opacity: .6; cursor: progress; }
           <div class="campos">
             <label class="f" for="fPara"><span id="lPara">Nome do seu amor</span><input class="inp" id="fPara" maxlength="40" placeholder="Ex.: Ana" autocomplete="off"></label>
             <label class="f" for="fDe">Seu nome, para assinar<input class="inp" id="fDe" maxlength="40" placeholder="Ex.: Pedro" autocomplete="off"></label>
+            <div class="f" id="boxSx" hidden><span>Assinar como</span><div class="chips" id="sx"><button type="button" class="chip" data-sx="o" aria-pressed="true">Seu irmão em Cristo</button><button type="button" class="chip" data-sx="a" aria-pressed="false">Sua irmã em Cristo</button></div></div>
             <label class="f" for="fData"><span id="lData">Começamos a namorar em</span> <small id="dData">Mostra a história de vocês em números.</small><input class="inp" id="fData" type="date"></label>
             <label class="f" for="fZap">Seu WhatsApp <small id="dZap">Opcional. Para seu amor responder com um toque.</small><input class="inp" id="fZap" inputmode="tel" maxlength="20" placeholder="(67) 99999-9999" autocomplete="tel"></label>
           </div>
@@ -645,6 +646,7 @@ function pintarOcasioes(){
 }
 function textosTipo(am){
   $("lPara").textContent=am?"Nome do seu amigo(a)":"Nome do seu amor";
+  $("boxSx").hidden=!am; $("sx").querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.sx===(S.sx||"o"))));
   $("fPara").placeholder=am?"Ex.: Lucas":"Ex.: Ana";
   $("lData").textContent=am?"Somos amigos desde":"Começamos a namorar em";
   $("dZap").textContent=am?"Opcional. Para seu amigo(a) responder com um toque.":"Opcional. Para seu amor responder com um toque.";
@@ -652,6 +654,8 @@ function textosTipo(am){
   $("mt1").placeholder=am?"Ex.: Aquele retiro inesquecível":"Ex.: Nosso primeiro passeio no parque";
   $("mt2").placeholder=am?"Ex.: Quando você orou comigo":"Ex.: O dia em que conheci sua família";
 }
+$("sx").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.sx=c.dataset.sx; textosTipo(ehAmigo(S.o)); guardar(); }));
+const assinaturaAmigo=sx=>"Com carinho, "+(sx==="a"?"da sua irmã":"do seu irmão")+" em Cristo Jesus";
 $("tipos").querySelectorAll(".tipo").forEach(b=>b.addEventListener("click",()=>{
   const querAmigo=b.dataset.g==="amigo"; if(querAmigo===ehAmigo(S.o)) return;
   S.o=querAmigo?"amizade":"namoro"; S.v=OCASIOES[S.o].versos.slice(0,2); S.or=0; pintarVersos.todos=false;
@@ -673,7 +677,7 @@ function pintarSugestoes(){
   $("sugestoes").innerHTML=OCASIOES[S.o].msgs.map((_,i)=>`<button type="button" class="chip" data-i="${i}">Usar sugestão ${i+1}</button>`).join("");
   $("sugestoes").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{ S.m=OCASIOES[S.o].msgs[+b.dataset.i]; $("fMsg").value=S.m; $("nMsg").textContent=S.m.length; guardar(); }));
 }
-function oracaoTexto(i,para,de,o){ const L=oracoesDe(o||S.o); return (L[i]||"").replace("{para}",para||(ehAmigo(o||S.o)?"meu amigo":"meu amor")).replace("{de}",de||"por mim"); }
+function oracaoTexto(i,para,de,o){ const L=oracoesDe(o||S.o); return ((L[i]||"")+" Em nome de Jesus Cristo, amém.").replace("{para}",para||(ehAmigo(o||S.o)?"meu amigo":"meu amor")).replace("{de}",de||"por mim"); }
 function pintarOracoes(){
   const ORS=oracoesDe(S.o);
   $("oracoes").innerHTML=ORS.map((_,i)=>`<label class="opc"><input type="radio" name="or" value="${i+1}" ${S.or===i+1?"checked":""}><span></span></label>`).join("")+`<label class="opc"><input type="radio" name="or" value="0" ${!S.or?"checked":""}><span style="font-style:normal">Sem oração</span></label>`;
@@ -875,6 +879,7 @@ $("novaCarta").addEventListener("click",()=>{ if(!confirm("Começar uma carta no
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden && pedido && !pedido.pago) esperarPagamento(0); });
 function enderecoBase(){ if(CONFIG.enderecoSite) return CONFIG.enderecoSite.replace(/#.*$/,""); return location.href.replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/c\/[^/]*$/,"/"); }
 function dadosCarta(){ const P={ o:S.o, p:S.para, d:S.de, v:S.v, m:S.m.trim(), t:S.t, mu:S.mt==="site"?1:0 };
+  if(ehAmigo(S.o) && S.sx==="a") P.sx="a";
   if(S.mt==="link"){ const info=lerMusica(S.ml); if(info && info.tipo!=="l") P.ml=info.tipo+":"+info.id; }
   const fs=fotosDoCriador(); if(fs.length && fs.some(f=>f.c.trim())) P.fc=fs.map(f=>f.c.trim());
   if(S.ti) P.ti=S.ti; if(S.dt) P.dt=S.dt; if(S.w) P.w=S.w; if(S.or) P.or=S.or;
@@ -921,7 +926,7 @@ async function montarCartao(url){
   c.imageSmoothingEnabled=false; c.drawImage(qr,x,y,q,q); c.imageSmoothingEnabled=true;
   c.fillStyle="#f7ecdc"; c.font="600 40px 'Nunito Sans', sans-serif"; c.fillText("Aponte a câmera do celular",W/2,1010);
   c.fillStyle="rgba(247,236,220,.75)"; c.font="400 32px 'Nunito Sans', sans-serif"; c.fillText("e abra com calma",W/2,1060);
-  if(S.de){ c.fillStyle=tema[2]; c.font="italic 500 58px Newsreader, Georgia, serif"; c.fillText((ehAmigo(S.o)?"Com carinho, ":"Com amor, ")+S.de,W/2,1190); }
+  if(S.de){ c.fillStyle=tema[2]; c.font="italic 500 58px Newsreader, Georgia, serif"; if(ehAmigo(S.o)){ c.font="italic 500 38px Newsreader, Georgia, serif"; c.fillText(assinaturaAmigo(S.sx)+",",W/2,1150); c.font="italic 500 58px Newsreader, Georgia, serif"; c.fillText(S.de,W/2,1212); } else c.fillText("Com amor, "+S.de,W/2,1190); }
   const s=26,hx=W/2,hy=1250; c.fillStyle=tema[2]; c.beginPath(); c.moveTo(hx,hy+s*.3); c.bezierCurveTo(hx,hy,hx-s*.5,hy,hx-s*.5,hy+s*.3); c.bezierCurveTo(hx-s*.5,hy+s*.6,hx,hy+s*.8,hx,hy+s); c.bezierCurveTo(hx,hy+s*.8,hx+s*.5,hy+s*.6,hx+s*.5,hy+s*.3); c.bezierCurveTo(hx+s*.5,hy,hx,hy,hx,hy+s*.3); c.fill();
   return cv;
 }
@@ -1113,8 +1118,8 @@ function mostrarCarta(P,cardMusica){
   (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ add(el("span","orn surge")); const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
   if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
   if(P.m) add(el("p","gmsg surge",P.m));
-  if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o)),el("span","amem","AMÉM")); add(o); }
-  if(P.d) add(el("p","gassin surge",(ehAmigo(P.o)?"Com carinho, ":"Com amor, ")+P.d));
+  if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
+  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin surge"); a.append(document.createTextNode(assinaturaAmigo(P.sx)+","),document.createElement("br"),document.createTextNode(P.d)); add(a); } else add(el("p","gassin surge","Com amor, "+P.d)); }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
   if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
   else if(fone){ const a=el("span","resp-btn","Responder com carinho"); fim.appendChild(a); }
