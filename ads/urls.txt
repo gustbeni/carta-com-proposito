@@ -1,1 +1,6 @@
-teste.jpg https://res.cloudinary.com/demo/image/upload/sample.jpg
+casal_entrega.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667122/anuncios/casal_entrega.jpg
+casal_scan.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667136/anuncios/casal_scan.jpg
+casal_emocao.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667148/anuncios/casal_emocao.jpg
+amigas_entrega.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667153/anuncios/amigas_entrega.jpg
+amiga_emocao.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667158/anuncios/amiga_emocao.jpg
+amigos_entrega.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667162/anuncios/amigos_entrega.jpg
