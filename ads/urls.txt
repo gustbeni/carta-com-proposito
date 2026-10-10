@@ -4,3 +4,5 @@ casal_emocao.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667148/an
 amigas_entrega.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667153/anuncios/amigas_entrega.jpg
 amiga_emocao.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667158/anuncios/amiga_emocao.jpg
 amigos_entrega.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667162/anuncios/amigos_entrega.jpg
+amiga_emocao2.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667263/anuncios/amiga_emocao2.jpg
+amigas_entrega2.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667268/anuncios/amigas_entrega2.jpg
