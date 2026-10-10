@@ -1,6 +1,6 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Carta a Dois</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Carta com Propósito</title>
 <meta name="description" content="Crie em 3 minutos uma carta on-line para o seu amor, com versículos, o tempo que vocês estão juntos, lembranças do casal, uma oração e música.">
-<meta property="og:title" content="Carta a Dois">
+<meta property="og:title" content="Carta com Propósito">
 <meta property="og:description" content="Uma carta on-line para namorados, com versículos e uma oração pelo casal.">
 <!-- PIXEL DA META: cole aqui o código do seu Pixel (funciona no site publicado na Netlify) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,22 +10,22 @@
 
 /* Layout: página de venda com o criador logo abaixo (formulário + prévia lado a lado no computador); o presente abre em tela cheia, como uma carta lacrada. */
 :root {
-  --bg: #f6efe6;
-  --card: #fffaf4;
-  --ink: #2b1d14;
-  --muted: #7a685a;
-  --wine: #8c3b3b;
+  --bg: #f8f0ea;
+  --card: #fffaf6;
+  --ink: #2a1418;
+  --muted: #7b5f60;
+  --wine: #7a1f33;
   --on-wine: #ffffff;
-  --gold: #b07a2c;
-  --line: #e8dccb;
-  --soft: #f2e6d6;
+  --gold: #a87a2e;
+  --line: #ead8cf;
+  --soft: #f3e3dc;
   --display: "Newsreader", Georgia, "Times New Roman", serif;
   --body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #17110d; --card: #221914; --ink: #f4e9da; --muted: #b6a493; --wine: #b45757; --on-wine: #ffffff; --gold: #dcaa5c; --line: #3b2c22; --soft: #2c2019; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #1c0a10; --card: #2a1219; --ink: #f6e9dc; --muted: #c6a9a2; --wine: #a8344d; --on-wine: #ffffff; --gold: #dcb36c; --line: #47222d; --soft: #35171f; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --bg: #17110d; --card: #221914; --ink: #f4e9da; --muted: #b6a493; --wine: #b45757; --on-wine: #ffffff; --gold: #dcaa5c; --line: #3b2c22; --soft: #2c2019; color-scheme: dark; }
+:root[data-theme="dark"] { --bg: #1c0a10; --card: #2a1219; --ink: #f6e9dc; --muted: #c6a9a2; --wine: #a8344d; --on-wine: #ffffff; --gold: #dcb36c; --line: #47222d; --soft: #35171f; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; margin: 0; padding-inline: 16px; padding-block: 18px 40px; }
 h1, h2, h3 { font-family: var(--display); line-height: 1.12; margin: 0; text-wrap: balance; }
@@ -46,7 +46,7 @@ button { cursor: pointer; }
 .hero-txt { display: grid; gap: 18px; min-width: 0; }
 .eyebrow { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--gold); }
 .hero h1 { font-size: clamp(2.3rem, 7vw, 3.6rem); font-weight: 600; }
-.hero h1 em { color: var(--wine); }
+.hero h1 em { color: var(--gold); }
 .hero .sub { color: var(--muted); font-size: 1.1rem; max-width: 34em; }
 .ctas { display: flex; flex-wrap: wrap; gap: 10px; }
 .cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--wine); color: var(--on-wine); text-decoration: none; font-weight: 800; padding: 15px 24px; border-radius: 14px; border: 0; }
@@ -294,7 +294,7 @@ button:disabled { opacity: .6; cursor: progress; }
 
 <div class="wrap" id="loja">
   <header class="topbar">
-    <div class="brand"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="11" width="38" height="27" rx="4"/><path d="M5 14l19 13 19-13"/><path d="M24 34c-5-3.5-8-6-8-9a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3-3 5.5-8 9z" fill="currentColor" stroke="none" opacity=".9"/></svg>Carta a Dois</div>
+    <div class="brand"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="11" width="38" height="27" rx="4"/><path d="M5 14l19 13 19-13"/><path d="M24 34c-5-3.5-8-6-8-9a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3-3 5.5-8 9z" fill="currentColor" stroke="none" opacity=".9"/></svg>Carta com Propósito</div>
     <a class="pill-cta" href="#criar" data-vai="criar">Criar carta</a>
   </header>
 
@@ -453,7 +453,7 @@ button:disabled { opacity: .6; cursor: progress; }
             <p class="aviso" id="statusQr"></p>
             <div id="resultadoQr" class="box-final" hidden>
               <img id="cartaoQr" alt="Cartão com o QR code da carta" style="width:100%;border-radius:16px;display:block">
-              <a class="cta" id="baixarQr" href="#" download="carta-a-dois-qrcode.png">Baixar cartão com QR code</a>
+              <a class="cta" id="baixarQr" href="#" download="carta-com-proposito-qrcode.png">Baixar cartão com QR code</a>
               <button class="btn2" id="compartilharQr" hidden>Enviar o cartão</button>
               <p class="aviso">Imprima o cartão ou mande a imagem. Quem recebe aponta a câmera do celular e a carta abre.</p>
               <details><summary class="aviso" style="cursor:pointer">Prefere mandar o link?</summary>
@@ -841,7 +841,7 @@ async function gerarLink(montar){
   try{ await (document.fonts&&document.fonts.ready); }catch(e){}
   const cv=await montarCartao(url); const png=cv.toDataURL("image/png");
   $("cartaoQr").src=png; $("cartaoQr").hidden=false; $("baixarQr").href=png; $("baixarQr").hidden=false; $("resultadoQr").hidden=false;
-  if(navigator.canShare){ cv.toBlob(b=>{ try{ const file=new File([b],"carta-a-dois-qrcode.png",{type:"image/png"}); if(navigator.canShare({files:[file]})){ const bt=$("compartilharQr"); bt.hidden=false; bt.onclick=()=>navigator.share({files:[file],title:"Uma carta para você"}).catch(()=>{}); } }catch(e){} },"image/png"); }
+  if(navigator.canShare){ cv.toBlob(b=>{ try{ const file=new File([b],"carta-com-proposito-qrcode.png",{type:"image/png"}); if(navigator.canShare({files:[file]})){ const bt=$("compartilharQr"); bt.hidden=false; bt.onclick=()=>navigator.share({files:[file],title:"Uma carta para você"}).catch(()=>{}); } }catch(e){} },"image/png"); }
 }
 function mostrarPronto(){ const f=validar(); if(f) toast(f); $("etapaPagar").hidden=true; $("etapaPronto").hidden=false; document.querySelector(".resumo .preco").hidden=true; document.querySelector(".resumo .mini-lista").hidden=true; }
 if(liberado) mostrarPronto();
@@ -928,7 +928,7 @@ function mostrarCarta(P,cardMusica){
   if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent("Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
   else if(fone){ const a=el("span","resp-btn","Responder com carinho"); fim.appendChild(a); }
   const rv=el("button","rever","Abrir de novo"); fim.appendChild(rv);
-  const sm=el("small"); sm.innerHTML=`Feito com <a href="#">Carta a Dois</a>. Crie uma para quem você ama.`; fim.appendChild(sm); add(fim);
+  const sm=el("small"); sm.innerHTML=`Feito com <a href="#">Carta com Propósito</a>. Crie uma para quem você ama.`; fim.appendChild(sm); add(fim);
   rv.addEventListener("click",()=>{ Musica.parar(); Som.parar(true); abrirCarta(P,{previa:modoPrevia}); });
   const lk=sm.querySelector("a"); lk.href=enderecoBase(); lk.addEventListener("click",e=>{ if(modoPrevia){ e.preventDefault(); fecharCarta(); } else if(location.hash){ e.preventDefault(); location.href=enderecoBase(); location.reload(); } });
   const rd=reduz();
