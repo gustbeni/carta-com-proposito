@@ -1,7 +1,7 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Carta com Propósito</title>
-<meta name="description" content="Crie em 3 minutos uma carta on-line para o seu amor, com versículos, o tempo que vocês estão juntos, lembranças do casal, uma oração e música.">
+<meta name="description" content="Crie em 3 minutos uma carta on-line com a Palavra de Deus para o seu amor ou para um amigo da igreja: versículos, roleta de versículos, fotos, música e uma oração.">
 <meta property="og:title" content="Carta com Propósito">
-<meta property="og:description" content="Uma carta on-line para namorados, com versículos e uma oração pelo casal.">
+<meta property="og:description" content="Uma carta on-line com versículos, música e oração, para o seu amor ou para um amigo da igreja.">
 <!-- PIXEL DA META: cole aqui o código do seu Pixel (funciona no site publicado na Netlify) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -238,6 +238,8 @@ body { background-image: radial-gradient(120% 60% at 50% -10%, rgb(220 179 108 /
 .passos li::before { content: none; }
 .passos .ic { width: 44px; height: 44px; border-radius: 14px; background: var(--soft); color: var(--wine); display: grid; place-items: center; }
 .passos .ic svg { width: 26px; height: 26px; }
+footer .links-rodape { text-align: center; font-weight: 700; }
+footer .links-rodape a { color: var(--wine); }
 footer .verso-rodape { font-family: var(--display); font-style: italic; font-size: 1.1rem; color: var(--ink); text-align: center; display: grid; gap: 4px; padding-bottom: 8px; }
 footer .verso-rodape span { font-family: var(--body); font-style: normal; font-size: .75rem; letter-spacing: .14em; font-weight: 800; color: var(--gold); }
 /* carta */
@@ -385,7 +387,7 @@ button:disabled { opacity: .6; cursor: progress; }
     <div class="hero-txt">
       <span class="eyebrow">Para namorados e amigos que colocam Deus no centro</span>
       <h1>Uma carta de amor com <em>a Palavra de Deus</em></h1>
-      <p class="sub">Fotos de vocês, versículos sobre o amor, o tempo que vocês estão juntos contando ao vivo, as lembranças do casal, uma oração por vocês dois e a sua mensagem. Seu amor abre no celular, com música. Fica pronta em 3 minutos.</p>
+      <p class="sub">Para o seu amor ou para um amigo da igreja. Fotos de vocês, versículos, uma roleta que sorteia uma palavra de Deus, a história de vocês em números, música e uma oração. Abre no celular pelo QR code e fica pronta em 3 minutos.</p>
       <div class="ctas">
         <a class="cta" href="#criar" data-vai="criar">Criar minha carta</a>
         <button class="cta ghost" id="verExemplo">Ver um exemplo</button>
@@ -399,7 +401,7 @@ button:disabled { opacity: .6; cursor: progress; }
           <span class="para">Para Ana</span>
           <h3>Ana, feliz aniversário de namoro</h3>
           <div class="pols" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="juntos-mini"><div><b>1</b><span>ano</span></div><div><b>4</b><span>meses</span></div><div><b>12</b><span>dias</span></div></div>
+          <div class="juntos-mini"><div><b>⏳ 499</b><span>manhãs em que meu amor se renovou</span></div></div>
           <p class="v">“E se alguém prevalecer contra um, dois podem resistir contra ele; porque o cordão de três dobras não se rompe tão depressa.”</p>
           <span class="r">ECLESIASTES 4:12</span>
           <p class="assin">Com amor, Pedro</p>
@@ -414,7 +416,7 @@ button:disabled { opacity: .6; cursor: progress; }
   <section class="sec">
     <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Como funciona</h2>
     <ol class="passos">
-      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h15a3 3 0 0 1 3 3v2h-5"/><path d="M22 10v15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-2h14"/><path d="M9 5a3 3 0 0 0-3 3v15"/><path d="M11 13h7M11 17h7"/></svg></span><b>Monte a carta</b><p>Escolha a ocasião, os versículos, a data em que começaram e escreva do seu jeito.</p></li>
+      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h15a3 3 0 0 1 3 3v2h-5"/><path d="M22 10v15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-2h14"/><path d="M9 5a3 3 0 0 0-3 3v15"/><path d="M11 13h7M11 17h7"/></svg></span><b>Monte a carta</b><p>Escolha se é para o seu amor ou para um amigo da igreja, a ocasião, os versículos e escreva do seu jeito.</p></li>
       <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 9c-3-3-9-3-11 0v15c2-3 8-3 11 0 3-3 9-3 11 0V9c-2-3-8-3-11 0z"/><path d="M16 9v15"/><path d="M21 12v5M19 14h4"/></svg></span><b>Veja como fica</b><p>Abra a prévia e confira tudo antes de pagar.</p></li>
       <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="24" height="17" rx="3"/><path d="M4 10l12 8 12-8"/><circle cx="16" cy="20" r="4.5" fill="currentColor" stroke="none"/><path d="M16 17.5v5M14 19.5h4" stroke="var(--soft)" stroke-width="1.6"/></svg></span><b>Mande para quem você ama</b><p>Receba um cartão com QR code. Imprima e entregue junto com um presente, ou mande a imagem. A pessoa aponta a câmera e a carta abre.</p></li>
     </ol>
@@ -563,19 +565,22 @@ button:disabled { opacity: .6; cursor: progress; }
   <section class="sec">
     <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Perguntas frequentes</h2>
     <div class="faq">
-      <details><summary>Como meu amor recebe a carta?</summary><p>Você recebe um cartão com QR code. Imprima e entregue junto com flores ou um presente, ou mande a imagem pelo WhatsApp. É só apontar a câmera do celular que a carta abre.</p></details>
+      <details><summary>Como a pessoa recebe a carta?</summary><p>Você recebe um cartão com QR code. Imprima e entregue junto com flores ou um presente, ou mande a imagem pelo WhatsApp. É só apontar a câmera do celular que a carta abre.</p></details>
       <details><summary>Precisa baixar alguma coisa?</summary><p>Não. A carta abre direto no navegador do celular ou do computador.</p></details>
       <details><summary>Posso ver antes de pagar?</summary><p>Pode. Monte tudo, toque em “Ver a prévia” e só pague quando gostar do resultado.</p></details>
-      <details><summary>O contador de tempo juntos fica certo depois?</summary><p>Fica. Ele conta a partir da data que você informar, então no ano que vem a carta mostra o tempo atualizado.</p></details>
+      <details><summary>Posso fazer para um amigo, e não para namorado?</summary><p>Pode. No primeiro passo, escolha “Amigo(a) da igreja”. A carta muda os textos, os versículos, a oração e a roleta para falar de amizade.</p></details>
+      <details><summary>Os números da carta ficam certos depois?</summary><p>Ficam. Eles contam a partir da data que você informar, então no ano que vem a carta mostra tudo atualizado.</p></details>
       <details><summary>Por quanto tempo o link funciona?</summary><p>Enquanto este site estiver no ar. A carta fica guardada no nosso site e abre pelo QR code ou pelo link, sem precisar de cadastro.</p></details>
       <details><summary>Como pago?</summary><p>Por Pix ou cartão de crédito, pelo Mercado Pago. No Pix, a carta é liberada em poucos segundos, na mesma tela.</p></details>
       <details><summary>Posso mudar a carta depois de pagar?</summary><p>Pode, durante 7 dias. Faça as mudanças neste mesmo celular e toque em “Salvar as mudanças na carta”. O QR code continua o mesmo e já abre a carta atualizada.</p></details>
+      <details><summary>E se eu me arrepender da compra?</summary><p>Você tem 7 dias para pedir o dinheiro de volta, como garante o Código de Defesa do Consumidor. É só chamar a gente no Instagram <a href="https://instagram.com/carta.comproposito" target="_blank" rel="noopener">@carta.comproposito</a>. Veja a <a href="/privacidade.html">política de privacidade e reembolso</a>.</p></details>
       <details><summary>Qual Bíblia vocês usam?</summary><p>Os versículos são da Bíblia Livre, uma tradução brasileira de licença aberta.</p></details>
     </div>
   </section>
 
   <footer>
     <p class="verso-rodape">“O amor nunca falha.”<span>1 CORÍNTIOS 13:8</span></p>
+    <p class="links-rodape"><a href="https://instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a> · <a href="/privacidade.html">Privacidade e reembolso</a></p>
     <p><b>Privacidade:</b> não pedimos cadastro. Enquanto você monta, a carta fica salva só no seu aparelho. Depois do pagamento, ela fica guardada no nosso site para abrir pelo QR code, e só quem tem o QR code ou o link consegue ver. O pagamento é feito pelo Mercado Pago, que tem a própria política de privacidade; usamos o seu e-mail só para o comprovante.</p>
     <p>Versículos: Bíblia Livre (BLIVRE), de Diego Santos, Mario Sérgio e Marco Teles, licença <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br" target="_blank" rel="noopener">CC BY 4.0</a>, fonte <a href="https://ebible.org/porbr2018/copyright.htm" target="_blank" rel="noopener">eBible.org</a>, com pequenas correções e trechos destacados. Os autores não endossam este site.</p>
   </footer>
@@ -816,7 +821,7 @@ async function buscarMusicas(q){
       const ti=document.createElement("b"); ti.textContent=it.t; const ca=document.createElement("span"); ca.textContent=it.c; tx.append(ti,ca); b.append(im,tx);
       b.addEventListener("click",()=>escolherMusica(it,true)); res.appendChild(b); });
   }catch(e){ if(meu!==buscaAtual) return; res.hidden=true; dica.className="dica erro";
-    dica.textContent=e.message==="cota"?"A busca está indisponível agora. Cole o link da música abaixo.":"Não consegui buscar agora. Confira sua internet ou cole o link abaixo."; $("colarLink").open=true; }
+    dica.textContent=e.message==="cota"?"A busca por nome chegou ao limite de hoje. Abra a música no YouTube, toque em Compartilhar e depois em Copiar link, e cole abaixo.":"Não consegui buscar agora. Confira sua internet ou cole o link abaixo."; $("colarLink").open=true; }
 }
 let playerCriador=null;
 function tocarNoCriador(id,tocar){
