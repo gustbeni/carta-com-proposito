@@ -614,9 +614,9 @@ function lerMusica(url){
 const FOTO_LADO=260, FOTO_MAX=9000;
 function carregarImagem(file){ return new Promise((ok,erro)=>{ const url=URL.createObjectURL(file); const img=new Image(); img.onload=()=>{ ok(img); setTimeout(()=>URL.revokeObjectURL(url),1000); }; img.onerror=()=>{ URL.revokeObjectURL(url); erro(new Error("imagem")); }; img.src=url; }); }
 async function fotoGrande(img){
-  const lado=Math.min(img.naturalWidth,img.naturalHeight), sx=(img.naturalWidth-lado)/2, sy=(img.naturalHeight-lado)/2, tam=Math.min(900,lado);
+  const lado=Math.min(img.naturalWidth,img.naturalHeight), sx=(img.naturalWidth-lado)/2, sy=(img.naturalHeight-lado)/2, tam=Math.min(1400,lado);
   const cv=document.createElement("canvas"); cv.width=cv.height=tam; const ctx=cv.getContext("2d"); ctx.imageSmoothingQuality="high"; ctx.drawImage(img,sx,sy,lado,lado,0,0,tam,tam);
-  return cv.toDataURL("image/jpeg",.82);
+  return cv.toDataURL("image/jpeg",.88);
 }
 const fotosGrandes={};
 async function comprimirFoto(file,i){
@@ -643,7 +643,8 @@ function pintarFotos(){
     else q.innerHTML=`<span><span class="mais">+</span>Foto ${i+1}</span>`;
     const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.id="foto"+i; inp.setAttribute("aria-label","Escolher foto "+(i+1));
     inp.addEventListener("change",async()=>{ const file=inp.files&&inp.files[0]; if(!file) return;
-      try{ toast("Preparando a foto…"); S.fotos[i].d=await comprimirFoto(file,i); S.fotos[i].u=""; pintarFotos(); guardar(); toast("Foto adicionada."); }
+      try{ toast("Preparando a foto…"); S.fotos[i].d=await comprimirFoto(file,i); S.fotos[i].u=""; pintarFotos(); guardar(); toast("Foto adicionada.");
+        if(nuvem() && fotosGrandes[i]){ const d=S.fotos[i].d; enviarFoto(i).then(u=>{ if(S.fotos[i].d===d){ S.fotos[i].u=u; guardar(); } }).catch(()=>{}); } }
       catch(e){ toast("Não consegui abrir essa foto. Tente outra, em JPG ou PNG."); } });
     q.appendChild(inp); slot.appendChild(q);
     const leg=document.createElement("input"); leg.className="inp"; leg.maxLength=28; leg.placeholder="Legenda"; leg.value=f.c||""; leg.id="leg"+i; leg.setAttribute("aria-label","Legenda da foto "+(i+1));
@@ -739,7 +740,9 @@ async function api(caminho,corpo){
 }
 async function subirFotos(st){
   const lista=S.fotos.map((x,i)=>({x,i})).filter(o=>o.x.d);
-  for(let k=0;k<lista.length;k++){ const {x,i}=lista[k]; if(!x.u){ st(`Guardando foto ${k+1} de ${lista.length}…`); x.u=await enviarFoto(i); guardar(); } }
+  for(let k=0;k<lista.length;k++){ const {x,i}=lista[k]; if(!x.u){
+    if(!fotosGrandes[i]) throw new Error("foto"+(i+1));
+    st(`Guardando foto ${k+1} de ${lista.length}…`); x.u=await enviarFoto(i); guardar(); } }
 }
 function cartaParaServidor(){ const P=dadosCarta(); const fs=fotosDoCriador(); if(fs.length) P.fu=fs.map(f=>f.u).filter(Boolean); return P; }
 let esperando=null;
@@ -761,7 +764,7 @@ async function pagar(metodo){
     $("pixQr").src="data:image/png;base64,"+j.pix.qr; $("pixCodigo").value=j.pix.copia; $("pixBox").hidden=false; msg("");
     $("pixBox").scrollIntoView({behavior:"smooth",block:"center"});
     esperarPagamento(0);
-  }catch(e){ msg(e.status===413?"A carta ficou grande demais. Encurte a mensagem ou as lembranças.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo."); }
+  }catch(e){ msg(e.status===413?"A carta ficou grande demais. Encurte a mensagem ou as lembranças.":/^foto\d/.test(e.message)?"Escolha a foto "+e.message.slice(4)+" de novo, para ela ficar com boa qualidade.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo."); }
   bts.forEach(b=>b.disabled=false);
 }
 async function esperarPagamento(n){
@@ -788,7 +791,7 @@ function dadosCarta(){ const P={ o:S.o, p:S.para, d:S.de, v:S.v, m:S.m.trim(), t
 const nuvem=()=>!!(CONFIG.cloudinaryNome&&CONFIG.cloudinaryPreset);
 function marcarDesatualizado(){ if($("resultadoQr").hidden) return; $("gerarQr").textContent="Salvar as mudanças na carta"; $("statusQr").textContent="Você mudou a carta. Toque em salvar para atualizar. O QR code continua o mesmo."; }
 async function enviarFoto(i){
-  const dados=fotosGrandes[i]||("data:image/jpeg;base64,"+S.fotos[i].d);
+  const dados=fotosGrandes[i]; if(!dados) throw new Error("foto"+(i+1));
   const fd=new FormData(); fd.append("file",dados); fd.append("upload_preset",CONFIG.cloudinaryPreset); fd.append("folder","cartas");
   const resp=await fetch("https://api.cloudinary.com/v1_1/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload",{method:"POST",body:fd});
   if(!resp.ok) throw new Error("upload");
@@ -808,7 +811,7 @@ async function gerarQr(){
     st.textContent=pedido.salvoUmaVez?"Mudanças salvas! O mesmo QR code já abre a carta atualizada.":""; pedido.salvoUmaVez=true; salvar("cd_pedido",pedido); bt.textContent="Gerar o QR code de novo";
   }catch(e){
     if(e.dados&&e.dados.erro==="prazo"){ st.textContent="O prazo de 7 dias para mudar esta carta acabou. O QR code abre a última versão salva."; await gerarLink(true).catch(()=>{}); }
-    else st.textContent=e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível salvar agora. Confira sua internet e tente de novo.";
+    else st.textContent=/^foto\d/.test(e.message)?"Escolha a foto "+e.message.slice(4)+" de novo, para ela ficar com boa qualidade.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível salvar agora. Confira sua internet e tente de novo.";
   }
   bt.disabled=false;
 }
