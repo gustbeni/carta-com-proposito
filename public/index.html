@@ -667,7 +667,8 @@ function ler(k,def){ try{ const v=localStorage.getItem(k); return v==null?def:JS
 function salvar(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 function b64enc(obj){ const bytes=new TextEncoder().encode(JSON.stringify(obj)); let s=""; bytes.forEach(b=>s+=String.fromCharCode(b)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
 function b64dec(str){ str=str.replace(/-/g,"+").replace(/_/g,"/"); while(str.length%4) str+="="; const bin=atob(str); const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0)); return JSON.parse(new TextDecoder().decode(bytes)); }
-const tituloDe=(o,para)=>OCASIOES[o].titulo.replace("{para}",para||(OCASIOES[o].amigo?"meu amigo":"meu amor"));
+const generoTitulo=(t,sx)=>sx==="a"?t.replace("obrigado","obrigada"):t;
+const tituloDe=(o,para)=>generoTitulo(OCASIOES[o].titulo.replace("{para}",para||(OCASIOES[o].amigo?"meu amigo":"meu amor")),OCASIOES[o].amigo?S.sx:"");
 const reduz=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ============ estado do criador ============ */
@@ -702,7 +703,7 @@ function textosTipo(am){
   $("mt1").placeholder=am?"Ex.: Aquele retiro inesquecível":"Ex.: Nosso primeiro passeio no parque";
   $("mt2").placeholder=am?"Ex.: Quando você orou comigo":"Ex.: O dia em que conheci sua família";
 }
-$("sx").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.sx=c.dataset.sx; textosTipo(ehAmigo(S.o)); guardar(); }));
+$("sx").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.sx=c.dataset.sx; textosTipo(ehAmigo(S.o)); if(!tituloEditado){ S.ti=""; preencherTitulo(); } guardar(); }));
 const assinaturaAmigo=sx=>"Com carinho, "+(sx==="a"?"da sua irmã":"do seu irmão")+" em Cristo Jesus";
 $("tipos").querySelectorAll(".tipo").forEach(b=>b.addEventListener("click",()=>{
   const querAmigo=b.dataset.g==="amigo"; if(querAmigo===ehAmigo(S.o)) return;
@@ -1161,7 +1162,7 @@ function mostrarCarta(P,cardMusica){
   const inner=$("gInner"), c=el("div","carta"); inner.appendChild(c); inner.style.alignContent="start";
   const oc=OCASIOES[P.o]||OCASIOES.namoro, partes=[], add=n=>{ c.appendChild(n); partes.push(n); return n; };
   add(el("p","occ surge",oc.nome));
-  add(el("h1","surge",(P.ti||"").trim()||oc.titulo.replace("{para}",P.p||(oc.amigo?"meu amigo":"meu amor"))));
+  add(el("h1","surge",(P.ti||"").trim()||generoTitulo(oc.titulo.replace("{para}",P.p||(oc.amigo?"meu amigo":"meu amor")),oc.amigo?P.sx:"")));
   { const rol=criarRoleta(ehAmigo(P.o)); if(rol) add(rol); }
   if(P.fotos&&P.fotos.length){ const pol=el("div","polaroides surge"); P.fotos.forEach((src,i)=>{ const f=el("figure","pol"); f.style.margin="0"; const im=document.createElement("img"); im.src=src; im.alt="Foto"; f.appendChild(im); f.appendChild(el("span",null,(P.fc&&P.fc[i])||"")); pol.appendChild(f); }); add(pol); }
   if(cardMusica) add(cardMusica);
