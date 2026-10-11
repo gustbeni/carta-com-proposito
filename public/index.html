@@ -945,7 +945,13 @@ let pedido = ler("cd_pedido", null); // { id, chave, pago }
 if(pedido && !pedido.id) pedido=null;
 let liberado = !!(pedido && pedido.pago);
 if(!Array.isArray(S.fotos)||S.fotos.length!==3) S.fotos=[{d:"",c:""},{d:"",c:""},{d:"",c:""}];
+S.fotos=S.fotos.map(f=>(f&&typeof f==="object")?{d:typeof f.d==="string"?f.d:"",c:typeof f.c==="string"?f.c:"",u:typeof f.u==="string"?f.u:""}:{d:"",c:"",u:""});
 if(!S.ff||typeof S.ff!=="object") S.ff={d:"",u:"",c:""};
+["d","u","c"].forEach(k=>{ if(typeof S.ff[k]!=="string") S.ff[k]=""; });
+if(typeof S.mot!=="string") S.mot="";
+["para","de","ti","dt","w","m","ml","mtit","mcan"].forEach(k=>{ if(typeof S[k]!=="string") S[k]=""; });
+if(!Array.isArray(S.v)) S.v=[];
+if(typeof S.or!=="number") S.or=0;
 function guardar(){ try{ localStorage.setItem("cd_rascunho",JSON.stringify(S)); }catch(e){ try{ const s2=Object.assign({},S,{fotos:S.fotos.map(f=>({d:"",c:f.c}))}); localStorage.setItem("cd_rascunho",JSON.stringify(s2)); }catch(e2){} } atualizarResumo(); if(liberado) gerarLink(); }
 
 function pintarOcasioes(){
