@@ -611,6 +611,32 @@ footer { color:#5e4640; }
 .polaroides.on .pol:nth-child(2) img { animation-delay:1.05s; }
 .polaroides.on .pol:nth-child(3) img { animation-delay:1.5s; }
 @media (prefers-reduced-motion: reduce) { .polaroides .pol { opacity:1; } .polaroides .pol img { filter:none; } .polaroides.on .pol, .polaroides.on .pol img { animation:none; } }
+
+/* ===== abertura gloriosa ===== */
+.g-inner { z-index:1; }
+.gloria-fundo { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; transition:opacity .9s ease; }
+.gloria-fundo.on { opacity:1; }
+.gloria-fundo .raios { position:absolute; left:50%; top:50%; width:220vmax; height:220vmax; margin:-110vmax 0 0 -110vmax; background:repeating-conic-gradient(from 0deg, rgba(255,226,150,.42) 0deg 5deg, rgba(255,226,150,0) 5deg 15deg); -webkit-mask:radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 18%, transparent 46%); mask:radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 18%, transparent 46%); transform:scale(.2) rotate(0deg); transition:transform 2.6s cubic-bezier(.2,.8,.2,1); animation:giraRaios 26s linear infinite; }
+.gloria-fundo.on .raios { transform:scale(1); }
+@keyframes giraRaios { to { rotate:360deg; } }
+.gloria-fundo .halo { position:absolute; left:50%; top:50%; width:150vmin; height:150vmin; margin:-75vmin 0 0 -75vmin; border-radius:50%; background:radial-gradient(circle, rgba(255,246,214,.95) 0%, rgba(255,214,120,.55) 22%, rgba(214,150,60,.18) 45%, transparent 68%); transform:scale(.15); transition:transform 2.2s cubic-bezier(.2,.8,.2,1); }
+.gloria-fundo.on .halo { transform:scale(1); }
+.gloria-flash { position:fixed; inset:0; z-index:60; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 48%, #fffdf4 0%, #ffeec2 35%, #f3c86e 70%, #b8802e 100%); }
+.gloria-flash.on { animation:gflash 1.9s ease forwards; }
+@keyframes gflash { 0% { opacity:0; } 28% { opacity:1; } 52% { opacity:1; } 100% { opacity:0; } }
+.envelope { position:relative; }
+.envelope .folha-sai { position:absolute; left:50%; top:calc(50% - 10px); width:min(78vw,380px); height:min(52vw,250px); margin-left:calc(min(78vw,380px) / -2); transform:translateY(-50%); z-index:-1; border-radius:4px; background:linear-gradient(180deg,#fffaf0,#f3e3c4); box-shadow:0 0 40px rgba(255,220,140,.9), 0 0 0 1px rgba(176,132,60,.4) inset; opacity:0; }
+.envelope .folha-sai::before { content:""; position:absolute; inset:18px 26px auto; height:60%; background:repeating-linear-gradient(180deg, rgba(150,110,60,.22) 0 2px, transparent 2px 16px); }
+.envelope.abrindo .folha-sai { animation:folhaSobe 1.4s cubic-bezier(.3,.7,.2,1) .75s forwards; }
+@keyframes folhaSobe { 0% { opacity:1; transform:translateY(-50%); } 100% { opacity:1; transform:translateY(-118%) scale(1.04); box-shadow:0 0 80px 20px rgba(255,220,140,.95); } }
+.envelope.abrindo .env .selo { animation:seloQuebra .55s ease forwards; }
+@keyframes seloQuebra { 0% { transform:translate(-50%,-50%) scale(1); } 35% { transform:translate(-50%,-50%) scale(1.22); filter:brightness(1.4); } 100% { transform:translate(-50%,-50%) scale(.6) rotate(-25deg); opacity:0; } }
+.envelope.abrindo .env { box-shadow:0 0 60px 10px rgba(255,214,120,.55), 0 34px 80px rgba(0,0,0,.55); transition:box-shadow 1s ease .6s; }
+.envelope.abrindo .toque { opacity:0; transition:opacity .3s; }
+.envelope.saindo { animation:envSai .7s ease forwards; }
+@keyframes envSai { to { opacity:0; transform:translateY(40px) scale(.94); } }
+.faisca { position:fixed; z-index:61; pointer-events:none; color:#ffe7a6; text-shadow:0 0 8px #ffd36b; transition:transform 1.4s cubic-bezier(.2,.8,.3,1), opacity 1.4s; }
+@media (prefers-reduced-motion: reduce) { .gloria-fundo .raios { animation:none; } }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -1326,14 +1352,28 @@ function abrirCarta(P,{previa=false}={}){
   $("gFechar").hidden=!previa; $("gPrevia").hidden=!previa; $("gSom").hidden=true; Luz.iniciar();
   const inner=$("gInner"); inner.innerHTML=""; inner.style.alignContent="";
   const env=el("button","envelope"); env.setAttribute("aria-label","Abrir a carta");
-  env.innerHTML=`<span class="env"><span class="remet"></span><span class="aba"></span><span class="selo"></span><span class="end"><small>Para</small><b></b><i></i></span></span><span class="toque">Toque no lacre para abrir</span>`;
+  env.innerHTML=`<span class="folha-sai" aria-hidden="true"></span><span class="env"><span class="remet"></span><span class="aba"></span><span class="selo"></span><span class="end"><small>Para</small><b></b><i></i></span></span><span class="toque">Toque no lacre para abrir</span>`;
   env.querySelector(".end b").textContent=P.p||"você"; env.querySelector(".selo").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>';
   env.querySelector(".remet").innerHTML=P.d?"De:<br>":""; if(P.d) env.querySelector(".remet").append(P.d);
   inner.appendChild(env);
   if(P.ml) Som.preparar(P.ml);
   let cardMusica=null;
   env.addEventListener("click",()=>{ env.classList.add("abrindo"); if(P.ml){ cardMusica=Som.criar(P.ml); } else if(P.mu||modoPrevia){ Musica.iniciar(); $("gSom").hidden=false; $("gSom").setAttribute("aria-pressed","true"); $("gSom").querySelector("span").textContent="Música"; }
-    timers.push(setTimeout(()=>{ env.remove(); mostrarCarta(P,cardMusica); }, reduz()?50:850)); },{once:true});
+    if(reduz()){ timers.push(setTimeout(()=>{ env.remove(); mostrarCarta(P,cardMusica); },50)); return; }
+    const g=$("gift"); g.querySelectorAll(".gloria-fundo,.gloria-flash").forEach(x=>x.remove());
+    const fundo=el("div","gloria-fundo"); fundo.append(el("div","halo"),el("div","raios")); g.insertBefore(fundo,g.firstChild);
+    const flash=el("div","gloria-flash"); g.appendChild(flash);
+    const sr=env.querySelector(".selo").getBoundingClientRect(), cx=sr.left+sr.width/2, cy=sr.top+sr.height/2;
+    for(let k=0;k<26;k++){ const f=document.createElement("span"); f.className="faisca"; f.textContent=k%4===0?"✝":"✦"; f.style.left=cx+"px"; f.style.top=cy+"px"; f.style.fontSize=(10+Math.random()*16)+"px"; document.body.appendChild(f);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ const a=Math.random()*6.283, d=80+Math.random()*190; f.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d-60}px) rotate(${Math.random()*180}deg)`; f.style.opacity="0"; })); setTimeout(()=>f.remove(),1600); }
+    try{ if(navigator.vibrate) navigator.vibrate([20,60,30]); }catch(e){}
+    timers.push(setTimeout(()=>fundo.classList.add("on"),450));
+    timers.push(setTimeout(()=>flash.classList.add("on"),1900));
+    timers.push(setTimeout(()=>env.classList.add("saindo"),2150));
+    timers.push(setTimeout(()=>{ env.remove(); mostrarCarta(P,cardMusica); },2450));
+    timers.push(setTimeout(()=>{ fundo.classList.remove("on"); },4200));
+    timers.push(setTimeout(()=>{ flash.remove(); fundo.remove(); },5600));
+  },{once:true});
 }
 
 /* ===== roleta do amor: gira e sorteia um versículo sobre o amor ===== */
@@ -1603,7 +1643,7 @@ const Som = { modo:null, card:null, yt:null, sp:null, tocando:false, aviso:null,
   parar(destruir){ this.pausar(); if(destruir){ try{ if(this.yt&&this.yt.destroy) this.yt.destroy(); if(this.sp&&this.sp.destroy) this.sp.destroy(); }catch(e){} this.yt=null; this.sp=null; this.card=null; this.modo=null; this.tocando=false; } }
 };
 function contar(box){ box.querySelectorAll("b[data-alvo]").forEach(b=>{ const alvo=+b.dataset.alvo; if(reduz()){ b.textContent=alvo.toLocaleString("pt-BR"); return; } const ini=performance.now(); const passo=t=>{ const k=Math.min(1,(t-ini)/1400); b.textContent=Math.round(alvo*(1-Math.pow(1-k,3))).toLocaleString("pt-BR"); if(k<1) requestAnimationFrame(passo); }; requestAnimationFrame(passo); }); }
-function fecharCarta(){ timers.forEach(clearTimeout); Musica.parar(); Som.parar(true); Luz.parar(); $("gift").hidden=true; document.body.style.overflow=""; }
+function fecharCarta(){ timers.forEach(clearTimeout); $("gift").querySelectorAll(".gloria-fundo,.gloria-flash").forEach(x=>x.remove()); Musica.parar(); Som.parar(true); Luz.parar(); $("gift").hidden=true; document.body.style.overflow=""; }
 $("gFechar").addEventListener("click",fecharCarta);
 $("gSom").addEventListener("click",e=>{ if(Som.modo){ Som.alternar(); return; } const on=e.currentTarget.getAttribute("aria-pressed")==="true"; if(on) Musica.parar(); else Musica.iniciar(); e.currentTarget.setAttribute("aria-pressed",String(!on)); e.currentTarget.querySelector("span").textContent=on?"Sem música":"Música"; });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("gift").hidden&&modoPrevia) fecharCarta(); });
