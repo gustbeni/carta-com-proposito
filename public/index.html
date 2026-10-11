@@ -587,6 +587,15 @@ footer { color:#5e4640; }
 @keyframes revela { 0% { filter:sepia(1) brightness(2.2) contrast(.35) blur(3px); } 60% { filter:sepia(.4) brightness(1.2) contrast(.85) blur(.5px); } 100% { filter:none; } }
 .cab-dica { font-family:var(--body); font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; opacity:.7; }
 @media (prefers-reduced-motion: reduce) { .cab-wrap.rev .foto, .cab-wrap.rev .foto img { animation-duration:.01s; animation-delay:0s; } .cabine .lampadas i { animation:none; } }
+
+/* cabine: foto 50% maior e nítida */
+.cab-wrap { max-width:620px; grid-template-columns:minmax(0,.55fr) minmax(0,2.4fr) minmax(0,.55fr); }
+.cab-wrap .anjo { margin-bottom:150px; }
+.cabine .saida { width:100%; padding:0 2px 16px; }
+.cabine .foto { padding:10px 10px 38px; }
+.cabine .foto img { image-rendering:auto; }
+.cabine .foto .leg { font-size:1.25rem; bottom:10px; }
+@keyframes sai { 0% { transform:translateY(-104%); } 70% { transform:translateY(3%); } 100% { transform:translateY(0); } }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -676,7 +685,7 @@ footer { color:#5e4640; }
           <div class="versos" id="versos"></div>
         </fieldset>
 
-        <fieldset class="etapa">
+        <fieldset class="etapa" hidden>
           <legend><span class="n">5</span>Momentos de vocês</legend>
           <p class="dica" id="dMem">Opcional. Até 3 lembranças que aparecem como a história de vocês.</p>
           <div class="mem"><input class="inp" id="mq0" maxlength="24" placeholder="Quando? Ex.: Março de 2024"><input class="inp" id="mt0" maxlength="90" placeholder="Ex.: Nos conhecemos no culto de jovens"></div>
@@ -685,7 +694,7 @@ footer { color:#5e4640; }
         </fieldset>
 
         <fieldset class="etapa">
-          <legend><span class="n">6</span>Escreva sua mensagem</legend>
+          <legend><span class="n">5</span>Escreva sua mensagem</legend>
           <div class="chips" id="sugestoes" aria-label="Sugestões de mensagem"></div>
           <label class="f" for="fMsg">Sua mensagem<textarea class="inp" id="fMsg" maxlength="320" placeholder="Escreva do seu jeito, ou toque numa sugestão acima para começar."></textarea></label>
           <p class="cont"><span id="nMsg">0</span>/320</p>
@@ -693,12 +702,12 @@ footer { color:#5e4640; }
         </fieldset>
 
         <fieldset class="etapa">
-          <legend><span class="n">7</span>Uma oração por vocês</legend>
+          <legend><span class="n">6</span>Uma oração por vocês</legend>
           <div class="oracoes" id="oracoes"></div>
         </fieldset>
 
         <fieldset class="etapa">
-          <legend><span class="n">8</span>Cor e música</legend>
+          <legend><span class="n">7</span>Cor e música</legend>
           <div class="temas" id="temas">
             <button type="button" class="tema" data-t="rosa" aria-pressed="true"><i style="background:linear-gradient(135deg,#5a2236,#ffc2cf)"></i>Rosa</button>
             <button type="button" class="tema" data-t="ouro" aria-pressed="false"><i style="background:linear-gradient(135deg,#4a2a22,#f0c98f)"></i>Dourado</button>
@@ -1188,7 +1197,7 @@ function dadosCarta(){ const P={ o:S.o, p:S.para, d:S.de, v:S.v, m:S.m.trim(), t
   const fs=fotosDoCriador(); if(fs.length && fs.some(f=>f.c.trim())) P.fc=fs.map(f=>f.c.trim());
   if(S.ti) P.ti=S.ti; if(S.dt) P.dt=S.dt; if(S.w) P.w=S.w; if(S.or) P.or=S.or;
   { const mot=(S.mot||"").split("\n").map(x=>x.trim()).filter(Boolean).slice(0,20).map(x=>x.slice(0,120)); if(mot.length) P.mot=mot; }
-  const mem=S.mem.filter(x=>x[1].trim()).map(x=>[x[0].trim(),x[1].trim()]); if(mem.length) P.mem=mem; return P; }
+ return P; }
 const nuvem=()=>!!(CONFIG.cloudinaryNome&&CONFIG.cloudinaryPreset);
 function marcarDesatualizado(){ if($("resultadoQr").hidden) return; $("gerarQr").textContent="Salvar as mudanças na carta"; $("statusQr").textContent="Você mudou a carta. Toque em salvar para atualizar. O QR code continua o mesmo."; }
 async function enviarFoto(i){
@@ -1472,7 +1481,7 @@ function criarPergaminho(txt){
   const w=el("div","perg surge"); const r1=el("div","rolo"); r1.appendChild(el("i")); const r2=el("div","rolo"); r2.appendChild(el("i"));
   const corpo=el("div","corpo"), inn=el("div"), f=el("div","folha");
   ["a","b","c","d"].forEach(k=>{ const c=el("span","canto "+k); c.innerHTML='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 38 V10 Q2 2 10 2 H38"/><path d="M8 30 Q8 8 30 8"/><path d="M14 14 q6 -2 8 4 q2 6 -4 6 q-4 0 -3 -4"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>'; f.appendChild(c); });
-  const cz=el("span","cruz"); cz.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>'; f.appendChild(cz); f.appendChild(el("p",null,txt));
+  const cz=null; void '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>'; f.appendChild(el("p",null,txt));
   inn.appendChild(f); corpo.appendChild(inn); w.append(r1,corpo,r2); return w;
 }
 function criarCabine(P){
@@ -1481,8 +1490,7 @@ function criarCabine(P){
   const cab=el("button","cabine"); cab.type="button"; cab.setAttribute("aria-label","Revelar a foto de novo");
   cab.innerHTML=`<div class="maq"><div class="lampadas"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="placa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg><span>CABINE DE FOTOS</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></div><div class="janela"><span class="lente"></span><span class="cortina e"></span><span class="cortina d"></span><span class="flash"></span></div><div class="fenda" style="margin-inline:auto"></div></div><div class="saida"><div class="foto"><img alt="Foto"></div></div>`;
   cab.querySelector("img").src=P.ffoto; if(P.ffc) cab.querySelector(".foto").appendChild(el("span","leg",P.ffc));
-  wrap.append(a1,cab,a2); bf.appendChild(wrap); bf.appendChild(el("span","cab-dica","toque na cabine para revelar de novo"));
-  bf.appendChild(el("p","sub","“O Senhor te abençoe e te guarde.” Números 6:24"));
+  wrap.append(a1,cab,a2); bf.appendChild(wrap);
   const revelar=()=>{ wrap.classList.remove("rev"); void wrap.offsetWidth; wrap.classList.add("rev"); try{ if(navigator.vibrate) setTimeout(()=>navigator.vibrate(25),900); }catch(e){} };
   cab.addEventListener("click",revelar); bf._revelar=revelar; return bf;
 }
@@ -1499,7 +1507,6 @@ function mostrarCarta(P,cardMusica){
   if(tj){ const nb=blocoNumeros(tj,ehAmigo(P.o)); add(nb); }
   add(criarPote(P));
   (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ { const o=el("span","orn surge"); o.appendChild(el("i")); add(o); } const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
-  if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
   if(P.m) add(criarPergaminho(P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
   if(P.ffoto) add(criarCabine(P));
