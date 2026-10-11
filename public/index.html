@@ -935,7 +935,7 @@ const tituloDe=(o,para)=>generoTitulo(OCASIOES[o].titulo.replace("{para}",para||
 const reduz=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ============ estado do criador ============ */
-const padrao = { o:"namoro", para:"", de:"", ti:"", dt:"", w:"", v:["ecl.4.12","1cor.13.4"], mem:[["",""],["",""],["",""]], m:"", or:0, t:"rosa", mu:0, mt:"link", ml:"", mtit:"", mcan:"", fotos:[{d:"",c:""},{d:"",c:""},{d:"",c:""}] };
+const padrao = { o:"namoro", para:"", de:"", ti:"", dt:"", w:"", v:["ecl.4.12"], mem:[["",""],["",""],["",""]], m:"", or:0, t:"rosa", mu:0, mt:"link", ml:"", mtit:"", mcan:"", fotos:[{d:"",c:""},{d:"",c:""},{d:"",c:""}] };
 let S = Object.assign({}, padrao, ler("cd_rascunho", {}));
 if(!OCASIOES[S.o]) S.o="namoro";
 if(!Array.isArray(S.mem)||S.mem.length!==3) S.mem=padrao.mem.map(x=>x.slice());
@@ -952,7 +952,7 @@ function pintarOcasioes(){
   textosTipo(am);
   $("ocasioes").innerHTML=Object.entries(OCASIOES).filter(([k,o])=>!!o.amigo===am).map(([k,o])=>`<button type="button" class="chip" data-o="${k}" aria-pressed="${k===S.o}">${o.nome}</button>`).join("");
   $("ocasioes").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
-    if(S.o===b.dataset.o) return; S.o=b.dataset.o; S.v=OCASIOES[S.o].versos.slice(0,2); pintarVersos.todos=false;
+    if(S.o===b.dataset.o) return; S.o=b.dataset.o; S.v=OCASIOES[S.o].versos.slice(0,1); pintarVersos.todos=false;
     if(!tituloEditado) S.ti="";
     pintarOcasioes(); pintarVersos(); pintarSugestoes(); preencherTitulo(); guardar();
   }));
@@ -973,7 +973,7 @@ $("sx").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.
 const assinaturaAmigo=sx=>"Com carinho, "+(sx==="a"?"da sua irmã":"do seu irmão")+" em Cristo Jesus";
 $("tipos").querySelectorAll(".tipo").forEach(b=>b.addEventListener("click",()=>{
   const querAmigo=b.dataset.g==="amigo"; if(querAmigo===ehAmigo(S.o)) return;
-  S.o=querAmigo?"amizade":"namoro"; S.v=OCASIOES[S.o].versos.slice(0,2); S.or=0; pintarVersos.todos=false;
+  S.o=querAmigo?"amizade":"namoro"; S.v=OCASIOES[S.o].versos.slice(0,1); S.or=0; pintarVersos.todos=false;
   if(!tituloEditado) S.ti="";
   pintarOcasioes(); pintarVersos(); pintarSugestoes(); pintarOracoes(); preencherTitulo(); guardar();
 }));
@@ -1649,7 +1649,7 @@ $("gSom").addEventListener("click",e=>{ if(Som.modo){ Som.alternar(); return; } 
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("gift").hidden&&modoPrevia) fecharCarta(); });
 
 function dataExemplo(){ const d=new Date(); d.setFullYear(d.getFullYear()-1); d.setMonth(d.getMonth()-4); d.setDate(d.getDate()-12); return d.toISOString().slice(0,10); }
-const EXEMPLO={ o:"namoro", p:"Ana", d:"Pedro", v:["ecl.4.12","1cor.13.4"], dt:dataExemplo(), or:1, t:"rosa", mu:1,
+const EXEMPLO={ o:"namoro", p:"Ana", d:"Pedro", v:["ecl.4.12"], dt:dataExemplo(), or:1, t:"rosa", mu:1,
   mem:[["Março","Nos conhecemos no culto de jovens"],["Abril","Nosso primeiro passeio no parque, com sorvete e chuva"],["Junho","O dia em que conheci sua família"]],
   m:"Olhando pra trás, vejo o cuidado de Deus em cada detalhe do nosso caminho. Você é resposta de oração na minha vida. Te amo e quero seguir aprendendo a te amar do jeito que Cristo ensina." };
 function raizSite(){ try{ return /^https?:/.test(location.protocol)?location.origin+"/":""; }catch(e){ return ""; } }
