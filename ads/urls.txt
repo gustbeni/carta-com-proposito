@@ -8,3 +8,4 @@ amiga_emocao2.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667263/a
 amigas_entrega2.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791667268/anuncios/amigas_entrega2.jpg
 amigos_aperto.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791668622/anuncios/amigos_aperto.jpg
 casal_feliz.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791669465/anuncios/casal_feliz.jpg
+fundo_feed.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791681587/anuncios/fundo_feed.jpg
