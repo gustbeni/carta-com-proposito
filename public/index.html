@@ -524,6 +524,17 @@ footer { color:#5e4640; }
 .pote .vel { position:absolute; inset:0; z-index:5; background:rgba(40,15,10,.35); opacity:0; pointer-events:none; transition:opacity .35s; }
 .pote .vel.on { opacity:1; pointer-events:auto; }
 @media (prefers-reduced-motion: reduce) { .pote .vidro.chacoalha { animation:none; } }
+
+/* fotos 50% maiores */
+.polaroides { flex-wrap:wrap; gap:0 10px; padding:10px 0 18px; }
+.pol { width:min(46%,255px); padding:10px 10px 14px; gap:8px; }
+.pol span { font-size:.98rem; }
+.polaroides .pol:nth-child(3) { margin-top:-14px; }
+.polaroides .pol:only-child { width:min(72%,320px); }
+.bloco-final .final-foto { max-width:560px; grid-template-columns:minmax(0,.8fr) minmax(0,2fr) minmax(0,.8fr); }
+.bloco-final .quadro-final { padding:12px 12px 44px; }
+.bloco-final .quadro-final img { top:12px; left:12px; right:12px; bottom:44px; width:calc(100% - 24px); height:calc(100% - 56px); }
+.bloco-final .quadro-final .leg { font-size:1.05rem; bottom:10px; }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -1239,7 +1250,7 @@ function abrirCarta(P,{previa=false}={}){
   $("gFechar").hidden=!previa; $("gPrevia").hidden=!previa; $("gSom").hidden=true; Luz.iniciar();
   const inner=$("gInner"); inner.innerHTML=""; inner.style.alignContent="";
   const env=el("button","envelope"); env.setAttribute("aria-label","Abrir a carta");
-  env.innerHTML=`<span class="env"><span class="remet"></span><span class="selo-postal"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span></span><span class="aba"></span><span class="selo"></span><span class="end"><small>Para</small><b></b><i></i></span></span><span class="toque">Toque no lacre para abrir</span>`;
+  env.innerHTML=`<span class="env"><span class="remet"></span><span class="aba"></span><span class="selo"></span><span class="end"><small>Para</small><b></b><i></i></span></span><span class="toque">Toque no lacre para abrir</span>`;
   env.querySelector(".end b").textContent=P.p||"você"; env.querySelector(".selo").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>';
   env.querySelector(".remet").innerHTML=P.d?"De:<br>":""; if(P.d) env.querySelector(".remet").append(P.d);
   inner.appendChild(env);
