@@ -1524,6 +1524,7 @@ function mostrarCarta(P,cardMusica){
   (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ { const o=el("span","orn surge"); o.appendChild(el("i")); add(o); } const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
   if(P.m) add(criarPergaminho(P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
+  if(!P.ffoto && modoPrevia){ P=Object.assign({},P,{ ffoto:(P.fotos&&P.fotos.length?P.fotos[P.fotos.length-1]:fotoExemplo(1)), ffc:"Aqui vai a sua 4ª foto" }); }
   if(P.ffoto) add(criarCabine(P));
   if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com amor, "+P.d)); }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
@@ -1615,7 +1616,7 @@ function fotoExemplo(tipo){
   else { c.fillStyle="#cfe3f5"; c.fillRect(0,0,260,260); c.fillStyle="#7ea86a"; c.fillRect(0,170,260,90); [[60,150,"#f39bb0"],[130,130,"#fff3c4"],[200,155,"#e05a7a"],[95,190,"#ffffff"],[175,195,"#f6c26b"]].forEach(([x,y,cor])=>{ for(let k=0;k<6;k++){ c.fillStyle=cor; c.beginPath(); c.arc(x+Math.cos(k)*12,y+Math.sin(k)*12,10,0,6.3); c.fill(); } c.fillStyle="#f0b030"; c.beginPath(); c.arc(x,y,7,0,6.3); c.fill(); }); }
   return cv.toDataURL("image/jpeg",.8);
 }
-EXEMPLO.fotos=[0,1,2].map(fotoExemplo); EXEMPLO.fc=["Nosso primeiro pôr do sol","Exemplo de foto","No parque"];
+EXEMPLO.fotos=[0,1,2].map(fotoExemplo); EXEMPLO.fc=["Nosso primeiro pôr do sol","Exemplo de foto","No parque"]; EXEMPLO.ffoto=fotoExemplo(1); EXEMPLO.ffc="Nós dois, com Deus";
 $("verExemplo").addEventListener("click",()=>{ try{ if(typeof fbq==="function") fbq("track","ViewContent",{content_name:"Exemplo de carta"}); }catch(e){} abrirCarta(EXEMPLO,{previa:true}); });
 $("mockAbrir").addEventListener("click",()=>abrirCarta(EXEMPLO,{previa:true}));
 $("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); if(S.ff.d){ P.ffoto=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); if(S.ff.c&&S.ff.c.trim()) P.ffc=S.ff.c.trim(); } abrirCarta(P,{previa:!liberado}); });
