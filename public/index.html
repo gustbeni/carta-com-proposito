@@ -453,6 +453,28 @@ textarea.inp { background-image:repeating-linear-gradient(transparent 0 31px, rg
 .pixbox { border-radius:4px; }
 .faq details { border-radius:3px; border:0 !important; box-shadow:0 4px 12px rgba(60,20,20,.1); }
 footer { color:#5e4640; }
+
+/* ===== foto final com anjinhos ===== */
+.final-foto { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr); align-items:end; gap:4px; }
+.final-foto .anjo { width:100%; max-width:110px; justify-self:center; }
+.final-foto .anjo.dir { transform:scaleX(-1); }
+.final-foto .anjo svg { width:100%; height:auto; display:block; overflow:visible; }
+.anjo-corpo { animation:flutua 3.2s ease-in-out infinite; transform-origin:50% 50%; }
+.anjo.dir .anjo-corpo { animation-delay:-1.6s; }
+@keyframes flutua { 50% { transform:translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { .anjo-corpo { animation:none; } }
+.final-foto .quadro-final { position:relative; aspect-ratio:4/5; background:#fbf7f0; padding:10px 10px 38px; box-shadow:0 14px 30px rgba(0,0,0,.35); transform:rotate(-1.5deg); border-radius:2px; display:grid; place-items:center; overflow:hidden; }
+.final-foto .quadro-final img { position:absolute; top:10px; left:10px; right:10px; bottom:38px; width:calc(100% - 20px); height:calc(100% - 48px); object-fit:cover; border-radius:1px; }
+.final-foto .quadro-final .leg { position:absolute; left:6px; right:6px; bottom:8px; text-align:center; font-family:"Lora",Georgia,serif; font-style:italic; font-size:.92rem; color:#5a2a2a; line-height:1.15; }
+.etapa .final-foto label.quadro-final { cursor:pointer; border:0; }
+.etapa .final-foto input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.etapa .final-foto .vazio { color:#7a1f33; font-weight:700; text-align:center; font-size:.9rem; line-height:1.3; }
+.etapa .final-foto .vazio b { display:block; font-size:2rem; line-height:1; }
+.etapa .final-foto .tirar { position:absolute; top:4px; right:4px; z-index:3; width:28px; height:28px; border-radius:50%; border:0; background:rgb(0 0 0 / .6); color:#fff; font-weight:800; }
+.bloco-final { display:grid; gap:12px; justify-items:center; text-align:center; }
+.bloco-final .lbl { font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; font-weight:800; color:var(--g2); }
+.bloco-final .final-foto { width:100%; max-width:440px; }
+.bloco-final .sub { font-family:"Lora",Georgia,serif; font-style:italic; opacity:.85; font-size:1rem; margin:0; }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -531,7 +553,9 @@ footer { color:#5e4640; }
           <legend><span class="n">3</span>Fotos de vocês</legend>
           <p class="dica">Até 3 fotos. Elas aparecem na carta como polaroides. Opcional.</p>
           <div class="fotos" id="fotos"></div>
-          
+          <p class="dica" style="margin-top:10px"><b style="color:#7a1f33">Foto final</b> · aparece no fim da carta, com dois anjinhos orando por vocês. Opcional.</p>
+          <div class="final-foto" id="fotoFinal"></div>
+          <input class="inp" id="ffLeg" maxlength="40" placeholder="Legenda da foto final (opcional)" style="text-align:center;font-family:Lora,Georgia,serif;font-style:italic">
         </fieldset>
 
         <fieldset class="etapa">
@@ -757,6 +781,7 @@ let pedido = ler("cd_pedido", null); // { id, chave, pago }
 if(pedido && !pedido.id) pedido=null;
 let liberado = !!(pedido && pedido.pago);
 if(!Array.isArray(S.fotos)||S.fotos.length!==3) S.fotos=[{d:"",c:""},{d:"",c:""},{d:"",c:""}];
+if(!S.ff||typeof S.ff!=="object") S.ff={d:"",u:"",c:""};
 function guardar(){ try{ localStorage.setItem("cd_rascunho",JSON.stringify(S)); }catch(e){ try{ const s2=Object.assign({},S,{fotos:S.fotos.map(f=>({d:"",c:f.c}))}); localStorage.setItem("cd_rascunho",JSON.stringify(s2)); }catch(e2){} } atualizarResumo(); if(liberado) gerarLink(); }
 
 function pintarOcasioes(){
@@ -875,6 +900,43 @@ function pintarFotos(){
 pintarFotos();
 const paraUrl=s=>s.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const deUrl=s=>{ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return s; };
+
+const ANJO_SVG=`<svg viewBox="0 0 110 150" aria-hidden="true"><g class="anjo-corpo">
+<path d="M42 62 C8 36 -2 72 8 96 C16 114 32 114 42 102 Z" fill="#fffaf0" stroke="#e2c27c" stroke-width="2"/>
+<path d="M34 66 C18 60 14 76 20 88" stroke="#e2c27c" stroke-width="1.6" fill="none"/>
+<path d="M26 70 C16 72 16 84 22 92" stroke="#e2c27c" stroke-width="1.4" fill="none"/>
+<ellipse cx="60" cy="18" rx="17" ry="4.5" fill="none" stroke="#f0d28c" stroke-width="3.2"/>
+<path d="M40 74 C42 62 50 58 60 58 C72 58 80 64 82 76 L88 132 C76 140 42 140 32 132 Z" fill="#f7f1e6"/>
+<path d="M52 60 C55 82 56 108 54 136 L62 136 C64 108 62 82 58 59 Z" fill="#e7cf98" opacity=".9"/>
+<circle cx="62" cy="40" r="18" fill="#efc6a0"/>
+<path d="M44 38 C42 22 52 18 62 18 C74 18 82 24 80 40 C76 30 70 27 62 28 C54 28 48 31 44 38 Z" fill="#e2b45f"/>
+<path d="M44 38 C42 46 44 52 48 54 C46 46 47 41 50 36 Z" fill="#e2b45f"/>
+<path d="M58 42 Q61 45 64 42" stroke="#3a2418" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M68 42 Q71 45 74 42" stroke="#3a2418" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="56" cy="48" r="3" fill="#e79a8a" opacity=".55"/><circle cx="76" cy="48" r="3" fill="#e79a8a" opacity=".55"/>
+<path d="M64 52 Q67 54 70 52" stroke="#3a2418" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M48 74 C50 88 60 92 70 86" stroke="#efe6d6" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M78 74 C80 86 76 90 72 88" stroke="#efe6d6" stroke-width="10" stroke-linecap="round" fill="none"/>
+<path d="M71 66 C67 72 67 80 72 84 C77 80 77 72 73 66 C72.5 64.5 71.5 64.5 71 66 Z" fill="#efc6a0"/>
+<path d="M72 66 L72 83" stroke="#d9a982" stroke-width="1"/>
+</g></svg>`;
+function pintarFotoFinal(){
+  const box=$("fotoFinal"); box.innerHTML="";
+  const a1=el("div","anjo"); a1.innerHTML=ANJO_SVG; const a2=el("div","anjo dir"); a2.innerHTML=ANJO_SVG;
+  const q=document.createElement("label"); q.className="quadro-final"; q.setAttribute("for","fotoF");
+  if(S.ff.d){ const im=document.createElement("img"); im.src=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); im.alt="Foto final"; q.appendChild(im);
+    const x=document.createElement("button"); x.type="button"; x.className="tirar"; x.textContent="×"; x.setAttribute("aria-label","Tirar foto final");
+    x.addEventListener("click",ev=>{ ev.preventDefault(); S.ff={d:"",u:"",c:S.ff.c}; delete fotosGrandes.f; pintarFotoFinal(); guardar(); }); q.appendChild(x); }
+  else q.innerHTML='<span class="vazio"><b>+</b>Escolher<br>foto</span>';
+  const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.id="fotoF"; inp.setAttribute("aria-label","Escolher foto final");
+  inp.addEventListener("change",async()=>{ const file=inp.files&&inp.files[0]; if(!file) return;
+    try{ toast("Preparando a foto…"); S.ff.d=await comprimirFoto(file,"f"); S.ff.u=""; pintarFotoFinal(); guardar(); toast("Foto adicionada.");
+      if(nuvem()&&fotosGrandes.f){ const d=S.ff.d; enviarFoto("f").then(u=>{ if(S.ff.d===d){ S.ff.u=u; guardar(); } }).catch(()=>{}); } }
+    catch(e){ toast("Não consegui abrir essa foto. Tente outra, em JPG ou PNG."); } });
+  q.appendChild(inp);
+  box.append(a1,q,a2);
+}
+pintarFotoFinal();
+$("ffLeg").value=S.ff.c||""; $("ffLeg").addEventListener("input",e=>{ S.ff.c=e.target.value; guardar(); });
 function fotosDoCriador(){ return S.fotos.filter(f=>f.d); }
 /* ===== busca de músicas no YouTube ===== */
 const decodificar=s=>{ const tx=document.createElement("textarea"); tx.innerHTML=s||""; return tx.value; };
@@ -963,8 +1025,9 @@ async function subirFotos(st){
   for(let k=0;k<lista.length;k++){ const {x,i}=lista[k]; if(!x.u){
     if(!fotosGrandes[i]) throw new Error("foto"+(i+1));
     st(`Guardando foto ${k+1} de ${lista.length}…`); x.u=await enviarFoto(i); guardar(); } }
+  if(S.ff.d && !S.ff.u){ if(!fotosGrandes.f) throw new Error("fotofinal"); st("Guardando a foto final…"); S.ff.u=await enviarFoto("f"); guardar(); }
 }
-function cartaParaServidor(){ const P=dadosCarta(); const fs=fotosDoCriador(); if(fs.length) P.fu=fs.map(f=>f.u).filter(Boolean); return P; }
+function cartaParaServidor(){ const P=dadosCarta(); const fs=fotosDoCriador(); if(fs.length) P.fu=fs.map(f=>f.u).filter(Boolean); if(S.ff.d&&S.ff.u){ P.ffu=S.ff.u; if(S.ff.c&&S.ff.c.trim()) P.ffc=S.ff.c.trim().slice(0,40); } return P; }
 let esperando=null;
 function pararEspera(){ clearTimeout(esperando); esperando=null; }
 async function pagar(metodo){
@@ -984,7 +1047,7 @@ async function pagar(metodo){
     $("pixQr").src="data:image/png;base64,"+j.pix.qr; $("pixCodigo").value=j.pix.copia; $("pixBox").hidden=false; msg("");
     $("pixBox").scrollIntoView({behavior:"smooth",block:"center"});
     esperarPagamento(0);
-  }catch(e){ msg(e.status===413?"A carta ficou grande demais. Encurte a mensagem ou as lembranças.":/^foto\d/.test(e.message)?"Escolha a foto "+e.message.slice(4)+" de novo, para ela ficar com boa qualidade.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo."); }
+  }catch(e){ msg(e.status===413?"A carta ficou grande demais. Encurte a mensagem ou as lembranças.":/^foto(\d|final)/.test(e.message)?"Escolha a foto "+e.message.slice(4)+" de novo, para ela ficar com boa qualidade.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo."); }
   bts.forEach(b=>b.disabled=false);
 }
 async function esperarPagamento(n){
@@ -1032,7 +1095,7 @@ async function gerarQr(){
     st.textContent=pedido.salvoUmaVez?"Mudanças salvas! O mesmo QR code já abre a carta atualizada.":""; pedido.salvoUmaVez=true; salvar("cd_pedido",pedido); bt.textContent="Gerar o QR code de novo";
   }catch(e){
     if(e.dados&&e.dados.erro==="prazo"){ st.textContent="O prazo de 7 dias para mudar esta carta acabou. O QR code abre a última versão salva."; await gerarLink(true).catch(()=>{}); }
-    else st.textContent=/^foto\d/.test(e.message)?"Escolha a foto "+e.message.slice(4)+" de novo, para ela ficar com boa qualidade.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível salvar agora. Confira sua internet e tente de novo.";
+    else st.textContent=/^foto(\d|final)/.test(e.message)?"Escolha a foto "+e.message.slice(4)+" de novo, para ela ficar com boa qualidade.":e.message==="upload"?"Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.":"Não foi possível salvar agora. Confira sua internet e tente de novo.";
   }
   bt.disabled=false;
 }
@@ -1250,6 +1313,10 @@ function mostrarCarta(P,cardMusica){
   if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
   if(P.m) add(el("p","gmsg surge",P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
+  if(P.ffoto){ const bf=el("div","bloco-final surge"); bf.appendChild(el("span","lbl",ehAmigo(P.o)?"Orando por você":"Orando por nós"));
+    const ff=el("div","final-foto"); const a1=el("div","anjo"); a1.innerHTML=ANJO_SVG; const a2=el("div","anjo dir"); a2.innerHTML=ANJO_SVG;
+    const q=el("div","quadro-final"); const im=document.createElement("img"); im.src=P.ffoto; im.alt="Foto"; q.appendChild(im); if(P.ffc) q.appendChild(el("span","leg",P.ffc));
+    ff.append(a1,q,a2); bf.appendChild(ff); bf.appendChild(el("p","sub","“O Senhor te abençoe e te guarde.” Números 6:24")); add(bf); }
   if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com amor, "+P.d)); }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
   if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
@@ -1342,7 +1409,7 @@ function fotoExemplo(tipo){
 EXEMPLO.fotos=[0,1,2].map(fotoExemplo); EXEMPLO.fc=["Nosso primeiro pôr do sol","Exemplo de foto","No parque"];
 $("verExemplo").addEventListener("click",()=>{ try{ if(typeof fbq==="function") fbq("track","ViewContent",{content_name:"Exemplo de carta"}); }catch(e){} abrirCarta(EXEMPLO,{previa:true}); });
 $("mockAbrir").addEventListener("click",()=>abrirCarta(EXEMPLO,{previa:true}));
-$("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); abrirCarta(P,{previa:!liberado}); });
+$("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); if(S.ff.d){ P.ffoto=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); if(S.ff.c&&S.ff.c.trim()) P.ffc=S.ff.c.trim(); } abrirCarta(P,{previa:!liberado}); });
 document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=>{ const alvo=$(a.dataset.vai); if(!alvo) return; e.preventDefault(); alvo.scrollIntoView({behavior:"smooth"}); }));
 
 (async function(){ let m=null; try{ m=location.pathname.match(/\/c\/([A-Za-z0-9_-]{8,40})\/?$/); }catch(e){}
@@ -1351,6 +1418,7 @@ document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=
   try{
     const j=await api("/carta?id="+m[1]); const P=j.carta;
     P.fotos=(Array.isArray(P.fu)?P.fu:[]).slice(0,3).filter(u=>/^[\w\/.-]+$/.test(u)).map(u=>"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+u);
+    if(typeof P.ffu==="string"&&/^[\w\/.-]+$/.test(P.ffu)) P.ffoto="https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+P.ffu;
     abrirCarta(P,{previa:false});
   }catch(e){ $("loja").removeAttribute("aria-hidden"); toast(e.status===404?"Não encontramos esta carta. Confira o link com quem enviou.":"Não foi possível abrir a carta agora. Confira sua internet e tente de novo."); }
 })();
