@@ -535,6 +535,58 @@ footer { color:#5e4640; }
 .bloco-final .quadro-final { padding:12px 12px 44px; }
 .bloco-final .quadro-final img { top:12px; left:12px; right:12px; bottom:44px; width:calc(100% - 24px); height:calc(100% - 56px); }
 .bloco-final .quadro-final .leg { font-size:1.05rem; bottom:10px; }
+
+/* ===== pergaminho ===== */
+.perg { position:relative; padding:0 4px; }
+.perg .rolo { position:relative; height:34px; margin:0 -4px; border-radius:17px; background:linear-gradient(180deg,#d9bb84 0%,#f1dcae 28%,#c79d5f 62%,#8d6332 100%); box-shadow:0 6px 12px rgba(0,0,0,.4); z-index:2; }
+.perg .rolo::before, .perg .rolo::after { content:""; position:absolute; top:7px; width:16px; height:20px; border-radius:6px; background:linear-gradient(180deg,#7a5228,#4a2f14); }
+.perg .rolo::before { left:-12px; } .perg .rolo::after { right:-12px; }
+.perg .rolo i { position:absolute; inset:6px 22px; border-top:1.5px solid rgba(110,70,30,.45); border-bottom:1.5px solid rgba(110,70,30,.35); border-radius:10px; }
+.perg .corpo { display:grid; grid-template-rows:0fr; transition:grid-template-rows 1.6s cubic-bezier(.3,.7,.2,1); margin:-6px 6px; }
+.perg.on .corpo { grid-template-rows:1fr; }
+.perg .corpo > div { overflow:hidden; min-height:0; }
+.perg .folha { position:relative; padding:44px 30px 44px; color:#3b2412; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .22  0 0 0 0 .1  0 0 0 .16 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(ellipse at 50% 45%,#f4e4c1 0%,#e8cf9f 55%,#c9a266 100%); clip-path:polygon(0 0,100% 0,98.6% 6%,100% 12%,98.8% 19%,100% 27%,98.4% 34%,100% 42%,98.9% 50%,100% 58%,98.5% 65%,100% 73%,98.7% 81%,100% 89%,98.6% 95%,100% 100%,0 100%,1.4% 94%,0 87%,1.2% 80%,0 72%,1.5% 64%,0 57%,1.1% 49%,0 41%,1.4% 33%,0 26%,1.2% 18%,0 11%,1.4% 5%); }
+.perg .folha::before { content:""; position:absolute; inset:16px 14px; border:1.5px solid rgba(110,70,30,.6); outline:1px solid rgba(110,70,30,.35); outline-offset:4px; pointer-events:none; }
+.perg .canto { position:absolute; width:34px; height:34px; color:#7a5228; opacity:.85; }
+.perg .canto svg { width:100%; height:100%; }
+.perg .canto.a { top:20px; left:18px; } .perg .canto.b { top:20px; right:18px; transform:scaleX(-1); } .perg .canto.c { bottom:20px; left:18px; transform:scaleY(-1); } .perg .canto.d { bottom:20px; right:18px; transform:scale(-1); }
+.perg .folha .cruz { display:block; width:18px; height:18px; margin:0 auto 10px; color:#7a1f33; opacity:.8; }
+.perg .folha .cruz svg { width:100%; height:100%; }
+.perg .folha p { font-family:"Lora",Georgia,serif; font-style:italic; font-size:1.16rem; line-height:1.75; white-space:pre-wrap; overflow-wrap:anywhere; text-align:left; margin:0; }
+.perg .folha p::first-letter { font-family:"Lora",Georgia,serif; font-style:normal; font-weight:700; float:left; font-size:3.1rem; line-height:.9; padding:6px 8px 0 0; color:#7a1f33; }
+/* ===== cabine de fotos ===== */
+.cab-wrap { display:grid; grid-template-columns:minmax(0,.75fr) minmax(0,2fr) minmax(0,.75fr); align-items:end; gap:2px; width:100%; max-width:540px; }
+.cab-wrap .anjo { width:100%; max-width:100px; justify-self:center; margin-bottom:40px; }
+.cab-wrap .anjo.dir { transform:scaleX(-1); }
+.cab-wrap .anjo svg { width:100%; height:auto; display:block; overflow:visible; }
+.cabine { position:relative; display:grid; justify-items:center; cursor:pointer; background:none; border:0; padding:0; color:inherit; }
+.cabine .maq { position:relative; width:100%; padding:12px 12px 16px; background:linear-gradient(180deg,#9a2a3e,#6a1626 70%,#4e0f1c); border-radius:16px 16px 8px 8px; box-shadow:0 18px 36px rgba(0,0,0,.5), inset 0 0 0 3px #d9b06a, inset 0 0 0 6px #6a1626, inset 0 0 0 7px rgba(217,176,106,.6); }
+.cabine .placa { display:flex; align-items:center; justify-content:center; gap:6px; padding:7px 6px; margin-bottom:10px; border-radius:8px; background:#2a0d14; color:#f0d28c; font-family:var(--body); font-weight:800; font-size:.66rem; letter-spacing:.18em; box-shadow:inset 0 0 0 1.5px #d9b06a; }
+.cabine .placa svg { width:12px; height:12px; }
+.cabine .lampadas { display:flex; justify-content:space-between; position:absolute; left:16px; right:16px; top:-6px; }
+.cabine .lampadas i { width:9px; height:9px; border-radius:50%; background:#ffe7a8; box-shadow:0 0 8px #ffd36b; animation:lamp 1.2s ease-in-out infinite; }
+.cabine .lampadas i:nth-child(even) { animation-delay:.6s; }
+@keyframes lamp { 50% { opacity:.35; box-shadow:none; } }
+.cabine .janela { position:relative; aspect-ratio:4/3; border-radius:6px; overflow:hidden; background:radial-gradient(circle at 50% 40%,#3a1a20,#12060a); box-shadow:inset 0 0 0 2px #d9b06a; }
+.cabine .cortina { position:absolute; top:0; bottom:0; width:52%; background:repeating-linear-gradient(90deg,#b0283f 0 9px,#8a1c30 9px 18px); box-shadow:inset 0 -8px 10px rgba(0,0,0,.35); transition:transform 1s ease; }
+.cabine .cortina.e { left:0; transform:translateX(-62%); border-radius:0 0 40% 0; }
+.cabine .cortina.d { right:0; transform:translateX(62%); border-radius:0 0 0 40%; }
+.cabine .lente { position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#6a7a90,#0e1218 70%); box-shadow:0 0 0 4px #2a2a2a, 0 0 0 6px #d9b06a; }
+.cabine .flash { position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; }
+.cabine .fenda { width:78%; height:10px; margin-top:12px; border-radius:6px; background:#12060a; box-shadow:inset 0 2px 3px rgba(0,0,0,.8), 0 1px 0 rgba(255,220,170,.25); }
+.cabine .saida { width:72%; overflow:hidden; margin-top:-5px; padding:0 6px 14px; }
+.cabine .foto { background:#fbf7f0; padding:9px 9px 34px; border-radius:2px; box-shadow:0 10px 22px rgba(0,0,0,.45); transform:translateY(-104%); position:relative; }
+.cabine .foto img { display:block; width:100%; aspect-ratio:4/5; object-fit:cover; filter:sepia(1) brightness(2.2) contrast(.35) blur(3px); }
+.cabine .foto .leg { position:absolute; left:6px; right:6px; bottom:9px; text-align:center; font-family:"Caveat","Lora",Georgia,serif; font-size:1.05rem; color:#5a2a2a; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cab-wrap.rev .cortina.e { transform:translateX(-100%); } .cab-wrap.rev .cortina.d { transform:translateX(100%); }
+.cab-wrap.rev .flash { animation:flash .55s ease-out .9s; }
+.cab-wrap.rev .foto { animation:sai 1.8s cubic-bezier(.4,0,.2,1) 1.5s forwards; }
+.cab-wrap.rev .foto img { animation:revela 4s ease-out 3.1s forwards; }
+@keyframes flash { 0% { opacity:0; } 12% { opacity:1; } 100% { opacity:0; } }
+@keyframes sai { 0% { transform:translateY(-104%); } 70% { transform:translateY(4%) rotate(1.5deg); } 100% { transform:translateY(0) rotate(-1.5deg); } }
+@keyframes revela { 0% { filter:sepia(1) brightness(2.2) contrast(.35) blur(3px); } 60% { filter:sepia(.4) brightness(1.2) contrast(.85) blur(.5px); } 100% { filter:none; } }
+.cab-dica { font-family:var(--body); font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; opacity:.7; }
+@media (prefers-reduced-motion: reduce) { .cab-wrap.rev .foto, .cab-wrap.rev .foto img { animation-duration:.01s; animation-delay:0s; } .cabine .lampadas i { animation:none; } }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -611,9 +663,9 @@ footer { color:#5e4640; }
 
         <fieldset class="etapa">
           <legend><span class="n">3</span>Fotos de vocês</legend>
-          <p class="dica">Até 3 fotos. Elas aparecem na carta como polaroides. Opcional.</p>
+          <p class="dica">Até 4 fotos. As 3 primeiras aparecem como polaroides. Opcional.</p>
           <div class="fotos" id="fotos"></div>
-          <p class="dica" style="margin-top:10px"><b style="color:#7a1f33">Foto final</b> · aparece no fim da carta, com dois anjinhos orando por vocês. Opcional.</p>
+          <p class="dica" style="margin-top:10px"><b style="color:#7a1f33">Foto 4, a última</b> · aparece no fim da carta, revelada numa cabine de fotos com dois anjinhos orando por vocês. Opcional.</p>
           <div class="final-foto" id="fotoFinal"></div>
           <input class="inp" id="ffLeg" maxlength="40" placeholder="Legenda da foto final (opcional)" style="text-align:center;font-family:Lora,Georgia,serif;font-style:italic">
         </fieldset>
@@ -990,7 +1042,7 @@ function pintarFotoFinal(){
   if(S.ff.d){ const im=document.createElement("img"); im.src=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); im.alt="Foto final"; q.appendChild(im);
     const x=document.createElement("button"); x.type="button"; x.className="tirar"; x.textContent="×"; x.setAttribute("aria-label","Tirar foto final");
     x.addEventListener("click",ev=>{ ev.preventDefault(); S.ff={d:"",u:"",c:S.ff.c}; delete fotosGrandes.f; pintarFotoFinal(); guardar(); }); q.appendChild(x); }
-  else q.innerHTML='<span class="vazio"><b>+</b>Escolher<br>foto</span>';
+  else q.innerHTML='<span class="vazio"><b>+</b>Foto 4<br>(última)</span>';
   const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.id="fotoF"; inp.setAttribute("aria-label","Escolher foto final");
   inp.addEventListener("change",async()=>{ const file=inp.files&&inp.files[0]; if(!file) return;
     try{ toast("Preparando a foto…"); S.ff.d=await comprimirFoto(file,"f"); S.ff.u=""; pintarFotoFinal(); guardar(); toast("Foto adicionada.");
@@ -1415,6 +1467,25 @@ function criarPote(P){
   });
   return box;
 }
+
+function criarPergaminho(txt){
+  const w=el("div","perg surge"); const r1=el("div","rolo"); r1.appendChild(el("i")); const r2=el("div","rolo"); r2.appendChild(el("i"));
+  const corpo=el("div","corpo"), inn=el("div"), f=el("div","folha");
+  ["a","b","c","d"].forEach(k=>{ const c=el("span","canto "+k); c.innerHTML='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 38 V10 Q2 2 10 2 H38"/><path d="M8 30 Q8 8 30 8"/><path d="M14 14 q6 -2 8 4 q2 6 -4 6 q-4 0 -3 -4"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>'; f.appendChild(c); });
+  const cz=el("span","cruz"); cz.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>'; f.appendChild(cz); f.appendChild(el("p",null,txt));
+  inn.appendChild(f); corpo.appendChild(inn); w.append(r1,corpo,r2); return w;
+}
+function criarCabine(P){
+  const bf=el("div","bloco-final surge"); bf.appendChild(el("span","lbl",ehAmigo(P.o)?"Orando por você":"Orando por nós"));
+  const wrap=el("div","cab-wrap"); const a1=el("div","anjo"); a1.innerHTML=ANJO_SVG; const a2=el("div","anjo dir"); a2.innerHTML=ANJO_SVG;
+  const cab=el("button","cabine"); cab.type="button"; cab.setAttribute("aria-label","Revelar a foto de novo");
+  cab.innerHTML=`<div class="maq"><div class="lampadas"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="placa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg><span>CABINE DE FOTOS</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></div><div class="janela"><span class="lente"></span><span class="cortina e"></span><span class="cortina d"></span><span class="flash"></span></div><div class="fenda" style="margin-inline:auto"></div></div><div class="saida"><div class="foto"><img alt="Foto"></div></div>`;
+  cab.querySelector("img").src=P.ffoto; if(P.ffc) cab.querySelector(".foto").appendChild(el("span","leg",P.ffc));
+  wrap.append(a1,cab,a2); bf.appendChild(wrap); bf.appendChild(el("span","cab-dica","toque na cabine para revelar de novo"));
+  bf.appendChild(el("p","sub","“O Senhor te abençoe e te guarde.” Números 6:24"));
+  const revelar=()=>{ wrap.classList.remove("rev"); void wrap.offsetWidth; wrap.classList.add("rev"); try{ if(navigator.vibrate) setTimeout(()=>navigator.vibrate(25),900); }catch(e){} };
+  cab.addEventListener("click",revelar); bf._revelar=revelar; return bf;
+}
 function mostrarCarta(P,cardMusica){
   setTimeout(soltarPomba,600);
   const inner=$("gInner"), c=el("div","carta"); inner.appendChild(c); inner.style.alignContent="start";
@@ -1426,15 +1497,12 @@ function mostrarCarta(P,cardMusica){
   if(cardMusica) add(cardMusica);
   const tj=P.dt?tempoJuntos(P.dt):null;
   if(tj){ const nb=blocoNumeros(tj,ehAmigo(P.o)); add(nb); }
+  add(criarPote(P));
   (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ { const o=el("span","orn surge"); o.appendChild(el("i")); add(o); } const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
   if(P.mem&&P.mem.length){ const h=el("div","historia surge"); h.appendChild(el("p","tit","Nossa história")); P.mem.forEach(([q,t])=>{ const m=el("div","marco"); m.appendChild(el("span","lin")); const tx=el("div","txt"); if(q) tx.appendChild(el("span","quando",q)); tx.appendChild(el("p",null,t)); m.appendChild(tx); h.appendChild(m); }); add(h); }
-  if(P.m) add(el("p","gmsg surge",P.m));
-  add(criarPote(P));
+  if(P.m) add(criarPergaminho(P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
-  if(P.ffoto){ const bf=el("div","bloco-final surge"); bf.appendChild(el("span","lbl",ehAmigo(P.o)?"Orando por você":"Orando por nós"));
-    const ff=el("div","final-foto"); const a1=el("div","anjo"); a1.innerHTML=ANJO_SVG; const a2=el("div","anjo dir"); a2.innerHTML=ANJO_SVG;
-    const q=el("div","quadro-final"); const im=document.createElement("img"); im.src=P.ffoto; im.alt="Foto"; q.appendChild(im); if(P.ffc) q.appendChild(el("span","leg",P.ffc));
-    ff.append(a1,q,a2); bf.appendChild(ff); bf.appendChild(el("p","sub","“O Senhor te abençoe e te guarde.” Números 6:24")); add(bf); }
+  if(P.ffoto) add(criarCabine(P));
   if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com amor, "+P.d)); }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
   if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
@@ -1447,6 +1515,7 @@ function mostrarCarta(P,cardMusica){
   partes.forEach((p,i)=>timers.push(setTimeout(()=>{ p.classList.add("on");
     if(p.classList.contains("juntos")) contar(p);
     if(p.classList.contains("numeros")) animarNumeros(p);
+    if(p._revelar) setTimeout(p._revelar,400);
     if(p===fim) chuvaCoracoes(ehAmigo(P.o));
     if(i>2&&!rd) p.scrollIntoView({behavior:"smooth",block:"nearest"}); }, rd?0:300+i*1100)));
 }
