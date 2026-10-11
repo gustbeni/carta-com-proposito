@@ -1093,12 +1093,13 @@ const Luz = { raf:0,
       ctx.globalAlpha=1; if(!rd) this.raf=requestAnimationFrame(loop); };
     cancelAnimationFrame(this.raf); loop(); },
   parar(){ cancelAnimationFrame(this.raf); } };
-function chuvaCoracoes(){
+function chuvaCoracoes(am){
   if(reduz()) return; const cv=document.createElement("canvas"); cv.className="coracoes"; $("gift").appendChild(cv); const ctx=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1); cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
-  const cores=["#ffc2cf","#f39bb0","#f0c98f","#ffffff","#e05a7a"];
+  const cores=am?["#f0d28c","#fff3d6","#e7b98a","#ffffff","#d9b06a"]:["#ffc2cf","#f39bb0","#f0c98f","#ffffff","#e05a7a"];
   const hs=Array.from({length:60},()=>({x:Math.random()*cv.width,y:cv.height+Math.random()*cv.height*.6,s:(8+Math.random()*14)*dpr,v:(2+Math.random()*3.5)*dpr,a:Math.random()*6.28,c:cores[Math.floor(Math.random()*5)]}));
   const co=(x,y,s)=>{ ctx.beginPath(); ctx.moveTo(x,y+s*.3); ctx.bezierCurveTo(x,y,x-s*.5,y,x-s*.5,y+s*.3); ctx.bezierCurveTo(x-s*.5,y+s*.6,x,y+s*.8,x,y+s); ctx.bezierCurveTo(x,y+s*.8,x+s*.5,y+s*.6,x+s*.5,y+s*.3); ctx.bezierCurveTo(x+s*.5,y,x,y,x,y+s*.3); ctx.fill(); };
-  let f=0; const loop=()=>{ ctx.clearRect(0,0,cv.width,cv.height); hs.forEach(h=>{ h.y-=h.v; h.a+=.05; ctx.fillStyle=h.c; ctx.globalAlpha=.9; co(h.x+Math.sin(h.a)*12*dpr,h.y,h.s); }); if(++f<240) requestAnimationFrame(loop); else cv.remove(); }; loop();
+  const es=(x,y,s)=>{ const r=s*.55, c=y+s*.5; ctx.beginPath(); ctx.moveTo(x,c-r); ctx.quadraticCurveTo(x+r*.15,c-r*.15,x+r,c); ctx.quadraticCurveTo(x+r*.15,c+r*.15,x,c+r); ctx.quadraticCurveTo(x-r*.15,c+r*.15,x-r,c); ctx.quadraticCurveTo(x-r*.15,c-r*.15,x,c-r); ctx.fill(); };
+  let f=0; const loop=()=>{ ctx.clearRect(0,0,cv.width,cv.height); hs.forEach(h=>{ h.y-=h.v; h.a+=.05; ctx.fillStyle=h.c; ctx.globalAlpha=.9; (am?es:co)(h.x+Math.sin(h.a)*12*dpr,h.y,h.s); }); if(++f<240) requestAnimationFrame(loop); else cv.remove(); }; loop();
 }
 
 /* ============ tempo juntos ============ */
@@ -1134,7 +1135,7 @@ function abrirCarta(P,{previa=false}={}){
 const ROLETA=(DADOS.R||[]).filter(id=>VERSOS[id]);
 const ROLETA_AMIGO=(DADOS.RA||[]).filter(id=>VERSOS[id]);
 function svgEl(tag,attrs){ const n=document.createElementNS("http://www.w3.org/2000/svg",tag); for(const k in attrs) n.setAttribute(k,attrs[k]); return n; }
-function desenharRoda(){
+function desenharRoda(am){
   const svg=svgEl("svg",{viewBox:"-110 -110 220 220",class:"disco","aria-hidden":"true"});
   const cores=["#7a1f33","#e9cf9b","#a8344d","#f6e7cf"], n=8;
   svg.appendChild(svgEl("circle",{r:"108",fill:"#d9b06a"}));
@@ -1143,13 +1144,14 @@ function desenharRoda(){
     svg.appendChild(svgEl("path",{d:`M0 0 L${R*Math.cos(a0)} ${R*Math.sin(a0)} A${R} ${R} 0 0 1 ${R*Math.cos(a1)} ${R*Math.sin(a1)} Z`,fill:cores[k%4],stroke:"#d9b06a","stroke-width":"1.5"}));
     const am=((k+.5)*360/n-90)*Math.PI/180, cx=64*Math.cos(am), cy=64*Math.sin(am), escuro=k%2===0;
     const g=svgEl("g",{transform:`translate(${cx} ${cy}) rotate(${(k+.5)*360/n})`});
-    if(k%2===0) g.appendChild(svgEl("path",{d:"M0 6 C-9 0 -11 -6 -6 -9 C-3 -11 0 -9 0 -6 C0 -9 3 -11 6 -9 C11 -6 9 0 0 6 Z",fill:escuro?"#f6e7cf":"#7a1f33"}));
+    if(k%2===0) g.appendChild(svgEl("path",{d:am?"M0 -10 C1.5 -3 3 -1.5 10 0 C3 1.5 1.5 3 0 10 C-1.5 3 -3 1.5 -10 0 C-3 -1.5 -1.5 -3 0 -10 Z":"M0 6 C-9 0 -11 -6 -6 -9 C-3 -11 0 -9 0 -6 C0 -9 3 -11 6 -9 C11 -6 9 0 0 6 Z",fill:escuro?"#f6e7cf":"#7a1f33"}));
     else { g.appendChild(svgEl("rect",{x:"-2",y:"-11",width:"4",height:"22",rx:"1",fill:"#7a1f33"})); g.appendChild(svgEl("rect",{x:"-8",y:"-5",width:"16",height:"4",rx:"1",fill:"#7a1f33"})); }
     svg.appendChild(g);
   }
   for(let k=0;k<16;k++){ const a=k*22.5*Math.PI/180; svg.appendChild(svgEl("circle",{cx:104*Math.cos(a),cy:104*Math.sin(a),r:"2.2",fill:"#fff7e6"})); }
   svg.appendChild(svgEl("circle",{r:"17",fill:"#d9b06a",stroke:"#fff7e6","stroke-width":"3"}));
-  svg.appendChild(svgEl("path",{d:"M0 6 C-7 1 -8 -4 -4.5 -6.5 C-2 -8 0 -6.5 0 -4.5 C0 -6.5 2 -8 4.5 -6.5 C8 -4 7 1 0 6 Z",fill:"#7a1f33"}));
+  if(am){ svg.appendChild(svgEl("rect",{x:"-2",y:"-9",width:"4",height:"18",rx:"1",fill:"#7a1f33"})); svg.appendChild(svgEl("rect",{x:"-6.5",y:"-4.5",width:"13",height:"3.6",rx:"1",fill:"#7a1f33"})); }
+  else svg.appendChild(svgEl("path",{d:"M0 6 C-7 1 -8 -4 -4.5 -6.5 C-2 -8 0 -6.5 0 -4.5 C0 -6.5 2 -8 4.5 -6.5 C8 -4 7 1 0 6 Z",fill:"#7a1f33"}));
   return svg;
 }
 const BONECO=`<svg viewBox="0 0 100 172" aria-hidden="true"><g class="rol-corpo">
@@ -1175,7 +1177,7 @@ function criarRoleta(am){
   box.appendChild(el("span","lbl",am?"Roleta da amizade":"Roleta do amor"));
   box.appendChild(el("p","sub",am?"Gire e receba um versículo sobre amizade e amor":"Gire e receba um versículo sobre o amor"));
   const palco=el("div","rol-palco"), bon=el("div","rol-boneco"); bon.innerHTML=BONECO;
-  const roda=el("div","rol-roda"), disco=desenharRoda();
+  const roda=el("div","rol-roda"), disco=desenharRoda(am);
   const seta=svgEl("svg",{viewBox:"0 0 26 30",class:"rol-seta","aria-hidden":"true"}); seta.appendChild(svgEl("path",{d:"M13 30 L1 6 A12 12 0 1 1 25 6 Z",fill:"#fff7e6",stroke:"#7a1f33","stroke-width":"2"}));
   roda.append(seta,disco); palco.append(bon,roda); box.appendChild(palco);
   const bt=el("button","rol-btn","Girar a roleta"); bt.type="button"; box.appendChild(bt);
@@ -1190,11 +1192,11 @@ function criarRoleta(am){
     const tempo=reduz()?450:4500;
     setTimeout(()=>{ palco.classList.remove("girando"); const v=VERSOS[POOL[idx]]; res.innerHTML="";
       res.append(el("p","t","“"+v[1]+"”"),el("p","r",v[0].toUpperCase())); res.classList.add("on");
-      bt.textContent="Girar de novo"; bt.disabled=false; try{ coracoesRoleta(roda); }catch(e){} }, tempo);
+      bt.textContent="Girar de novo"; bt.disabled=false; try{ coracoesRoleta(roda,am); }catch(e){} }, tempo);
   });
   return box;
 }
-function coracoesRoleta(alvo){ if(reduz()) return; const r=alvo.getBoundingClientRect(); for(let k=0;k<10;k++){ const h=document.createElement("span"); h.textContent="♥"; h.style.cssText=`position:fixed;left:${r.left+r.width/2}px;top:${r.top+r.height/2}px;color:${k%2?"#d9b06a":"#ff8fa3"};font-size:${14+Math.random()*14}px;pointer-events:none;z-index:99;transition:transform 1.2s ease-out,opacity 1.2s;`; document.body.appendChild(h); requestAnimationFrame(()=>{ const a=Math.random()*6.28, d=60+Math.random()*90; h.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d-40}px)`; h.style.opacity="0"; }); setTimeout(()=>h.remove(),1300); } }
+function coracoesRoleta(alvo,am){ if(reduz()) return; const r=alvo.getBoundingClientRect(); for(let k=0;k<10;k++){ const h=document.createElement("span"); h.textContent=am?(k%3===0?"✝":"✦"):"♥"; h.style.cssText=`position:fixed;left:${r.left+r.width/2}px;top:${r.top+r.height/2}px;color:${am?(k%2?"#f0d28c":"#fff3d6"):(k%2?"#d9b06a":"#ff8fa3")};font-size:${14+Math.random()*14}px;pointer-events:none;z-index:99;transition:transform 1.2s ease-out,opacity 1.2s;`; document.body.appendChild(h); requestAnimationFrame(()=>{ const a=Math.random()*6.28, d=60+Math.random()*90; h.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d-40}px)`; h.style.opacity="0"; }); setTimeout(()=>h.remove(),1300); } }
 
 function proximoMarco(ini,hojeX){
   const hoje=hojeX?new Date(hojeX):new Date(); hoje.setHours(0,0,0,0);
@@ -1260,7 +1262,7 @@ function mostrarCarta(P,cardMusica){
   partes.forEach((p,i)=>timers.push(setTimeout(()=>{ p.classList.add("on");
     if(p.classList.contains("juntos")) contar(p);
     if(p.classList.contains("numeros")) animarNumeros(p);
-    if(p===fim) chuvaCoracoes();
+    if(p===fim) chuvaCoracoes(ehAmigo(P.o));
     if(i>2&&!rd) p.scrollIntoView({behavior:"smooth",block:"nearest"}); }, rd?0:300+i*1100)));
 }
 /* ===== música do casal tocando dentro da carta (YouTube ou Spotify) ===== */
