@@ -1332,7 +1332,7 @@ function abrirCarta(P,{previa=false}={}){
   inner.appendChild(env);
   if(P.ml) Som.preparar(P.ml);
   let cardMusica=null;
-  env.addEventListener("click",()=>{ env.classList.add("abrindo"); if(P.ml){ cardMusica=Som.criar(P.ml); } else if(P.mu){ Musica.iniciar(); $("gSom").hidden=false; $("gSom").setAttribute("aria-pressed","true"); $("gSom").querySelector("span").textContent="Música"; }
+  env.addEventListener("click",()=>{ env.classList.add("abrindo"); if(P.ml){ cardMusica=Som.criar(P.ml); } else if(P.mu||modoPrevia){ Musica.iniciar(); $("gSom").hidden=false; $("gSom").setAttribute("aria-pressed","true"); $("gSom").querySelector("span").textContent="Música"; }
     timers.push(setTimeout(()=>{ env.remove(); mostrarCarta(P,cardMusica); }, reduz()?50:850)); },{once:true});
 }
 
