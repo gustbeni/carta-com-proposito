@@ -2013,7 +2013,7 @@ function criarCabine(P){
   cab.querySelector("img").src=P.ffoto; if(P.ffc) cab.querySelector(".foto").appendChild(el("span","leg",P.ffc));
   wrap.append(a1,cab,a2); bf.appendChild(wrap);
   const dicaCab=el("p","dica-cab","Toque na cabine para revelar a foto ✨"); bf.appendChild(dicaCab); cab.classList.add("chama");
-  const revelar=()=>{ wrap.classList.remove("rev"); void wrap.offsetWidth; wrap.classList.add("rev"); cab.classList.remove("chama"); dicaCab.classList.add("some"); try{ if(navigator.vibrate) setTimeout(()=>navigator.vibrate(25),900); }catch(e){} if(bf._feito){ const f=bf._feito; bf._feito=null; setTimeout(f,reduz()?200:5200); } };
+  const revelar=()=>{ wrap.classList.remove("rev"); void wrap.offsetWidth; wrap.classList.add("rev"); cab.classList.remove("chama"); dicaCab.classList.add("some"); if(!reduz()) setTimeout(()=>{ try{ const fo=cab.querySelector(".foto"); (fo||cab).scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){} },2900); try{ if(navigator.vibrate) setTimeout(()=>navigator.vibrate(25),900); }catch(e){} if(bf._feito){ const f=bf._feito; bf._feito=null; setTimeout(f,reduz()?200:5200); } };
   cab.addEventListener("click",revelar); bf._revelar=revelar; return bf;
 }
 function tituloProprio(P){ const t=(P.ti||"").trim(); if(!t) return false; const oc=OCASIOES[P.o]; if(!oc) return true; const auto=generoTitulo(oc.titulo.replace("{para}",P.p||(oc.amigo?"meu amigo":"meu amor")),oc.amigo?P.sx:""); return t!==auto.trim(); }
