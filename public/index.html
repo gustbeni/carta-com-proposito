@@ -709,6 +709,102 @@ footer { color:#5e4640; }
 @keyframes envSai { to { opacity:0; transform:translateY(40px) scale(.94); } }
 .faisca { position:fixed; z-index:61; pointer-events:none; color:#ffe7a6; text-shadow:0 0 8px #ffd36b; transition:transform 1.4s cubic-bezier(.2,.8,.3,1), opacity 1.4s; }
 @media (prefers-reduced-motion: reduce) { .gloria-fundo .raios { animation:none; } }
+
+
+/* animações do editor */
+.bil.entra { animation:bilEntra .45s cubic-bezier(.2,.9,.3,1.2) both; }
+@keyframes bilEntra { from { opacity:0; transform:translateY(-14px) rotate(-4deg) scale(.96); } }
+.pote-fundo { position:relative; height:34px; margin:10px 6px 0; border-radius:0 0 30px 30px; overflow:hidden; }
+.pote-fundo i { position:absolute; width:22px; height:12px; border-radius:2px; transform:rotate(var(--r)); box-shadow:0 1px 2px rgba(0,0,0,.2); }
+.pote-fundo i.cai { animation:papelCai .7s cubic-bezier(.3,.6,.4,1.25) both; }
+@keyframes papelCai { from { transform:translateY(-260px) rotate(calc(var(--r) + 120deg)); opacity:0; } 30% { opacity:1; } }
+.pote-vidro.balanca { animation:poteBalanca .6s ease-in-out; }
+@keyframes poteBalanca { 25% { transform:rotate(-2deg); } 50% { transform:rotate(1.6deg); } 75% { transform:rotate(-.8deg); } }
+.pote-tampa.pula { animation:tampaPula .55s ease-out; }
+@keyframes tampaPula { 30% { transform:translateY(-12px) rotate(-4deg); } 60% { transform:translateY(0) rotate(1deg); } }
+.etapa:has(.pote-form).vis .pote-vidro { animation:poteBalanca 1.2s ease-in-out .5s; }
+.perg-escrita { position:relative; }
+.perg-escrita .folha-perg { transition:clip-path 1.3s cubic-bezier(.3,.7,.2,1); clip-path:inset(0 0 0 0); }
+.etapa.anima:not(.vis) .perg-escrita .folha-perg { clip-path:inset(50% 0 50% 0); }
+.etapa.anima .perg-escrita .rolo { transition:transform 1.3s cubic-bezier(.3,.7,.2,1); }
+.etapa.anima:not(.vis) .perg-escrita .rolo:first-child { transform:translateY(120px); }
+.etapa.anima:not(.vis) .perg-escrita .rolo:last-child { transform:translateY(-120px); }
+.pena-form { position:absolute; right:14px; top:12px; font-size:1.5rem; transform-origin:20% 90%; animation:penaFlutua 3s ease-in-out infinite; z-index:1; }
+.folha-perg:focus-within .pena-form { animation:penaEscreve .35s ease-in-out infinite alternate; }
+@keyframes penaFlutua { 50% { transform:translateY(-5px) rotate(-6deg); } }
+@keyframes penaEscreve { from { transform:rotate(-8deg) translateX(-2px); } to { transform:rotate(6deg) translateX(2px); } }
+.chip, .tipo, .tema, .cta { transition:transform .18s ease, box-shadow .25s ease, background .25s ease; }
+.chip:active, .tipo:active, .tema:active, .cta:active { transform:scale(.96); }
+/* escrita na carta */
+.perg .escrita { position:relative; }
+.perg .fantasma { visibility:hidden; }
+.perg .digitado { position:absolute; inset:0; }
+.perg .pena { display:inline-block; margin-left:2px; font-style:normal; transform-origin:10% 90%; animation:penaEscreve .25s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .bil.entra, .pote-fundo i.cai, .pote-vidro.balanca, .pote-tampa.pula, .pena-form { animation:none; } .etapa.anima .perg-escrita .folha-perg, .etapa.anima .perg-escrita .rolo { transition:none; clip-path:none; transform:none; } }
+/* ===================== TEMA ESCURO (vinho profundo + ouro) ===================== */
+:root, :root:not([data-theme="light"]) { --bg:#13060a; --card:#220e14; --ink:#f6e9dc; --muted:#c9ada4; --wine:#a8344d; --on-wine:#fff; --gold:#e3bd72; --line:rgba(227,189,114,.22); --soft:#2b1219; color-scheme: dark; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#13060a; --card:#220e14; --ink:#f6e9dc; --muted:#c9ada4; --wine:#a8344d; --on-wine:#fff; --gold:#e3bd72; --line:rgba(227,189,114,.22); --soft:#2b1219; color-scheme: dark; } }
+body { background-color:#13060a; background-image:radial-gradient(90% 60% at 50% -10%,rgba(168,52,77,.35),transparent 70%), radial-gradient(70% 50% at 100% 60%,rgba(227,189,114,.08),transparent 70%), linear-gradient(rgba(19,6,10,.93),rgba(19,6,10,.96)), url(img/linho.jpg); background-size:auto,auto,auto,700px; color:var(--ink); }
+.brand { color:#f3d08a; }
+.pill-cta { background:linear-gradient(180deg,#b8405a,#7a1f33); box-shadow:0 0 0 1px rgba(227,189,114,.35), 0 6px 18px rgba(168,52,77,.4); }
+.hero { background:radial-gradient(60% 70% at 30% 40%,rgba(227,189,114,.16),transparent 70%), linear-gradient(180deg,rgba(19,6,10,.55),rgba(19,6,10,.95)), url(img/fundo.jpg) center/cover; border-bottom:1px solid rgba(227,189,114,.18); overflow:hidden; }
+.hero::after { content:""; position:absolute; inset:-20%; pointer-events:none; background:radial-gradient(circle at 20% 30%,rgba(243,208,138,.22) 0 2px,transparent 3px), radial-gradient(circle at 70% 60%,rgba(243,208,138,.18) 0 2px,transparent 3px), radial-gradient(circle at 45% 80%,rgba(243,208,138,.2) 0 1.5px,transparent 2.5px), radial-gradient(circle at 85% 20%,rgba(243,208,138,.16) 0 2px,transparent 3px); background-size:220px 220px, 260px 260px, 180px 180px, 300px 300px; animation:poeiraOuro 18s linear infinite; opacity:.9; }
+@keyframes poeiraOuro { from { transform:translateY(0); } to { transform:translateY(-220px); } }
+.hero .eyebrow { background:rgba(243,208,138,.12); color:#f3d08a; box-shadow:0 0 0 1px rgba(243,208,138,.3); }
+.hero h1 { color:#fff3dc; text-shadow:0 2px 24px rgba(227,189,114,.25); animation:surgeTitulo 1.2s ease-out both; }
+.hero h1 em { color:#f3d08a; }
+@keyframes surgeTitulo { from { opacity:0; transform:translateY(16px); filter:blur(4px); } to { opacity:1; transform:none; filter:none; } }
+.sec h2 { color:#f3d08a; }
+.ornamento { color:#e3bd72; }
+.lead, .dica, .cont { color:#c9ada4; }
+.etapa, .resumo, .passos li, .tipo, .faq details { background-color:#220e14; background-image:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0)); box-shadow:0 0 0 1px rgba(227,189,114,.18), 0 18px 40px rgba(0,0,0,.5) !important; color:var(--ink); }
+.etapa::before, .resumo::before, .passos li::after { background:rgba(227,189,114,.32) !important; }
+.etapa legend { color:#f3d08a; }
+.etapa legend .n { box-shadow:0 0 0 2px rgba(243,208,138,.55), 0 4px 14px rgba(168,52,77,.55); }
+label.f, .f > span { color:#f0dcc4; }
+label.f small { color:#b8968d; }
+.inp { background:rgba(255,255,255,.06); color:#f6e9dc; border-bottom:2px solid rgba(227,189,114,.4); }
+.inp::placeholder { color:#9d7f78; }
+.inp:focus { background:rgba(255,255,255,.1); border-bottom-color:#f3d08a; box-shadow:0 6px 0 -4px rgba(243,208,138,.35); }
+input[type=date].inp { color-scheme:dark; }
+.chip { background:rgba(255,255,255,.06); border:1px dashed rgba(227,189,114,.45); color:#f0dcc4; box-shadow:none; }
+.chip[aria-pressed="true"] { background:linear-gradient(180deg,#b8405a,#7a1f33); border:1px solid #f3d08a; color:#fff; box-shadow:0 4px 16px rgba(168,52,77,.45); }
+.tipo span { color:#c9ada4; }
+.tipo[aria-pressed="true"] { box-shadow:0 0 0 2px #f3d08a inset, 0 10px 26px rgba(168,52,77,.35) !important; }
+.verso, .opc { background:rgba(255,255,255,.04); border:1px solid rgba(227,189,114,.16); border-left:4px solid rgba(227,189,114,.5); color:#f0dcc4; box-shadow:none; }
+.verso b { color:#f3d08a; }
+.verso:has(input:checked), .opc:has(input:checked) { background:rgba(168,52,77,.22); border-color:rgba(227,189,114,.3); border-left-color:#f3d08a; }
+.slot .quadro { background:#fbf7f0; }
+.slot .inp { color:#f0dcc4; }
+.tema { background:rgba(255,255,255,.05); border:1px dashed rgba(227,189,114,.45); color:#f0dcc4; }
+.tema[aria-pressed="true"] { border:2px solid #f3d08a; }
+.escolhida { background:rgba(255,255,255,.05); }
+.btn2 { background:rgba(255,255,255,.06); border:1px solid rgba(227,189,114,.4); color:#f0dcc4; }
+.cta { background:linear-gradient(180deg,#bb4560,#7a1f33); color:#fff; box-shadow:0 0 0 1px rgba(243,208,138,.35), 0 10px 26px rgba(168,52,77,.45); }
+.cta.ghost { background:transparent; color:#f3d08a; border:2px solid rgba(243,208,138,.7); box-shadow:none; }
+.resumo .eyebrow { color:#f3d08a; }
+.preco b { color:#f3d08a; } .preco s { color:#9d7f78; }
+.promo-resumo { color:#c9ada4; } .promo-resumo .relogio { color:#f3d08a; }
+.mini-lista li { color:#f0dcc4; }
+.faq summary { color:#f6e9dc; } .faq details p { color:#c9ada4; }
+.depois { background:rgba(255,255,255,.04); border-color:rgba(227,189,114,.4); box-shadow:0 10px 26px rgba(0,0,0,.35); }
+.depois > div:nth-child(2) { color:#f0dcc4; } .depois b { color:#f3d08a; } .depois small { color:#c9ada4; }
+.depois-cop { color:#f3d08a; border-color:rgba(243,208,138,.7); }
+.pote-vidro { background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.03) 40%,rgba(255,255,255,.1)); border-color:rgba(255,255,255,.55); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), inset 10px 0 18px rgba(255,255,255,.08), 0 14px 30px rgba(0,0,0,.4); }
+.mais-bil { background:transparent; color:#f3d08a; border-color:rgba(243,208,138,.7); }
+.barra-fixa { background:rgba(19,6,10,.94); box-shadow:0 -1px 0 rgba(227,189,114,.25), 0 -10px 24px rgba(0,0,0,.5); }
+.barra-fixa .bf-pri { background:linear-gradient(180deg,#bb4560,#7a1f33); }
+.barra-fixa .bf-sec { background:transparent; color:#f3d08a; border-color:rgba(243,208,138,.7); }
+footer, footer a { color:#b8968d; }
+.toast { background:#f3d08a; color:#2a1418; }
+.dep { background:#220e14; box-shadow:0 0 0 1px rgba(227,189,114,.2), 0 14px 30px rgba(0,0,0,.45); }
+.dep p { color:#f0dcc4; } .dep b { color:#f3d08a; }
+/* tudo surgindo suave ao rolar */
+.anima { opacity:0; transform:translateY(26px); transition:opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1); }
+.anima.vis { opacity:1; transform:none; }
+.form > .etapa.anima.vis:nth-child(odd) { transform:rotate(-.35deg); }
+.form > .etapa.anima.vis:nth-child(even) { transform:rotate(.35deg); }
+@media (prefers-reduced-motion: reduce) { .anima { opacity:1; transform:none; transition:none; } .hero::after { animation:none; } }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -771,51 +867,7 @@ footer { color:#5e4640; }
         </fieldset>
 
         <fieldset class="etapa">
-          <legend><span class="n">4</span>Escolha até 3 versículos</legend>
-          <p class="dica">Separamos versículos que combinam com a ocasião.</p>
-          <div class="versos" id="versos"></div>
-        </fieldset>
-
-        <fieldset class="etapa" hidden>
-          <legend><span class="n">5</span>Momentos de vocês</legend>
-          <p class="dica" id="dMem">Opcional. Até 3 lembranças que aparecem como a história de vocês.</p>
-          <div class="mem"><input class="inp" id="mq0" maxlength="24" placeholder="Quando? Ex.: Março de 2024"><input class="inp" id="mt0" maxlength="90" placeholder="Ex.: Nos conhecemos no culto de jovens"></div>
-          <div class="mem"><input class="inp" id="mq1" maxlength="24" placeholder="Quando?"><input class="inp" id="mt1" maxlength="90" placeholder="Ex.: Nosso primeiro passeio no parque"></div>
-          <div class="mem"><input class="inp" id="mq2" maxlength="24" placeholder="Quando?"><input class="inp" id="mt2" maxlength="90" placeholder="Ex.: O dia em que conheci sua família"></div>
-        </fieldset>
-
-        <fieldset class="etapa">
-          <legend><span class="n">5</span>Escreva sua mensagem</legend>
-          <div class="chips" id="sugestoes" aria-label="Sugestões de mensagem"></div>
-          <div class="perg-escrita">
-            <div class="rolo" aria-hidden="true"></div>
-            <div class="folha-perg">
-              <label class="perg-tit" for="fMsg">✦ Sua mensagem ✦</label>
-              <textarea id="fMsg" class="perg-txt" rows="10" maxlength="320" placeholder="Escreva do seu jeito, ou toque numa sugestão acima para começar."></textarea>
-              <p class="cont perg-cont"><span id="nMsg">0</span>/320</p>
-            </div>
-            <div class="rolo" aria-hidden="true"></div>
-          </div>
-        </fieldset>
-
-        <fieldset class="etapa">
-          <legend><span class="n">6</span>Pote dos motivos</legend>
-          <p class="dica"><b id="lMot">Por que você ama essa pessoa?</b><br>Escreva um motivo em cada bilhete. Na carta, cada toque no pote tira um bilhetinho. É opcional: se deixar vazio, usamos motivos prontos.</p>
-          <div class="pote-form">
-            <div class="pote-tampa" aria-hidden="true"><i></i></div>
-            <div class="pote-vidro">
-              <ol class="bilhetes" id="bilhetes" aria-label="Bilhetes do pote"></ol>
-              <button type="button" class="mais-bil" id="maisBil">+ Mais bilhetes</button>
-            </div>
-          </div>
-          <p class="cont"><span id="nMot">0</span>/20 bilhetes</p>
-        <fieldset class="etapa">
-          <legend><span class="n">7</span>Uma oração por vocês</legend>
-          <div class="oracoes" id="oracoes"></div>
-        </fieldset>
-
-        <fieldset class="etapa">
-          <legend><span class="n">8</span>Cor e música</legend>
+          <legend><span class="n">4</span>Cor e música</legend>
           <div class="temas" id="temas">
             <button type="button" class="tema" data-t="rosa" aria-pressed="true"><i style="background:linear-gradient(135deg,#5a2236,#ffc2cf)"></i>Rosa</button>
             <button type="button" class="tema" data-t="ouro" aria-pressed="false"><i style="background:linear-gradient(135deg,#4a2a22,#f0c98f)"></i>Dourado</button>
@@ -845,6 +897,55 @@ footer { color:#5e4640; }
             </details>
           </div>
         </fieldset>
+
+        <fieldset class="etapa">
+          <legend><span class="n">5</span>Escolha até 3 versículos</legend>
+          <p class="dica">Separamos versículos que combinam com a ocasião.</p>
+          <div class="versos" id="versos"></div>
+        </fieldset>
+
+        <fieldset class="etapa" hidden>
+          <legend><span class="n">5</span>Momentos de vocês</legend>
+          <p class="dica" id="dMem">Opcional. Até 3 lembranças que aparecem como a história de vocês.</p>
+          <div class="mem"><input class="inp" id="mq0" maxlength="24" placeholder="Quando? Ex.: Março de 2024"><input class="inp" id="mt0" maxlength="90" placeholder="Ex.: Nos conhecemos no culto de jovens"></div>
+          <div class="mem"><input class="inp" id="mq1" maxlength="24" placeholder="Quando?"><input class="inp" id="mt1" maxlength="90" placeholder="Ex.: Nosso primeiro passeio no parque"></div>
+          <div class="mem"><input class="inp" id="mq2" maxlength="24" placeholder="Quando?"><input class="inp" id="mt2" maxlength="90" placeholder="Ex.: O dia em que conheci sua família"></div>
+        </fieldset>
+
+        <fieldset class="etapa">
+          <legend><span class="n">6</span>Escreva sua mensagem</legend>
+          <div class="chips" id="sugestoes" aria-label="Sugestões de mensagem"></div>
+          <div class="perg-escrita">
+            <div class="rolo" aria-hidden="true"></div>
+            <div class="folha-perg">
+              <label class="perg-tit" for="fMsg">✦ Sua mensagem ✦</label>
+              <span class="pena-form" aria-hidden="true">✒️</span>
+              <textarea id="fMsg" class="perg-txt" rows="10" maxlength="320" placeholder="Escreva do seu jeito, ou toque numa sugestão acima para começar."></textarea>
+              <p class="cont perg-cont"><span id="nMsg">0</span>/320</p>
+            </div>
+            <div class="rolo" aria-hidden="true"></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="etapa">
+          <legend><span class="n">7</span>Pote dos motivos</legend>
+          <p class="dica"><b id="lMot">Por que você ama essa pessoa?</b><br>Escreva um motivo em cada bilhete. Na carta, cada toque no pote tira um bilhetinho. É opcional: se deixar vazio, usamos motivos prontos.</p>
+          <div class="pote-form">
+            <div class="pote-tampa" aria-hidden="true"><i></i></div>
+            <div class="pote-vidro" id="poteVidro">
+              <ol class="bilhetes" id="bilhetes" aria-label="Bilhetes do pote"></ol>
+              <div class="pote-fundo" id="poteFundo" aria-hidden="true"></div>
+              <button type="button" class="mais-bil" id="maisBil">+ Mais bilhetes</button>
+            </div>
+          </div>
+          <p class="cont"><span id="nMot">0</span>/20 bilhetes</p>
+        </fieldset>
+
+        <fieldset class="etapa">
+          <legend><span class="n">8</span>Uma oração por vocês</legend>
+          <div class="oracoes" id="oracoes"></div>
+        </fieldset>
+
       </div>
 
       <aside class="lado">
@@ -1093,9 +1194,9 @@ $("tipos").querySelectorAll(".tipo").forEach(b=>b.addEventListener("click",()=>{
   pintarOcasioes(); pintarVersos(); pintarSugestoes(); pintarOracoes(); preencherTitulo(); guardar();
 }));
 function pintarVersos(){
-  const lista=OCASIOES[S.o].versos, LIM=5; const todos=pintarVersos.todos||S.v.some(id=>lista.indexOf(id)>=LIM);
+  const base=OCASIOES[S.o].versos, sel=base.filter(id=>S.v.includes(id)), lista=sel.concat(base.filter(id=>!S.v.includes(id))), LIM=Math.max(1,sel.length); const todos=pintarVersos.todos;
   $("versos").innerHTML=lista.map((id,i)=>`<label class="verso"${!todos&&i>=LIM?" hidden":""}><input type="checkbox" value="${id}" ${S.v.includes(id)?"checked":""}><div><b>${VERSOS[id][0]}</b><span></span></div></label>`).join("")
-    +(!todos&&lista.length>LIM?`<button type="button" class="btn2 mais-versos" id="maisV">Ver mais ${lista.length-LIM} versículos</button>`:"");
+    +(!todos&&lista.length>LIM?`<button type="button" class="btn2 mais-versos" id="maisV">Ver mais versículos (${lista.length-LIM})</button>`:"");
   [...$("versos").querySelectorAll(".verso")].forEach((l,i)=>l.querySelector("span").textContent=VERSOS[lista[i]][1]);
   if($("maisV")) $("maisV").addEventListener("click",()=>{ pintarVersos.todos=true; pintarVersos(); });
   $("versos").querySelectorAll("input").forEach(inp=>inp.addEventListener("change",()=>{
@@ -1133,18 +1234,18 @@ function pintarBilhetes(){
   let ult=-1; vals.slice(0,20).forEach((v,k)=>{ if(v.trim()) ult=k; });
   bilVis=Math.min(20,Math.max(bilVis,5,ult+2));
   const am=ehAmigo(S.o);
-  const ex=ehFam(S.o)?["Por cada oração por mim","Pelo seu colo e seus conselhos","Por me ensinar a amar a Deus"]:am?["Você sempre ora por mim","Sua alegria nos cultos","Os conselhos que você me dá"]:["Seu sorriso quando fala de Deus","O jeito que você cuida de mim","Suas orações por nós"];
+  const ex=[];
   ol.innerHTML="";
   for(let k=0;k<bilVis;k++){
-    const li=document.createElement("li"); li.className="bil";
+    const li=document.createElement("li"); li.className="bil"+(k>=(pintarBilhetes.antes||0)?" entra":""); li.style.animationDelay=((k-(pintarBilhetes.antes||0))*60)+"ms";
     const n=document.createElement("span"); n.className="bil-n"; n.textContent=k+1;
     const inp=document.createElement("input"); inp.type="text"; inp.maxLength=120; inp.value=vals[k]||"";
-    inp.placeholder=ex[k]||"Mais um motivo…"; inp.setAttribute("aria-label","Motivo "+(k+1));
+    inp.placeholder=""; inp.setAttribute("aria-label","Motivo "+(k+1));
     inp.addEventListener("input",salvarBilhetes);
     inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); const prox=ol.children[k+1]; if(prox) prox.querySelector("input").focus(); else if(bilVis<20){ bilVis++; pintarBilhetes(); const q=ol.children[k+1]; q&&q.querySelector("input").focus(); } } });
     li.append(n,inp); ol.appendChild(li);
   }
-  $("maisBil").hidden=bilVis>=20; contarBilhetes();
+  $("maisBil").hidden=bilVis>=20; contarBilhetes(); pintarBilhetes.antes=bilVis;
 }
 function salvarBilhetes(){
   const v=[...$("bilhetes").querySelectorAll("input")].map(x=>x.value.replace(/\n/g," "));
@@ -1152,7 +1253,13 @@ function salvarBilhetes(){
   let todos=v.concat(resto); while(todos.length&&!todos[todos.length-1].trim()) todos.pop();
   S.mot=todos.join("\n"); guardar(); contarBilhetes();
 }
-function contarBilhetes(){ $("nMot").textContent=(S.mot||"").split("\n").filter(x=>x.trim()).length; }
+function contarBilhetes(){ const n=(S.mot||"").split("\n").filter(x=>x.trim()).length; $("nMot").textContent=n; papeisPote(n); }
+const CORES_BIL=["#f4a6b8","#f7c873","#b8a4e8","#9fd3c7","#f39a7e","#a8c8f0","#f6e27a","#e8a0d8"];
+function papeisPote(n){ const f=$("poteFundo"); if(!f) return; const tinha=f.children.length;
+  while(f.children.length>n) f.lastChild.remove();
+  for(let k=f.children.length;k<n;k++){ const i=document.createElement("i"); i.style.background=CORES_BIL[k%CORES_BIL.length]; i.style.left=(6+((k*37)%82))+"%"; i.style.bottom=(4+Math.floor(k/6)*9)+"px"; i.style.setProperty("--r",(((k*53)%50)-25)+"deg"); if(tinha||papeisPote.pronto) i.className="cai"; f.appendChild(i); }
+  if(n>tinha&&papeisPote.pronto){ const v=$("poteVidro"); v.classList.remove("balanca"); void v.offsetWidth; v.classList.add("balanca"); const t=document.querySelector(".pote-tampa"); if(t){ t.classList.remove("pula"); void t.offsetWidth; t.classList.add("pula"); } }
+  papeisPote.pronto=true; }
 $("maisBil").addEventListener("click",()=>{ const k=bilVis; bilVis=Math.min(20,bilVis+5); pintarBilhetes(); const q=$("bilhetes").children[k]; q&&q.querySelector("input").focus(); });
 pintarBilhetes();
 /* música: link do YouTube/Spotify ou música do site */
@@ -1684,8 +1791,15 @@ function criarPergaminho(txt){
   const w=el("div","perg surge"); const r1=el("div","rolo"); r1.appendChild(el("i")); const r2=el("div","rolo"); r2.appendChild(el("i"));
   const corpo=el("div","corpo"), inn=el("div"), f=el("div","folha");
   ["a","b","c","d"].forEach(k=>{ const c=el("span","canto "+k); c.innerHTML='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 38 V10 Q2 2 10 2 H38"/><path d="M8 30 Q8 8 30 8"/><path d="M14 14 q6 -2 8 4 q2 6 -4 6 q-4 0 -3 -4"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>'; f.appendChild(c); });
-  const cz=null; void '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>'; f.appendChild(el("p",null,txt));
-  inn.appendChild(f); corpo.appendChild(inn); w.append(r1,corpo,r2); return w;
+  const cz=null; void '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>'; const esc=el("div","escrita"), fant=el("p","fantasma",txt), dig=el("p","digitado"); esc.append(fant,dig); f.appendChild(esc);
+  inn.appendChild(f); corpo.appendChild(inn); w.append(r1,corpo,r2);
+  let feito=false, tm=null; const pena=el("span","pena","✒️");
+  const acabar=()=>{ feito=true; clearTimeout(tm); dig.textContent=txt; };
+  const escrever=()=>{ if(feito) return; if(reduz()){ acabar(); return; } let i=0; const passo=()=>{ if(feito) return; i=Math.min(txt.length,i+2); dig.textContent=txt.slice(0,i); dig.appendChild(pena); if(i<txt.length) tm=setTimeout(passo,42); else { tm=setTimeout(()=>{ pena.remove(); feito=true; },700); } }; passo(); };
+  w._tempo=reduz()?0:1100+Math.ceil(txt.length/2)*42+500;
+  w.addEventListener("click",acabar);
+  const ob=setInterval(()=>{ if(!w.isConnected&&feito){ clearInterval(ob); return; } if(w.classList.contains("on")){ clearInterval(ob); setTimeout(escrever,1100); } },150);
+  return w;
 }
 function criarCabine(P){
   const bf=el("div","bloco-final surge"); bf.appendChild(el("span","lbl",ehAmigo(P.o)?"Orando por você":"Orando por nós"));
@@ -1723,7 +1837,7 @@ function mostrarCarta(P,cardMusica){
   rv.addEventListener("click",()=>{ Musica.parar(); Som.parar(true); abrirCarta(P,{previa:modoPrevia}); });
   const lk=sm.querySelector("a"); lk.href=enderecoBase(); lk.addEventListener("click",e=>{ if(modoPrevia){ e.preventDefault(); fecharCarta(); } else if(location.hash){ e.preventDefault(); location.href=enderecoBase(); location.reload(); } });
   const rd=reduz();
-  const atrasos=[]; { let t=300; partes.forEach(p=>{ atrasos.push(t); t+=1100+((modoPrevia&&p._demo)?5200:0); }); }
+  const atrasos=[]; { let t=300; partes.forEach(p=>{ atrasos.push(t); t+=1100+((modoPrevia&&p._demo)?5200:0)+(p._tempo||0); }); }
   partes.forEach((p,i)=>timers.push(setTimeout(()=>{ p.classList.add("on");
     if(p.classList.contains("juntos")) contar(p);
     if(p.classList.contains("numeros")) animarNumeros(p);
@@ -1811,7 +1925,7 @@ EXEMPLO.fotos=[0,1,2].map(fotoExemplo); EXEMPLO.fc=["Nosso primeiro pôr do sol"
 function verExemplo(){ try{ if(typeof fbq==="function") fbq("track","ViewContent",{content_name:"Exemplo de carta"}); }catch(e){} abrirCarta(EXEMPLO,{previa:true}); }
 if($("verExemplo")) $("verExemplo").addEventListener("click",verExemplo);
 if($("mockAbrir")) $("mockAbrir").addEventListener("click",verExemplo);
-$("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); if(S.ff.d){ P.ffoto=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); if(S.ff.c&&S.ff.c.trim()) P.ffc=S.ff.c.trim(); } abrirCarta(P,{previa:!liberado}); });
+$("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); if(S.ff.d){ P.ffoto=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); if(S.ff.c&&S.ff.c.trim()) P.ffc=S.ff.c.trim(); } if(!P.m&&!liberado){ const sug=(OCASIOES[S.o]||{}).msgs; if(sug&&sug[0]) P.m=sug[0]; } abrirCarta(P,{previa:!liberado}); });
 document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=>{ const alvo=$(a.dataset.vai); if(!alvo) return; e.preventDefault(); alvo.scrollIntoView({behavior:"smooth"}); }));
 
 (async function(){ let m=null; try{ m=location.pathname.match(/\/c\/([A-Za-z0-9_-]{8,40})\/?$/); }catch(e){}
@@ -1880,6 +1994,16 @@ function telaEspera(j){
   addEventListener("scroll",atualizar,{passive:true}); addEventListener("resize",atualizar); setInterval(atualizar,800); atualizar();
   A.addEventListener("click",()=>{ if(modo==="form") $("previa").click(); else verExemplo(); });
   B.addEventListener("click",()=>{ const alvo=modo==="form"?(document.querySelector(".resumo")):(document.querySelector("#criar .etapa")||criar); alvo&&alvo.scrollIntoView({behavior:"smooth",block:"start"}); });
+}catch(e){} })();
+
+(function(){ try{
+  if(location.pathname.match(/\/c\//)) return;
+  const els=[...document.querySelectorAll(".form > .etapa:not([hidden]), .resumo, .sec > h2, .faq details, .depois")];
+  if(!("IntersectionObserver" in window)){ return; }
+  els.forEach(e=>e.classList.add("anima"));
+  const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("vis"); io.unobserve(en.target); } }),{rootMargin:"0px 0px -8% 0px",threshold:.08});
+  els.forEach(e=>io.observe(e));
+  setTimeout(()=>els.forEach(e=>{ const r=e.getBoundingClientRect(); if(r.top<innerHeight) e.classList.add("vis"); }),60);
 }catch(e){} })();
 </script>
 </body></html>
