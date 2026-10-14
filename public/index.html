@@ -418,6 +418,16 @@ body { background-color:#efe4d3; background-image:url(img/linho.jpg); background
 .passos .ic { background:#f1e2d6; }
 
 /* ===== formulário ===== */
+.depois { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; max-width:720px; margin:6px auto 22px; padding:14px 16px; background:#fffaf0; border:1.5px dashed #b99a76; border-radius:4px; box-shadow:0 4px 10px rgba(60,20,20,.08); transform:rotate(-.4deg); }
+.depois-ic { font-size:1.6rem; }
+.depois > div:nth-child(2) { flex:1 1 200px; font-family:"Lora",Georgia,serif; color:#3a1d14; }
+.depois b { display:block; color:#6a1428; font-size:1.05rem; }
+.depois small { color:#7a5e58; font-size:.9rem; }
+.depois-bts { display:flex; gap:8px; flex-wrap:wrap; }
+.depois-zap, .depois-cop { font:700 .9rem "Lora",Georgia,serif; padding:9px 14px; border-radius:999px; cursor:pointer; text-decoration:none; }
+.depois-zap { background:#1f7a4d; color:#fff; border:0; }
+.depois-cop { background:transparent; color:#7a1f33; border:1.5px solid #7a1f33; }
+
 /* pergaminho da mensagem */
 .perg-escrita { margin:6px 2px 4px; filter:drop-shadow(0 8px 14px rgba(70,35,15,.22)); }
 .perg-escrita .rolo { height:24px; margin:0 -10px; border-radius:12px; background:linear-gradient(180deg,#c9a46a 0%,#f1dcae 35%,#e3c48e 55%,#a9824a 100%); box-shadow:inset 0 -2px 3px rgba(80,45,15,.3); position:relative; z-index:1; }
@@ -716,6 +726,11 @@ footer { color:#5e4640; }
   <section class="sec" id="criar">
     <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Crie a sua carta</h2>
     <p class="lead">Você só paga quando estiver do jeito que você quer. O que você preencher fica salvo neste aparelho.</p>
+    <div class="depois" id="depois">
+      <span class="depois-ic" aria-hidden="true">💌</span>
+      <div><b>Quer terminar depois?</b><small>Mande o link para você mesmo e volte quando quiser.</small></div>
+      <div class="depois-bts"><a class="depois-zap" id="depoisZap" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a><button type="button" class="depois-cop" id="depoisCop">Copiar link</button></div>
+    </div>
     <div class="criador">
       <div class="form">
         <fieldset class="etapa">
@@ -1757,5 +1772,15 @@ document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=
     abrirCarta(P,{previa:false});
   }catch(e){ $("loja").removeAttribute("aria-hidden"); toast(e.status===404?"Não encontramos esta carta. Confira o link com quem enviou.":"Não foi possível abrir a carta agora. Confira sua internet e tente de novo."); }
 })();
+
+(function(){ try{
+  const url=(/^https?:/.test(location.protocol)?location.origin:"https://carta-com-proposito.netlify.app")+"/#criar";
+  const txt="💌 Minha Carta com Propósito, para terminar depois: "+url;
+  const z=$("depoisZap"), c=$("depoisCop"); if(!z||!c) return;
+  z.href="https://wa.me/?text="+encodeURIComponent(txt);
+  z.addEventListener("click",()=>{ try{ window.fbq&&fbq("trackCustom","TerminarDepois",{via:"whatsapp"}); }catch(e){} });
+  c.addEventListener("click",async()=>{ let ok=false; try{ await navigator.clipboard.writeText(url); ok=true; }catch(e){ try{ const t=document.createElement("textarea"); t.value=url; document.body.appendChild(t); t.select(); ok=document.execCommand("copy"); t.remove(); }catch(_){} }
+    c.textContent=ok?"Link copiado ✓":url; try{ window.fbq&&fbq("trackCustom","TerminarDepois",{via:"copiar"}); }catch(e){} setTimeout(()=>c.textContent="Copiar link",2500); });
+}catch(e){} })();
 </script>
 </body></html>
