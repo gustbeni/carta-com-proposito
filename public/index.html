@@ -263,7 +263,7 @@ footer .verso-rodape span { font-family: var(--body); font-style: normal; font-s
 .gassin.amigo .l1 { font-size: 1.05rem; opacity: .9; }
 .gassin.amigo .nome { font-size: 1.6rem; }
 /* ===== tipo de carta ===== */
-.tipos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tipos { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 10px; }
 .tipo { display: grid; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--card); }
 .tipo b { font-size: .98rem; }
 .tipo span { font-size: .8rem; color: var(--muted); line-height: 1.3; }
@@ -418,6 +418,38 @@ body { background-color:#efe4d3; background-image:url(img/linho.jpg); background
 .passos .ic { background:#f1e2d6; }
 
 /* ===== formulário ===== */
+.cta.ouro { background:linear-gradient(180deg,#e7c27a,#c99a45); color:#3a1d0c; border:0; box-shadow:0 6px 16px rgba(168,122,46,.35); }
+.cta.ouro .play { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:#7a1f33; color:#f6e2c4; font-size:.7rem; animation:pulsoPlay 1.8s ease-in-out infinite; }
+@keyframes pulsoPlay { 0%,100% { box-shadow:0 0 0 0 rgba(122,31,51,.45); } 50% { box-shadow:0 0 0 8px rgba(122,31,51,0); } }
+.promo-hero { margin:14px 0 0; display:inline-block; background:#fffaf0; border:1.5px dashed #b99a76; padding:8px 14px; border-radius:4px; font-family:"Lora",Georgia,serif; color:#3a1d14; font-size:.95rem; }
+.promo-hero b { color:#7a1f33; } .promo-hero s { color:#9b7f74; margin-right:2px; }
+.promo-hero .relogio, .promo-resumo .relogio { font-variant-numeric:tabular-nums; font-weight:700; color:#7a1f33; }
+.promo-resumo { margin:-4px 0 10px; font-size:.88rem; color:#7a5e58; }
+.deps { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:18px; }
+.dep { background:#fbf7f0; padding:12px 12px 16px; box-shadow:0 10px 22px rgba(40,10,10,.18); transform:rotate(-1deg); }
+.dep:nth-child(even) { transform:rotate(1.2deg); }
+.dep img { display:block; width:100%; border-radius:2px; }
+.dep p { margin:10px 4px 0; font-family:"Lora",Georgia,serif; font-style:italic; color:#3a1d14; }
+.dep b { display:block; margin:6px 4px 0; font-family:"Lora",Georgia,serif; color:#7a1f33; font-size:.92rem; }
+.barra-fixa { position:fixed; left:0; right:0; bottom:0; z-index:40; display:flex; gap:8px; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:rgba(248,241,230,.96); box-shadow:0 -6px 18px rgba(60,20,20,.15); backdrop-filter:blur(6px); transform:translateY(110%); transition:transform .3s ease; }
+.barra-fixa.on { transform:none; }
+.barra-fixa button { flex:1; font:700 .98rem "Lora",Georgia,serif; padding:13px 10px; border-radius:8px; cursor:pointer; }
+.barra-fixa .bf-pri { background:#7a1f33; color:#fff; border:0; }
+.barra-fixa .bf-sec { background:#fffaf0; color:#7a1f33; border:2px solid #7a1f33; }
+@media (min-width:900px){ .barra-fixa { display:none; } }
+.espera { position:fixed; inset:0; z-index:9000; display:grid; place-items:center; padding:24px 16px; text-align:center; background:radial-gradient(120% 90% at 50% 20%,#7a2238,#2a0a12 75%); color:#f6e2c4; font-family:"Lora",Georgia,serif; overflow:auto; }
+.espera .env { width:150px; height:100px; margin:0 auto 22px; position:relative; border-radius:6px; background:linear-gradient(160deg,#f6e7cf,#e3cba5); box-shadow:0 14px 30px rgba(0,0,0,.45); animation:flutua 3.2s ease-in-out infinite; }
+.espera .env::before { content:""; position:absolute; left:0; right:0; top:0; height:58%; background:linear-gradient(180deg,#efdcbc,#dcc29a); clip-path:polygon(0 0,100% 0,50% 100%); }
+.espera .env i { position:absolute; left:50%; top:58%; width:34px; height:34px; margin:-17px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#b0405a,#5e1325); display:grid; place-items:center; color:#f6e2c4; font-style:normal; font-size:1rem; }
+@keyframes flutua { 0%,100% { transform:translateY(0) rotate(-1deg); } 50% { transform:translateY(-8px) rotate(1deg); } }
+.espera h1 { font-size:1.7rem; font-style:italic; margin:0 0 8px; color:#fff3dc; }
+.espera p { margin:0 0 16px; color:#e9cfa8; }
+.espera .cont-reg { display:flex; justify-content:center; gap:10px; margin:6px 0 18px; }
+.espera .cont-reg div { min-width:64px; padding:10px 6px; background:rgba(255,243,220,.1); border:1px solid rgba(231,194,122,.45); border-radius:10px; }
+.espera .cont-reg b { display:block; font-size:1.9rem; font-variant-numeric:tabular-nums; color:#f3d08a; }
+.espera .cont-reg small { font-size:.75rem; letter-spacing:1px; text-transform:uppercase; color:#e9cfa8; }
+.espera .ass { font-style:italic; color:#f3d08a; }
+
 .depois { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; max-width:720px; margin:6px auto 22px; padding:14px 16px; background:#fffaf0; border:1.5px dashed #b99a76; border-radius:4px; box-shadow:0 4px 10px rgba(60,20,20,.08); transform:rotate(-.4deg); }
 .depois-ic { font-size:1.6rem; }
 .depois > div:nth-child(2) { flex:1 1 200px; font-family:"Lora",Georgia,serif; color:#3a1d14; }
@@ -679,6 +711,10 @@ footer { color:#5e4640; }
 </style></head><body>
 
 <div class="wrap" id="loja">
+<nav class="barra-fixa" id="barraFixa" hidden aria-label="Atalhos">
+  <button type="button" class="bf-sec" id="bfA">▶ Ver exemplo</button>
+  <button type="button" class="bf-pri" id="bfB">Criar minha carta</button>
+</nav>
   <header class="topbar">
     <div class="brand"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="11" width="38" height="27" rx="4"/><path d="M5 14l19 13 19-13"/><circle cx="24" cy="29" r="7" fill="currentColor" stroke="none"/><path d="M24 25v8M21 28h6" stroke="var(--bg)" stroke-width="2"/></svg>Carta com Propósito</div>
     <a class="pill-cta" href="#criar" data-vai="criar">Criar carta</a>
@@ -688,11 +724,12 @@ footer { color:#5e4640; }
     <div class="hero-txt">
       <span class="eyebrow">Presente com propósito</span>
       <h1>Uma carta de amor com <em>a Palavra de Deus</em></h1>
-      <p class="sub">Para o seu amor ou para um amigo da igreja. Fotos de vocês, versículos, uma roleta que sorteia uma palavra de Deus, a história de vocês em números, música e uma oração. Abre no celular pelo QR code e fica pronta em 3 minutos.</p>
+      <p class="sub">Para o seu amor, um amigo da igreja, sua mãe ou seu pai. Fotos de vocês, versículos, uma roleta que sorteia uma palavra de Deus, a história de vocês em números, música e uma oração. Abre no celular pelo QR code e fica pronta em 3 minutos.</p>
       <div class="ctas">
         <a class="cta" href="#criar" data-vai="criar">Criar minha carta</a>
-        <button class="cta ghost" id="verExemplo">Ver um exemplo</button>
+        <button class="cta ouro" id="verExemplo"><span class="play" aria-hidden="true">▶</span> Ver uma carta pronta</button>
       </div>
+      <p class="promo-hero" id="promoHero" hidden>🔥 Preço de lançamento: <b></b> <s></s> · termina em <span class="relogio"></span></p>
       <div class="selos"><span>Pagamento único</span><span>QR code na hora</span><span>Abre em qualquer celular</span></div>
     </div>
     <div>
@@ -736,8 +773,9 @@ footer { color:#5e4640; }
         <fieldset class="etapa">
           <legend><span class="n">1</span>Para quem é a carta?</legend>
           <div class="tipos" id="tipos" role="group" aria-label="Para quem é a carta">
-            <button type="button" class="tipo" data-g="casal" aria-pressed="true"><b>💑 Meu amor</b><span>Namorado(a), noivo(a), esposo(a)</span></button>
-            <button type="button" class="tipo" data-g="amigo" aria-pressed="false"><b>🤝 Amigo(a) da igreja</b><span>Amizade, aniversário, ânimo</span></button>
+            <button type="button" class="tipo" data-g="casal" aria-pressed="true"><b>💑 Meu amor</b><span>Namoro, pedido, noivado, casamento</span></button>
+            <button type="button" class="tipo" data-g="amigo" aria-pressed="false"><b>🤝 Amigo(a) da igreja</b><span>Amizade, pastor, ânimo</span></button>
+            <button type="button" class="tipo" data-g="familia" aria-pressed="false"><b>🏡 Mãe ou pai</b><span>Dia das Mães, Dia dos Pais, aniversário</span></button>
           </div>
           <p class="dica" style="margin-top:6px">Qual é a ocasião?</p>
           <div class="chips" id="ocasioes"></div>
@@ -750,6 +788,7 @@ footer { color:#5e4640; }
             <label class="f" for="fDe">Seu nome, para assinar<input class="inp" id="fDe" maxlength="40" placeholder="Ex.: Pedro" autocomplete="off"></label>
             <div class="f" id="boxSx" hidden><span>Assinar como</span><div class="chips" id="sx"><button type="button" class="chip" data-sx="o" aria-pressed="true">Seu irmão em Cristo</button><button type="button" class="chip" data-sx="a" aria-pressed="false">Sua irmã em Cristo</button></div></div>
             <label class="f" for="fData"><span id="lData">Começamos a namorar em</span> <small id="dData">Mostra a história de vocês em números.</small><input class="inp" id="fData" type="date"></label>
+            <label class="f" for="fAbre">Quando a carta pode ser aberta? <small>Opcional. Antes desse dia, quem escanear o QR code vê uma contagem regressiva. Deixe vazio para abrir na hora.</small><input class="inp" id="fAbre" type="date"></label>
             <label class="f" for="fZap">Seu WhatsApp <small id="dZap">Opcional. Para seu amor responder com um toque.</small><input class="inp" id="fZap" inputmode="tel" maxlength="20" placeholder="(67) 99999-9999" autocomplete="tel"></label>
           </div>
           <label class="f" for="fTitulo">Título da carta <small>Preenchemos sozinho, mas você pode mudar.</small><input class="inp" id="fTitulo" maxlength="60" autocomplete="off"></label>
@@ -852,6 +891,7 @@ footer { color:#5e4640; }
             <li>Cartão com QR code para imprimir ou enviar</li>
           </ul>
           <div class="preco"><b id="vPreco"></b><s id="vAntigo"></s></div>
+          <p class="promo-resumo" id="promoResumo" hidden>Preço de lançamento termina em <span class="relogio"></span></p>
           <div id="etapaPagar" class="box-final">
             <label class="f" for="fEmail">Seu e-mail (para o comprovante)<input class="inp" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com"></label>
             <button class="cta" id="pagarPix">Pagar com Pix</button>
@@ -888,13 +928,19 @@ footer { color:#5e4640; }
     </div>
   </section>
 
+  <section class="sec" id="depoimentos" hidden>
+    <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Quem recebeu, amou</h2>
+    <div class="deps" id="deps"></div>
+  </section>
+
   <section class="sec">
     <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Perguntas frequentes</h2>
     <div class="faq">
       <details><summary>Como a pessoa recebe a carta?</summary><p>Você recebe um cartão com QR code. Imprima e entregue junto com flores ou um presente, ou mande a imagem pelo WhatsApp. É só apontar a câmera do celular que a carta abre.</p></details>
       <details><summary>Precisa baixar alguma coisa?</summary><p>Não. A carta abre direto no navegador do celular ou do computador.</p></details>
       <details><summary>Posso ver antes de pagar?</summary><p>Pode. Monte tudo, toque em “Ver a prévia” e só pague quando gostar do resultado.</p></details>
-      <details><summary>Posso fazer para um amigo, e não para namorado?</summary><p>Pode. No primeiro passo, escolha “Amigo(a) da igreja”. A carta muda os textos, os versículos, a oração e a roleta para falar de amizade.</p></details>
+      <details><summary>Posso fazer para um amigo, para minha mãe ou para meu pai?</summary><p>Pode. No primeiro passo, escolha “Amigo(a) da igreja” ou “Mãe ou pai”. A carta muda os textos, os versículos, a oração e a roleta.</p></details>
+      <details><summary>Posso marcar o dia em que a carta vai abrir?</summary><p>Pode. No passo 2, escolha a data. Antes desse dia, quem escanear o QR code vê uma contagem regressiva, e a carta abre sozinha quando chegar a hora.</p></details>
       <details><summary>Os números da carta ficam certos depois?</summary><p>Ficam. Eles contam a partir da data que você informar, então no ano que vem a carta mostra tudo atualizado.</p></details>
       <details><summary>Por quanto tempo o link funciona?</summary><p>Enquanto este site estiver no ar. A carta fica guardada no nosso site e abre pelo QR code ou pelo link, sem precisar de cadastro.</p></details>
       <details><summary>Como pago?</summary><p>Por Pix ou cartão de crédito, pelo Mercado Pago. No Pix, a carta é liberada em poucos segundos, na mesma tela.</p></details>
@@ -926,6 +972,8 @@ footer { color:#5e4640; }
 const CONFIG = {
   preco: "R$ 17,99",           // só o texto mostrado; o valor cobrado de verdade fica no servidor (netlify/lib/comum.mjs)
   precoAntigo: "R$ 34,90",
+  promoFim: "2026-10-31T23:59:59-04:00",   // fim do preço de lançamento (contagem regressiva some depois disso)
+  depoimentos: [],             // prints reais de clientes: { img:"img/dep1.jpg", nome:"Ana", texto:"..." }
   api: "/api",                 // funções do Netlify que falam com o Mercado Pago
   enderecoSite: "",            // opcional: o endereço do site publicado
   cloudinaryNome: "kmd9kglx",          // Cloudinary: "Cloud name" da sua conta (para guardar as fotos)
@@ -951,7 +999,16 @@ const OCASIOES = {
     "Um dia comum, mas com o mesmo amor de sempre. Obrigado por ser quem você é. Te amo." ]},
   desculpa: { nome:"Pedido de desculpas", titulo:"{para}, me perdoa?", msgs:[
     "Eu errei e sinto muito. Pedi a Deus um coração mais paciente e humilde, e quero fazer melhor. Você é muito importante pra mim. Me perdoa?",
-    "Não quero que nenhuma briga seja maior que o nosso amor. Me desculpa pelo que eu disse. Quero conversar e acertar as coisas, do jeito que Deus nos ensina." ]}
+    "Não quero que nenhuma briga seja maior que o nosso amor. Me desculpa pelo que eu disse. Quero conversar e acertar as coisas, do jeito que Deus nos ensina." ]},
+  casamento: { nome:"Aniversário de casamento", titulo:"{para}, feliz aniversário de casamento", msgs:[
+    "Mais um ano de aliança, e eu continuo escolhendo você todos os dias. Obrigado por construir comigo um lar onde Deus é o centro. Que o Senhor continue guardando o nosso casamento.",
+    "Quando dissemos sim diante de Deus, eu não imaginava o tamanho da bênção que seria viver ao seu lado. Te amo mais a cada ano. Feliz aniversário de casamento!" ]},
+  pedidonamoro: { nome:"Pedido de namoro", titulo:"{para}, quer namorar comigo?", msgs:[
+    "Eu orei muito antes de escrever esta carta. Admiro o seu coração, a sua fé e o seu jeito de cuidar das pessoas. Quero caminhar ao seu lado, com Deus na frente. Você aceita namorar comigo?",
+    "Desde que te conheci, peço a Deus sabedoria sobre o que sinto. Hoje eu tenho paz para te perguntar: você quer construir essa história comigo, com respeito e com Deus no centro?" ]},
+  noivado: { nome:"Pedido de noivado", titulo:"{para}, quer casar comigo?", msgs:[
+    "Cada dia ao seu lado me mostrou o cuidado de Deus. Eu quero viver essa aliança com você, diante dEle, para sempre. Você aceita casar comigo?",
+    "Pedi a Deus uma companhia para a vida, e Ele me respondeu com você. Quero te amar como Cristo nos amou. Aceita viver essa aliança comigo?" ]}
 };
 const OCASIOES_AMIGO = {
   amizade: { nome:"Gratidão pela amizade", titulo:"{para}, obrigado pela sua amizade", msgs:[
@@ -965,9 +1022,29 @@ const OCASIOES_AMIGO = {
     "Não desanime. Aquele que começou a boa obra em você vai completá-la. Conte comigo para o que precisar." ]},
   saudadeamigo: { nome:"Saudade do amigo(a)", titulo:"{para}, saudade de você", msgs:[
     "A distância não muda a amizade. Todos os dias eu lembro de você nas minhas orações e agradeço a Deus pelo tempo que vivemos juntos.",
-    "Que saudade das nossas conversas e dos cultos juntos! Que o Senhor te guarde onde você estiver, até a gente se ver de novo." ]}
+    "Que saudade das nossas conversas e dos cultos juntos! Que o Senhor te guarde onde você estiver, até a gente se ver de novo." ]},
+  pastor: { nome:"Gratidão ao pastor ou líder", titulo:"{para}, obrigado pelo seu cuidado", msgs:[
+    "Obrigado por cuidar de nós com tanto amor e dedicação. Cada palavra, cada oração e cada conselho seu fazem diferença na minha caminhada com Deus. Que o Senhor te renove as forças.",
+    "Sei que pastorear não é fácil, e muitas vezes ninguém vê o quanto você se doa. Quero que saiba que sou grato a Deus pela sua vida e pelo seu ministério." ]}
 };
 Object.keys(OCASIOES_AMIGO).forEach(k=>{ OCASIOES_AMIGO[k].amigo=true; });
+const OCASIOES_FAM = {
+  diadasmaes: { nome:"Dia das Mães", titulo:"Feliz Dia das Mães, {para}", msgs:[
+    "Mãe, obrigado por cada oração, cada colo e cada conselho. Eu vejo o amor de Deus no seu cuidado comigo. Que o Senhor te abençoe e te dê muitos anos de vida e alegria.",
+    "Você me ensinou a orar, a confiar em Deus e a nunca desistir. Tudo o que eu sou tem um pouco de você. Feliz Dia das Mães! Te amo." ]},
+  diadospais: { nome:"Dia dos Pais", titulo:"Feliz Dia dos Pais, {para}", msgs:[
+    "Pai, obrigado por cada sacrifício, cada conselho e cada exemplo de fé. Você me mostrou na prática o que é ser cuidado. Que o Senhor te abençoe e te guarde sempre.",
+    "Você me ensinou a ser forte, honesto e temente a Deus. Sou grato ao Senhor por ter você como pai. Feliz Dia dos Pais! Te amo." ]},
+  anivfamilia: { nome:"Aniversário de mãe ou pai", titulo:"Feliz aniversário, {para}!", msgs:[
+    "Hoje eu agradeço a Deus pela sua vida e por tudo o que você fez e faz por mim. Que esse novo ano seja cheio de saúde, paz e da presença do Senhor.",
+    "Que Deus te abençoe com muitos anos de vida, com alegria e com a certeza de que você é muito amado(a). Feliz aniversário! Te amo." ]}
+};
+Object.keys(OCASIOES_FAM).forEach(k=>{ OCASIOES_FAM[k].amigo=true; OCASIOES_FAM[k].fam=true; });
+const ORACOES_FAM = [
+  "Senhor, obrigado pela vida de {para}. Recompensa cada cuidado, cada oração e cada sacrifício feito por mim, e enche seus dias de saúde e paz.",
+  "Pai, guarda {para} em todos os caminhos. Dá força, alegria e longos anos de vida, e que a nossa família seja sempre firmada em Ti.",
+  "Deus, abençoa {para} com a Tua presença. Que nunca falte amor, saúde e esperança, e que eu saiba honrar quem me ensinou a Te amar."
+];
 const ORACOES_AMIGO = [
   "Senhor, obrigado pela vida de {para} e pela nossa amizade. Que ela seja sempre sincera, cheia de alegria e firmada em Ti.",
   "Pai, abençoa {para} em tudo o que fizer. Guarda sua saúde, sua família e seu coração, e realiza os sonhos que colocaste nele.",
@@ -979,12 +1056,14 @@ const ORACOES = [
   "Deus, abençoa {para} em tudo o que fizer. Cuida da sua saúde, dos seus sonhos e do seu coração, e nos ajuda a crescer juntos na fé."
 ];
 function nuvem(){ return !!(CONFIG.cloudinaryNome&&CONFIG.cloudinaryPreset); }
-const DADOS = {"O": {"namoro": ["1cor.13.4", "1cor.13.7", "ecl.4.9", "ecl.4.12", "cant.8.7", "1joao.4.19", "col.3.14", "1ped.4.8", "rute.1.16", "1cor.13.13", "1joao.4.7", "rom.12.10"], "diadosnamorados": ["1cor.13.4", "cant.8.7", "1joao.4.19", "ecl.4.9", "col.3.14", "1cor.13.13", "1joao.4.7", "cant.2.16", "1cor.16.14", "prov.3.3"], "aniversario": ["num.6.24-26", "sal.20.4", "jer.29.11", "sal.16.11", "fil.1.6", "sal.37.4", "sal.90.12", "isa.40.31", "sal.118.24"], "saudade": ["num.6.24-26", "sal.121.8", "gen.31.49", "rom.12.12", "fil.4.6-7", "isa.41.10", "sal.46.1", "jos.1.9", "cant.8.7"], "teamo": ["1joao.4.19", "cant.2.16", "cant.8.7", "1cor.13.7", "1cor.16.14", "prov.3.3", "1joao.4.7", "col.3.14", "1cor.13.4"], "desculpa": ["efes.4.32", "col.3.13", "1ped.4.8", "prov.10.12", "1cor.13.4-5", "rom.12.10"], "amizade": ["prov.17.17", "joao.15.13", "fil.1.3-4", "ecl.4.9-10", "prov.27.17", "prov.18.24", "prov.27.9", "1tes.1.2", "rom.12.10", "joao.15.12", "1joao.4.7", "heb.10.24"], "aniveramigo": ["num.6.24-26", "sal.20.4", "jer.29.11", "fil.1.6", "sal.16.11", "sal.118.24", "sal.90.12", "prov.17.17", "fil.1.3-4", "sal.37.4"], "animo": ["isa.41.10", "jos.1.9", "isa.40.31", "sal.46.1", "fil.4.6-7", "rom.12.12", "1tes.5.11", "fil.1.6", "jer.29.11", "sal.121.8"], "saudadeamigo": ["gen.31.49", "fil.1.3-4", "1tes.1.2", "sal.121.8", "num.6.24-26", "prov.17.17", "ecl.4.9-10", "rom.12.12"]}, "V": {"1cor.13.4": ["1 Coríntios 13:4", "O amor é paciente, é bondoso; o amor não é invejoso; o amor não é orgulhoso, não é arrogante."], "1cor.13.7": ["1 Coríntios 13:7", "Tudo aguenta, tudo crê, tudo espera, tudo suporta."], "ecl.4.9": ["Eclesiastes 4:9", "Dois são melhores do que um, porque eles têm melhor recompensa por seu trabalho."], "ecl.4.12": ["Eclesiastes 4:12", "E se alguém prevalecer contra um, dois podem resistir contra ele; porque o cordão de três dobras não se rompe tão depressa."], "cant.8.7": ["Cantares 8:7", "Muitas águas não poderiam apagar este amor, nem os rios afogá-lo; ainda que alguém desse todos os bens de sua casa por este amor, certamente o desprezariam."], "1joao.4.19": ["1 João 4:19", "Nós amamos, porque ele nos amou primeiro."], "col.3.14": ["Colossenses 3:14", "E acima de tudo isto, revesti-vos do amor, que é o vínculo da perfeição."], "1ped.4.8": ["1 Pedro 4:8", "Acima de tudo, tende fervoroso amor uns para com os outros; porque o amor cobre uma multidão de pecados."], "rute.1.16": ["Rute 1:16", "E Rute respondeu: Não me rogues que te deixe, e que me aparte de ti: porque de onde quer que tu fores, irei eu; e de onde quer que viveres, viverei. Teu povo será meu povo, e teu Deus meu Deus."], "1cor.13.13": ["1 Coríntios 13:13", "E agora continuam a fé, a esperança, e o amor, estes três; porém o maior destes é o amor."], "1joao.4.7": ["1 João 4:7", "Amados, nos amemos uns aos outros; porque o amor é de Deus, e todo aquele que ama é nascido de Deus e conhece a Deus."], "rom.12.10": ["Romanos 12:10", "Amai-vos cordialmente uns aos outros com amor de irmãos, preferindo honrar uns aos outros."], "cant.2.16": ["Cantares 2:16", "Meu amado é meu, e eu sou sua; ele apascenta entre os lírios."], "1cor.16.14": ["1 Coríntios 16:14", "Todas as vossas coisas sejam feitas em amor."], "prov.3.3": ["Provérbios 3:3", "Que a bondade e a fidelidade não te desamparem; amarra-as junto ao teu pescoço; escreve-as na tábua de teu coração."], "num.6.24-26": ["Números 6:24-26", "O SENHOR te abençoe, e te guarde; faça resplandecer o SENHOR seu rosto sobre ti, e tenha de ti misericórdia; o SENHOR levante a ti seu rosto, e ponha em ti paz."], "sal.20.4": ["Salmos 20:4", "Que ele de a ti conforme o teu coração, e faça cumprir todo o teu propósito."], "jer.29.11": ["Jeremias 29:11", "Porque eu sei os pensamentos que penso quanto a vós, diz o SENHOR, pensamentos de paz, e não de mal, para vos dar um futuro com esperança."], "sal.16.11": ["Salmos 16:11", "Tu me farás conhecer o caminho da vida; fartura de alegrias há em tua presença; agrados estão em tua mão direita para sempre."], "fil.1.6": ["Filipenses 1:6", "E disto tenho certeza: aquele que começou a boa obra em vós irá completá-la até o dia de Cristo Jesus."], "sal.37.4": ["Salmos 37:4", "E agrada-te no SENHOR; e ele te dará os pedidos de teu coração."], "sal.90.12": ["Salmos 90:12", "Ensina-nos a contar nossos dias de tal maneira que alcancemos um coração sábio."], "isa.40.31": ["Isaías 40:31", "Mas os que confiam no SENHOR renovarão as forças, subirão com asas como águias; correrão, e não se cansarão; caminharão, e não se fatigarão."], "sal.118.24": ["Salmos 118:24", "Este é o dia em que o SENHOR agiu; alegremos e enchamos de alegria nele."], "sal.121.8": ["Salmos 121:8", "O SENHOR guardará tua saída e tua entrada, desde agora e para sempre."], "gen.31.49": ["Gênesis 31:49", "Vigie o SENHOR entre mim e entre ti, quando nos separarmos um do outro."], "rom.12.12": ["Romanos 12:12", "Alegrai-vos na esperança. Sede pacientes na aflição. Perseverai na oração."], "fil.4.6-7": ["Filipenses 4:6-7", "Não estejais ansiosos por coisa alguma; mas em tudo, por meio de orações e súplicas com ações de gratidão, sejam os vossos pedidos conhecidos por Deus; e a paz de Deus, que excede todo entendimento, guardará os vossos corações e as vossas mentes em Cristo Jesus."], "isa.41.10": ["Isaías 41:10", "Não temas, porque eu estou contigo; não te assombres, porque eu sou teu Deus. Eu te fortaleço, te ajudo, e te sustento com a minha mão direita de justiça."], "sal.46.1": ["Salmos 46:1", "Deus é nosso refúgio e força; socorro oportuno nas angústias."], "jos.1.9": ["Josué 1:9", "Olha que te mando que te esforces e sejas valente: não temas nem desmaies, porque o SENHOR teu Deus será contigo onde quer que fores."], "efes.4.32": ["Efésios 4:32", "Sede benignos uns com os outros, misericordiosos, perdoando-vos uns aos outros, como também Deus vos perdoou em Cristo."], "col.3.13": ["Colossenses 3:13", "Suportai-vos uns aos outros, e perdoai-vos uns aos outros, se alguém tiver queixa contra outro. Como o Senhor vos perdoou, assim também fazei."], "prov.10.12": ["Provérbios 10:12", "O ódio desperta brigas; mas o amor cobre todas as transgressões."], "1cor.13.4-5": ["1 Coríntios 13:4-5", "O amor é paciente, é bondoso; o amor não é invejoso; o amor não é orgulhoso, não é arrogante. O amor não trata mal; não busca os próprios interesses, não se ira, não é rancoroso."], "joao.15.12": ["João 15:12", "Este é meu mandamento: que vos ameis uns aos outros, assim como eu vos amei."], "joao.3.16": ["João 3:16", "Porque Deus amou ao mundo de tal maneira, que deu o seu Filho unigênito; para que todo aquele que nele crê não pereça, mas tenha a vida eterna."], "1joao.4.16": ["1 João 4:16", "E nós conhecemos e cremos no amor que Deus tem por nós. Deus é amor, e quem está no amor está em Deus, e Deus habita nele."], "1joao.4.18": ["1 João 4:18", "No amor não há medo; pelo contrário, o perfeito amor expulsa o medo."], "1joao.3.18": ["1 João 3:18", "Filhinhos, amemos não de palavra, nem de língua, mas sim com ação e verdade."], "rom.13.10": ["Romanos 13:10", "O amor não faz mal ao próximo. Assim, o cumprimento da Lei é o amor."], "cant.8.6": ["Cantares 8:6", "Põe-me como selo sobre o teu coração, como selo sobre o teu braço; porque o amor é forte como a morte."], "rom.8.38-39": ["Romanos 8:38-39", "Pois tenho certeza que nem a morte, nem a vida, nem anjos, nem principados, nem o presente, nem o futuro, nem poderes, nem altura, nem profundeza, nem qualquer outra criatura poderá nos separar do amor de Deus, que está em Cristo Jesus, nosso Senhor."], "joao.13.34": ["João 13:34", "Um novo mandamento vos dou: que vos ameis uns aos outros; tal como eu vos amei, também ameis vós uns aos outros."], "1cor.13.8": ["1 Coríntios 13:8", "O amor nunca falha."], "efes.4.2": ["Efésios 4:2", "Com toda humildade e mansidão; com paciência, tolerando uns aos outros em amor."], "efes.5.2": ["Efésios 5:2", "Andai em amor, como também Cristo vos amou, e se entregou por nós."], "prov.17.17": ["Provérbios 17:17", "O amigo ama em todo tempo, e o irmão nasce para ajudar na angústia."], "prov.18.24": ["Provérbios 18:24", "Há um amigo mais chegado que um irmão."], "prov.27.17": ["Provérbios 27:17", "O ferro é afiado com ferro; assim também o homem afia o rosto de seu amigo."], "prov.27.9": ["Provérbios 27:9", "O óleo e o perfume alegram ao coração; assim é a doçura de um amigo com um conselho sincero."], "joao.15.13": ["João 15:13", "Ninguém tem maior amor que este: que alguém ponha sua vida por seus amigos."], "fil.1.3-4": ["Filipenses 1:3-4", "Agradeço ao meu Deus todas as vezes que me lembro de vós, sempre em todas as minhas orações, com alegria."], "1tes.5.11": ["1 Tessalonicenses 5:11", "Portanto exortai-vos uns aos outros, e edificai-vos uns aos outros, como já fazeis."], "heb.10.24": ["Hebreus 10:24", "Sejamos atenciosos uns para com os outros, a fim de incentivar o amor e as boas obras."], "ecl.4.9-10": ["Eclesiastes 4:9-10", "Dois são melhores do que um, porque eles têm melhor recompensa por seu trabalho. Porque se vierem a cair, um levanta ao seu companheiro."], "1tes.1.2": ["1 Tessalonicenses 1:2", "Sempre damos graças a Deus por todos vós, fazendo menção de vós em nossas orações."]}, "R": ["1cor.13.4-5", "1cor.13.7", "1cor.13.8", "1cor.13.13", "ecl.4.9", "ecl.4.12", "cant.8.6", "cant.8.7", "cant.2.16", "1joao.4.7", "1joao.4.16", "1joao.4.18", "1joao.4.19", "1joao.3.18", "joao.15.12", "joao.13.34", "joao.3.16", "col.3.14", "col.3.13", "1ped.4.8", "rute.1.16", "rom.12.10", "rom.13.10", "rom.8.38-39", "1cor.16.14", "prov.3.3", "prov.10.12", "efes.4.32", "efes.4.2", "efes.5.2"], "RA": ["prov.17.17", "prov.18.24", "prov.27.17", "prov.27.9", "joao.15.13", "joao.15.12", "joao.13.34", "fil.1.3-4", "1tes.5.11", "1tes.1.2", "heb.10.24", "ecl.4.9-10", "ecl.4.12", "rom.12.10", "1joao.4.7", "1joao.4.16", "1joao.3.18", "1cor.13.4-5", "1cor.13.7", "1cor.13.13", "1cor.16.14", "col.3.14", "col.3.13", "1ped.4.8", "efes.4.32", "efes.4.2", "rute.1.16", "prov.3.3", "rom.12.12", "num.6.24-26"]};
+const DADOS = {"O": {"namoro": ["1cor.13.4", "1cor.13.7", "ecl.4.9", "ecl.4.12", "cant.8.7", "1joao.4.19", "col.3.14", "1ped.4.8", "rute.1.16", "1cor.13.13", "1joao.4.7", "rom.12.10"], "diadosnamorados": ["1cor.13.4", "cant.8.7", "1joao.4.19", "ecl.4.9", "col.3.14", "1cor.13.13", "1joao.4.7", "cant.2.16", "1cor.16.14", "prov.3.3"], "aniversario": ["num.6.24-26", "sal.20.4", "jer.29.11", "sal.16.11", "fil.1.6", "sal.37.4", "sal.90.12", "isa.40.31", "sal.118.24"], "saudade": ["num.6.24-26", "sal.121.8", "gen.31.49", "rom.12.12", "fil.4.6-7", "isa.41.10", "sal.46.1", "jos.1.9", "cant.8.7"], "teamo": ["1joao.4.19", "cant.2.16", "cant.8.7", "1cor.13.7", "1cor.16.14", "prov.3.3", "1joao.4.7", "col.3.14", "1cor.13.4"], "desculpa": ["efes.4.32", "col.3.13", "1ped.4.8", "prov.10.12", "1cor.13.4-5", "rom.12.10"], "amizade": ["prov.17.17", "joao.15.13", "fil.1.3-4", "ecl.4.9-10", "prov.27.17", "prov.18.24", "prov.27.9", "1tes.1.2", "rom.12.10", "joao.15.12", "1joao.4.7", "heb.10.24"], "aniveramigo": ["num.6.24-26", "sal.20.4", "jer.29.11", "fil.1.6", "sal.16.11", "sal.118.24", "sal.90.12", "prov.17.17", "fil.1.3-4", "sal.37.4"], "animo": ["isa.41.10", "jos.1.9", "isa.40.31", "sal.46.1", "fil.4.6-7", "rom.12.12", "1tes.5.11", "fil.1.6", "jer.29.11", "sal.121.8"], "saudadeamigo": ["gen.31.49", "fil.1.3-4", "1tes.1.2", "sal.121.8", "num.6.24-26", "prov.17.17", "ecl.4.9-10", "rom.12.12"], "casamento": ["1cor.13.4-5", "ecl.4.12", "cant.8.6", "cant.8.7", "col.3.14", "efes.5.2", "rute.1.16", "1cor.13.7", "1ped.4.8", "1cor.13.13", "rom.8.38-39", "num.6.24-26"], "pedidonamoro": ["1cor.13.4", "1joao.4.19", "cant.2.16", "sal.37.4", "1cor.16.14", "prov.3.3", "ecl.4.9", "1joao.4.7", "jer.29.11", "col.3.14"], "noivado": ["rute.1.16", "cant.8.6", "ecl.4.12", "cant.8.7", "1cor.13.4-5", "efes.5.2", "col.3.14", "num.6.24-26", "jer.29.11", "1cor.13.13"], "pastor": ["fil.1.3-4", "1tes.1.2", "num.6.24-26", "isa.40.31", "heb.10.24", "1tes.5.11", "sal.20.4", "fil.1.6", "jos.1.9", "rom.12.10"], "diadasmaes": ["num.6.24-26", "1tes.1.2", "fil.1.3-4", "sal.121.8", "sal.20.4", "prov.3.3", "jer.29.11", "sal.16.11", "isa.40.31", "1joao.3.18", "sal.90.12", "1joao.4.7"], "diadospais": ["num.6.24-26", "1tes.1.2", "jos.1.9", "fil.1.3-4", "sal.121.8", "prov.3.3", "sal.20.4", "isa.40.31", "jer.29.11", "1joao.3.18", "sal.46.1", "1joao.4.7"], "anivfamilia": ["num.6.24-26", "sal.20.4", "sal.90.12", "sal.118.24", "jer.29.11", "sal.16.11", "sal.121.8", "fil.1.3-4", "1tes.1.2", "isa.40.31"]}, "V": {"1cor.13.4": ["1 Coríntios 13:4", "O amor é paciente, é bondoso; o amor não é invejoso; o amor não é orgulhoso, não é arrogante."], "1cor.13.7": ["1 Coríntios 13:7", "Tudo aguenta, tudo crê, tudo espera, tudo suporta."], "ecl.4.9": ["Eclesiastes 4:9", "Dois são melhores do que um, porque eles têm melhor recompensa por seu trabalho."], "ecl.4.12": ["Eclesiastes 4:12", "E se alguém prevalecer contra um, dois podem resistir contra ele; porque o cordão de três dobras não se rompe tão depressa."], "cant.8.7": ["Cantares 8:7", "Muitas águas não poderiam apagar este amor, nem os rios afogá-lo; ainda que alguém desse todos os bens de sua casa por este amor, certamente o desprezariam."], "1joao.4.19": ["1 João 4:19", "Nós amamos, porque ele nos amou primeiro."], "col.3.14": ["Colossenses 3:14", "E acima de tudo isto, revesti-vos do amor, que é o vínculo da perfeição."], "1ped.4.8": ["1 Pedro 4:8", "Acima de tudo, tende fervoroso amor uns para com os outros; porque o amor cobre uma multidão de pecados."], "rute.1.16": ["Rute 1:16", "E Rute respondeu: Não me rogues que te deixe, e que me aparte de ti: porque de onde quer que tu fores, irei eu; e de onde quer que viveres, viverei. Teu povo será meu povo, e teu Deus meu Deus."], "1cor.13.13": ["1 Coríntios 13:13", "E agora continuam a fé, a esperança, e o amor, estes três; porém o maior destes é o amor."], "1joao.4.7": ["1 João 4:7", "Amados, nos amemos uns aos outros; porque o amor é de Deus, e todo aquele que ama é nascido de Deus e conhece a Deus."], "rom.12.10": ["Romanos 12:10", "Amai-vos cordialmente uns aos outros com amor de irmãos, preferindo honrar uns aos outros."], "cant.2.16": ["Cantares 2:16", "Meu amado é meu, e eu sou sua; ele apascenta entre os lírios."], "1cor.16.14": ["1 Coríntios 16:14", "Todas as vossas coisas sejam feitas em amor."], "prov.3.3": ["Provérbios 3:3", "Que a bondade e a fidelidade não te desamparem; amarra-as junto ao teu pescoço; escreve-as na tábua de teu coração."], "num.6.24-26": ["Números 6:24-26", "O SENHOR te abençoe, e te guarde; faça resplandecer o SENHOR seu rosto sobre ti, e tenha de ti misericórdia; o SENHOR levante a ti seu rosto, e ponha em ti paz."], "sal.20.4": ["Salmos 20:4", "Que ele de a ti conforme o teu coração, e faça cumprir todo o teu propósito."], "jer.29.11": ["Jeremias 29:11", "Porque eu sei os pensamentos que penso quanto a vós, diz o SENHOR, pensamentos de paz, e não de mal, para vos dar um futuro com esperança."], "sal.16.11": ["Salmos 16:11", "Tu me farás conhecer o caminho da vida; fartura de alegrias há em tua presença; agrados estão em tua mão direita para sempre."], "fil.1.6": ["Filipenses 1:6", "E disto tenho certeza: aquele que começou a boa obra em vós irá completá-la até o dia de Cristo Jesus."], "sal.37.4": ["Salmos 37:4", "E agrada-te no SENHOR; e ele te dará os pedidos de teu coração."], "sal.90.12": ["Salmos 90:12", "Ensina-nos a contar nossos dias de tal maneira que alcancemos um coração sábio."], "isa.40.31": ["Isaías 40:31", "Mas os que confiam no SENHOR renovarão as forças, subirão com asas como águias; correrão, e não se cansarão; caminharão, e não se fatigarão."], "sal.118.24": ["Salmos 118:24", "Este é o dia em que o SENHOR agiu; alegremos e enchamos de alegria nele."], "sal.121.8": ["Salmos 121:8", "O SENHOR guardará tua saída e tua entrada, desde agora e para sempre."], "gen.31.49": ["Gênesis 31:49", "Vigie o SENHOR entre mim e entre ti, quando nos separarmos um do outro."], "rom.12.12": ["Romanos 12:12", "Alegrai-vos na esperança. Sede pacientes na aflição. Perseverai na oração."], "fil.4.6-7": ["Filipenses 4:6-7", "Não estejais ansiosos por coisa alguma; mas em tudo, por meio de orações e súplicas com ações de gratidão, sejam os vossos pedidos conhecidos por Deus; e a paz de Deus, que excede todo entendimento, guardará os vossos corações e as vossas mentes em Cristo Jesus."], "isa.41.10": ["Isaías 41:10", "Não temas, porque eu estou contigo; não te assombres, porque eu sou teu Deus. Eu te fortaleço, te ajudo, e te sustento com a minha mão direita de justiça."], "sal.46.1": ["Salmos 46:1", "Deus é nosso refúgio e força; socorro oportuno nas angústias."], "jos.1.9": ["Josué 1:9", "Olha que te mando que te esforces e sejas valente: não temas nem desmaies, porque o SENHOR teu Deus será contigo onde quer que fores."], "efes.4.32": ["Efésios 4:32", "Sede benignos uns com os outros, misericordiosos, perdoando-vos uns aos outros, como também Deus vos perdoou em Cristo."], "col.3.13": ["Colossenses 3:13", "Suportai-vos uns aos outros, e perdoai-vos uns aos outros, se alguém tiver queixa contra outro. Como o Senhor vos perdoou, assim também fazei."], "prov.10.12": ["Provérbios 10:12", "O ódio desperta brigas; mas o amor cobre todas as transgressões."], "1cor.13.4-5": ["1 Coríntios 13:4-5", "O amor é paciente, é bondoso; o amor não é invejoso; o amor não é orgulhoso, não é arrogante. O amor não trata mal; não busca os próprios interesses, não se ira, não é rancoroso."], "joao.15.12": ["João 15:12", "Este é meu mandamento: que vos ameis uns aos outros, assim como eu vos amei."], "joao.3.16": ["João 3:16", "Porque Deus amou ao mundo de tal maneira, que deu o seu Filho unigênito; para que todo aquele que nele crê não pereça, mas tenha a vida eterna."], "1joao.4.16": ["1 João 4:16", "E nós conhecemos e cremos no amor que Deus tem por nós. Deus é amor, e quem está no amor está em Deus, e Deus habita nele."], "1joao.4.18": ["1 João 4:18", "No amor não há medo; pelo contrário, o perfeito amor expulsa o medo."], "1joao.3.18": ["1 João 3:18", "Filhinhos, amemos não de palavra, nem de língua, mas sim com ação e verdade."], "rom.13.10": ["Romanos 13:10", "O amor não faz mal ao próximo. Assim, o cumprimento da Lei é o amor."], "cant.8.6": ["Cantares 8:6", "Põe-me como selo sobre o teu coração, como selo sobre o teu braço; porque o amor é forte como a morte."], "rom.8.38-39": ["Romanos 8:38-39", "Pois tenho certeza que nem a morte, nem a vida, nem anjos, nem principados, nem o presente, nem o futuro, nem poderes, nem altura, nem profundeza, nem qualquer outra criatura poderá nos separar do amor de Deus, que está em Cristo Jesus, nosso Senhor."], "joao.13.34": ["João 13:34", "Um novo mandamento vos dou: que vos ameis uns aos outros; tal como eu vos amei, também ameis vós uns aos outros."], "1cor.13.8": ["1 Coríntios 13:8", "O amor nunca falha."], "efes.4.2": ["Efésios 4:2", "Com toda humildade e mansidão; com paciência, tolerando uns aos outros em amor."], "efes.5.2": ["Efésios 5:2", "Andai em amor, como também Cristo vos amou, e se entregou por nós."], "prov.17.17": ["Provérbios 17:17", "O amigo ama em todo tempo, e o irmão nasce para ajudar na angústia."], "prov.18.24": ["Provérbios 18:24", "Há um amigo mais chegado que um irmão."], "prov.27.17": ["Provérbios 27:17", "O ferro é afiado com ferro; assim também o homem afia o rosto de seu amigo."], "prov.27.9": ["Provérbios 27:9", "O óleo e o perfume alegram ao coração; assim é a doçura de um amigo com um conselho sincero."], "joao.15.13": ["João 15:13", "Ninguém tem maior amor que este: que alguém ponha sua vida por seus amigos."], "fil.1.3-4": ["Filipenses 1:3-4", "Agradeço ao meu Deus todas as vezes que me lembro de vós, sempre em todas as minhas orações, com alegria."], "1tes.5.11": ["1 Tessalonicenses 5:11", "Portanto exortai-vos uns aos outros, e edificai-vos uns aos outros, como já fazeis."], "heb.10.24": ["Hebreus 10:24", "Sejamos atenciosos uns para com os outros, a fim de incentivar o amor e as boas obras."], "ecl.4.9-10": ["Eclesiastes 4:9-10", "Dois são melhores do que um, porque eles têm melhor recompensa por seu trabalho. Porque se vierem a cair, um levanta ao seu companheiro."], "1tes.1.2": ["1 Tessalonicenses 1:2", "Sempre damos graças a Deus por todos vós, fazendo menção de vós em nossas orações."]}, "R": ["1cor.13.4-5", "1cor.13.7", "1cor.13.8", "1cor.13.13", "ecl.4.9", "ecl.4.12", "cant.8.6", "cant.8.7", "cant.2.16", "1joao.4.7", "1joao.4.16", "1joao.4.18", "1joao.4.19", "1joao.3.18", "joao.15.12", "joao.13.34", "joao.3.16", "col.3.14", "col.3.13", "1ped.4.8", "rute.1.16", "rom.12.10", "rom.13.10", "rom.8.38-39", "1cor.16.14", "prov.3.3", "prov.10.12", "efes.4.32", "efes.4.2", "efes.5.2"], "RA": ["prov.17.17", "prov.18.24", "prov.27.17", "prov.27.9", "joao.15.13", "joao.15.12", "joao.13.34", "fil.1.3-4", "1tes.5.11", "1tes.1.2", "heb.10.24", "ecl.4.9-10", "ecl.4.12", "rom.12.10", "1joao.4.7", "1joao.4.16", "1joao.3.18", "1cor.13.4-5", "1cor.13.7", "1cor.13.13", "1cor.16.14", "col.3.14", "col.3.13", "1ped.4.8", "efes.4.32", "efes.4.2", "rute.1.16", "prov.3.3", "rom.12.12", "num.6.24-26"], "RF": ["num.6.24-26", "sal.121.8", "sal.20.4", "jer.29.11", "sal.16.11", "isa.40.31", "fil.1.6", "sal.37.4", "sal.46.1", "isa.41.10", "jos.1.9", "sal.118.24", "fil.4.6-7", "rom.12.12", "1tes.1.2", "fil.1.3-4", "prov.3.3", "1joao.3.18", "1joao.4.16", "joao.3.16", "rom.8.38-39", "1joao.4.19", "1cor.16.14", "efes.5.2"]};
 const VERSOS = DADOS.V;
-Object.assign(OCASIOES, OCASIOES_AMIGO);
+Object.assign(OCASIOES, OCASIOES_AMIGO, OCASIOES_FAM);
 Object.keys(OCASIOES).forEach(k=>OCASIOES[k].versos=DADOS.O[k]);
 const ehAmigo=o=>!!(OCASIOES[o]&&OCASIOES[o].amigo);
-const oracoesDe=o=>ehAmigo(o)?ORACOES_AMIGO:ORACOES;
+const ehFam=o=>!!(OCASIOES[o]&&OCASIOES[o].fam);
+const grupoDe=o=>ehFam(o)?"familia":ehAmigo(o)?"amigo":"casal";
+const oracoesDe=o=>ehFam(o)?ORACOES_FAM:ehAmigo(o)?ORACOES_AMIGO:ORACOES;
 
 const $ = id => document.getElementById(id);
 function toast(t){ const el=$("toast"); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,2800); }
@@ -993,7 +1072,7 @@ function salvar(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){
 function b64enc(obj){ const bytes=new TextEncoder().encode(JSON.stringify(obj)); let s=""; bytes.forEach(b=>s+=String.fromCharCode(b)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
 function b64dec(str){ str=str.replace(/-/g,"+").replace(/_/g,"/"); while(str.length%4) str+="="; const bin=atob(str); const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0)); return JSON.parse(new TextDecoder().decode(bytes)); }
 const generoTitulo=(t,sx)=>sx==="a"?t.replace("obrigado","obrigada"):t;
-const tituloDe=(o,para)=>generoTitulo(OCASIOES[o].titulo.replace("{para}",para||(OCASIOES[o].amigo?"meu amigo":"meu amor")),OCASIOES[o].amigo?S.sx:"");
+const tituloDe=(o,para)=>generoTitulo(OCASIOES[o].titulo.replace("{para}",para||(OCASIOES[o].fam?"querida família":OCASIOES[o].amigo?"meu amigo":"meu amor")),OCASIOES[o].amigo?S.sx:"");
 const reduz=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ============ estado do criador ============ */
@@ -1010,15 +1089,15 @@ S.fotos=S.fotos.map(f=>(f&&typeof f==="object")?{d:typeof f.d==="string"?f.d:"",
 if(!S.ff||typeof S.ff!=="object") S.ff={d:"",u:"",c:""};
 ["d","u","c"].forEach(k=>{ if(typeof S.ff[k]!=="string") S.ff[k]=""; });
 if(typeof S.mot!=="string") S.mot="";
-["para","de","ti","dt","w","m","ml","mtit","mcan"].forEach(k=>{ if(typeof S[k]!=="string") S[k]=""; });
+["para","de","ti","dt","w","m","ml","mtit","mcan","ab"].forEach(k=>{ if(typeof S[k]!=="string") S[k]=""; });
 if(!Array.isArray(S.v)) S.v=[];
 if(typeof S.or!=="number") S.or=0;
 function guardar(){ try{ localStorage.setItem("cd_rascunho",JSON.stringify(S)); }catch(e){ try{ const s2=Object.assign({},S,{fotos:S.fotos.map(f=>({d:"",c:f.c}))}); localStorage.setItem("cd_rascunho",JSON.stringify(s2)); }catch(e2){} } atualizarResumo(); if(liberado) gerarLink(); }
 
 function pintarOcasioes(){
-  const am=ehAmigo(S.o); $("tipos").querySelectorAll(".tipo").forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.g==="amigo")===am)));
+  const am=ehAmigo(S.o), g=grupoDe(S.o); $("tipos").querySelectorAll(".tipo").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.g===g)));
   textosTipo(am);
-  $("ocasioes").innerHTML=Object.entries(OCASIOES).filter(([k,o])=>!!o.amigo===am).map(([k,o])=>`<button type="button" class="chip" data-o="${k}" aria-pressed="${k===S.o}">${o.nome}</button>`).join("");
+  $("ocasioes").innerHTML=Object.entries(OCASIOES).filter(([k,o])=>grupoDe(k)===g).map(([k,o])=>`<button type="button" class="chip" data-o="${k}" aria-pressed="${k===S.o}">${o.nome}</button>`).join("");
   $("ocasioes").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
     if(S.o===b.dataset.o) return; S.o=b.dataset.o; S.v=OCASIOES[S.o].versos.slice(0,1); pintarVersos.todos=false;
     if(!tituloEditado) S.ti="";
@@ -1026,22 +1105,24 @@ function pintarOcasioes(){
   }));
 }
 function textosTipo(am){
-  $("lPara").textContent=am?"Nome do seu amigo(a)":"Nome do seu amor";
+  const fa=ehFam(S.o);
+  $("lPara").textContent=fa?"Como você chama essa pessoa":am?"Nome do seu amigo(a)":"Nome do seu amor";
   $("lMot").textContent=am?"Por que você é grato por essa pessoa?":"Por que você ama essa pessoa?";
   pintarBilhetes();
   $("boxSx").hidden=!am; $("sx").querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.sx===(S.sx||"o"))));
-  $("fPara").placeholder=am?"Ex.: Lucas":"Ex.: Ana";
-  $("lData").textContent=am?"Somos amigos desde":"Começamos a namorar em";
+  $("fPara").placeholder=fa?"Ex.: Mãe, Pai, Dona Maria":am?"Ex.: Lucas":"Ex.: Ana";
+  $("lData").textContent=fa?"Data do seu nascimento":am?"Somos amigos desde":"Começamos a namorar em";
+  $("sx").querySelectorAll(".chip").forEach(c=>c.textContent=fa?(c.dataset.sx==="a"?"Sua filha":"Seu filho"):(c.dataset.sx==="a"?"Sua irmã em Cristo":"Seu irmão em Cristo"));
   $("dZap").textContent=am?"Opcional. Para seu amigo(a) responder com um toque.":"Opcional. Para seu amor responder com um toque.";
   $("mt0").placeholder=am?"Ex.: Nos conhecemos no grupo de jovens":"Ex.: Nos conhecemos no culto de jovens";
   $("mt1").placeholder=am?"Ex.: Aquele retiro inesquecível":"Ex.: Nosso primeiro passeio no parque";
   $("mt2").placeholder=am?"Ex.: Quando você orou comigo":"Ex.: O dia em que conheci sua família";
 }
 $("sx").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.sx=c.dataset.sx; textosTipo(ehAmigo(S.o)); if(!tituloEditado){ S.ti=""; preencherTitulo(); } guardar(); }));
-const assinaturaAmigo=sx=>"Com carinho, "+(sx==="a"?"da sua irmã":"do seu irmão")+" em Cristo Jesus";
+const assinaturaAmigo=(sx,o)=>ehFam(o||S.o)?"Com carinho, "+(sx==="a"?"da sua filha":"do seu filho"):"Com carinho, "+(sx==="a"?"da sua irmã":"do seu irmão")+" em Cristo Jesus";
 $("tipos").querySelectorAll(".tipo").forEach(b=>b.addEventListener("click",()=>{
-  const querAmigo=b.dataset.g==="amigo"; if(querAmigo===ehAmigo(S.o)) return;
-  S.o=querAmigo?"amizade":"namoro"; S.v=OCASIOES[S.o].versos.slice(0,1); S.or=0; pintarVersos.todos=false;
+  const g=b.dataset.g; if(g===grupoDe(S.o)) return;
+  S.o=g==="familia"?"diadasmaes":g==="amigo"?"amizade":"namoro"; S.v=OCASIOES[S.o].versos.slice(0,1); S.or=0; pintarVersos.todos=false;
   if(!tituloEditado) S.ti="";
   pintarOcasioes(); pintarVersos(); pintarSugestoes(); pintarOracoes(); preencherTitulo(); guardar();
 }));
@@ -1058,9 +1139,9 @@ function pintarVersos(){
 }
 function pintarSugestoes(){
   $("sugestoes").innerHTML=OCASIOES[S.o].msgs.map((_,i)=>`<button type="button" class="chip" data-i="${i}">Usar sugestão ${i+1}</button>`).join("");
-  $("sugestoes").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{ S.m=OCASIOES[S.o].msgs[+b.dataset.i]; $("fMsg").value=S.m; $("nMsg").textContent=S.m.length; guardar(); }));
+  $("sugestoes").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{ S.m=OCASIOES[S.o].msgs[+b.dataset.i]; if(ehAmigo(S.o)&&S.sx==="a") S.m=S.m.replace(/\bobrigado\b/g,"obrigada").replace(/\bObrigado\b/g,"Obrigada").replace(/\bgrato\b/g,"grata"); $("fMsg").value=S.m; $("nMsg").textContent=S.m.length; guardar(); }));
 }
-function oracaoTexto(i,para,de,o){ const L=oracoesDe(o||S.o); return ((L[i]||"")+" Em nome de Jesus Cristo, amém.").replace("{para}",para||(ehAmigo(o||S.o)?"meu amigo":"meu amor")).replace("{de}",de||"por mim"); }
+function oracaoTexto(i,para,de,o){ const L=oracoesDe(o||S.o); return ((L[i]||"")+" Em nome de Jesus Cristo, amém.").replace("{para}",para||(ehFam(o||S.o)?"querida família":ehAmigo(o||S.o)?"meu amigo":"meu amor")).replace("{de}",de||"por mim"); }
 function pintarOracoes(){
   const ORS=oracoesDe(S.o);
   $("oracoes").innerHTML=ORS.map((_,i)=>`<label class="opc"><input type="radio" name="or" value="${i+1}" ${S.or===i+1?"checked":""}><span></span></label>`).join("")+`<label class="opc"><input type="radio" name="or" value="0" ${!S.or?"checked":""}><span style="font-style:normal">Sem oração</span></label>`;
@@ -1075,6 +1156,8 @@ try{ $("fData").max=new Date().toISOString().slice(0,10); }catch(e){}
 $("fPara").addEventListener("input",e=>{ S.para=e.target.value.trim(); if(!tituloEditado){ S.ti=""; preencherTitulo(); } pintarOracoes(); guardar(); });
 $("fDe").addEventListener("input",e=>{ S.de=e.target.value.trim(); pintarOracoes(); guardar(); });
 $("fData").addEventListener("change",e=>{ S.dt=e.target.value; guardar(); });
+$("fAbre").value=S.ab||""; try{ const hj=new Date(); hj.setMinutes(hj.getMinutes()-hj.getTimezoneOffset()); $("fAbre").min=hj.toISOString().slice(0,10); }catch(e){}
+$("fAbre").addEventListener("change",e=>{ S.ab=e.target.value; guardar(); });
 $("fZap").addEventListener("input",e=>{ S.w=e.target.value.replace(/\D/g,"").slice(0,13); guardar(); });
 $("fTitulo").addEventListener("input",e=>{ const v=e.target.value; tituloEditado=v.trim()!==""&&v!==tituloDe(S.o,S.para); S.ti=tituloEditado?v:""; guardar(); });
 $("fMsg").addEventListener("input",e=>{ S.m=e.target.value; $("nMsg").textContent=S.m.length; guardar(); });
@@ -1085,7 +1168,7 @@ function pintarBilhetes(){
   let ult=-1; vals.slice(0,20).forEach((v,k)=>{ if(v.trim()) ult=k; });
   bilVis=Math.min(20,Math.max(bilVis,5,ult+2));
   const am=ehAmigo(S.o);
-  const ex=am?["Você sempre ora por mim","Sua alegria nos cultos","Os conselhos que você me dá"]:["Seu sorriso quando fala de Deus","O jeito que você cuida de mim","Suas orações por nós"];
+  const ex=ehFam(S.o)?["Por cada oração por mim","Pelo seu colo e seus conselhos","Por me ensinar a amar a Deus"]:am?["Você sempre ora por mim","Sua alegria nos cultos","Os conselhos que você me dá"]:["Seu sorriso quando fala de Deus","O jeito que você cuida de mim","Suas orações por nós"];
   ol.innerHTML="";
   for(let k=0;k<bilVis;k++){
     const li=document.createElement("li"); li.className="bil";
@@ -1274,7 +1357,7 @@ pintarOcasioes(); pintarVersos(); pintarSugestoes(); pintarOracoes(); preencherT
 /* ============ pagamento (Mercado Pago) e liberação ============ */
 $("vPreco").textContent=CONFIG.preco; $("vAntigo").textContent=CONFIG.precoAntigo; $("pagarPix").textContent="Pagar "+CONFIG.preco+" com Pix";
 $("fEmail").value=ler("cd_email","");
-function validar(){ if(!S.para) return ehAmigo(S.o)?"Escreva o nome do seu amigo(a).":"Escreva o nome do seu amor."; if(!S.v.length) return "Escolha pelo menos um versículo."; return ""; }
+function validar(){ if(!S.para) return ehFam(S.o)?"Escreva como você chama essa pessoa.":ehAmigo(S.o)?"Escreva o nome do seu amigo(a).":"Escreva o nome do seu amor."; if(!S.v.length) return "Escolha pelo menos um versículo."; return ""; }
 const valorNum=()=>parseFloat(CONFIG.preco.replace(/[^0-9,]/g,"").replace(",","."))||0;
 async function api(caminho,corpo){
   const r=await fetch(CONFIG.api+caminho,corpo?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(corpo)}:{cache:"no-store"});
@@ -1330,6 +1413,7 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden && pedido
 function enderecoBase(){ if(CONFIG.enderecoSite) return CONFIG.enderecoSite.replace(/#.*$/,""); return location.href.replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/c\/[^/]*$/,"/"); }
 function dadosCarta(){ const P={ o:S.o, p:S.para, d:S.de, v:S.v, m:S.m.trim(), t:S.t, mu:S.mt==="site"?1:0 };
   if(ehAmigo(S.o) && S.sx==="a") P.sx="a";
+  if(/^\d{4}-\d{2}-\d{2}$/.test(S.ab||"")){ const t=new Date(S.ab+"T00:00:00"); if(!isNaN(t)&&t.getTime()>Date.now()) P.ab=t.toISOString(); }
   if(S.mt==="link"){ const info=lerMusica(S.ml); if(info && info.tipo!=="l") P.ml=info.tipo+":"+info.id; }
   const fs=fotosDoCriador(); if(fs.length && fs.some(f=>f.c.trim())) P.fc=fs.map(f=>f.c.trim());
   if(S.ti) P.ti=S.ti; if(S.dt) P.dt=S.dt; if(S.w) P.w=S.w; if(S.or) P.or=S.or;
@@ -1377,7 +1461,7 @@ async function montarCartao(url){
   c.imageSmoothingEnabled=false; c.drawImage(qr,x,y,q,q); c.imageSmoothingEnabled=true;
   c.fillStyle="#f7ecdc"; c.font="600 40px 'Nunito Sans', sans-serif"; c.fillText("Aponte a câmera do celular",W/2,1010);
   c.fillStyle="rgba(247,236,220,.75)"; c.font="400 32px 'Nunito Sans', sans-serif"; c.fillText("e abra com calma",W/2,1060);
-  if(S.de){ c.fillStyle=tema[2]; c.font="italic 500 58px Newsreader, Georgia, serif"; if(ehAmigo(S.o)){ c.font="italic 500 38px Newsreader, Georgia, serif"; c.fillText(assinaturaAmigo(S.sx)+",",W/2,1150); c.font="italic 500 58px Newsreader, Georgia, serif"; c.fillText(S.de,W/2,1212); } else c.fillText("Com carinho, "+S.de,W/2,1190); }
+  if(S.de){ c.fillStyle=tema[2]; c.font="italic 500 58px Newsreader, Georgia, serif"; if(ehAmigo(S.o)){ c.font="italic 500 38px Newsreader, Georgia, serif"; c.fillText(assinaturaAmigo(S.sx,S.o)+",",W/2,1150); c.font="italic 500 58px Newsreader, Georgia, serif"; c.fillText(S.de,W/2,1212); } else c.fillText("Com carinho, "+S.de,W/2,1190); }
   const s=26,hx=W/2,hy=1250; c.fillStyle=tema[2]; c.beginPath(); c.moveTo(hx,hy+s*.3); c.bezierCurveTo(hx,hy,hx-s*.5,hy,hx-s*.5,hy+s*.3); c.bezierCurveTo(hx-s*.5,hy+s*.6,hx,hy+s*.8,hx,hy+s); c.bezierCurveTo(hx,hy+s*.8,hx+s*.5,hy+s*.6,hx+s*.5,hy+s*.3); c.bezierCurveTo(hx+s*.5,hy,hx,hy,hx,hy+s*.3); c.fill();
   return cv;
 }
@@ -1475,6 +1559,7 @@ function abrirCarta(P,{previa=false}={}){
 /* ===== roleta do amor: gira e sorteia um versículo sobre o amor ===== */
 const ROLETA=(DADOS.R||[]).filter(id=>VERSOS[id]);
 const ROLETA_AMIGO=(DADOS.RA||[]).filter(id=>VERSOS[id]);
+const ROLETA_FAM=(DADOS.RF||[]).filter(id=>VERSOS[id]);
 function svgEl(tag,attrs){ const n=document.createElementNS("http://www.w3.org/2000/svg",tag); for(const k in attrs) n.setAttribute(k,attrs[k]); return n; }
 function desenharRoda(am){
   const svg=svgEl("svg",{viewBox:"-110 -110 220 220",class:"disco","aria-hidden":"true"});
@@ -1512,11 +1597,11 @@ const BONECO=`<svg viewBox="0 0 100 172" aria-hidden="true"><g class="rol-corpo"
 <g class="rol-braco"><path d="M66 90 C80 92 92 90 104 84" stroke="#f7f1e6" stroke-width="12" stroke-linecap="round" fill="none"/><circle cx="106" cy="83" r="6" fill="#e2b48a"/></g>
 </g></svg>`;
 function criarRoleta(am){
-  const POOL=am?ROLETA_AMIGO:ROLETA;
+  const fa=am==="fam"; const POOL=fa?ROLETA_FAM:am?ROLETA_AMIGO:ROLETA;
   if(!POOL.length) return null;
   const box=el("div","roleta surge");
-  box.appendChild(el("span","lbl",am?"Roleta da amizade":"Roleta do amor"));
-  box.appendChild(el("p","sub",am?"Gire e receba um versículo sobre amizade e amor":"Gire e receba um versículo sobre o amor"));
+  box.appendChild(el("span","lbl",fa?"Roleta da bênção":am?"Roleta da amizade":"Roleta do amor"));
+  box.appendChild(el("p","sub",fa?"Gire e receba uma bênção da Palavra":am?"Gire e receba um versículo sobre amizade e amor":"Gire e receba um versículo sobre o amor"));
   const palco=el("div","rol-palco"), bon=el("div","rol-boneco"); bon.innerHTML=BONECO;
   const roda=el("div","rol-roda"), disco=desenharRoda(am);
   const seta=svgEl("svg",{viewBox:"0 0 26 30",class:"rol-seta","aria-hidden":"true"}); seta.appendChild(svgEl("path",{d:"M13 30 L1 6 A12 12 0 1 1 25 6 Z",fill:"#fff7e6",stroke:"#7a1f33","stroke-width":"2"}));
@@ -1555,15 +1640,16 @@ function proximoMarco(ini,hojeX){
 function blocoNumeros(tj,am){
   const box=el("div","numeros surge");
   box.appendChild(el("span","lbl","Nossa história em números"));
-  box.appendChild(el("p","desde",(am?"Amigos desde ":"Juntos desde ")+tj.ini.toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric"})));
+  const fa=am==="fam";
+  box.appendChild(el("p","desde",(fa?"Ao seu lado desde ":am?"Amigos desde ":"Juntos desde ")+tj.ini.toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric"})));
   const itens=el("div","itens"), dias=Math.max(1,tj.total);
-  const lista=am?[["🤝",dias,dias===1?"dia de amizade":"dias de amizade"],["🙏",dias,dias===1?"dia orando um pelo outro":"dias orando um pelo outro"],["⏳",dias*24,"horas de amizade"]]
+  const lista=fa?[["🏠",dias,dias===1?"dia sendo amado(a) por você":"dias sendo amado(a) por você"],["🙏",dias,dias===1?"dia de oração":"dias de oração"],["⏳",dias*24,"horas de cuidado"]]:am?[["🤝",dias,dias===1?"dia de amizade":"dias de amizade"],["🙏",dias,dias===1?"dia orando um pelo outro":"dias orando um pelo outro"],["⏳",dias*24,"horas de amizade"]]
     :[["⏳",dias,dias===1?"manhã em que meu amor se renovou":"manhãs em que meu amor se renovou"],["🙏",dias,dias===1?"noite orando um pelo outro":"noites orando um pelo outro"],["❤️",dias*24,"horas de amor"]];
   lista.forEach(([ic,v,t])=>{
     const it=el("div","item"), tx=el("div"), b=el("b",null,"0"); b.dataset.alvo=v; tx.append(b,el("span",null,t)); it.append(el("i",null,ic),tx); itens.appendChild(it); });
   box.appendChild(itens);
   const pm=proximoMarco(tj.ini), mp=el("div","marco-prox"), p=el("p");
-  const sufixo=am?" de amizade":" juntos";
+  const sufixo=fa?" ao seu lado":am?" de amizade":" juntos";
   if(pm.falta===0) p.innerHTML=`Hoje completamos <b>${pm.texto}</b>${sufixo}! 🎉`;
   else p.innerHTML=`Faltam <b>${pm.falta} ${pm.falta===1?"dia":"dias"}</b> para completarmos ${pm.texto}${sufixo}`;
   const bar=el("div","barra"), fill=el("span"); fill.dataset.prog=pm.falta===0?1:pm.prog; bar.appendChild(fill); mp.append(p,bar); box.appendChild(mp);
@@ -1579,6 +1665,7 @@ function soltarPomba(){ if(reduz()) return; const d=document.createElement("div"
 
 const MOTIVOS_CASAL=["Porque você me aproxima de Deus.","Pelo seu sorriso, que alegra os meus dias.","Pelo jeito que você cuida de mim.","Porque você ora por nós.","Pela sua paciência comigo.","Porque com você eu me sinto em casa.","Pela sua fé, que me inspira.","Porque você é resposta de oração.","Pelos nossos risos sem motivo.","Porque você me faz querer ser melhor.","Pelo seu abraço, que acalma tudo.","Porque você acredita em mim.","Pelos sonhos que Deus nos deu juntos.","Pela sua bondade com todo mundo.","Porque cada dia com você é um presente.","Pelo seu coração sincero.","Porque você me escuta de verdade.","Pela paz que sinto ao seu lado.","Porque Deus escreveu você na minha história.","Simplesmente por ser você."];
 const MOTIVOS_AMIGO=["Por todas as vezes que você orou por mim.","Pela sua alegria nos cultos.","Pelos conselhos sinceros.","Porque você me lembra do amor de Deus.","Pelas risadas que a gente divide.","Porque você está comigo nos dias difíceis.","Pela sua fé, que me inspira.","Por ser um amigo mais chegado que um irmão.","Pela sua bondade com todo mundo.","Porque você me escuta de verdade.","Pelos louvores que cantamos juntos.","Porque você me incentiva a crescer.","Pela sua lealdade.","Porque com você eu posso ser eu mesmo.","Por cada palavra de ânimo.","Pela sua paciência comigo.","Porque Deus te colocou no meu caminho.","Pelas conversas que viram oração.","Pelo seu coração generoso.","Simplesmente por ser quem você é."];
+const MOTIVOS_FAM=["Por cada oração que você fez por mim.","Pelo seu colo nos dias difíceis.","Por me ensinar a amar a Deus.","Pelos conselhos que levo para a vida.","Por cada sacrifício que você fez por mim.","Pelo seu abraço, que é casa.","Pela sua fé, que me inspira.","Por acreditar em mim.","Pelas risadas em família.","Pela sua paciência comigo.","Por me ensinar o que é amor de verdade.","Pelo cuidado nos mínimos detalhes.","Por estar sempre presente.","Pelas comidas que têm gosto de lar.","Pela sua força.","Por me perdoar tantas vezes.","Por ser exemplo de honestidade.","Porque Deus me deu você.","Por cada \"se cuida\" e cada \"tô orando por você\".","Simplesmente por ser quem você é."];
 const CORES_PAPEL=["#f4a6b8","#f7c873","#b8a4e8","#9fd3c7","#f39a7e","#a8c8f0","#f6e27a","#e8a0d8"];
 function desenharPote(n){
   let papeis=""; let s=7; const r=()=>{ s=(s*9301+49297)%233280; return s/233280; };
@@ -1599,7 +1686,7 @@ function desenharPote(n){
   </svg>`;
 }
 function criarPote(P){
-  const am=ehAmigo(P.o); const lista=(Array.isArray(P.mot)&&P.mot.length?P.mot:(am?MOTIVOS_AMIGO:MOTIVOS_CASAL)).slice(0,20);
+  const am=ehAmigo(P.o); const lista=(Array.isArray(P.mot)&&P.mot.length?P.mot:(ehFam(P.o)?MOTIVOS_FAM:am?MOTIVOS_AMIGO:MOTIVOS_CASAL)).slice(0,20);
   const box=el("div","pote surge"); box.appendChild(el("span","lbl","O pote dos motivos"));
   box.appendChild(el("h3",null,am?"Por que sou grato por você":"Por que eu te amo"));
   const palco=el("div","palco"); const prat=el("div","prateleira");
@@ -1652,20 +1739,20 @@ function mostrarCarta(P,cardMusica){
   const oc=OCASIOES[P.o]||OCASIOES.namoro, partes=[], add=n=>{ c.appendChild(n); partes.push(n); return n; };
   add(el("p","occ surge",oc.nome));
   add(el("h1","surge",(P.ti||"").trim()||generoTitulo(oc.titulo.replace("{para}",P.p||(oc.amigo?"meu amigo":"meu amor")),oc.amigo?P.sx:"")));
-  { const rol=criarRoleta(ehAmigo(P.o)); if(rol) add(rol); }
+  { const rol=criarRoleta(ehFam(P.o)?"fam":ehAmigo(P.o)); if(rol) add(rol); }
   if(P.fotos&&P.fotos.length){ const pol=el("div","polaroides surge"); P.fotos.forEach((src,i)=>{ const f=el("figure","pol"); f.style.margin="0"; const im=document.createElement("img"); im.src=src; im.alt="Foto"; f.appendChild(im); f.appendChild(el("span",null,(P.fc&&P.fc[i])||"")); pol.appendChild(f); }); add(pol); }
   if(cardMusica) add(cardMusica);
   const tj=P.dt?tempoJuntos(P.dt):null;
-  if(tj){ const nb=blocoNumeros(tj,ehAmigo(P.o)); add(nb); }
+  if(tj){ const nb=blocoNumeros(tj,ehFam(P.o)?"fam":ehAmigo(P.o)); add(nb); }
   add(criarPote(P));
   (P.v||[]).filter(id=>VERSOS[id]).forEach(id=>{ { const o=el("span","orn surge"); o.appendChild(el("i")); add(o); } const b=el("div","gv surge"); b.append(el("p","t","“"+VERSOS[id][1]+"”"),el("p","r",VERSOS[id][0].toUpperCase())); add(b); });
   if(P.m) add(criarPergaminho(P.m));
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
   if(!P.ffoto && modoPrevia){ P=Object.assign({},P,{ ffoto:raizSite()+(ehAmigo(P.o)?"img/exemplo-cabine-amigo.jpg":"img/exemplo-cabine.jpg"), ffc:"" }); }
   if(P.ffoto) add(criarCabine(P));
-  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com carinho, "+P.d)); }
+  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx,P.o)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com carinho, "+P.d)); }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
-  if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
+  if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehFam(P.o)?"Recebi sua carta e amei! Te amo muito.":ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
   else if(fone){ const a=el("span","resp-btn","Responder com carinho"); fim.appendChild(a); }
   const rv=el("button","rever","Abrir de novo"); fim.appendChild(rv);
   const sm=el("small"); sm.innerHTML=`Feito com <a href="#">Carta com Propósito</a>. Crie uma para quem você ama.`; fim.appendChild(sm); add(fim);
@@ -1766,7 +1853,9 @@ document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=
   if(!m) return;
   $("loja").setAttribute("aria-hidden","true");
   try{
-    const j=await api("/carta?id="+m[1]); const P=j.carta;
+    const j=await api("/carta?id="+m[1]);
+    if(j.bloqueada){ telaEspera(j); return; }
+    const P=j.carta;
     P.fotos=(Array.isArray(P.fu)?P.fu:[]).slice(0,3).filter(u=>/^[\w\/.-]+$/.test(u)).map(u=>"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+u);
     if(typeof P.ffu==="string"&&/^[\w\/.-]+$/.test(P.ffu)) P.ffoto="https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+P.ffu;
     abrirCarta(P,{previa:false});
@@ -1781,6 +1870,52 @@ document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=
   z.addEventListener("click",()=>{ try{ window.fbq&&fbq("trackCustom","TerminarDepois",{via:"whatsapp"}); }catch(e){} });
   c.addEventListener("click",async()=>{ let ok=false; try{ await navigator.clipboard.writeText(url); ok=true; }catch(e){ try{ const t=document.createElement("textarea"); t.value=url; document.body.appendChild(t); t.select(); ok=document.execCommand("copy"); t.remove(); }catch(_){} }
     c.textContent=ok?"Link copiado ✓":url; try{ window.fbq&&fbq("trackCustom","TerminarDepois",{via:"copiar"}); }catch(e){} setTimeout(()=>c.textContent="Copiar link",2500); });
+}catch(e){} })();
+
+function telaEspera(j){
+  const alvo=Date.parse(j.ab); const box=document.createElement("div"); box.className="espera"; box.setAttribute("role","dialog");
+  const nome=String(j.p||"").slice(0,40), de=String(j.d||"").slice(0,40);
+  const dia=new Date(alvo).toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric"});
+  box.innerHTML='<div><div class="env"><i>✝</i></div><h1></h1><p></p><div class="cont-reg"><div><b data-k="d">0</b><small>dias</small></div><div><b data-k="h">00</b><small>horas</small></div><div><b data-k="m">00</b><small>min</small></div><div><b data-k="s">00</b><small>seg</small></div></div><p class="ass"></p></div>';
+  box.querySelector("h1").textContent=nome?("Uma carta para "+nome):"Uma carta para você";
+  box.querySelectorAll("p")[0].textContent="Ela foi preparada com carinho e só pode ser aberta em "+dia+".";
+  box.querySelector(".ass").textContent=de?("Com carinho, "+de):"";
+  document.body.appendChild(box);
+  const z=n=>String(n).padStart(2,"0");
+  const tic=()=>{ let r=Math.max(0,alvo-Date.now()); if(r<=0){ location.reload(); return; }
+    const d=Math.floor(r/864e5); r%=864e5; const h=Math.floor(r/36e5); r%=36e5; const mi=Math.floor(r/6e4); const se=Math.floor((r%6e4)/1e3);
+    box.querySelector('[data-k="d"]').textContent=d; box.querySelector('[data-k="h"]').textContent=z(h); box.querySelector('[data-k="m"]').textContent=z(mi); box.querySelector('[data-k="s"]').textContent=z(se); };
+  tic(); setInterval(tic,1000);
+}
+(function(){ try{
+  const fim=Date.parse(CONFIG.promoFim||""); if(!fim||location.pathname.match(/\/c\//)) return;
+  const ph=$("promoHero"), pr=$("promoResumo");
+  ph.querySelector("b").textContent=CONFIG.preco; ph.querySelector("s").textContent=CONFIG.precoAntigo;
+  const z=n=>String(n).padStart(2,"0");
+  const tic=()=>{ let r=fim-Date.now(); if(r<=0){ ph.hidden=true; pr.hidden=true; clearInterval(t); return; }
+    const d=Math.floor(r/864e5); r%=864e5; const h=Math.floor(r/36e5); r%=36e5; const mi=Math.floor(r/6e4); const se=Math.floor((r%6e4)/1e3);
+    const txt=(d?d+(d===1?" dia ":" dias "):"")+z(h)+":"+z(mi)+":"+z(se);
+    document.querySelectorAll(".relogio").forEach(x=>x.textContent=txt); ph.hidden=false; pr.hidden=false; };
+  const t=setInterval(tic,1000); tic();
+}catch(e){} })();
+(function(){ try{
+  const L=Array.isArray(CONFIG.depoimentos)?CONFIG.depoimentos.filter(x=>x&&x.img):[]; if(!L.length) return;
+  const g=$("deps"); L.forEach(x=>{ const f=document.createElement("figure"); f.className="dep"; const im=new Image(); im.src=x.img; im.alt="Depoimento de cliente"; im.loading="lazy"; f.appendChild(im);
+    if(x.texto){ const p=document.createElement("p"); p.textContent="“"+x.texto+"”"; f.appendChild(p); } if(x.nome){ const b=document.createElement("b"); b.textContent=x.nome; f.appendChild(b); } g.appendChild(f); });
+  $("depoimentos").hidden=false;
+}catch(e){} })();
+(function(){ try{
+  if(location.pathname.match(/\/c\//)) return;
+  const bar=$("barraFixa"), A=$("bfA"), B=$("bfB"), hero=document.querySelector(".hero"), criar=$("criar"); if(!bar||!hero||!criar) return;
+  bar.hidden=false; let modo="";
+  const aberta=()=>!!document.querySelector(".espera")||document.body.classList.contains("lendo")||document.documentElement.style.overflow==="hidden"||document.body.style.overflow==="hidden";
+  const atualizar=()=>{ const y=scrollY, hb=hero.getBoundingClientRect().bottom, cr=criar.getBoundingClientRect();
+    const naCriacao=cr.top<innerHeight*.5 && cr.bottom>innerHeight*.5;
+    const novo=naCriacao?"form":"land"; if(novo!==modo){ modo=novo; if(modo==="form"){ A.textContent="👁 Ver prévia"; B.textContent="Ir para o pagamento"; } else { A.textContent="▶ Ver exemplo"; B.textContent="Criar minha carta"; } }
+    bar.classList.toggle("on", hb<0 && !aberta()); };
+  addEventListener("scroll",atualizar,{passive:true}); addEventListener("resize",atualizar); setInterval(atualizar,800); atualizar();
+  A.addEventListener("click",()=>{ if(modo==="form") $("previa").click(); else $("verExemplo").click(); });
+  B.addEventListener("click",()=>{ const alvo=modo==="form"?(document.querySelector(".resumo")):criar; alvo&&alvo.scrollIntoView({behavior:"smooth",block:"start"}); });
 }catch(e){} })();
 </script>
 </body></html>
