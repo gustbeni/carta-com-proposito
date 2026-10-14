@@ -10,3 +10,6 @@ amigos_aperto.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791668622/a
 casal_feliz.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791669465/anuncios/casal_feliz.jpg
 fundo_feed.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791681587/anuncios/fundo_feed.jpg
 casal_abraco.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791736978/anuncios/casal_abraco.jpg
+GreatVibes-Regular.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/greatvibes/GreatVibes-Regular.ttf
+Cormorant.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf
+CormorantItalic.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/CormorantGaramond-Italic%5Bwght%5D.ttf
