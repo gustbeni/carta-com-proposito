@@ -921,6 +921,45 @@ footer, footer a { color:#b8968d; }
 .gift .gassin.casal::before, .gift .gassin.amigo::before { content:""; position:absolute; top:0; left:50%; width:160px; margin-left:-80px; height:1px; background:linear-gradient(90deg,transparent,rgba(243,208,138,.8),transparent); }
 .gift .gassin .l1 { font-family:"Cormorant Garamond",Georgia,serif !important; font-style:italic; font-size:1.35rem !important; color:#f0dcc0; opacity:.95; }
 .gift .gassin .nome { font-family:"Great Vibes",cursive !important; font-size:clamp(3.6rem,17vw,4.8rem) !important; line-height:1.1; color:#f6d38a !important; text-shadow:0 2px 20px rgba(243,208,138,.45), 0 0 2px rgba(0,0,0,.5); }
+
+/* ===== sequência com ações, player, espaçamento, cabine maior ===== */
+.gift .carta { gap:64px !important; padding-bottom:55vh; transition:padding .6s; }
+.gift .carta.completa { padding-bottom:40px; }
+.gift .carta > .orn { margin:-30px 0; }
+.chama { animation:chama 1.8s ease-in-out infinite; }
+@keyframes chama { 0%,100% { box-shadow:0 0 0 0 rgba(243,208,138,.55); } 50% { box-shadow:0 0 0 12px rgba(243,208,138,0); } }
+.cabine.chama { animation:none; }
+.cabine.chama .maq { animation:chama 1.8s ease-in-out infinite; border-radius:14px; }
+.dica-cab { font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:1.25rem; color:#f3d08a; margin-top:6px; animation:pisca 2.2s ease-in-out infinite; transition:opacity .5s; }
+.dica-cab.some { opacity:0; animation:none; }
+.convite { padding:58px 30px 54px !important; }
+.convite .cv-nome { font-size:clamp(4.2rem,20vw,5.4rem) !important; line-height:1.15 !important; margin:0 !important; }
+.convite h1 { margin-top:6px; }
+/* cabine 40% maior e foto inteira */
+.cab-wrap { max-width:760px !important; width:calc(100% + 24px); margin:0 -12px; grid-template-columns:minmax(0,.42fr) minmax(0,3.2fr) minmax(0,.42fr) !important; }
+.cab-wrap .anjo { margin-bottom:200px !important; }
+.cabine .foto img { aspect-ratio:auto !important; height:auto !important; object-fit:contain !important; max-height:72vh; }
+/* player de música */
+.g-top .player-mus { padding:6px 14px 6px 6px !important; gap:10px !important; background:linear-gradient(180deg,rgba(122,31,51,.92),rgba(70,14,28,.92)) !important; border:1px solid rgba(243,208,138,.6) !important; color:#f6e2c4 !important; box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 18px rgba(243,208,138,.18); font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:1rem !important; font-weight:600 !important; }
+.player-mus .disco-mus { position:relative; font-style:normal; width:34px; height:34px; border-radius:50%; background:radial-gradient(circle,#f3d08a 0 18%,#2a1210 19% 100%); box-shadow:inset 0 0 0 2px rgba(243,208,138,.55); display:grid; place-items:center; }
+.player-mus .ic-play { width:0; height:0; border-left:10px solid #f3d08a; border-top:6px solid transparent; border-bottom:6px solid transparent; margin-left:3px; }
+.player-mus .eq { display:none; gap:2px; align-items:flex-end; height:14px; }
+.player-mus .eq i { width:3px; background:#f3d08a; border-radius:2px; animation:eq .9s ease-in-out infinite; }
+.player-mus .eq i:nth-child(2){ animation-delay:-.3s; } .player-mus .eq i:nth-child(3){ animation-delay:-.6s; } .player-mus .eq i:nth-child(4){ animation-delay:-.15s; }
+@keyframes eq { 0%,100% { height:4px; } 50% { height:14px; } }
+.player-mus[aria-pressed="true"] .ic-play { display:none; }
+.player-mus[aria-pressed="true"] .eq { display:flex; }
+.player-mus[aria-pressed="true"] .disco-mus { background:#2a1210; }
+@keyframes giraDisco { to { transform:rotate(360deg); } }
+.g-top .player-mus svg { display:none; }
+
+.aviso-pote { font-family:"Cormorant Garamond","Lora",Georgia,serif; font-style:italic; font-weight:600; font-size:1.3rem; line-height:1.35; color:#f3d08a; margin:10px 0 2px; text-shadow:0 1px 10px rgba(243,208,138,.15); }
+.etapa .dica b#lMot { font-size:1.1rem; color:#f6e9dc; }
+/* aba do envelope em 2D (mais estável no celular) */
+.conv { perspective:none !important; }
+.conv .env { transform-style:flat !important; }
+.conv.abrindo .env .aba { animation:abaAbre2 .8s cubic-bezier(.45,.1,.3,1) .32s forwards !important; }
+@keyframes abaAbre2 { 0% { transform:scaleY(1); z-index:3; } 49% { transform:scaleY(.02); z-index:3; } 50% { transform:scaleY(-.02); z-index:0; background:linear-gradient(0deg,#e6d7bd,#d6c3a2); } 100% { transform:scaleY(-1); z-index:0; background:linear-gradient(0deg,#e6d7bd,#d6c3a2); } }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -1045,7 +1084,8 @@ footer, footer a { color:#b8968d; }
 
         <fieldset class="etapa">
           <legend><span class="n">7</span>Pote dos motivos</legend>
-          <p class="dica"><b id="lMot">Por que você ama essa pessoa?</b><br>Escreva um motivo em cada bilhete. Na carta, cada toque no pote tira um bilhetinho. É opcional: se deixar vazio, usamos motivos prontos.</p>
+          <p class="dica"><b id="lMot">Por que você ama essa pessoa?</b><br>Escreva um motivo em cada bilhete. Na carta, cada toque no pote tira um bilhetinho.</p>
+          <p class="aviso-pote">✨ É opcional: se deixar vazio, nós enchemos o pote com motivos lindos, escolhidos aleatoriamente.</p>
           <div class="pote-form">
             <div class="pote-tampa" aria-hidden="true"><i></i></div>
             <div class="pote-vidro" id="poteVidro">
@@ -1717,6 +1757,7 @@ function abrirCarta(P,{previa=false}={}){
   modoPrevia=previa; timers.forEach(clearTimeout); timers=[];
   const g=$("gift"); g.className="gift"+(P.t==="ouro"?"":P.t==="ceu"?" t-ceu":" t-rosa"); g.hidden=false; g.scrollTop=0; document.body.style.overflow="hidden";
   $("gFechar").hidden=!previa; $("gPrevia").hidden=!previa; $("gSom").hidden=true; Luz.iniciar();
+  if(!$("gSom").querySelector(".eq")){ const b=$("gSom"); const sp=b.querySelector("span"); const txt=(sp&&sp.textContent)||"Música"; b.innerHTML='<i class="disco-mus" aria-hidden="true"><i class="ic-play"></i><b class="eq"><i></i><i></i><i></i><i></i></b></i><span></span>'; b.querySelector("span").textContent=txt; b.classList.add("player-mus"); }
   const inner=$("gInner"); inner.innerHTML=""; inner.style.alignContent="";
   montarMesa(g); g._manual=false;
   if(!g._ouvindo){ g._ouvindo=true; const mao=()=>{ g._manual=true; }; g.addEventListener("touchmove",mao,{passive:true}); g.addEventListener("wheel",mao,{passive:true}); }
@@ -1838,7 +1879,7 @@ function criarRoleta(am){
   const roda=el("div","rol-roda"), disco=desenharRoda(am);
   const seta=svgEl("svg",{viewBox:"0 0 26 30",class:"rol-seta","aria-hidden":"true"}); seta.appendChild(svgEl("path",{d:"M13 30 L1 6 A12 12 0 1 1 25 6 Z",fill:"#fff7e6",stroke:"#7a1f33","stroke-width":"2"}));
   roda.append(seta,disco); palco.append(bon,roda); box.appendChild(palco);
-  const bt=el("button","rol-btn","Girar a roleta"); bt.type="button"; box.appendChild(bt);
+  const bt=el("button","rol-btn chama","Girar a roleta"); bt.type="button"; box.appendChild(bt);
   const res=el("div","rol-res"); res.setAttribute("aria-live","polite"); box.appendChild(res);
   let giro=0, ultimo=-1;
   bt.addEventListener("click",()=>{
@@ -1850,7 +1891,7 @@ function criarRoleta(am){
     const tempo=reduz()?450:4500;
     setTimeout(()=>{ palco.classList.remove("girando"); const v=VERSOS[POOL[idx]]; res.innerHTML="";
       res.append(el("p","t","“"+v[1]+"”"),el("p","r",v[0].toUpperCase())); res.classList.add("on");
-      bt.textContent="Girar de novo"; bt.disabled=false; try{ coracoesRoleta(roda,am); }catch(e){} }, tempo);
+      bt.textContent="Girar de novo"; bt.disabled=false; bt.classList.remove("chama"); try{ coracoesRoleta(roda,am); }catch(e){} if(box._feito){ const f=box._feito; box._feito=null; setTimeout(f,2600); } }, tempo);
   });
   return box;
 }
@@ -1929,9 +1970,8 @@ function criarPote(P){
   palco.append(prat,vidro,et,dica,vel,bil); box.appendChild(palco);
   let ordem=lista.map((_,i)=>i).sort(()=>Math.random()-.5), pos=0, lidos=0, ocupado=false;
   const conta=()=>et.querySelector("small").textContent=`${lidos} de ${lista.length} lidos`; conta();
-  const fechar=()=>{ bil.classList.remove("on"); vel.classList.remove("on"); setTimeout(()=>ocupado=false,350); };
+  const fechar=()=>{ bil.classList.remove("on"); vel.classList.remove("on"); setTimeout(()=>ocupado=false,350); if(box._feito){ const f=box._feito; box._feito=null; setTimeout(f,700); } };
   vel.addEventListener("click",fechar);
-  if(modoPrevia){ box._demo=()=>{ if(lidos||ocupado) return; vidro.click(); setTimeout(()=>{ if(bil.classList.contains("on")) fechar(); }, 4200); }; }
   vidro.addEventListener("click",()=>{
     if(ocupado) return; ocupado=true;
     vidro.classList.remove("chacoalha"); void vidro.offsetWidth; vidro.classList.add("chacoalha");
@@ -1954,14 +1994,15 @@ function criarPergaminho(txt,de,ass){
   ["a","b","c","d"].forEach(k=>{ const c=el("span","canto "+k); c.innerHTML='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 38 V10 Q2 2 10 2 H38"/><path d="M8 30 Q8 8 30 8"/><path d="M14 14 q6 -2 8 4 q2 6 -4 6 q-4 0 -3 -4"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>'; f.appendChild(c); });
   const cz=null; void '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg>'; const esc=el("div","escrita"), fant=el("p","fantasma",txt), dig=el("p","digitado"); esc.append(fant,dig); f.appendChild(esc);
   { const a=el("span","p-rosas"); a.innerHTML=buqueSVG("canto"); const b=el("span","p-rosas b"); b.innerHTML=buqueSVG("mini"); f.prepend(a,b); }
-  let assEl=null; if(de){ assEl=el("div","p-ass"); assEl.append(el("span",null,ass||"Com carinho,"),el("b",null,de)); f.appendChild(assEl); }
+  let assEl=null;
   inn.appendChild(f); corpo.appendChild(inn); w.append(r1,corpo,r2); w.classList.add("cartao-casamento");
   let feito=false, tm=null; const pena=el("span","pena","✒️");
-  const acabar=()=>{ feito=true; clearTimeout(tm); dig.textContent=txt; if(assEl) assEl.classList.add("on"); };
-  const escrever=()=>{ if(feito) return; if(reduz()){ acabar(); return; } let i=0; const passo=()=>{ if(feito) return; i=Math.min(txt.length,i+2); dig.textContent=txt.slice(0,i); dig.appendChild(pena); if(i<txt.length) tm=setTimeout(passo,42); else { tm=setTimeout(()=>{ pena.remove(); feito=true; if(assEl) assEl.classList.add("on"); },700); } }; passo(); };
+  const avisar=()=>{ if(w._feito){ const f=w._feito; w._feito=null; setTimeout(f,1500); } };
+  const acabar=()=>{ feito=true; clearTimeout(tm); dig.textContent=txt; avisar(); };
+  const escrever=()=>{ if(feito) return; if(reduz()){ acabar(); return; } let i=0; const passo=()=>{ if(feito) return; i=Math.min(txt.length,i+2); dig.textContent=txt.slice(0,i); dig.appendChild(pena); if(i<txt.length) tm=setTimeout(passo,42); else { tm=setTimeout(()=>{ pena.remove(); feito=true; avisar(); },700); } }; passo(); };
   w._tempo=reduz()?0:1100+Math.ceil(txt.length/2)*42+1300;
   w.addEventListener("click",acabar);
-  const ob=setInterval(()=>{ if(!w.isConnected&&feito){ clearInterval(ob); return; } if(w.classList.contains("on")){ const r=w.getBoundingClientRect(); if(r.top<innerHeight*.8&&r.bottom>innerHeight*.2){ clearInterval(ob); setTimeout(escrever,900); } } },150);
+  const ob=setInterval(()=>{ if(!w.isConnected&&feito){ clearInterval(ob); return; } if(w.classList.contains("on")){ const r=w.getBoundingClientRect(); if(r.top<innerHeight*.9&&r.bottom>innerHeight*.15){ clearInterval(ob); setTimeout(escrever,900); } } },150);
   return w;
 }
 function criarCabine(P){
@@ -1971,18 +2012,19 @@ function criarCabine(P){
   cab.innerHTML=`<div class="maq"><div class="lampadas"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="placa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg><span>CABINE DE FOTOS</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></div><div class="janela"><span class="lente"></span><span class="cortina e"></span><span class="cortina d"></span><span class="flash"></span></div><div class="fenda" style="margin-inline:auto"></div></div><div class="saida"><div class="foto"><img alt="Foto"></div></div>`;
   cab.querySelector("img").src=P.ffoto; if(P.ffc) cab.querySelector(".foto").appendChild(el("span","leg",P.ffc));
   wrap.append(a1,cab,a2); bf.appendChild(wrap);
-  const revelar=()=>{ wrap.classList.remove("rev"); void wrap.offsetWidth; wrap.classList.add("rev"); try{ if(navigator.vibrate) setTimeout(()=>navigator.vibrate(25),900); }catch(e){} };
+  const dicaCab=el("p","dica-cab","Toque na cabine para revelar a foto ✨"); bf.appendChild(dicaCab); cab.classList.add("chama");
+  const revelar=()=>{ wrap.classList.remove("rev"); void wrap.offsetWidth; wrap.classList.add("rev"); cab.classList.remove("chama"); dicaCab.classList.add("some"); try{ if(navigator.vibrate) setTimeout(()=>navigator.vibrate(25),900); }catch(e){} if(bf._feito){ const f=bf._feito; bf._feito=null; setTimeout(f,reduz()?200:5200); } };
   cab.addEventListener("click",revelar); bf._revelar=revelar; return bf;
 }
+function tituloProprio(P){ const t=(P.ti||"").trim(); if(!t) return false; const oc=OCASIOES[P.o]; if(!oc) return true; const auto=generoTitulo(oc.titulo.replace("{para}",P.p||(oc.amigo?"meu amigo":"meu amor")),oc.amigo?P.sx:""); return t!==auto.trim(); }
 function mostrarCarta(P,cardMusica){
   setTimeout(soltarPomba,600);
   if(modoPrevia && !(P.fotos&&P.fotos.length)){ P=Object.assign({},P,{fotos:[0,1,2].map(fotoExemplo), fc:EXEMPLO.fc}); }
   const inner=$("gInner"), c=el("div","carta"); inner.appendChild(c); inner.style.alignContent="start";
   const oc=OCASIOES[P.o]||OCASIOES.namoro, partes=[], add=n=>{ c.appendChild(n); partes.push(n); return n; };
   { const cv=el("div","convite surge"); const bq=el("span","cv-rosas"); bq.innerHTML=buqueSVG("canto"); const bq2=el("span","cv-rosas b"); bq2.innerHTML=buqueSVG("mini");
-    cv.append(bq,bq2,el("span","cv-sup","Uma carta para você"),el("span","cv-nome",(P.p||"você")+","));
-    if((P.ti||"").trim()) cv.appendChild(el("h1",null,P.ti.trim()));
-    cv.append(el("span","cv-linha"),el("span","occ cv-occ",oc.nome));
+    cv.append(bq,bq2,el("span","cv-nome",P.p||"você"));
+    if(tituloProprio(P)) { cv.append(el("span","cv-linha"),el("h1",null,P.ti.trim())); }
     add(cv); }
   { const rol=criarRoleta(ehFam(P.o)?"fam":ehAmigo(P.o)); if(rol) add(rol); }
   if(P.fotos&&P.fotos.length){ const pol=el("div","polaroides surge"); P.fotos.forEach((src,i)=>{ const f=el("figure","pol"); f.style.margin="0"; const im=document.createElement("img"); im.src=src; im.alt="Foto"; f.appendChild(im); f.appendChild(el("span",null,(P.fc&&P.fc[i])||"")); pol.appendChild(f); }); add(pol); }
@@ -2004,14 +2046,20 @@ function mostrarCarta(P,cardMusica){
   rv.addEventListener("click",()=>{ Musica.parar(); Som.parar(true); abrirCarta(P,{previa:modoPrevia}); });
   const lk=sm.querySelector("a"); lk.href=enderecoBase(); lk.addEventListener("click",e=>{ if(modoPrevia){ e.preventDefault(); fecharCarta(); } else if(location.hash){ e.preventDefault(); location.href=enderecoBase(); location.reload(); } });
   const rd=reduz();
-  const atrasos=[]; { let t=300; partes.forEach(p=>{ atrasos.push(t); t+=1100+((modoPrevia&&p._demo)?5200:0)+(p._tempo||0); }); }
-  partes.forEach((p,i)=>timers.push(setTimeout(()=>{ p.classList.add("on");
-    if(p.classList.contains("juntos")) contar(p);
-    if(p.classList.contains("numeros")) animarNumeros(p);
-    if(p._revelar) setTimeout(p._revelar,400);
-    if(p._demo) setTimeout(p._demo,1300);
-    if(p===fim) chuvaCoracoes(ehAmigo(P.o));
-    if(i>2&&!rd&&!$("gift")._manual) p.scrollIntoView({behavior:"smooth",block:"nearest"}); }, rd?0:atrasos[i])));
+  partes.forEach(p=>{ p.hidden=true; }); if(rd) c.classList.add("completa");
+  const tempoLer=p=>p.classList.contains("convite")?1700:p.classList.contains("orn")?250:p.classList.contains("polaroides")?3000:p.classList.contains("numeros")?3200:p.classList.contains("gv")?3000:p.classList.contains("oracao")?3600:p.classList.contains("musica")?1600:p.classList.contains("gassin")?1600:1400;
+  const espera=p=>p.classList.contains("roleta")||p.classList.contains("pote")||p.classList.contains("perg")||p.classList.contains("bloco-final");
+  let k=0;
+  const proximo=()=>{ if(k>=partes.length) return; const p=partes[k++]; p.hidden=false;
+    timers.push(setTimeout(()=>{ p.classList.add("on");
+      if(p.classList.contains("juntos")) contar(p);
+      if(p.classList.contains("numeros")) animarNumeros(p);
+      if(p===fim){ chuvaCoracoes(ehAmigo(P.o)); c.classList.add("completa"); }
+      if(k>1&&!rd) setTimeout(()=>{ try{ p.scrollIntoView({behavior:"smooth",block:p.offsetHeight>innerHeight*.8?"start":"center"}); }catch(e){} },120);
+      if(rd){ proximo(); return; }
+      if(espera(p)) p._feito=proximo; else timers.push(setTimeout(proximo,tempoLer(p)));
+    },rd?0:60)); };
+  timers.push(setTimeout(proximo,rd?0:300));
 }
 /* ===== música do casal tocando dentro da carta (YouTube ou Spotify) ===== */
 function carregarScript(src,global,cb){
@@ -2073,7 +2121,7 @@ const Som = { modo:null, card:null, yt:null, sp:null, tocando:false, aviso:null,
 function contar(box){ box.querySelectorAll("b[data-alvo]").forEach(b=>{ const alvo=+b.dataset.alvo; if(reduz()){ b.textContent=alvo.toLocaleString("pt-BR"); return; } const ini=performance.now(); const passo=t=>{ const k=Math.min(1,(t-ini)/1400); b.textContent=Math.round(alvo*(1-Math.pow(1-k,3))).toLocaleString("pt-BR"); if(k<1) requestAnimationFrame(passo); }; requestAnimationFrame(passo); }); }
 function fecharCarta(){ timers.forEach(clearTimeout); $("gift").querySelectorAll(".gloria-fundo,.gloria-flash,.brilho").forEach(x=>x.remove()); document.querySelectorAll(".petala.voa").forEach(x=>x.remove()); Musica.parar(); Som.parar(true); Luz.parar(); $("gift").hidden=true; document.body.style.overflow=""; }
 $("gFechar").addEventListener("click",fecharCarta);
-$("gSom").addEventListener("click",e=>{ if(Som.modo){ Som.alternar(); return; } const on=e.currentTarget.getAttribute("aria-pressed")==="true"; if(on) Musica.parar(); else Musica.iniciar(); e.currentTarget.setAttribute("aria-pressed",String(!on)); e.currentTarget.querySelector("span").textContent=on?"Sem música":"Música"; });
+$("gSom").addEventListener("click",e=>{ if(Som.modo){ Som.alternar(); return; } const on=e.currentTarget.getAttribute("aria-pressed")==="true"; if(on) Musica.parar(); else Musica.iniciar(); e.currentTarget.setAttribute("aria-pressed",String(!on)); e.currentTarget.querySelector("span").textContent=on?"Tocar música":"Música"; });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("gift").hidden&&modoPrevia) fecharCarta(); });
 
 function dataExemplo(){ const d=new Date(); d.setFullYear(d.getFullYear()-1); d.setMonth(d.getMonth()-4); d.setDate(d.getDate()-12); return d.toISOString().slice(0,10); }
