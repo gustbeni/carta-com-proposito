@@ -1944,7 +1944,7 @@ function criarPergaminho(txt,de,ass){
   const escrever=()=>{ if(feito) return; if(reduz()){ acabar(); return; } let i=0; const passo=()=>{ if(feito) return; i=Math.min(txt.length,i+2); dig.textContent=txt.slice(0,i); dig.appendChild(pena); if(i<txt.length) tm=setTimeout(passo,42); else { tm=setTimeout(()=>{ pena.remove(); feito=true; if(assEl) assEl.classList.add("on"); },700); } }; passo(); };
   w._tempo=reduz()?0:1100+Math.ceil(txt.length/2)*42+1300;
   w.addEventListener("click",acabar);
-  const ob=setInterval(()=>{ if(!w.isConnected&&feito){ clearInterval(ob); return; } if(w.classList.contains("on")){ clearInterval(ob); setTimeout(escrever,1100); } },150);
+  const ob=setInterval(()=>{ if(!w.isConnected&&feito){ clearInterval(ob); return; } if(w.classList.contains("on")){ const r=w.getBoundingClientRect(); if(r.top<innerHeight*.8&&r.bottom>innerHeight*.2){ clearInterval(ob); setTimeout(escrever,900); } } },150);
   return w;
 }
 function criarCabine(P){
