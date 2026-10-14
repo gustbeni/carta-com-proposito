@@ -904,6 +904,23 @@ footer, footer a { color:#b8968d; }
 .convite { padding-top:58px !important; }
 .p-rosas { right:-6px !important; top:-8px !important; width:104px !important; }
 .perg.cartao-casamento .folha { padding-top:96px !important; }
+
+/* ajustes: botão voltar, fundo mais suave, versículo dourado, assinatura em destaque, desempenho */
+.g-top { z-index:10 !important; }
+.mesa .bq { filter:none !important; opacity:.42; }
+.mesa .chuva .petala { opacity:.5; will-change:transform; }
+.gift .roleta, .gift .numeros, .gift .oracao { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; background:rgba(26,11,7,.78) !important; }
+.gift .gv { background:rgba(22,9,6,.72) !important; border:1px solid rgba(243,208,138,.35); box-shadow:0 14px 34px rgba(0,0,0,.45); padding:22px 18px !important; }
+.gift .gv .t, .gift .rol-res .t { font-family:"Cormorant Garamond",Georgia,serif !important; font-weight:600 !important; font-size:1.55rem !important; line-height:1.42 !important; color:#f6dc9c !important; text-shadow:0 2px 14px rgba(0,0,0,.75), 0 0 22px rgba(243,208,138,.22); }
+.gift .gv .r, .gift .rol-res .r { color:#e9c27a !important; font-size:.84rem !important; letter-spacing:.2em !important; }
+.conv .env .selo b { display:none; }
+.convite .cv-nome { font-size:4rem !important; margin:2px 0 4px; }
+.convite .cv-linha { display:block; width:120px; height:1px; margin:8px 0 4px; background:linear-gradient(90deg,transparent,rgba(176,132,60,.75),transparent); }
+.convite .cv-occ { font-size:.82rem !important; letter-spacing:.32em !important; margin-top:4px !important; }
+.gift .gassin.casal, .gift .gassin.amigo { display:grid; gap:2px; justify-items:center; text-align:center; margin-top:14px; padding-top:22px; position:relative; }
+.gift .gassin.casal::before, .gift .gassin.amigo::before { content:""; position:absolute; top:0; left:50%; width:160px; margin-left:-80px; height:1px; background:linear-gradient(90deg,transparent,rgba(243,208,138,.8),transparent); }
+.gift .gassin .l1 { font-family:"Cormorant Garamond",Georgia,serif !important; font-style:italic; font-size:1.35rem !important; color:#f0dcc0; opacity:.95; }
+.gift .gassin .nome { font-family:"Great Vibes",cursive !important; font-size:clamp(3.6rem,17vw,4.8rem) !important; line-height:1.1; color:#f6d38a !important; text-shadow:0 2px 20px rgba(243,208,138,.45), 0 0 2px rgba(0,0,0,.5); }
 </style></head><body>
 
 <div class="wrap" id="loja">
@@ -1665,9 +1682,9 @@ const Musica = { ctx:null, master:null, tocando:false, timer:null,
   parar(){ this.tocando=false; clearTimeout(this.timer); try{ this.master.gain.cancelScheduledValues(this.ctx.currentTime); this.master.gain.linearRampToValueAtTime(0,this.ctx.currentTime+.6); }catch(e){} }
 };
 const Luz = { raf:0,
-  iniciar(){ const cv=$("luz"),ctx=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1); const tam=()=>{ cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; }; tam(); addEventListener("resize",tam);
+  iniciar(){ const cv=$("luz"),ctx=cv.getContext("2d"),dpr=Math.min(1.25,devicePixelRatio||1); const tam=()=>{ cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; }; tam(); addEventListener("resize",tam);
     const cor=getComputedStyle($("gift")).getPropertyValue("--g1").trim()||"#ffc2cf";
-    const pts=Array.from({length:46},()=>({x:Math.random(),y:Math.random(),r:1+Math.random()*2.6,v:.00012+Math.random()*.00035,f:Math.random()*6.28})); const rd=reduz();
+    const pts=Array.from({length:28},()=>({x:Math.random(),y:Math.random(),r:1+Math.random()*2.6,v:.00012+Math.random()*.00035,f:Math.random()*6.28})); const rd=reduz();
     const loop=()=>{ ctx.clearRect(0,0,cv.width,cv.height); pts.forEach(p=>{ if(!rd){ p.y-=p.v; p.f+=.02; if(p.y<-.02){ p.y=1.02; p.x=Math.random(); } }
         ctx.globalAlpha=Math.max(0,.25+.35*Math.sin(p.f)); ctx.fillStyle=cor; ctx.beginPath(); ctx.arc(p.x*cv.width+Math.sin(p.f)*6*dpr,p.y*cv.height,p.r*dpr,0,6.28); ctx.fill(); });
       ctx.globalAlpha=1; if(!rd) this.raf=requestAnimationFrame(loop); };
@@ -1701,11 +1718,11 @@ function abrirCarta(P,{previa=false}={}){
   const g=$("gift"); g.className="gift"+(P.t==="ouro"?"":P.t==="ceu"?" t-ceu":" t-rosa"); g.hidden=false; g.scrollTop=0; document.body.style.overflow="hidden";
   $("gFechar").hidden=!previa; $("gPrevia").hidden=!previa; $("gSom").hidden=true; Luz.iniciar();
   const inner=$("gInner"); inner.innerHTML=""; inner.style.alignContent="";
-  montarMesa(g);
+  montarMesa(g); g._manual=false;
+  if(!g._ouvindo){ g._ouvindo=true; const mao=()=>{ g._manual=true; }; g.addEventListener("touchmove",mao,{passive:true}); g.addEventListener("wheel",mao,{passive:true}); }
   const env=el("button","envelope conv"); env.setAttribute("aria-label","Abrir a carta");
   env.innerHTML=`<span class="c-sup">Uma carta para</span><span class="c-nome"></span><span class="env"><span class="carta-sai"><i></i><i></i><i></i><i></i></span><span class="fundo-env"></span><span class="bolso"></span><span class="aba"></span><span class="selo"><b></b></span><span class="meia a"></span><span class="meia b"></span></span><span class="c-de"></span><span class="toque">Toque no selo para abrir</span>`;
   env.querySelector(".c-nome").textContent=P.p||"você";
-  env.querySelector(".selo b").textContent=((P.d||P.p||"C").trim()[0]||"C").toUpperCase();
   env.querySelector(".c-de").textContent=P.d?("com carinho, "+P.d):"";
   inner.appendChild(env);
   if(P.ml) Som.preparar(P.ml);
@@ -1760,7 +1777,7 @@ function montarMesa(g){
   if(g.querySelector(".mesa")) return;
   const m=document.createElement("div"); m.className="mesa"; m.setAttribute("aria-hidden","true");
   m.innerHTML=`<div class="bq tl">${buqueSVG("mesa")}</div><div class="bq br">${buqueSVG("mesa")}</div><div class="bq tr">${buqueSVG("mini")}</div><div class="bq bl">${buqueSVG("mini")}</div><div class="chuva"></div>`;
-  const ch=m.querySelector(".chuva"); for(let k=0;k<9;k++){ const p=petalaEl(PETALA_CORES[k%PETALA_CORES.length]); p.style.left=(5+k*11)+"%"; p.style.animationDelay=(-k*1.7)+"s"; p.style.animationDuration=(11+(k%4)*2.5)+"s"; p.style.setProperty("--w",(k%2?1:-1)*(30+k*6)+"px"); ch.appendChild(p); }
+  const ch=m.querySelector(".chuva"); for(let k=0;k<6;k++){ const p=petalaEl(PETALA_CORES[k%PETALA_CORES.length]); p.style.left=(6+k*16)+"%"; p.style.animationDelay=(-k*1.7)+"s"; p.style.animationDuration=(11+(k%4)*2.5)+"s"; p.style.setProperty("--w",(k%2?1:-1)*(30+k*6)+"px"); ch.appendChild(p); }
   g.insertBefore(m,g.firstChild);
 }
 function explodirPetalas(x,y){
@@ -1959,10 +1976,13 @@ function criarCabine(P){
 }
 function mostrarCarta(P,cardMusica){
   setTimeout(soltarPomba,600);
+  if(modoPrevia && !(P.fotos&&P.fotos.length)){ P=Object.assign({},P,{fotos:[0,1,2].map(fotoExemplo), fc:EXEMPLO.fc}); }
   const inner=$("gInner"), c=el("div","carta"); inner.appendChild(c); inner.style.alignContent="start";
   const oc=OCASIOES[P.o]||OCASIOES.namoro, partes=[], add=n=>{ c.appendChild(n); partes.push(n); return n; };
   { const cv=el("div","convite surge"); const bq=el("span","cv-rosas"); bq.innerHTML=buqueSVG("canto"); const bq2=el("span","cv-rosas b"); bq2.innerHTML=buqueSVG("mini");
-    cv.append(bq,bq2,el("span","cv-sup","Uma carta para você"),el("span","cv-nome",(P.p||"você")+","),el("h1",null,(P.ti||"").trim()||generoTitulo(oc.titulo.replace("{para}",P.p||(oc.amigo?"meu amigo":"meu amor")),oc.amigo?P.sx:"")),el("span","occ cv-occ",oc.nome));
+    cv.append(bq,bq2,el("span","cv-sup","Uma carta para você"),el("span","cv-nome",(P.p||"você")+","));
+    if((P.ti||"").trim()) cv.appendChild(el("h1",null,P.ti.trim()));
+    cv.append(el("span","cv-linha"),el("span","occ cv-occ",oc.nome));
     add(cv); }
   { const rol=criarRoleta(ehFam(P.o)?"fam":ehAmigo(P.o)); if(rol) add(rol); }
   if(P.fotos&&P.fotos.length){ const pol=el("div","polaroides surge"); P.fotos.forEach((src,i)=>{ const f=el("figure","pol"); f.style.margin="0"; const im=document.createElement("img"); im.src=src; im.alt="Foto"; f.appendChild(im); f.appendChild(el("span",null,(P.fc&&P.fc[i])||"")); pol.appendChild(f); }); add(pol); }
@@ -1975,7 +1995,7 @@ function mostrarCarta(P,cardMusica){
   if(P.or&&oracoesDe(P.o)[P.or-1]){ const o=el("div","oracao surge"); o.append(el("span","lbl",ehAmigo(P.o)?"Uma oração por você":"Uma oração por nós"),el("p",null,oracaoTexto(P.or-1,P.p,P.d,P.o))); add(o); }
   if(!P.ffoto && modoPrevia){ P=Object.assign({},P,{ ffoto:raizSite()+(ehAmigo(P.o)?"img/exemplo-cabine-amigo.jpg":"img/exemplo-cabine.jpg"), ffc:"" }); }
   if(P.ffoto) add(criarCabine(P));
-  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx,P.o)+","),el("span","nome",P.d)); add(a); } else add(el("p","gassin surge","Com carinho, "+P.d)); }
+  if(P.d){ if(ehAmigo(P.o)){ const a=el("p","gassin amigo surge"); a.append(el("span","l1",assinaturaAmigo(P.sx,P.o)+","),el("span","nome",P.d)); add(a); } else { const a=el("p","gassin casal surge"); a.append(el("span","l1","Com carinho,"),el("span","nome",P.d)); add(a); } }
   const fim=el("div","gfim surge"); const fone=telefone(P.w);
   if(fone && !modoPrevia){ const a=el("a","resp-btn","Responder com carinho"); a.href="https://wa.me/"+fone+"?text="+encodeURIComponent(ehFam(P.o)?"Recebi sua carta e amei! Te amo muito.":ehAmigo(P.o)?"Recebi sua carta e amei! Obrigado pela amizade.":"Recebi sua carta e amei! Te amo também."); a.target="_blank"; a.rel="noopener"; fim.appendChild(a); }
   else if(fone){ const a=el("span","resp-btn","Responder com carinho"); fim.appendChild(a); }
@@ -1991,7 +2011,7 @@ function mostrarCarta(P,cardMusica){
     if(p._revelar) setTimeout(p._revelar,400);
     if(p._demo) setTimeout(p._demo,1300);
     if(p===fim) chuvaCoracoes(ehAmigo(P.o));
-    if(i>2&&!rd) p.scrollIntoView({behavior:"smooth",block:"nearest"}); }, rd?0:atrasos[i])));
+    if(i>2&&!rd&&!$("gift")._manual) p.scrollIntoView({behavior:"smooth",block:"nearest"}); }, rd?0:atrasos[i])));
 }
 /* ===== música do casal tocando dentro da carta (YouTube ou Spotify) ===== */
 function carregarScript(src,global,cb){
