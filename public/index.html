@@ -436,7 +436,8 @@ body { background-color:#efe4d3; background-image:url(img/linho.jpg); background
 .barra-fixa button { flex:1; font:700 .98rem "Lora",Georgia,serif; padding:13px 10px; border-radius:8px; cursor:pointer; }
 .barra-fixa .bf-pri { background:#7a1f33; color:#fff; border:0; }
 .barra-fixa .bf-sec { background:#fffaf0; color:#7a1f33; border:2px solid #7a1f33; }
-@media (min-width:900px){ .barra-fixa { display:none; } }
+@media (min-width:900px){ .barra-fixa { left:50%; right:auto; width:520px; margin-left:-260px; border-radius:14px 14px 0 0; } }
+.hero { grid-template-columns:minmax(0,1fr) !important; padding-bottom:30px; }
 .espera { position:fixed; inset:0; z-index:9000; display:grid; place-items:center; padding:24px 16px; text-align:center; background:radial-gradient(120% 90% at 50% 20%,#7a2238,#2a0a12 75%); color:#f6e2c4; font-family:"Lora",Georgia,serif; overflow:auto; }
 .espera .env { width:150px; height:100px; margin:0 auto 22px; position:relative; border-radius:6px; background:linear-gradient(160deg,#f6e7cf,#e3cba5); box-shadow:0 14px 30px rgba(0,0,0,.45); animation:flutua 3.2s ease-in-out infinite; }
 .espera .env::before { content:""; position:absolute; left:0; right:0; top:0; height:58%; background:linear-gradient(180deg,#efdcbc,#dcc29a); clip-path:polygon(0 0,100% 0,50% 100%); }
@@ -724,40 +725,7 @@ footer { color:#5e4640; }
     <div class="hero-txt">
       <span class="eyebrow">Presente com propósito</span>
       <h1>Uma carta de amor com <em>a Palavra de Deus</em></h1>
-      <p class="sub">Para o seu amor, um amigo da igreja, sua mãe ou seu pai. Fotos de vocês, versículos, uma roleta que sorteia uma palavra de Deus, a história de vocês em números, música e uma oração. Abre no celular pelo QR code e fica pronta em 3 minutos.</p>
-      <div class="ctas">
-        <a class="cta" href="#criar" data-vai="criar">Criar minha carta</a>
-        <button class="cta ouro" id="verExemplo"><span class="play" aria-hidden="true">▶</span> Ver uma carta pronta</button>
-      </div>
-      <p class="promo-hero" id="promoHero" hidden>🔥 Preço de lançamento: <b></b> <s></s> · termina em <span class="relogio"></span></p>
-      <div class="selos"><span>Pagamento único</span><span>QR code na hora</span><span>Abre em qualquer celular</span></div>
     </div>
-    <div>
-      <button class="mock-btn" id="mockAbrir" aria-label="Abrir a carta de exemplo">
-        <div class="mock rosa">
-          <span class="play-mini" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6z"/></svg></span>
-          <span class="para">Para Ana</span>
-          <h3>Ana, feliz aniversário de namoro</h3>
-          <div class="pols" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="juntos-mini"><div><b>⏳ 499</b><span>manhãs em que meu amor se renovou</span></div></div>
-          <p class="v">“E se alguém prevalecer contra um, dois podem resistir contra ele; porque o cordão de três dobras não se rompe tão depressa.”</p>
-          <span class="r">ECLESIASTES 4:12</span>
-          <p class="assin">Com carinho, Pedro</p>
-        </div>
-      </button>
-      <p class="mock-legenda">Toque para abrir o exemplo</p>
-    </div>
-  </section>
-
-  <div class="faixa-verso"><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span><p>“Acima de tudo, porém, revesti-vos do amor, que é o vínculo da perfeição.”</p><span>COLOSSENSES 3:14</span></div>
-
-  <section class="sec">
-    <h2><span class="ornamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 2h2.8v6.2H19V11h-5.6v11h-2.8V11H5V8.2h5.6z" fill="currentColor"/></svg></span>Como funciona</h2>
-    <ol class="passos">
-      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h15a3 3 0 0 1 3 3v2h-5"/><path d="M22 10v15a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-2h14"/><path d="M9 5a3 3 0 0 0-3 3v15"/><path d="M11 13h7M11 17h7"/></svg></span><b>Monte a carta</b><p>Escolha se é para o seu amor ou para um amigo da igreja, a ocasião, os versículos e escreva do seu jeito.</p></li>
-      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 9c-3-3-9-3-11 0v15c2-3 8-3 11 0 3-3 9-3 11 0V9c-2-3-8-3-11 0z"/><path d="M16 9v15"/><path d="M21 12v5M19 14h4"/></svg></span><b>Veja como fica</b><p>Abra a prévia e confira tudo antes de pagar.</p></li>
-      <li><span class="ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="24" height="17" rx="3"/><path d="M4 10l12 8 12-8"/><circle cx="16" cy="20" r="4.5" fill="currentColor" stroke="none"/><path d="M16 17.5v5M14 19.5h4" stroke="var(--soft)" stroke-width="1.6"/></svg></span><b>Mande para quem você ama</b><p>Receba um cartão com QR code. Imprima e entregue junto com um presente, ou mande a imagem. A pessoa aponta a câmera e a carta abre.</p></li>
-    </ol>
   </section>
 
   <section class="sec" id="criar">
@@ -788,7 +756,6 @@ footer { color:#5e4640; }
             <label class="f" for="fDe">Seu nome, para assinar<input class="inp" id="fDe" maxlength="40" placeholder="Ex.: Pedro" autocomplete="off"></label>
             <div class="f" id="boxSx" hidden><span>Assinar como</span><div class="chips" id="sx"><button type="button" class="chip" data-sx="o" aria-pressed="true">Seu irmão em Cristo</button><button type="button" class="chip" data-sx="a" aria-pressed="false">Sua irmã em Cristo</button></div></div>
             <label class="f" for="fData"><span id="lData">Começamos a namorar em</span> <small id="dData">Mostra a história de vocês em números.</small><input class="inp" id="fData" type="date"></label>
-            <label class="f" for="fAbre">Quando a carta pode ser aberta? <small>Opcional. Antes desse dia, quem escanear o QR code vê uma contagem regressiva. Deixe vazio para abrir na hora.</small><input class="inp" id="fAbre" type="date"></label>
             <label class="f" for="fZap">Seu WhatsApp <small id="dZap">Opcional. Para seu amor responder com um toque.</small><input class="inp" id="fZap" inputmode="tel" maxlength="20" placeholder="(67) 99999-9999" autocomplete="tel"></label>
           </div>
           <label class="f" for="fTitulo">Título da carta <small>Preenchemos sozinho, mas você pode mudar.</small><input class="inp" id="fTitulo" maxlength="60" autocomplete="off"></label>
@@ -940,7 +907,6 @@ footer { color:#5e4640; }
       <details><summary>Precisa baixar alguma coisa?</summary><p>Não. A carta abre direto no navegador do celular ou do computador.</p></details>
       <details><summary>Posso ver antes de pagar?</summary><p>Pode. Monte tudo, toque em “Ver a prévia” e só pague quando gostar do resultado.</p></details>
       <details><summary>Posso fazer para um amigo, para minha mãe ou para meu pai?</summary><p>Pode. No primeiro passo, escolha “Amigo(a) da igreja” ou “Mãe ou pai”. A carta muda os textos, os versículos, a oração e a roleta.</p></details>
-      <details><summary>Posso marcar o dia em que a carta vai abrir?</summary><p>Pode. No passo 2, escolha a data. Antes desse dia, quem escanear o QR code vê uma contagem regressiva, e a carta abre sozinha quando chegar a hora.</p></details>
       <details><summary>Os números da carta ficam certos depois?</summary><p>Ficam. Eles contam a partir da data que você informar, então no ano que vem a carta mostra tudo atualizado.</p></details>
       <details><summary>Por quanto tempo o link funciona?</summary><p>Enquanto este site estiver no ar. A carta fica guardada no nosso site e abre pelo QR code ou pelo link, sem precisar de cadastro.</p></details>
       <details><summary>Como pago?</summary><p>Por Pix ou cartão de crédito, pelo Mercado Pago. No Pix, a carta é liberada em poucos segundos, na mesma tela.</p></details>
@@ -1156,8 +1122,7 @@ try{ $("fData").max=new Date().toISOString().slice(0,10); }catch(e){}
 $("fPara").addEventListener("input",e=>{ S.para=e.target.value.trim(); if(!tituloEditado){ S.ti=""; preencherTitulo(); } pintarOracoes(); guardar(); });
 $("fDe").addEventListener("input",e=>{ S.de=e.target.value.trim(); pintarOracoes(); guardar(); });
 $("fData").addEventListener("change",e=>{ S.dt=e.target.value; guardar(); });
-$("fAbre").value=S.ab||""; try{ const hj=new Date(); hj.setMinutes(hj.getMinutes()-hj.getTimezoneOffset()); $("fAbre").min=hj.toISOString().slice(0,10); }catch(e){}
-$("fAbre").addEventListener("change",e=>{ S.ab=e.target.value; guardar(); });
+
 $("fZap").addEventListener("input",e=>{ S.w=e.target.value.replace(/\D/g,"").slice(0,13); guardar(); });
 $("fTitulo").addEventListener("input",e=>{ const v=e.target.value; tituloEditado=v.trim()!==""&&v!==tituloDe(S.o,S.para); S.ti=tituloEditado?v:""; guardar(); });
 $("fMsg").addEventListener("input",e=>{ S.m=e.target.value; $("nMsg").textContent=S.m.length; guardar(); });
@@ -1413,7 +1378,6 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden && pedido
 function enderecoBase(){ if(CONFIG.enderecoSite) return CONFIG.enderecoSite.replace(/#.*$/,""); return location.href.replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/c\/[^/]*$/,"/"); }
 function dadosCarta(){ const P={ o:S.o, p:S.para, d:S.de, v:S.v, m:S.m.trim(), t:S.t, mu:S.mt==="site"?1:0 };
   if(ehAmigo(S.o) && S.sx==="a") P.sx="a";
-  if(/^\d{4}-\d{2}-\d{2}$/.test(S.ab||"")){ const t=new Date(S.ab+"T00:00:00"); if(!isNaN(t)&&t.getTime()>Date.now()) P.ab=t.toISOString(); }
   if(S.mt==="link"){ const info=lerMusica(S.ml); if(info && info.tipo!=="l") P.ml=info.tipo+":"+info.id; }
   const fs=fotosDoCriador(); if(fs.length && fs.some(f=>f.c.trim())) P.fc=fs.map(f=>f.c.trim());
   if(S.ti) P.ti=S.ti; if(S.dt) P.dt=S.dt; if(S.w) P.w=S.w; if(S.or) P.or=S.or;
@@ -1844,8 +1808,9 @@ function fotoExemplo(tipo){
   return cv.toDataURL("image/jpeg",.8);
 }
 EXEMPLO.fotos=[0,1,2].map(fotoExemplo); EXEMPLO.fc=["Nosso primeiro pôr do sol","Exemplo de foto","No parque"]; EXEMPLO.ffoto=raizSite()+"img/exemplo-cabine.jpg";
-$("verExemplo").addEventListener("click",()=>{ try{ if(typeof fbq==="function") fbq("track","ViewContent",{content_name:"Exemplo de carta"}); }catch(e){} abrirCarta(EXEMPLO,{previa:true}); });
-$("mockAbrir").addEventListener("click",()=>abrirCarta(EXEMPLO,{previa:true}));
+function verExemplo(){ try{ if(typeof fbq==="function") fbq("track","ViewContent",{content_name:"Exemplo de carta"}); }catch(e){} abrirCarta(EXEMPLO,{previa:true}); }
+if($("verExemplo")) $("verExemplo").addEventListener("click",verExemplo);
+if($("mockAbrir")) $("mockAbrir").addEventListener("click",verExemplo);
 $("previa").addEventListener("click",()=>{ try{ playerCriador&&playerCriador.pauseVideo(); }catch(e){}  const f=validar(); if(f){ toast(f); return; } const P=dadosCarta(); P.fotos=S.fotos.map((f,i)=>f.d?(fotosGrandes[i]||(f.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+f.u:"data:image/jpeg;base64,"+f.d)):null).filter(Boolean); if(S.ff.d){ P.ffoto=fotosGrandes.f||(S.ff.u&&nuvem()?"https://res.cloudinary.com/"+encodeURIComponent(CONFIG.cloudinaryNome)+"/image/upload/"+S.ff.u:"data:image/jpeg;base64,"+S.ff.d); if(S.ff.c&&S.ff.c.trim()) P.ffc=S.ff.c.trim(); } abrirCarta(P,{previa:!liberado}); });
 document.querySelectorAll("[data-vai]").forEach(a=>a.addEventListener("click",e=>{ const alvo=$(a.dataset.vai); if(!alvo) return; e.preventDefault(); alvo.scrollIntoView({behavior:"smooth"}); }));
 
@@ -1889,8 +1854,7 @@ function telaEspera(j){
 }
 (function(){ try{
   const fim=Date.parse(CONFIG.promoFim||""); if(!fim||location.pathname.match(/\/c\//)) return;
-  const ph=$("promoHero"), pr=$("promoResumo");
-  ph.querySelector("b").textContent=CONFIG.preco; ph.querySelector("s").textContent=CONFIG.precoAntigo;
+  const ph=$("promoHero")||document.createElement("p"), pr=$("promoResumo");
   const z=n=>String(n).padStart(2,"0");
   const tic=()=>{ let r=fim-Date.now(); if(r<=0){ ph.hidden=true; pr.hidden=true; clearInterval(t); return; }
     const d=Math.floor(r/864e5); r%=864e5; const h=Math.floor(r/36e5); r%=36e5; const mi=Math.floor(r/6e4); const se=Math.floor((r%6e4)/1e3);
@@ -1911,11 +1875,11 @@ function telaEspera(j){
   const aberta=()=>!!document.querySelector(".espera")||document.body.classList.contains("lendo")||document.documentElement.style.overflow==="hidden"||document.body.style.overflow==="hidden";
   const atualizar=()=>{ const y=scrollY, hb=hero.getBoundingClientRect().bottom, cr=criar.getBoundingClientRect();
     const naCriacao=cr.top<innerHeight*.5 && cr.bottom>innerHeight*.5;
-    const novo=naCriacao?"form":"land"; if(novo!==modo){ modo=novo; if(modo==="form"){ A.textContent="👁 Ver prévia"; B.textContent="Ir para o pagamento"; } else { A.textContent="▶ Ver exemplo"; B.textContent="Criar minha carta"; } }
-    bar.classList.toggle("on", hb<0 && !aberta()); };
+    const novo=(naCriacao&&(S.para||"").trim())?"form":"land"; if(novo!==modo){ modo=novo; if(modo==="form"){ A.textContent="👁 Ver prévia"; B.textContent="Ir para o pagamento"; } else { A.textContent="▶ Ver exemplo"; B.textContent="Criar minha carta"; } }
+    bar.classList.toggle("on", !aberta()); };
   addEventListener("scroll",atualizar,{passive:true}); addEventListener("resize",atualizar); setInterval(atualizar,800); atualizar();
-  A.addEventListener("click",()=>{ if(modo==="form") $("previa").click(); else $("verExemplo").click(); });
-  B.addEventListener("click",()=>{ const alvo=modo==="form"?(document.querySelector(".resumo")):criar; alvo&&alvo.scrollIntoView({behavior:"smooth",block:"start"}); });
+  A.addEventListener("click",()=>{ if(modo==="form") $("previa").click(); else verExemplo(); });
+  B.addEventListener("click",()=>{ const alvo=modo==="form"?(document.querySelector(".resumo")):(document.querySelector("#criar .etapa")||criar); alvo&&alvo.scrollIntoView({behavior:"smooth",block:"start"}); });
 }catch(e){} })();
 </script>
 </body></html>
