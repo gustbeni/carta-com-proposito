@@ -418,6 +418,35 @@ body { background-color:#efe4d3; background-image:url(img/linho.jpg); background
 .passos .ic { background:#f1e2d6; }
 
 /* ===== formulário ===== */
+/* pergaminho da mensagem */
+.perg-escrita { margin:6px 2px 4px; filter:drop-shadow(0 8px 14px rgba(70,35,15,.22)); }
+.perg-escrita .rolo { height:24px; margin:0 -10px; border-radius:12px; background:linear-gradient(180deg,#c9a46a 0%,#f1dcae 35%,#e3c48e 55%,#a9824a 100%); box-shadow:inset 0 -2px 3px rgba(80,45,15,.3); position:relative; z-index:1; }
+.perg-escrita .rolo::before, .perg-escrita .rolo::after { content:""; position:absolute; top:3px; width:16px; height:18px; border-radius:50%; background:radial-gradient(circle at 40% 40%,#8a5a2b,#5a3414); }
+.perg-escrita .rolo::before { left:-4px; } .perg-escrita .rolo::after { right:-4px; }
+.folha-perg { margin:-8px 4px; padding:22px 20px 12px; background:radial-gradient(130% 90% at 50% 50%,#fbf0d6 40%,#efd9a8 80%,#e2c38a 100%); position:relative; }
+.folha-perg::before { content:""; position:absolute; inset:0; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .3  0 0 0 0 .12  0 0 0 .1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); pointer-events:none; }
+.perg-tit { display:block; text-align:center; font-family:"Lora",Georgia,serif; font-style:italic; font-weight:700; color:#7a1f33; font-size:1.05rem; letter-spacing:.5px; margin-bottom:8px; position:relative; }
+.perg-txt { display:block; width:100%; min-height:300px; resize:vertical; border:0; outline:0; background:transparent; font:italic 1.12rem/1.65 "Lora",Georgia,serif; color:#3a1d14; padding:4px 2px; position:relative; }
+.perg-txt::placeholder { color:#9c7b5c; }
+.folha-perg:focus-within { box-shadow:0 0 0 2px rgba(122,31,51,.35); }
+.perg-cont { position:relative; margin:4px 0 0; }
+/* pote dos motivos */
+.pote-form { max-width:440px; margin:14px auto 4px; }
+.pote-tampa { width:62%; height:30px; margin:0 auto -2px; border-radius:8px 8px 4px 4px; background:linear-gradient(180deg,#b0405a,#6e1a2c 70%,#4f1020); box-shadow:0 3px 6px rgba(60,10,20,.3); position:relative; }
+.pote-tampa i { position:absolute; left:-6%; right:-6%; bottom:-8px; height:12px; border-radius:6px; background:linear-gradient(180deg,#e7cf9c,#c9a46a); box-shadow:0 2px 3px rgba(0,0,0,.15); }
+.pote-vidro { position:relative; margin-top:6px; padding:22px 16px 18px; border:3px solid rgba(255,255,255,.95); border-radius:26px 26px 46px 46px; background:linear-gradient(90deg,rgba(220,236,240,.55),rgba(250,253,255,.35) 40%,rgba(210,228,234,.55)); box-shadow:inset 0 0 0 1px rgba(150,175,185,.5), inset 10px 0 18px rgba(255,255,255,.6), 0 10px 22px rgba(60,40,30,.15); }
+.pote-vidro::before { content:""; position:absolute; top:24px; bottom:30px; left:10px; width:7px; border-radius:6px; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.2)); pointer-events:none; }
+.bilhetes { list-style:none; margin:0; padding:0 0 0 8px; display:grid; gap:9px; }
+.bil { display:flex; align-items:center; gap:10px; padding:7px 10px 7px 7px; background:#fffaf0; border-radius:3px; box-shadow:0 2px 5px rgba(70,35,15,.14); transform:rotate(-.7deg); }
+.bil:nth-child(even) { transform:rotate(.7deg); background:#fdf1e6; }
+.bil:nth-child(3n) { background:#f7f0dd; }
+.bil-n { flex:none; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:radial-gradient(circle at 35% 30%,#b0405a,#5e1325 75%); color:#f6e2c4; font:700 .85rem "Lora",Georgia,serif; }
+.bil input { flex:1; min-width:0; border:0; outline:0; background:transparent; border-bottom:1.5px dashed #d2b891; font:italic 1rem "Lora",Georgia,serif; color:#3a1d14; padding:4px 2px; }
+.bil input:focus { border-bottom:1.5px solid #7a1f33; }
+.bil input::placeholder { color:#a88a6c; }
+.mais-bil { display:block; margin:12px auto 0; background:#fffaf0; border:1.5px dashed #7a1f33; color:#7a1f33; font:700 .95rem "Lora",Georgia,serif; padding:8px 18px; border-radius:999px; cursor:pointer; }
+.mais-bil[hidden] { display:none; }
+
 .etapa { position:relative; border:0; border-radius:3px; padding:30px 22px 24px; box-shadow:0 10px 24px rgba(60,20,20,.14), 0 1px 0 rgba(255,255,255,.6) inset; }
 .form > .etapa:nth-child(odd) { transform:rotate(-.35deg); }
 .form > .etapa:nth-child(even) { transform:rotate(.35deg); }
@@ -737,18 +766,35 @@ footer { color:#5e4640; }
         <fieldset class="etapa">
           <legend><span class="n">5</span>Escreva sua mensagem</legend>
           <div class="chips" id="sugestoes" aria-label="Sugestões de mensagem"></div>
-          <label class="f" for="fMsg">Sua mensagem<textarea class="inp" id="fMsg" maxlength="320" placeholder="Escreva do seu jeito, ou toque numa sugestão acima para começar."></textarea></label>
-          <p class="cont"><span id="nMsg">0</span>/320</p>
-          <label class="f" for="fMot"><span id="lMot">Pote dos motivos: por que você ama essa pessoa?</span> <small>Opcional. Um motivo por linha (até 20). Na carta, cada toque no pote tira um bilhetinho. Se deixar vazio, usamos motivos prontos.</small><textarea class="inp" id="fMot" rows="5" placeholder="Seu sorriso quando fala de Deus&#10;O jeito que você cuida de mim&#10;Suas orações por nós"></textarea></label>
+          <div class="perg-escrita">
+            <div class="rolo" aria-hidden="true"></div>
+            <div class="folha-perg">
+              <label class="perg-tit" for="fMsg">✦ Sua mensagem ✦</label>
+              <textarea id="fMsg" class="perg-txt" rows="10" maxlength="320" placeholder="Escreva do seu jeito, ou toque numa sugestão acima para começar."></textarea>
+              <p class="cont perg-cont"><span id="nMsg">0</span>/320</p>
+            </div>
+            <div class="rolo" aria-hidden="true"></div>
+          </div>
         </fieldset>
 
         <fieldset class="etapa">
-          <legend><span class="n">6</span>Uma oração por vocês</legend>
+          <legend><span class="n">6</span>Pote dos motivos</legend>
+          <p class="dica"><b id="lMot">Por que você ama essa pessoa?</b><br>Escreva um motivo em cada bilhete. Na carta, cada toque no pote tira um bilhetinho. É opcional: se deixar vazio, usamos motivos prontos.</p>
+          <div class="pote-form">
+            <div class="pote-tampa" aria-hidden="true"><i></i></div>
+            <div class="pote-vidro">
+              <ol class="bilhetes" id="bilhetes" aria-label="Bilhetes do pote"></ol>
+              <button type="button" class="mais-bil" id="maisBil">+ Mais bilhetes</button>
+            </div>
+          </div>
+          <p class="cont"><span id="nMot">0</span>/20 bilhetes</p>
+        <fieldset class="etapa">
+          <legend><span class="n">7</span>Uma oração por vocês</legend>
           <div class="oracoes" id="oracoes"></div>
         </fieldset>
 
         <fieldset class="etapa">
-          <legend><span class="n">7</span>Cor e música</legend>
+          <legend><span class="n">8</span>Cor e música</legend>
           <div class="temas" id="temas">
             <button type="button" class="tema" data-t="rosa" aria-pressed="true"><i style="background:linear-gradient(135deg,#5a2236,#ffc2cf)"></i>Rosa</button>
             <button type="button" class="tema" data-t="ouro" aria-pressed="false"><i style="background:linear-gradient(135deg,#4a2a22,#f0c98f)"></i>Dourado</button>
@@ -966,8 +1012,8 @@ function pintarOcasioes(){
 }
 function textosTipo(am){
   $("lPara").textContent=am?"Nome do seu amigo(a)":"Nome do seu amor";
-  $("lMot").textContent=am?"Pote dos motivos: por que você é grato por essa pessoa?":"Pote dos motivos: por que você ama essa pessoa?";
-  $("fMot").placeholder=am?"Você sempre ora por mim\nSua alegria nos cultos\nOs conselhos que você me dá":"Seu sorriso quando fala de Deus\nO jeito que você cuida de mim\nSuas orações por nós";
+  $("lMot").textContent=am?"Por que você é grato por essa pessoa?":"Por que você ama essa pessoa?";
+  pintarBilhetes();
   $("boxSx").hidden=!am; $("sx").querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.sx===(S.sx||"o"))));
   $("fPara").placeholder=am?"Ex.: Lucas":"Ex.: Ana";
   $("lData").textContent=am?"Somos amigos desde":"Começamos a namorar em";
@@ -1017,7 +1063,35 @@ $("fData").addEventListener("change",e=>{ S.dt=e.target.value; guardar(); });
 $("fZap").addEventListener("input",e=>{ S.w=e.target.value.replace(/\D/g,"").slice(0,13); guardar(); });
 $("fTitulo").addEventListener("input",e=>{ const v=e.target.value; tituloEditado=v.trim()!==""&&v!==tituloDe(S.o,S.para); S.ti=tituloEditado?v:""; guardar(); });
 $("fMsg").addEventListener("input",e=>{ S.m=e.target.value; $("nMsg").textContent=S.m.length; guardar(); });
-$("fMot").value=S.mot||""; $("fMot").addEventListener("input",e=>{ S.mot=e.target.value; guardar(); });
+var bilVis=5;
+function pintarBilhetes(){
+  const ol=$("bilhetes"); if(!ol) return;
+  const vals=(S.mot||"").split("\n"); while(vals.length<20) vals.push("");
+  let ult=-1; vals.slice(0,20).forEach((v,k)=>{ if(v.trim()) ult=k; });
+  bilVis=Math.min(20,Math.max(bilVis,5,ult+2));
+  const am=ehAmigo(S.o);
+  const ex=am?["Você sempre ora por mim","Sua alegria nos cultos","Os conselhos que você me dá"]:["Seu sorriso quando fala de Deus","O jeito que você cuida de mim","Suas orações por nós"];
+  ol.innerHTML="";
+  for(let k=0;k<bilVis;k++){
+    const li=document.createElement("li"); li.className="bil";
+    const n=document.createElement("span"); n.className="bil-n"; n.textContent=k+1;
+    const inp=document.createElement("input"); inp.type="text"; inp.maxLength=120; inp.value=vals[k]||"";
+    inp.placeholder=ex[k]||"Mais um motivo…"; inp.setAttribute("aria-label","Motivo "+(k+1));
+    inp.addEventListener("input",salvarBilhetes);
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); const prox=ol.children[k+1]; if(prox) prox.querySelector("input").focus(); else if(bilVis<20){ bilVis++; pintarBilhetes(); const q=ol.children[k+1]; q&&q.querySelector("input").focus(); } } });
+    li.append(n,inp); ol.appendChild(li);
+  }
+  $("maisBil").hidden=bilVis>=20; contarBilhetes();
+}
+function salvarBilhetes(){
+  const v=[...$("bilhetes").querySelectorAll("input")].map(x=>x.value.replace(/\n/g," "));
+  const resto=(S.mot||"").split("\n").slice(v.length,20);
+  let todos=v.concat(resto); while(todos.length&&!todos[todos.length-1].trim()) todos.pop();
+  S.mot=todos.join("\n"); guardar(); contarBilhetes();
+}
+function contarBilhetes(){ $("nMot").textContent=(S.mot||"").split("\n").filter(x=>x.trim()).length; }
+$("maisBil").addEventListener("click",()=>{ const k=bilVis; bilVis=Math.min(20,bilVis+5); pintarBilhetes(); const q=$("bilhetes").children[k]; q&&q.querySelector("input").focus(); });
+pintarBilhetes();
 /* música: link do YouTube/Spotify ou música do site */
 function lerMusica(url){
   const u=(url||"").trim(); if(!u) return null;
