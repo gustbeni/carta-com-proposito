@@ -13,3 +13,6 @@ casal_abraco.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1791736978/an
 GreatVibes-Regular.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/greatvibes/GreatVibes-Regular.ttf
 Cormorant.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf
 CormorantItalic.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/CormorantGaramond-Italic%5Bwght%5D.ttf
+pol_casal1.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792022628/anuncios/pol_casal1.jpg
+pol_casal2.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792022643/anuncios/pol_casal2.jpg
+pol_casal3.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792022659/anuncios/pol_casal3.jpg
