@@ -1,0 +1,37 @@
+name: transcrever-audio
+on:
+  push:
+    paths: ["ads/audio/*.wav"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  transcrever:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Instalar
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q openai-whisper
+      - name: Transcrever
+        run: |
+          for f in ads/audio/*.wav; do
+            j="${f%.wav}.json"; [ -f "$j" ] && continue
+            python -c "
+          import whisper,json,sys
+          m=whisper.load_model('medium')
+          r=m.transcribe('$f',language='pt',word_timestamps=True)
+          out=[{'start':s['start'],'end':s['end'],'text':s['text'],'words':[{'w':w['word'],'s':w['start'],'e':w['end']} for w in s.get('words',[])]} for s in r['segments']]
+          json.dump(out,open('$j','w'),ensure_ascii=False,indent=1)
+          "
+          done
+      - name: Salvar
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add ads/audio/*.json
+          git commit -m "Transcrição [skip netlify]" || exit 0
+          git push
