@@ -107,3 +107,40 @@ export async function avisarMeta(id, reg) {
   reg.metaOk = true;
   await loja().setJSON("c/" + id, reg);
 }
+
+// Spotify só toca 30 segundos para quem não está logado. Procuramos a mesma música no YouTube,
+// que toca completa e começa sozinha quando a carta é aberta.
+const YT_CHAVE = process.env.YOUTUBE_KEY || "AIzaSyB4hj6bF9qJPjQ_xouOqqlUJ9WlTl5yYb0";
+const desfazer = t => String(t || "").replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
+export async function nomeSpotify(tipoId) {
+  const m = /^track\/([A-Za-z0-9]{10,40})$/.exec(tipoId || ""); if (!m) return null;
+  const url = "https://open.spotify.com/track/" + m[1];
+  try {
+    const r = await fetch(url, { headers: { "User-Agent": "facebookexternalhit/1.1", "Accept-Language": "pt-BR,pt;q=0.9" } });
+    const h = await r.text();
+    const tit = desfazer((h.match(/<meta property="og:title" content="([^"]*)"/) || [])[1]);
+    const desc = desfazer((h.match(/<meta property="og:description" content="([^"]*)"/) || [])[1]);
+    const artista = desc.split("·")[0].trim();
+    if (tit) return { musica: tit, artista };
+    const t2 = desfazer((h.match(/<title>([^<]*)<\/title>/) || [])[1]);
+    const m2 = /^(.*?) - .*? by (.*?) \| Spotify$/.exec(t2); if (m2) return { musica: m2[1], artista: m2[2] };
+  } catch (e) {}
+  try {
+    const j = await (await fetch("https://open.spotify.com/oembed?url=" + encodeURIComponent(url))).json();
+    if (j && j.title) return { musica: desfazer(j.title), artista: "" };
+  } catch (e) {}
+  return null;
+}
+export async function buscarYouTube(q) {
+  const u = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=5&regionCode=BR&q=" + encodeURIComponent(q) + "&key=" + encodeURIComponent(YT_CHAVE);
+  const r = await fetch(u, { headers: { Referer: "https://carta-com-proposito.netlify.app/" } });
+  if (!r.ok) { console.error("YouTube busca", r.status); return null; }
+  const j = await r.json();
+  const it = (j.items || []).find(x => x.id && x.id.videoId); if (!it) return null;
+  return { y: it.id.videoId, t: desfazer(it.snippet.title), c: desfazer(it.snippet.channelTitle) };
+}
+export async function spotifyParaYouTube(tipoId) {
+  const n = await nomeSpotify(tipoId); if (!n || !n.musica) return null;
+  const achou = await buscarYouTube((n.musica + " " + (n.artista || "")).trim());
+  return achou ? { ...achou, musica: n.musica, artista: n.artista } : null;
+}

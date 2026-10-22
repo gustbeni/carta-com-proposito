@@ -1,5 +1,5 @@
 // Entrega a carta para quem escaneou o QR code (só se estiver paga)
-import { loja, resposta, idValido, confirmarPagamento } from "../lib/comum.mjs";
+import { loja, resposta, idValido, confirmarPagamento, spotifyParaYouTube } from "../lib/comum.mjs";
 
 export default async (req) => {
   const id = new URL(req.url).searchParams.get("id");
@@ -15,6 +15,15 @@ export default async (req) => {
     // ainda não chegou o dia: entrega só o necessário para a contagem regressiva
     return resposta({ bloqueada: true, ab: new Date(abre).toISOString(), p: c.p, d: c.d, o: c.o });
   }
-  return resposta({ carta: reg.carta });
+  // Música do Spotify: troca pela mesma música no YouTube (toca completa e começa sozinha)
+  let carta = reg.carta;
+  if (typeof c.ml === "string" && c.ml.startsWith("s:track/")) {
+    let conv = reg.musicaYT && reg.musicaYT.de === c.ml ? reg.musicaYT : null;
+    if (!conv || (conv.falhou && Date.now() - conv.falhou > 6 * 3600e3)) {
+      try { const r = await spotifyParaYouTube(c.ml.slice(2)); conv = r ? { de: c.ml, y: r.y, t: r.t } : { de: c.ml, falhou: Date.now() }; reg.musicaYT = conv; await loja().setJSON("c/" + id, reg); } catch (e) {}
+    }
+    if (conv && conv.y) carta = { ...c, ml: "y:" + conv.y };
+  }
+  return resposta({ carta });
 };
 export const config = { path: "/api/carta" };
