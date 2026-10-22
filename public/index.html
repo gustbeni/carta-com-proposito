@@ -1131,7 +1131,7 @@ footer, footer a { color:#b8968d; }
         <fieldset class="etapa">
           <legend><span class="n">7</span>Pote dos motivos</legend>
           <p class="dica"><b id="lMot">Por que você ama essa pessoa?</b><br>Escreva um motivo em cada bilhete. Na carta, cada toque no pote tira um bilhetinho.</p>
-          <p class="aviso-pote">✨ É opcional: se deixar vazio, nós enchemos o pote com motivos lindos, escolhidos aleatoriamente.</p>
+          <p class="aviso-pote">✨ É opcional: se deixar vazio, nós enchemos o pote com 5 motivos lindos, escolhidos aleatoriamente.</p>
           <div class="pote-form">
             <div class="pote-tampa" aria-hidden="true"><i></i></div>
             <div class="pote-vidro" id="poteVidro">
@@ -2019,7 +2019,7 @@ function desenharPote(n){
   </svg>`;
 }
 function criarPote(P){
-  const am=ehAmigo(P.o); const lista=(Array.isArray(P.mot)&&P.mot.length?P.mot:(ehFam(P.o)?MOTIVOS_FAM:am?MOTIVOS_AMIGO:MOTIVOS_CASAL)).slice(0,20);
+  const am=ehAmigo(P.o); const proprios=Array.isArray(P.mot)&&P.mot.length; const lista=proprios?P.mot.slice(0,20):(ehFam(P.o)?MOTIVOS_FAM:am?MOTIVOS_AMIGO:MOTIVOS_CASAL).slice().sort(()=>Math.random()-.5).slice(0,5); /* pote vazio: 5 motivos automáticos, para não cansar */
   const box=el("div","pote surge"); box.appendChild(el("span","lbl","O pote dos motivos"));
   box.appendChild(el("h3",null,am?"Por que sou grato por você":"Por que eu te amo"));
   const palco=el("div","palco"); const prat=el("div","prateleira");
