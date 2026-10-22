@@ -2,7 +2,7 @@
 import { getStore } from "@netlify/blobs";
 import { createHash } from "node:crypto";
 
-export const PRECO = Number(process.env.PRECO || "17.99"); // valor cobrado de verdade
+export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade
 export const DESCRICAO = "Carta com Propósito";
 export const DIAS_PARA_EDITAR = 7;
 const MP = "https://api.mercadopago.com";
@@ -46,17 +46,18 @@ export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
 // Pix: API de Orders (reg.mpOrder). Cartão: Checkout Pro (busca de pagamentos por external_reference).
 export async function confirmarPagamento(id, reg) {
   if (reg.pago) return true;
+  const valorPedido = Number(reg.valor) || 17.99; // pedidos antigos foram criados a 17,99
   let aprovado = null;
   if (reg.mpOrder) {
     try {
       const o = await mp("/v1/orders/" + encodeURIComponent(reg.mpOrder));
-      if (o.external_reference === id && o.status === "processed" && Number(o.total_amount) >= PRECO - 0.01) aprovado = o.id;
+      if (o.external_reference === id && o.status === "processed" && Number(o.total_amount) >= valorPedido - 0.01) aprovado = o.id;
     } catch (e) {}
   }
   if (!aprovado) {
     try {
       const j = await mp("/v1/payments/search?sort=date_created&criteria=desc&external_reference=" + encodeURIComponent(id));
-      const ok = (j.results || []).find(p => p.status === "approved" && p.external_reference === id && Number(p.transaction_amount) >= PRECO - 0.01);
+      const ok = (j.results || []).find(p => p.status === "approved" && p.external_reference === id && Number(p.transaction_amount) >= valorPedido - 0.01);
       if (ok) aprovado = ok.id;
     } catch (e) {}
   }
@@ -95,7 +96,7 @@ export async function avisarMeta(id, reg) {
   const corpo = { data: [{
     event_name: "Purchase", event_time: Math.floor(Date.now() / 1000), event_id: "compra_" + id,
     action_source: "website", event_source_url: (process.env.URL || "https://carta-com-proposito.netlify.app") + "/",
-    user_data, custom_data: { currency: "BRL", value: PRECO, content_name: DESCRICAO },
+    user_data, custom_data: { currency: "BRL", value: Number(reg.valor) || 17.99, content_name: DESCRICAO },
   }] };
   if (process.env.META_TEST_CODE) corpo.test_event_code = process.env.META_TEST_CODE;
   const r = await fetch("https://graph.facebook.com/v23.0/" + pixel + "/events?access_token=" + encodeURIComponent(token), {

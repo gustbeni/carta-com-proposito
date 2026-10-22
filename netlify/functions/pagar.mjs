@@ -15,7 +15,7 @@ export default async (req) => {
   const id = randomBytes(9).toString("base64url");
   const chave = randomBytes(16).toString("hex");
   const site = enderecoSite(req);
-  const reg = { carta, chave, email, pago: false, criado: Date.now(), nav: dadosNavegador(req) };
+  const reg = { carta, chave, email, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
   await loja().setJSON("c/" + id, reg);
 
   try {
