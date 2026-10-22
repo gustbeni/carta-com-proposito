@@ -1,5 +1,6 @@
 // Funções compartilhadas: Mercado Pago + armazenamento das cartas (Netlify Blobs)
 import { getStore } from "@netlify/blobs";
+import { createHash } from "node:crypto";
 
 export const PRECO = Number(process.env.PRECO || "17.99"); // valor cobrado de verdade
 export const DESCRICAO = "Carta com Propósito";
@@ -62,5 +63,46 @@ export async function confirmarPagamento(id, reg) {
   if (!aprovado) return false;
   reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado;
   await loja().setJSON("c/" + id, reg);
+  try { await avisarMeta(id, reg); } catch (e) { console.error("Meta CAPI", e.message); }
   return true;
+}
+
+// guarda dados do navegador de quem está comprando, para o Meta reconhecer a compra
+export function dadosNavegador(req) {
+  const h = req.headers, ck = {};
+  String(h.get("cookie") || "").split(";").forEach(p => { const i = p.indexOf("="); if (i > 0) ck[p.slice(0, i).trim()] = p.slice(i + 1).trim(); });
+  return {
+    ip: h.get("x-nf-client-connection-ip") || (h.get("x-forwarded-for") || "").split(",")[0].trim() || undefined,
+    ua: (h.get("user-agent") || "").slice(0, 400) || undefined,
+    fbp: ck._fbp || undefined, fbc: ck._fbc || undefined,
+  };
+}
+
+// API de Conversões: o próprio servidor avisa o Meta que a compra foi paga
+// (conta a venda mesmo se a pessoa fechou o site antes do Pix cair)
+const sha = v => createHash("sha256").update(String(v).trim().toLowerCase()).digest("hex");
+export async function avisarMeta(id, reg) {
+  const token = process.env.META_CAPI_TOKEN;
+  if (!token || reg.metaOk) return;
+  const pixel = process.env.META_PIXEL_ID || "1595171231774957";
+  const n = reg.nav || {};
+  const user_data = { external_id: [sha(id)] };
+  if (reg.email) user_data.em = [sha(reg.email)];
+  if (n.ip) user_data.client_ip_address = n.ip;
+  if (n.ua) user_data.client_user_agent = n.ua;
+  if (n.fbp) user_data.fbp = n.fbp;
+  if (n.fbc) user_data.fbc = n.fbc;
+  const corpo = { data: [{
+    event_name: "Purchase", event_time: Math.floor(Date.now() / 1000), event_id: "compra_" + id,
+    action_source: "website", event_source_url: (process.env.URL || "https://carta-com-proposito.netlify.app") + "/",
+    user_data, custom_data: { currency: "BRL", value: PRECO, content_name: DESCRICAO },
+  }] };
+  if (process.env.META_TEST_CODE) corpo.test_event_code = process.env.META_TEST_CODE;
+  const r = await fetch("https://graph.facebook.com/v23.0/" + pixel + "/events?access_token=" + encodeURIComponent(token), {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { console.error("Meta CAPI", r.status, JSON.stringify(j).slice(0, 400)); return; }
+  reg.metaOk = true;
+  await loja().setJSON("c/" + id, reg);
 }

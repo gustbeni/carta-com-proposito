@@ -1663,7 +1663,7 @@ async function esperarPagamento(n){
 }
 function pagamentoAprovado(){
   pararEspera(); pedido.pago=true; liberado=true; salvar("cd_pedido",pedido);
-  try{ if(typeof fbq==="function") fbq("track","Purchase",{currency:"BRL",value:valorNum()}); }catch(err){}
+  try{ if(typeof fbq==="function") fbq("track","Purchase",{currency:"BRL",value:valorNum()},{eventID:"compra_"+pedido.id}); }catch(err){}
   $("pixBox").hidden=true; mostrarPronto(); toast("Pagamento confirmado!"); gerarQr();
 }
 $("pagarPix").addEventListener("click",()=>pagar("pix"));
