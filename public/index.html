@@ -798,6 +798,13 @@ input[type=date].inp { color-scheme:dark; }
 .barra-fixa .bf-sec { background:transparent; color:#f3d08a; border-color:rgba(243,208,138,.7); }
 footer, footer a { color:#b8968d; }
 .toast { background:#f3d08a; color:#2a1418; }
+.toast { top:calc(14px + env(safe-area-inset-top,0px)); bottom:auto; z-index:200; width:calc(100% - 28px); max-width:460px; padding:14px 18px 14px 50px; border-radius:14px; font:600 1rem/1.35 "Lora",Georgia,serif; text-align:left; box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 0 2px rgba(122,31,51,.55); animation:toastIn .28s ease-out; }
+.toast::before { content:"!"; position:absolute; left:14px; top:50%; transform:translateY(-50%); width:26px; height:26px; border-radius:50%; background:#7a1f33; color:#fff; font:800 16px/26px system-ui,sans-serif; text-align:center; }
+@keyframes toastIn { from { opacity:0; transform:translate(-50%,-14px); } to { opacity:1; transform:translate(-50%,0); } }
+.alerta-pag { display:block; margin:12px 0 4px; padding:12px 14px; border-radius:12px; background:rgba(243,208,138,.14); border:1.5px solid #f3d08a; color:#fff3dc; font:600 .98rem/1.4 "Lora",Georgia,serif; }
+.alerta-pag button { margin-top:8px; display:block; background:#f3d08a; color:#2a1418; border:0; border-radius:8px; padding:8px 14px; font:700 .92rem "Lora",Georgia,serif; cursor:pointer; }
+@keyframes tremer { 0%,100%{transform:none} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.alerta-pag.tremer { animation:tremer .4s ease; }
 .dep { background:#220e14; box-shadow:0 0 0 1px rgba(227,189,114,.2), 0 14px 30px rgba(0,0,0,.45); }
 .dep p { color:#f0dcc4; } .dep b { color:#f3d08a; }
 /* tudo surgindo suave ao rolar */
@@ -1322,7 +1329,12 @@ const grupoDe=o=>ehFam(o)?"familia":ehAmigo(o)?"amigo":"casal";
 const oracoesDe=o=>ehFam(o)?ORACOES_FAM:ehAmigo(o)?ORACOES_AMIGO:ORACOES;
 
 const $ = id => document.getElementById(id);
-function toast(t){ const el=$("toast"); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,2800); }
+function toast(t){ const el=$("toast"); el.textContent=t; el.hidden=true; void el.offsetWidth; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,Math.max(3500,t.length*70)); }
+function alertaPag(t,campo){ const m=$("msgPag"); if(!m) return; m.innerHTML=""; m.className="aviso alerta-pag"; m.appendChild(document.createTextNode("⚠️ "+t));
+  const alvo=campo&&$(campo); const box=alvo&&alvo.closest("fieldset");
+  if(alvo&&!(box&&box.hidden)){ const b=document.createElement("button"); b.type="button"; b.textContent="Corrigir agora"; b.onclick=()=>{ alvo.scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>{ try{ alvo.focus({preventScroll:true}); }catch(e){} },500); }; m.appendChild(b); }
+  m.classList.remove("tremer"); void m.offsetWidth; m.classList.add("tremer"); m.scrollIntoView({behavior:"smooth",block:"center"}); }
+function limparAlertaPag(){ const m=$("msgPag"); if(m&&m.classList.contains("alerta-pag")){ m.className="aviso"; m.textContent=""; } }
 function ler(k,def){ try{ const v=localStorage.getItem(k); return v==null?def:JSON.parse(v); }catch(e){ return def; } }
 function salvar(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 function b64enc(obj){ const bytes=new TextEncoder().encode(JSON.stringify(obj)); let s=""; bytes.forEach(b=>s+=String.fromCharCode(b)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
@@ -1637,10 +1649,10 @@ function cartaParaServidor(){ const P=dadosCarta(); const fs=fotosDoCriador(); i
 let esperando=null;
 function pararEspera(){ clearTimeout(esperando); esperando=null; }
 async function pagar(metodo){
-  const f=validar(); if(f){ toast(f); return; }
+  const f=validar(); if(f){ toast(f); alertaPag(f, !S.para?"fPara":"versos"); return; }
   const email=$("fEmail").value.trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast("Escreva seu e-mail para receber o comprovante."); $("fEmail").focus(); return; }
-  salvar("cd_email",email);
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast("Escreva seu e-mail para receber o comprovante."); alertaPag("Escreva seu e-mail para receber o comprovante."); $("fEmail").focus(); return; }
+  salvar("cd_email",email); limparAlertaPag();
   const bts=[$("pagarPix"),$("pagarCartao")]; bts.forEach(b=>b.disabled=true);
   const msg=t=>$("msgPag").textContent=t;
   try{
