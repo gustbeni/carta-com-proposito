@@ -1,0 +1,18 @@
+name: testar-musica
+on:
+  push:
+    paths: [".github/workflows/sondar.yml"]
+permissions:
+  contents: write
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sleep 60
+          mkdir -p ads/teste
+          curl -sS "https://carta-com-proposito.netlify.app/api/musica?s=track/4cOdK2wGLETKBW3PvgPWqT" > ads/teste/musica.json; echo >> ads/teste/musica.json
+          curl -sS "https://carta-com-proposito.netlify.app/api/musica?s=track/3n3Ppam7vgaVa1iaRUc9Lp" >> ads/teste/musica.json
+          git config user.name github-actions; git config user.email actions@github.com
+          git add ads/teste; git commit -m "teste musica [skip netlify]" || exit 0; git push
