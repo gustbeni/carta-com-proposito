@@ -1,8 +1,18 @@
 // Funções compartilhadas: Mercado Pago + armazenamento das cartas (Netlify Blobs)
 import { getStore } from "@netlify/blobs";
 import { createHash } from "node:crypto";
+import { emailLigado, enviarCartaPorEmail } from "./correio.mjs";
 
-export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade
+export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade (carta Padrão)
+export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // carta Premium
+export const DIAS_PADRAO = 90; // a carta Padrão fica no ar por 3 meses depois do pagamento; a Premium é vitalícia
+export const planoDe = p => p === "premium" ? "premium" : "padrao";
+export const valorDo = plano => planoDe(plano) === "premium" ? PRECO_PREMIUM : PRECO;
+// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 3 meses depois do pagamento
+export function expirou(reg) {
+  if (!reg || reg.plano !== "padrao") return false;
+  return Date.now() > (reg.pagoEm || reg.criado || 0) + DIAS_PADRAO * 864e5;
+}
 export const DESCRICAO = "Carta com Propósito";
 export const DIAS_PARA_EDITAR = 7;
 const MP = "https://api.mercadopago.com";
@@ -22,13 +32,20 @@ export function enderecoSite(req) {
   return (process.env.URL || new URL(req.url).origin).replace(/\/$/, "");
 }
 
-// confere se a carta tem um formato razoável e não é grande demais
-export function limparCarta(c) {
+// confere se a carta tem um formato razoável e não é grande demais.
+// O que é do Premium (mais polaroides e o mini filme) só fica se o pedido for Premium.
+export function limparCarta(c, plano) {
   if (!c || typeof c !== "object" || Array.isArray(c)) return null;
   if (!Array.isArray(c.v) || !c.v.length || typeof c.p !== "string" || !c.p.trim()) return null;
   const texto = JSON.stringify(c);
   if (texto.length > 20000) return "grande";
-  return JSON.parse(texto);
+  const limpa = JSON.parse(texto);
+  delete limpa.pl; // quem diz se é Premium é o pedido, nunca a carta
+  const premium = planoDe(plano) === "premium";
+  if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, premium ? 6 : 3);
+  if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, premium ? 6 : 3);
+  if (premium && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, 7); else delete limpa.mf;
+  return limpa;
 }
 
 export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
@@ -44,8 +61,9 @@ export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
 
 // procura no Mercado Pago um pagamento aprovado para esta carta
 // Pix: API de Orders (reg.mpOrder). Cartão: Checkout Pro (busca de pagamentos por external_reference).
-export async function confirmarPagamento(id, reg) {
-  if (reg.pago) return true;
+// Depois de pago, manda o e-mail com o link e o QR code (se a pessoa pediu e se ainda não foi).
+export async function confirmarPagamento(id, reg, { email = true } = {}) {
+  if (reg.pago) { if (email) await mandarEmail(id, reg); return true; }
   const valorPedido = Number(reg.valor) || 17.99; // pedidos antigos foram criados a 17,99
   let aprovado = null;
   if (reg.mpOrder) {
@@ -65,7 +83,32 @@ export async function confirmarPagamento(id, reg) {
   reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado;
   await loja().setJSON("c/" + id, reg);
   try { await avisarMeta(id, reg); } catch (e) { console.error("Meta CAPI", e.message); }
+  if (email) await mandarEmail(id, reg);
   return true;
+}
+
+// E-mail com o link e o QR code para quem comprou. Só manda uma vez (e desiste depois de 3 erros);
+// "forcar" é o botão "Receber no meu e-mail" da tela da carta paga.
+function prazo(p, ms) {
+  let t; const limite = new Promise((_, nao) => { t = setTimeout(() => nao(new Error("demorou")), ms); });
+  return Promise.race([p, limite]).finally(() => clearTimeout(t));
+}
+export async function mandarEmail(id, reg, { forcar = false } = {}) {
+  if (!emailLigado() || !reg.pago || !reg.email) return false;
+  if (!forcar && (!reg.querEmail || reg.emailOk || (reg.emailErros || 0) >= 3)) return !!reg.emailOk;
+  const atual = await loja().get("c/" + id, { type: "json" }).catch(() => null);
+  if (atual) Object.assign(reg, atual); // outra chamada pode ter acabado de mandar
+  if (!forcar && reg.emailOk) return true;
+  try {
+    const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano }), 9000);
+    reg.emailOk = Date.now(); reg.emailEnvios = (reg.emailEnvios || 0) + 1;
+  } catch (e) {
+    console.error("E-mail da carta não foi", e.code || (e.message === "demorou" ? "demorou" : "erro"), e.responseCode || ""); // sem o endereço de ninguém
+    reg.emailErros = (reg.emailErros || 0) + 1;
+  }
+  await loja().setJSON("c/" + id, reg);
+  return !!reg.emailOk;
 }
 
 // guarda dados do navegador de quem está comprando, para o Meta reconhecer a compra
@@ -138,6 +181,23 @@ export async function buscarYouTube(q) {
   const j = await r.json();
   const it = (j.items || []).find(x => x.id && x.id.videoId); if (!it) return null;
   return { y: it.id.videoId, t: desfazer(it.snippet.title), c: desfazer(it.snippet.channelTitle) };
+}
+// várias sugestões para a busca pelo nome da música. Se o limite diário do YouTube acabou, avisa com { limite: true }
+export async function sugestoesYouTube(q, n = 6) {
+  const u = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&regionCode=BR&relevanceLanguage=pt&maxResults=" + n + "&q=" + encodeURIComponent(q) + "&key=" + encodeURIComponent(YT_CHAVE);
+  const r = await fetch(u, { headers: { Referer: "https://carta-com-proposito.netlify.app/" } });
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    const motivo = (((j.error || {}).errors || [])[0] || {}).reason || "";
+    console.error("YouTube sugestões", r.status, motivo);
+    if (r.status === 403 || r.status === 429) throw Object.assign(new Error("limite"), { limite: true });
+    throw new Error("youtube " + r.status);
+  }
+  const j = await r.json();
+  return (j.items || []).filter(x => x.id && x.id.videoId).map(x => ({
+    y: x.id.videoId, t: desfazer(x.snippet.title), c: desfazer(x.snippet.channelTitle),
+    img: (((x.snippet.thumbnails || {}).default || {}).url || "").replace(/^http:/, "https:"),
+  }));
 }
 export async function spotifyParaYouTube(tipoId) {
   const n = await nomeSpotify(tipoId); if (!n || !n.musica) return null;

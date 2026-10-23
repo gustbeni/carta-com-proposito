@@ -7,11 +7,23 @@ netlify/functions/aviso ...... o Mercado Pago avisa quando o pagamento é aprova
 netlify/functions/carta ...... entrega a carta para quem escaneou (só se estiver paga)
 netlify/functions/atualizar .. salva mudanças na carta até 7 dias depois de pagar
 netlify/lib/comum.mjs ........ preço cobrado (PRECO = 21.99) e ligação com o Mercado Pago
+netlify/lib/correio.mjs ...... e-mail com o link e o QR code da carta para quem comprou
+netlify/functions/email ...... botão "Receber a carta no meu e-mail"
+netlify/functions/config ..... diz ao site se o e-mail está ligado
 
 No Netlify, em Project configuration > Environment variables, crie:
   MP_ACCESS_TOKEN = Access Token de PRODUÇÃO do Mercado Pago (começa com APP_USR-)
-  (opcional) PRECO = 21.99
+  (opcional) PRECO = 21.99          (carta Padrão)
+  (opcional) PRECO_PREMIUM = 29.99  (carta Premium)
   META_CAPI_TOKEN = token da API de Conversões do Meta (secreto)
+  EMAIL_USUARIO = o Gmail que manda a carta por e-mail (ex.: um Gmail só da loja)
+  EMAIL_SENHA_APP = a "senha de app" desse Gmail (marque como secreta)
+
+Como criar a senha de app do Gmail:
+  1. Entre no Gmail da loja e ligue a "Verificação em duas etapas" (myaccount.google.com/security).
+  2. Abra myaccount.google.com/apppasswords, dê o nome "Carta com Propósito" e clique em Criar.
+  3. O Google mostra 16 letras. Cole no Netlify em EMAIL_SENHA_APP (nunca mande no chat).
+  Sem essas duas variáveis o site funciona normal, só não aparece a opção de receber por e-mail.
 
 Este site precisa ser publicado pelo GitHub (as funções não funcionam arrastando a pasta).
 

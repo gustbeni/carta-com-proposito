@@ -1,5 +1,5 @@
 // Entrega a carta para quem escaneou o QR code (só se estiver paga)
-import { loja, resposta, idValido, confirmarPagamento, spotifyParaYouTube } from "../lib/comum.mjs";
+import { loja, resposta, idValido, confirmarPagamento, spotifyParaYouTube, expirou } from "../lib/comum.mjs";
 
 export default async (req) => {
   const id = new URL(req.url).searchParams.get("id");
@@ -10,6 +10,8 @@ export default async (req) => {
   if (!pago) { try { pago = await confirmarPagamento(id, reg); } catch {} }
   if (!pago) return resposta({ erro: "nao-paga" }, 404);
   const c = reg.carta || {};
+  // carta Padrão: fica no ar por 3 meses depois do pagamento
+  if (expirou(reg)) return resposta({ expirada: true, p: c.p, d: c.d });
   const abre = typeof c.ab === "string" ? Date.parse(c.ab) : NaN;
   if (abre && abre > Date.now()) {
     // ainda não chegou o dia: entrega só o necessário para a contagem regressiva
@@ -24,6 +26,7 @@ export default async (req) => {
     }
     if (conv && conv.y) carta = { ...c, ml: "y:" + conv.y };
   }
+  if (reg.plano === "premium") carta = { ...carta, pl: "p" };
   return resposta({ carta });
 };
 export const config = { path: "/api/carta" };

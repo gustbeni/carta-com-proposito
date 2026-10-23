@@ -16,6 +16,6 @@ d = json.dumps(json.load(open(os.path.join(aqui, "dados.json"), encoding="utf-8"
 h = t.replace("{{CSS}}", css).replace("{{DADOS}}", d)
 i = h.index("</style>") + len("</style>")
 doc = ('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
-       '<meta name="viewport" content="width=device-width, initial-scale=1">' + h[:i] + "</head><body>" + h[i:] + "</body></html>")
+       '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">' + h[:i] + "</head><body>" + h[i:] + "</body></html>")
 open(os.path.join(raiz, "public", "index.html"), "w", encoding="utf-8").write(doc)
 print("public/index.html montado:", len(doc), "caracteres")
