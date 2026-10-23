@@ -1381,12 +1381,12 @@ function bindLetter(root, L, mode, hooks = {}) {
   const steps = full ? [...root.querySelectorAll('.lb > .lsec')] : [];
   let cur = -1;
   const nextBtn = s => s.querySelector(':scope > .l-next-wrap .l-next');
-  const delayFor = s => s.id === 's-photos' ? 900 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 2800
+  const delayFor = s => s.id === 's-photos' ? 900 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 3400
     : s.id === 's-verses' ? 2000 : s.id === 's-open' ? 1800 : 2000;
   function show(s) {
     s.classList.remove('wait', 'pre'); void s.offsetWidth; s.classList.add('in');
     if (s.classList.contains('cine-photos')) { slides(s); return; }
-    if (s.id === 's-numbers') { countUp(s); later(() => sparkBurst(s.querySelector('.heart-count')), 2300); }
+    if (s.id === 's-numbers') { later(() => countUp(s), reduced() ? 0 : 800); later(() => sparkBurst(s.querySelector('.heart-count')), 3100); } /* a contagem espera a parte aparecer */
     if (s.id === 's-message') escrever(s);
     else if (s.dataset.step === 'next') later(() => { const b = nextBtn(s); if (b) b.hidden = false; }, reduced() ? 0 : delayFor(s));
     if (s.dataset.step === 'end') later(() => rain(hooks.host), 700);
