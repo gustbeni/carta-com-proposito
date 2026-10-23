@@ -1255,17 +1255,16 @@ function letterHTML(L, mode, opt = {}) {
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  const music = full && L.ml ? `<div class="l-music"><p class="l-label">Nossa música</p><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button></div>` : '';
-  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>${music}`);
+  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>`);
+  /* ordem: roleta, música, fotos, pote, versículos, carta escrita, números, última foto */
+  h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
+    <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
+    <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
+  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Agora, com a nossa música</h3><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button>`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 ? ' pols6' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
     h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
   }
-  h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
-    <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
-    <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
-  if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
-  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}${SKIP}`);
   const n = L.reasons.length;
   h += sec('s-jar', '', 'jar', `<p class="l-label">O pote dos motivos</p><h3 class="l-h gold-t">${esc(C.jarH)}</h3><p class="l-sub">Toque no pote e tire um bilhete.</p>
     <div class="jar-wrap"><button class="jar" aria-label="Tirar um bilhete do pote">${jarSVG(n)}</button>
@@ -1273,9 +1272,11 @@ function letterHTML(L, mode, opt = {}) {
     <p class="jar-hint"><b>0</b> de ${n} bilhetes lidos</p>
     ${full ? '' : '<div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>'}
     ${full ? '<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>' : ''}${SKIP}</div>`);
+  h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
+  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}${SKIP}`);
+  if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
   if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}${SKIP}`);
   if (L.premium && L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L) + SKIP);
-  h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
       <div class="ask-btns"><button class="ask-yes">Sim!</button><button class="ask-no">Não</button></div>
@@ -1410,8 +1411,10 @@ function bindLetter(root, L, mode, hooks = {}) {
   function advance() {
     if (cur + 1 >= steps.length) return;
     ultimoAvanco = Date.now();
-    const s = steps[++cur];
+    const ant = steps[cur], s = steps[++cur];
     show(s);
+    /* a música começa quando a pessoa sai da roleta */
+    if (ant && ant.id === 's-wheel' && hooks.onMusica) hooks.onMusica();
     if (cur > 0) later(() => irPara(s, 40), 60);
   }
   /* a ação da parte foi feita: mostra o Continuar (wait vazio) ou segue sozinho depois de "wait" ms */
@@ -1425,18 +1428,6 @@ function bindLetter(root, L, mode, hooks = {}) {
   root.querySelectorAll('.l-next').forEach(b => b.addEventListener('click', () => {
     const s = b.closest('.lsec'); b.closest('.l-next-wrap').remove();
     if (steps[cur] !== s) return;
-    /* pergaminho: enrola de novo, a fita volta e o selo carimba antes de seguir */
-    const sc = s.id === 's-message' && full && !reduced() && !hooks.rapido ? s.querySelector('.scroll') : null;
-    if (sc) {
-      sc.classList.remove('aberto'); sc.classList.add('fechando', 'fechado');
-      /* a tela acompanha o pergaminho enquanto ele enrola, para ele não sumir lá em cima */
-      const segue = setInterval(() => { const r = root.getBoundingClientRect(), b = sc.getBoundingClientRect(), alvo = r.top + r.height * .42; if (Math.abs(b.top + b.height / 2 - alvo) > 4) root.scrollBy({ top: b.top + b.height / 2 - alvo }); }, 40);
-      later(() => clearInterval(segue), 1700); cleanups.push(() => clearInterval(segue));
-      later(() => { sc.classList.remove('rompe'); sc.classList.add('selado'); }, 1500);
-      later(() => sparkBurst(sc), 2000);
-      later(() => { if (steps[cur] === s) advance(); }, 3800);
-      return;
-    }
     advance();
   }));
   root.querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', () => {
@@ -1603,8 +1594,8 @@ function bindLetter(root, L, mode, hooks = {}) {
       try { if (navigator.vibrate) navigator.vibrate([10, 30, 60]); } catch (e) {}
       if (full && hooks.host && !reduced()) { const f = document.createElement('div'); f.className = 'screen-flash'; hooks.host.appendChild(f); setTimeout(() => f.remove(), 900); }
       later(() => mostrar(cam.querySelector('.cam-pol'), 140), reduced() ? 0 : 1400);
-      later(() => { cam.classList.add('dev'); sparkBurst(cam); }, reduced() ? 0 : 2200);
-      done(cam.closest('.lsec'), 10500);
+      later(() => { cam.classList.add('dev'); sparkBurst(cam); }, reduced() ? 0 : 1700);
+      done(cam.closest('.lsec'), 7500);
     });
   }
 
@@ -1659,6 +1650,11 @@ function openViewer(L, opt = {}) {
   const scroll = $('#vwScroll'), cover = $('#vwCover'), lb = $('#lightbox'), mBtn = $('#vwMusic');
   const letter = bindLetter(scroll, L, 'full', {
     host: v, rapido: mode === 'example',
+    onMusica() {
+      if (L.ml) Som.criar(L.ml, scroll.querySelector('.l-music .mbox'), scroll.querySelector('.l-music .som-btn'));
+      else if (L.music === 'instrumental') Music.start();
+      if (mBtn) mBtn.hidden = false;
+    },
     onPhoto(src, cap) { lb.querySelector('img').src = src; lb.querySelector('p').textContent = cap; lb.hidden = false; },
     onMake() { closeViewer(); if (opt.onMake) opt.onMake(); }
   });
@@ -1671,16 +1667,11 @@ function openViewer(L, opt = {}) {
     mBtn.addEventListener('click', () => player.toggle());
   }
   bindCover(cover, 'full', {
-    onSeal() {
-      letter.prime();
-      if (L.ml) Som.criar(L.ml, scroll.querySelector('.l-music .mbox'), scroll.querySelector('.l-music .som-btn'));
-      else if (L.music === 'instrumental') Music.start();
-    },
+    onSeal() { letter.prime(); },
     onOpen() {
       const abrir = () => {
       cover.classList.add('gone'); scroll.classList.remove('locked'); scroll.scrollTop = 0;
       letter.start();
-      if (mBtn) mBtn.hidden = false;
       const b = v.querySelector('.vw-bottom'); if (b) setTimeout(() => b.classList.remove('wait'), 900);
       setTimeout(() => { cover.hidden = true; }, 850);
       };
@@ -1713,7 +1704,7 @@ const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
 const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
-const ui = { moreVerses: false, acesso: false };
+const ui = { moreVerses: false, acesso: false, editando: false };
 const desk = window.matchMedia('(min-width: 1040px)');
 
 function loadDraft() {
@@ -1753,8 +1744,16 @@ const STEPS = [
   { id: 'mensagem', label: 'Mensagem', sec: 's-message', optional: true, empty: () => !S.message.trim(), ok: () => true, summary: () => S.message.trim() ? S.message.trim().slice(0, 60) + '…' : 'Mensagem pronta' },
   { id: 'motivos', label: 'Pote dos motivos', sec: 's-jar', optional: true, empty: () => !S.reasons.length, ok: () => true, summary: () => S.reasons.length ? `${S.reasons.length} motivos` : '5 motivos prontos' },
   { id: 'oracao', label: 'Oração', sec: 's-prayer', ok: () => S.prayer !== 3 || !!S.prayerCustom.trim(), summary: () => S.prayer === -1 ? 'Sem oração' : S.prayer === 3 ? 'Oração própria' : `Oração ${S.prayer + 1}` },
-  { id: 'final', label: 'Cor e música', sec: 's-cover', ok: () => S.music !== 'link' || !!lerMusica(S.musicLink), summary: () => `${THEMES.find(t => t.id === curTheme()).label} · ${S.music === 'none' ? 'sem música' : S.music === 'link' ? 'música de vocês' : 'instrumental'}` }
+  { id: 'final', label: 'Cor e música', sec: 's-cover', ok: () => S.music !== 'link' || !!lerMusica(S.musicLink), summary: () => `${THEMES.find(t => t.id === curTheme()).label} · ${S.music === 'none' ? 'sem música' : S.music === 'link' ? 'música de vocês' : 'instrumental'}` },
+  /* oferta do Premium (some numa carta já paga) e, se escolher o Premium, as fotos a mais */
+  { id: 'premium', label: 'Versão Premium', sec: 's-cover', so: () => !editavel(), ok: () => true, summary: () => S.plano === 'premium' ? 'Premium ✨' : 'Padrão' },
+  { id: 'extras', label: 'Fotos do Premium', sec: 's-photos', so: () => S.plano === 'premium', optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
 ];
+/* nem toda etapa vale para toda carta (Premium, carta já paga) */
+const passoValido = i => !!STEPS[i] && (!STEPS[i].so || STEPS[i].so());
+const passosValidos = () => STEPS.map((_, i) => i).filter(passoValido);
+const ultimoPasso = () => passosValidos().pop();
+const idxPasso = id => STEPS.findIndex(x => x.id === id);
 
 const VIEWS = {
   quem() {
@@ -1790,7 +1789,7 @@ const VIEWS = {
   },
   fotos() {
     return `<h1 class="h1" tabindex="-1">Fotos de <em>vocês</em></h1>
-      <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta. No Premium, que você escolhe no final, dá para colocar mais fotos.</p>
+      <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta. Na versão Premium, que aparece mais para frente, dá para colocar mais fotos.</p>
       <div class="photos">${[0, 1, 2, 3].map(photoSlot).join('')}</div>`;
   },
   versiculos() {
@@ -1800,6 +1799,29 @@ const VIEWS = {
       <p class="counter" id="vCount"><b>${S.verses.length}</b> de 3 escolhidos</p>
       <div class="vlist${S.verses.length >= 3 ? ' full' : ''}" id="vlist">${ids.map(id => verseCard(id)).join('')}</div>
       ${!ui.moreVerses && rest > 0 ? `<button class="link more" id="moreV">${ICON.plus} Ver mais ${rest} versículos</button>` : ''}`;
+  },
+  premium() {
+    const item = (t, d) => `<li>${ICON.check}<span><b>${t}</b><small>${d}</small></span></li>`;
+    return `<p class="eyebrow">Versão Premium ✨</p>
+      <h1 class="h1" tabindex="-1">Você não quer ver a sua carta na versão <em>Premium</em>?</h1>
+      <p class="sub">Tudo o que já tem na sua carta, e mais:</p>
+      <ul class="prem-lista">
+        ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
+        ${item('Mais 3 polaroides, em slides de cinema', '6 fotos que saltam da polaroide, 50% maiores.')}
+        ${item('Mini filme do casal', 'Mais 7 fotos viram um filminho com transições, frases românticas, música e uma tela final especial.')}
+        ${item('Câmera com raios de ouro', 'A última foto se revela com mais brilho.')}
+        ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 3 meses.')}
+      </ul>
+      <button class="link prem-ver" id="verPremium">${ICON.eye}Ver a minha carta na versão Premium</button>
+      <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão · ${brl(PRICE)}</button></div>`;
+  },
+  extras() {
+    return `<p class="eyebrow">Versão Premium ✨</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
+      <p class="sub">Coloque mais 3 polaroides e as fotos do mini filme do casal.</p>
+      <p class="group-label">Mais 3 polaroides</p><p class="hint">Elas entram nos slides de cinema junto com as outras.</p>
+      <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>
+      <p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
+      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>`;
   },
   mensagem() {
     const opts = messageOptions(S.recipient, S.occasion);
@@ -1951,6 +1973,11 @@ const BIND = {
     el.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { S.prayer = +b.dataset.p; save(); rerender(); if (S.prayer === 3) setTimeout(() => { const t = $('#fPrayer'); if (t) t.focus(); }, 60); }));
     const ta = $('#fPrayer', el); if (ta) { autoGrow(ta, 160); ta.addEventListener('input', () => { S.prayerCustom = ta.value; autoGrow(ta, 160); changed(); }); }
   },
+  premium(el) {
+    $('#verPremium', el).addEventListener('click', () => { track('viu_premium'); openViewer(resolveLetter({ ...S, plano: 'premium' }), { mode: 'preview' }); });
+    $('#ficarPadrao', el).addEventListener('click', () => { S.plano = 'padrao'; save(); track('escolheu_padrao'); if (ui.editando) voltarParaPronta(); else verCartaFinal(); });
+  },
+  extras(el) { BIND.fotos(el); },
   final(el) {
     el.querySelectorAll('[data-th]').forEach(b => b.addEventListener('click', () => { S.theme = b.dataset.th; S.themeTouched = true; el.querySelectorAll('[data-th]').forEach(x => x.setAttribute('aria-pressed', x === b)); changed(); }));
     el.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { S.music = b.dataset.m; if (S.music !== 'instrumental') Music.stop(); save(); rerender(); if (S.music === 'link') setTimeout(() => { const l = $('#fLink'); if (l) l.focus(); }, 60); }));
@@ -2009,17 +2036,7 @@ function readyView() {
     <h1 class="h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> ficou linda</h1>
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
-    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<p class="group-label">Escolha o pacote</p>
-    <div class="planos">
-      ${plano('padrao', 'Padrão', 'Fica no ar por 3 meses', ['4 fotos: 3 polaroides e 1 revelada na câmera', 'Roleta, pote, pergaminho, números e música', 'Link e QR code para entregar'])}
-      ${plano('premium', 'Premium ✨', 'Carta vitalícia, para sempre', ['Abertura de cinema', '7 fotos: 6 polaroides em slides de cinema, saltando da polaroide, e 1 na câmera com mais brilho', '<b>Mini filme do casal</b>: mais 7 fotos com transições, frases e música', 'Tudo o que tem na Padrão'])}
-    </div>`}
-    ${prem ? `<div class="extra">
-      <p class="group-label">Mais 3 polaroides do Premium</p><p class="hint">Elas entram nos slides de cinema junto com as outras.</p>
-      <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>
-      <p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
-      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>
-    </div>` : ''}
+    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : 'Fica no ar por 3 meses'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
     ${pago ? '' : `<div class="price"><strong>${brl(precoDe(S.plano))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
@@ -2041,11 +2058,7 @@ function checkoutView() {
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }
 function bindReady(el) {
-  el.querySelectorAll('[data-plano]').forEach(b => b.addEventListener('click', () => {
-    if (S.plano === b.dataset.plano) return;
-    S.plano = b.dataset.plano; save(); rerender(); track('escolheu_' + S.plano);
-  }));
-  BIND.fotos(el); // fotos extras do Premium
+  const tp = $('#trocarPlano', el); if (tp) tp.addEventListener('click', () => go(idxPasso('premium'), 'back'));
   $('#readyOpen', el).addEventListener('click', () => openPreview(true));
   $('#readyDesk', el).addEventListener('click', () => openPreview(true));
   $('#editBtn', el).addEventListener('click', openEditSheet);
@@ -2176,7 +2189,7 @@ function editarCarta(c) {
   const rascunho = !S.code && S.view !== 'done' && (S.recipient || (S.to || '').trim());
   if (rascunho && !confirm('Você tem uma carta sendo montada neste aparelho. Para editar esta, o rascunho será trocado por ela. Continuar?')) return;
   const R = rascunhoDoServidor(c.carta, c.plano);
-  Object.assign(S, JSON.parse(JSON.stringify(BLANK)), R.campos, { photos: R.fotos, email: acesso.email, code: c.id, view: 'ready', step: STEPS.length - 1, themeTouched: true });
+  Object.assign(S, JSON.parse(JSON.stringify(BLANK)), R.campos, { photos: R.fotos, email: acesso.email, code: c.id, view: 'ready', step: idxPasso('final'), themeTouched: true });
   R.caminhos.forEach((u, i) => { fotosUp[i] = u ? { k: fotoChave(R.fotos[i]), u } : null; });
   store.set('cp2:fotosUp', fotosUp);
   S.photos.forEach((_, i) => savePhoto(i));
@@ -2247,8 +2260,8 @@ function openSheet(html, onClose) {
 }
 function closeSheet() { const sh = $('#sheet'); if (sh.hidden) return; sh.hidden = true; sh.innerHTML = ''; if (sh._onClose) { const f = sh._onClose; sh._onClose = null; f(); } }
 function openEditSheet() {
-  const card = openSheet(`<p class="eyebrow">Editar</p><h2 class="h2">O que você quer mudar?</h2><ul class="edit-list">${STEPS.map((s, i) => i < 1 ? '' : `<li><button data-go="${i}"><span style="min-width:0"><b>${s.label}</b><small>${esc(s.summary())}</small></span>${ICON.next}</button></li>`).join('')}</ul>`);
-  card.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => { closeSheet(); go(+b.dataset.go, 'back'); }));
+  const card = openSheet(`<p class="eyebrow">Editar</p><h2 class="h2">O que você quer mudar?</h2><ul class="edit-list">${STEPS.map((s, i) => i < 1 || !passoValido(i) ? '' : `<li><button data-go="${i}"><span style="min-width:0"><b>${s.label}</b><small>${esc(s.summary())}</small></span>${ICON.next}</button></li>`).join('')}</ul>`);
+  card.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => { closeSheet(); ui.editando = true; go(+b.dataset.go, 'back'); }));
 }
 /* ----- Pagamento: Mercado Pago pelas funções do Netlify (pagar, status, atualizar) ----- */
 const PED = 'cp2:pedido';
@@ -2378,21 +2391,26 @@ function openPreview(withBuy) {
 
 /* ----- Navegação ----- */
 function go(i, dir) { S.view = 'step'; S.step = Math.max(0, Math.min(STEPS.length - 1, i)); save(); render(dir || 'fwd'); }
+/* "Editar alguma coisa": a pessoa muda uma etapa e volta direto para a carta pronta */
+function verCartaFinal() { ui.editando = false; Music.stop(); S.view = 'ready'; save(); render('fwd'); track('ViewContent', { content_name: 'Prévia da carta' }); openPreview(true); }
+const voltarParaPronta = () => { ui.editando = false; S.view = 'ready'; save(); render('fwd'); };
 function next() {
   if (S.view === 'step') {
     const st = STEPS[S.step];
     if (!st.ok()) return;
     track('passo_' + st.id);
-    if (S.step < STEPS.length - 1) return go(S.step + 1, 'fwd');
-    Music.stop(); S.view = 'ready'; save(); render('fwd'); track('ViewContent', { content_name: 'Prévia da carta' });
-    return openPreview(true);
+    if (st.id === 'premium') { S.plano = 'premium'; save(); track('escolheu_premium'); return go(idxPasso('extras'), 'fwd'); } // o botão de baixo é o "Quero a versão Premium"
+    if (ui.editando) return voltarParaPronta();
+    const prox = passosValidos().find(i => i > S.step);
+    if (prox != null) return go(prox, 'fwd');
+    return verCartaFinal();
   }
   if (S.view === 'ready') { if (editavel()) return salvarMudancas(); S.view = 'checkout'; save(); render('fwd'); return; }
   if (S.view === 'checkout') pay();
 }
 function back() {
-  if (S.view === 'step') { if (S.step > 0) go(S.step - 1, 'back'); return; }
-  if (S.view === 'ready') return go(STEPS.length - 1, 'back');
+  if (S.view === 'step') { const ant = passosValidos().filter(i => i < S.step).pop(); if (ant != null) go(ant, 'back'); return; }
+  if (S.view === 'ready') return go(ultimoPasso(), 'back');
   if (S.view === 'checkout') { S.view = 'ready'; save(); render('back'); }
 }
 function rerender(keepFocus) {
@@ -2407,7 +2425,7 @@ function render(dir) {
   const scr = $('#screen');
   document.body.classList.toggle('na-acesso', naAcesso());
   if (naAcesso()) { scr.innerHTML = acessoView(); bindAcesso(scr); }
-  else if (S.view === 'step') { const id = STEPS[S.step].id; scr.innerHTML = VIEWS[id](); BIND[id](scr); }
+  else if (S.view === 'step') { if (!passoValido(S.step)) S.step = passosValidos().filter(i => i < S.step).pop() || 0; const id = STEPS[S.step].id; scr.innerHTML = VIEWS[id](); BIND[id](scr); }
   else if (S.view === 'ready') { scr.innerHTML = readyView(); bindReady(scr); }
   else if (S.view === 'checkout') { scr.innerHTML = checkoutView(); bindCheckout(scr); }
   if (dir) {
@@ -2419,9 +2437,9 @@ function render(dir) {
   renderMini(!!dir);
 }
 function updateChrome() {
-  const n = STEPS.length;
-  $('#stepcount').textContent = naAcesso() ? 'Meu acesso' : S.view === 'step' ? `Passo ${S.step + 1} de ${n}` : ({ ready: editavel() ? 'Editando a carta' : 'Prévia pronta', checkout: 'Pagamento', done: 'Carta selada' })[S.view];
-  $('#progress').style.setProperty('--p', `${S.view === 'step' ? (S.step + 1) / n * 100 : 100}%`);
+  const vs = passosValidos(), n = vs.length;
+  $('#stepcount').textContent = naAcesso() ? 'Meu acesso' : S.view === 'step' ? `Passo ${vs.indexOf(S.step) + 1} de ${n}` : ({ ready: editavel() ? 'Editando a carta' : 'Prévia pronta', checkout: 'Pagamento', done: 'Carta selada' })[S.view];
+  $('#progress').style.setProperty('--p', `${S.view === 'step' ? (vs.indexOf(S.step) + 1) / n * 100 : 100}%`);
   refreshBar();
 }
 function refreshBar() {
@@ -2431,10 +2449,10 @@ function refreshBar() {
   if (hide) return;
   eye.hidden = S.view === 'checkout';
   if (S.view === 'step') {
-    const st = STEPS[S.step], last = S.step === STEPS.length - 1;
+    const st = STEPS[S.step], last = S.step === ultimoPasso();
     nx.disabled = !st.ok();
-    nx.innerHTML = last ? `Ver minha carta ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
-    note.textContent = editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
+    nx.innerHTML = st.id === 'premium' ? `Quero a Premium ${ICON.sparkle}` : ui.editando ? `Pronto ${ICON.check}` : last ? `Ver carta final ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
+    note.textContent = st.id === 'premium' ? `Premium: ${brl(PRICE_PREMIUM)} · vitalícia, com cinema e mini filme` : ui.editando ? 'Volta para a carta pronta' : editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
@@ -2532,8 +2550,8 @@ function iniciarCriador() {
   $('#eyeBtn').innerHTML = ICON.eye;
   $('#nextBtn').addEventListener('click', next);
   $('#backBtn').addEventListener('click', back);
-  $('#eyeBtn').addEventListener('click', () => openPreview(S.view === 'ready' || S.step === STEPS.length - 1));
-  $('#brandBtn').addEventListener('click', () => { if (S.view === 'done') return; if (ui.acesso) { sairAcesso(); render('back'); return; } go(0, 'back'); });
+  $('#eyeBtn').addEventListener('click', () => openPreview(S.view === 'ready' || S.step === ultimoPasso()));
+  $('#brandBtn').addEventListener('click', () => { if (S.view === 'done') return; if (ui.acesso) { sairAcesso(); render('back'); return; } ui.editando = false; go(0, 'back'); });
   /* /meuacesso: entrou pelo endereço ou a carta deste aparelho já está paga */
   if (rotaAcessoUrl() || S.view === 'done') { ui.acesso = true; if (!rotaAcessoUrl()) { try { history.replaceState(null, '', '/meuacesso'); } catch (e) {} } carregarAcesso(); }
   window.addEventListener('popstate', () => {
