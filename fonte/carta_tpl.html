@@ -1226,7 +1226,7 @@ function cineOpen(host, L, onDone) {
   const o = document.createElement('div'); o.className = 'cine-open';
   o.innerHTML = `<div class="co-dust" aria-hidden="true">${motes(30)}</div><i class="co-bar t"></i><i class="co-bar b"></i>
     <p class="co-1">Esta é uma história de ${tipo}</p>
-    <p class="co-2"><span class="gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
+    <p class="co-2"><span class="co-nome">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
     <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : esc(L.title)}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);

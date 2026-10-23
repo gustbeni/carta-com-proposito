@@ -1088,14 +1088,17 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .co-bar.b{bottom:0}
 .cine-open p{position:relative;margin:0;opacity:0}
 .co-1{font:600 11.5px/1.5 var(--f-ui);letter-spacing:.32em;text-transform:uppercase;color:#ECC16B}
-.co-2{padding:0 .3em;font:400 clamp(60px,17vw,86px)/1.12 var(--f-script);filter:drop-shadow(0 0 22px rgba(255,190,90,.45))}
+.co-2{padding:0 .3em;font:400 clamp(60px,17vw,86px)/1.12 var(--f-script)} /* sem filter: no iPhone o filtro sobre o ouro (texto recortado) vira um borrão */
+.co-2::before{content:"";position:absolute;left:8%;right:8%;top:10%;bottom:10%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,190,90,.28),rgba(255,190,90,0));pointer-events:none}
 .co-2 span{display:inline-block;padding:0 .3em;margin:0 -.3em}
+/* nomes em ouro sólido com brilho (sem texto recortado, que o iPhone borra nesta animação) */
+.co-nome{color:#F3D08A;-webkit-text-fill-color:#F3D08A;text-shadow:0 1px 0 #FFF2C8,0 2px 0 #B8862F,0 3px 2px rgba(70,30,0,.55),0 0 24px rgba(255,190,90,.55)}
 .co-3{font:italic 600 19px/1.3 var(--f-verse);color:#FFF1CC}
 .cine-open.on .co-1{animation:coIn 1.4s ease .5s both}
 .cine-open.on .co-2{animation:coName 2.4s cubic-bezier(.2,.8,.2,1) 1.6s both}
 .cine-open.on .co-3{animation:coIn 1.4s ease 3s both}
 @keyframes coIn{from{opacity:0;transform:translateY(10px);letter-spacing:.5em}to{opacity:1;transform:none}}
-@keyframes coName{0%{opacity:0;transform:scale(1.25);filter:blur(14px) drop-shadow(0 0 22px rgba(255,190,90,.45))}100%{opacity:1;transform:none;filter:drop-shadow(0 0 22px rgba(255,190,90,.45))}}
+@keyframes coName{0%{opacity:0;transform:scale(1.25);letter-spacing:.06em}100%{opacity:1;transform:none;letter-spacing:normal}}
 .co-flare{position:absolute;left:50%;top:50%;z-index:3;width:140vmax;height:140vmax;margin:-70vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,250,230,.95) 0%,rgba(255,220,150,.6) 12%,rgba(255,200,110,0) 45%);opacity:0;pointer-events:none}
 .cine-open.on .co-flare{animation:coFlare 1.6s ease-out 5.4s both}
 @keyframes coFlare{0%{opacity:0;transform:scale(.1)}45%{opacity:1}100%{opacity:0;transform:scale(1.2)}}
@@ -2384,7 +2387,7 @@ function cineOpen(host, L, onDone) {
   const o = document.createElement('div'); o.className = 'cine-open';
   o.innerHTML = `<div class="co-dust" aria-hidden="true">${motes(30)}</div><i class="co-bar t"></i><i class="co-bar b"></i>
     <p class="co-1">Esta é uma história de ${tipo}</p>
-    <p class="co-2"><span class="gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
+    <p class="co-2"><span class="co-nome">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
     <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : esc(L.title)}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);
