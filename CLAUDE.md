@@ -44,11 +44,18 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
 
 ## Como a carta funciona (quem recebe)
 
-`/c/<id>` abre só a carta (o criador fica escondido). Ela começa num envelope com selo de cera; o **toque no selo** abre a carta e começa a música: a instrumental (Amazing Grace gerada no navegador, objeto `Music`) ou a música de vocês do YouTube ou Spotify (objeto `Som`; o servidor troca Spotify por YouTube). Depois a carta rola com as partes: abertura, música, versículo, polaroides, história em números, mensagem, pote, outros versículos, oração com "Amém", foto final revelada no toque, pergunta (pedidos de namoro e noivado) e assinatura.
+`/c/<id>` abre só a carta (o criador fica escondido). Ela começa num **envelope de ouro** com selo de cera vinho. O **toque no selo** faz a abertura com raios de luz, clarão e faíscas douradas, e começa a música: a instrumental (Amazing Grace gerada no navegador, objeto `Music`) ou a música de vocês do YouTube ou Spotify (objeto `Som`; o servidor troca Spotify por YouTube).
 
-**Pote dos motivos:** o resto da carta só aparece depois de ler **todos** os bilhetes (`.gate[data-locked]`). Se o pote ficou vazio, a carta usa 5 bilhetes automáticos. Na prévia e no exemplo aparece "Pular".
+A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cada parte com `data-step`; `bindLetter` controla). Cada parte espera uma ação:
+1. **Abertura** ("Para Ana", com o player da música), **versículo principal**, **fotos**, **números**, **mensagem** e **outros versículos**: botão "Continuar".
+2. **Roleta da Palavra**: girar. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta; depois aparece o "Continuar".
+3. **Pote dos motivos**: ler **todos** os bilhetes; a parte seguinte aparece sozinha. Se o pote ficou vazio, a carta usa 5 bilhetes automáticos.
+4. **Oração**: tocar em "Amém". **Foto final**: tocar para revelar. **Pedido** (namoro e noivado): "Sim". A carta segue sozinha.
+5. **Despedida**: assinatura em ouro e chuva de corações.
 
-Temas claros: rosa, dourado e céu. Nada de logo do WhatsApp: o botão de enviar usa um ícone neutro.
+Na prévia e no exemplo, a roleta e o pote têm "Pular". Quem recebe não tem.
+
+Visual: fundo de veludo (temas `rosa` = Vinho, `dourado` = Púrpura, `ceu` = Noite), tudo com ouro. Versículos, nomes e assinatura na fonte Great Vibes, em ouro brilhante (classe `gold-t`). Nada de logo do WhatsApp: o botão de enviar usa um ícone neutro.
 
 ## Para ver como ficou
 
@@ -58,5 +65,5 @@ Abra o `public/index.html` gerado no navegador e use "Ver uma carta pronta" ou o
 
 - A campanha de vendas no Meta Ads está ativa (R$ 40 por dia). Foram 9 vendas na primeira semana, com custo por venda entre R$ 25 e R$ 30.
 - Hoje mudou: preço de 17,99 para 21,99, envio da compra pelo servidor (API de Conversões), aviso de campo faltando visível na hora de pagar, Spotify trocado por YouTube, e o pote exigindo a leitura de todos os bilhetes.
-- 23/10: nova estética (criador passo a passo, carta clara) aplicada por cima do site, com pagamento, Pixel, pote e música ligados.
+- 23/10: nova estética (criador passo a passo) aplicada por cima do site, com pagamento, Pixel, pote e música ligados. No mesmo dia: fundo roxo avermelhado, carta de ouro com abertura gloriosa, versículos em Great Vibes dourada, pote novo, roleta da Palavra e carta passo a passo. Ainda na branch `nova-estetica`, sem publicar.
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.

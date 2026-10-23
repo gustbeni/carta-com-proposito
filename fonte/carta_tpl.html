@@ -1,6 +1,6 @@
 <title>Carta com Propósito</title>
 <meta name="description" content="Uma carta de amor com a Palavra de Deus: versículos, fotos, o pote dos motivos e uma oração. Pronta em 3 minutos.">
-<meta name="theme-color" content="#FBF9F5">
+<meta name="theme-color" content="#2A0B22">
 <meta property="og:title" content="Carta com Propósito">
 <meta property="og:description" content="Uma carta de amor com a Palavra de Deus: versículos, fotos, o pote dos motivos e uma oração.">
 <!-- Pixel da Meta -->
@@ -8,7 +8,7 @@
 <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1595171231774957&ev=PageView&noscript=1"></noscript>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600;700&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600;700&family=Great+Vibes&display=swap">
 <style>
 {{CSS}}
 </style>
@@ -123,6 +123,7 @@ const ICON = {
   home: sv('<path d="M4 10.6 12 4l8 6.6V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M12 17s-3-1.9-3-4.1a1.6 1.6 0 0 1 3-.8 1.6 1.6 0 0 1 3 .8C15 15.1 12 17 12 17z"/>'),
   eye: sv('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'),
   back: sv('<path d="m14.5 6-6 6 6 6"/>'),
+  down: sv('<path d="m6 9.5 6 6 6-6"/>'),
   next: sv('<path d="m9.5 6 6 6-6 6"/>'),
   plus: sv('<path d="M12 5.5v13M5.5 12h13"/>'),
   x: sv('<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>'),
@@ -218,7 +219,7 @@ const VERSES = {
 
 const RECIPIENTS = [
   { id: 'amor', label: 'Meu amor', desc: 'Namoro, noivado ou casamento', icon: 'heart', theme: 'rosa' },
-  { id: 'amigo', label: 'Amigo ou amiga', desc: 'Da igreja, da vida, pastor ou líder', icon: 'friends', theme: 'ceu' },
+  { id: 'amigo', label: 'Amigo ou amiga', desc: 'Da igreja, da vida, pastor ou líder', icon: 'friends', theme: 'dourado' },
   { id: 'pais', label: 'Mãe ou pai', desc: 'Dia das Mães, Dia dos Pais, aniversário', icon: 'home', theme: 'dourado' }
 ];
 const REC = Object.fromEntries(RECIPIENTS.map(r => [r.id, r]));
@@ -350,9 +351,9 @@ const REASONS = {
 };
 
 const THEMES = [
-  { id: 'rosa', label: 'Rosa', bg1: '#F6E4E1', bg2: '#FCF5F2', acc: '#A33A4F', ink: '#3A2227', ink2: '#6E5359', gold: '#BC9660', seal: '#9B2335', sealHi: '#CF5262', sealLo: '#5A0F1E' },
-  { id: 'dourado', label: 'Dourado', bg1: '#F1E6D2', bg2: '#FBF7EF', acc: '#8A6A2E', ink: '#2F2719', ink2: '#64573F', gold: '#B08A3E', seal: '#A7832F', sealHi: '#DDBE6B', sealLo: '#5C4413' },
-  { id: 'ceu', label: 'Céu', bg1: '#DFE9F1', bg2: '#F5F8FB', acc: '#355776', ink: '#1E2A37', ink2: '#4D5E70', gold: '#B39A62', seal: '#2E4B6E', sealHi: '#6386AE', sealLo: '#14263C' }
+  { id: 'rosa', label: 'Vinho', bg1: '#5E1238', bg2: '#2A0718', bg3: '#9A2A5E', acc: '#E9BC5C', ink: '#F7E4B8', ink2: '#EBCFA3', gold: '#E2B04A', seal: '#8E1838', sealHi: '#D3466E', sealLo: '#44081B' },
+  { id: 'dourado', label: 'Púrpura', bg1: '#53164C', bg2: '#24092A', bg3: '#8A2E7A', acc: '#E9BC5C', ink: '#F7E4B8', ink2: '#EBCFA3', gold: '#E2B04A', seal: '#8E1838', sealHi: '#D3466E', sealLo: '#44081B' },
+  { id: 'ceu', label: 'Noite', bg1: '#2C2160', bg2: '#120D2E', bg3: '#4B3A96', acc: '#E9BC5C', ink: '#F7E4B8', ink2: '#EBCFA3', gold: '#E2B04A', seal: '#23367A', sealHi: '#5A78C9', sealLo: '#0E1838' }
 ];
 
 const FAQ = [
@@ -741,10 +742,10 @@ const Art = (() => {
     x.fillStyle = rad(x, cx - r * .3, cy - r * .35, r * .1, r * 1.1, [[0, T.sealHi], [.5, T.seal], [1, T.sealLo]]);
     x.beginPath(); for (let i = 0; i <= 48; i++) { const a = i / 48 * TAU, rr2 = r * (1 + .035 * Math.sin(a * 5) + .02 * Math.sin(a * 9)); i ? x.lineTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2) : x.moveTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2); } x.fill();
     x.restore();
-    x.strokeStyle = 'rgba(0,0,0,.22)'; x.lineWidth = r * .045; x.beginPath(); x.arc(cx, cy, r * .66, 0, TAU); x.stroke();
+    x.strokeStyle = 'rgba(243,213,138,.55)'; x.lineWidth = r * .045; x.beginPath(); x.arc(cx, cy, r * .66, 0, TAU); x.stroke();
     x.font = `italic 600 ${r * .9}px "Cormorant Garamond", Georgia, serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillStyle = 'rgba(255,255,255,.22)'; x.fillText(initial || '♥', cx, cy + r * .02 + 2);
-    x.fillStyle = 'rgba(0,0,0,.38)'; x.fillText(initial || '♥', cx, cy + r * .02);
+    x.fillStyle = 'rgba(0,0,0,.35)'; x.fillText(initial || '♥', cx, cy + r * .02 + 3);
+    x.fillStyle = '#F6DB92'; x.fillText(initial || '♥', cx, cy + r * .02);
   }
   function spaced(x, text, cx, y, sp) {
     const chars = [...text], widths = chars.map(ch => x.measureText(ch).width), total = widths.reduce((a, b) => a + b, 0) + sp * (chars.length - 1);
@@ -754,23 +755,26 @@ const Art = (() => {
   }
   async function card(L, qrCanvas) {
     const T = THEMES.find(t => t.id === L.theme) || THEMES[0];
-    try { await Promise.all(['400 120px "Pinyon Script"', 'italic 500 48px "Cormorant Garamond"', 'italic 600 48px "Cormorant Garamond"', '600 30px Figtree', 'italic 400 30px "EB Garamond"'].map(f => document.fonts.load(f))); } catch (e) {}
+    try { await Promise.all(['400 120px "Great Vibes"', 'italic 500 48px "Cormorant Garamond"', 'italic 600 48px "Cormorant Garamond"', '600 30px Figtree'].map(f => document.fonts.load(f))); } catch (e) {}
     const w = 1200, h = 1800, [c, x] = mk(w, h);
+    const G = lin(x, 0, 0, w, 0, [[0, '#B4822C'], [.22, '#F6DB92'], [.38, '#FFF4D2'], [.55, '#D9A845'], [.78, '#FBE6A6'], [1, '#B4822C']]);
     x.fillStyle = lin(x, 0, 0, 0, h, [[0, T.bg1], [1, T.bg2]]); x.fillRect(0, 0, w, h);
-    x.fillStyle = rad(x, w / 2, 0, 0, h * .7, [[0, 'rgba(255,255,255,.9)'], [1, 'rgba(255,255,255,0)']]); x.fillRect(0, 0, w, h);
-    x.strokeStyle = T.gold; x.globalAlpha = .6; x.lineWidth = 2; x.strokeRect(56, 56, w - 112, h - 112); x.globalAlpha = .3; x.strokeRect(70, 70, w - 140, h - 140); x.globalAlpha = 1;
+    x.fillStyle = rad(x, w / 2, 300, 0, h * .7, [[0, 'rgba(255,205,130,.3)'], [1, 'rgba(255,205,130,0)']]); x.fillRect(0, 0, w, h);
+    x.strokeStyle = G; x.lineWidth = 3; x.strokeRect(56, 56, w - 112, h - 112); x.globalAlpha = .45; x.lineWidth = 1.5; x.strokeRect(72, 72, w - 144, h - 144); x.globalAlpha = 1;
     x.textAlign = 'center'; x.textBaseline = 'alphabetic';
     sealDraw(x, w / 2, 290, 86, T, L.initial);
     x.fillStyle = T.acc; x.font = '600 28px Figtree, sans-serif'; spaced(x, 'UMA CARTA PARA', w / 2, 492, 9);
-    let fs = 168; x.font = `400 ${fs}px "Pinyon Script", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Pinyon Script", cursive`; }
-    x.fillStyle = T.ink; x.fillText(L.to, w / 2, 660);
-    x.fillStyle = T.ink2; x.font = 'italic 500 48px "Cormorant Garamond", Georgia, serif'; x.fillText(L.title, w / 2, 748);
+    let fs = 176; x.font = `400 ${fs}px "Great Vibes", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Great Vibes", cursive`; }
+    x.save(); x.shadowColor = 'rgba(255,190,90,.45)'; x.shadowBlur = 30; x.fillStyle = G; x.fillText(L.to, w / 2, 668); x.restore();
+    x.fillStyle = T.ink2; x.font = 'italic 500 48px "Cormorant Garamond", Georgia, serif'; x.fillText(L.title, w / 2, 752);
     const qs = 460, qx = (w - qs) / 2, qy = 860;
-    x.save(); x.shadowColor = 'rgba(0,0,0,.1)'; x.shadowBlur = 30; x.shadowOffsetY = 10; x.fillStyle = '#fff'; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.fill(); x.restore();
+    x.save(); x.shadowColor = 'rgba(255,200,110,.35)'; x.shadowBlur = 40; x.fillStyle = '#fff'; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.fill(); x.restore();
+    x.strokeStyle = G; x.lineWidth = 4; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.stroke();
     if (qrCanvas) { x.imageSmoothingEnabled = false; x.drawImage(qrCanvas, qx, qy, qs, qs); }
     x.fillStyle = T.ink; x.font = '600 34px Figtree, sans-serif'; x.fillText('Aponte a câmera do celular', w / 2, 1470);
     x.fillStyle = T.ink2; x.font = '500 28px Figtree, sans-serif'; x.fillText('para abrir a sua carta', w / 2, 1516);
-    x.fillStyle = T.ink2; x.font = 'italic 400 30px "EB Garamond", Georgia, serif'; x.fillText('“Põe-me como selo sobre o teu coração.”  Cantares 8:6', w / 2, 1624);
+    x.fillStyle = G; x.font = '400 46px "Great Vibes", cursive'; x.fillText('“Põe-me como selo sobre o teu coração.”', w / 2, 1604);
+    x.fillStyle = T.ink2; x.font = '600 19px Figtree, sans-serif'; spaced(x, 'CANTARES 8:6', w / 2, 1646, 5);
     x.fillStyle = T.acc; x.font = '600 20px Figtree, sans-serif'; spaced(x, BRAND.toUpperCase(), w / 2, 1700, 6);
     return c.toDataURL('image/png');
   }
@@ -851,6 +855,9 @@ function cartaDoServidor(P) {
 }
 const waLink = (text, fone) => 'https://wa.me/' + (fone || '') + '?text=' + encodeURIComponent(text);
 const sealInner = L => L.initial ? esc(L.initial) : ICON.heartFill;
+const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+const verseText = t => esc(t).replace(/SENHOR/g, 'Senhor');
+let svgUid = 0; // ids únicos para os degradês de cada desenho
 
 function motes(n) {
   let h = '';
@@ -860,29 +867,39 @@ function motes(n) {
   }
   return h;
 }
+/* estrelinhas douradas que piscam */
+function sparkles(n) {
+  let h = '';
+  for (let i = 0; i < n; i++) h += `<i style="--x:${(3 + Math.random() * 92).toFixed(1)}%;--y:${(4 + Math.random() * 88).toFixed(1)}%;--s:${(7 + Math.random() * 11).toFixed(0)}px;--d:${(2.2 + Math.random() * 2.8).toFixed(1)}s;--dl:-${(Math.random() * 4).toFixed(1)}s"></i>`;
+  return h;
+}
 function envHTML(L, opts = {}) {
   return `<div class="env${opts.static ? ' static' : ''}" data-state="closed">
     <div class="env-back"></div>
     <div class="env-paper"><b>Para ${esc(L.to)}</b><i></i><i></i><i></i></div>
     <div class="env-pocket"><i class="l"></i><i class="r"></i><i class="b"></i></div>
     <div class="env-flap"><i class="out"></i><i class="in"></i></div>
+    <span class="env-shine"></span>
     <span class="env-ring"></span>
     ${opts.static ? `<span class="seal env-seal"><span>${sealInner(L)}</span></span>` : `<button class="seal env-seal" aria-label="Abrir a carta"><span>${sealInner(L)}</span></button>`}
   </div>`;
 }
 function coverHTML(L, mode) {
+  const fx = mode !== 'thumb';
   return `<section class="cv" id="s-cover">
-    ${mode === 'thumb' ? '' : `<div class="cv-motes" aria-hidden="true">${motes(mode === 'full' ? 18 : 10)}</div>`}
+    ${fx ? `<div class="cv-rays" aria-hidden="true"></div><div class="cv-motes" aria-hidden="true">${motes(mode === 'full' ? 26 : 12)}</div><div class="twinkle" aria-hidden="true">${sparkles(mode === 'full' ? 14 : 8)}</div>` : ''}
     <p class="cv-kicker">Uma carta para</p>
-    <h2 class="cv-name">${esc(L.to)}</h2>
+    <h2 class="cv-name gold-t shine">${esc(L.to)}</h2>
     <p class="cv-title">${esc(L.title)}</p>
     ${envHTML(L, { static: mode === 'thumb' })}
     <p class="cv-hint">Toque no selo para abrir</p>
     <p class="cv-verse">“Põe-me como selo sobre o teu coração.”<span>Cantares 8:6</span></p>
+    ${fx ? '<div class="glory" aria-hidden="true"></div>' : ''}
   </section>`;
 }
 const orn = () => `<div class="orn" aria-hidden="true">${ICON.cross}</div>`;
-function verseHTML(v, hero) { return `<blockquote class="l-verse${hero ? ' hero' : ''}"><p>${bible(v.t)}</p><cite>${esc(v.ref)}</cite></blockquote>`; }
+const FLOURISH = '<svg class="flourish" viewBox="0 0 240 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 14C40 14 56 3 80 8c16 4 22 13 34 6"/><path d="M232 14c-32 0-48-11-72-6-16 4-22 13-34 6"/><path d="M80 8c-6 4-2 10 4 7M160 8c6 4 2 10-4 7"/><path d="M120 5l6 9-6 9-6-9z" fill="currentColor" stroke="none"/><circle cx="104" cy="14" r="1.8" fill="currentColor" stroke="none"/><circle cx="136" cy="14" r="1.8" fill="currentColor" stroke="none"/></svg>';
+function verseHTML(v, hero) { return `<blockquote class="l-verse${hero ? ' hero' : ''}"><p class="gold-t${hero ? ' shine' : ''}">${verseText(v.t)}</p><cite>${esc(v.ref)}</cite></blockquote>`; }
 function messageHTML(text, typing) {
   const paras = text.split(/\n+/).filter(p => p.trim());
   const total = paras.reduce((n, p) => n + p.split(/\s+/).length, 0);
@@ -890,72 +907,191 @@ function messageHTML(text, typing) {
   const body = paras.map((p, pi) => `<p${pi === 0 ? ' class="first"' : ''}>${p.trim().split(/\s+/).map(w => { const d = Math.round(Math.min(k * 32, 3200 * k / Math.max(total, 1))); k++; return `<span class="w" style="--d:${d}ms">${esc(w)}</span>`; }).join(' ')}</p>`).join('');
   return `<div class="l-msg${typing ? ' typing' : ''}">${body}</div>`;
 }
+
+/* ===== Pote dos motivos: vidro, tampa de ouro, laço vinho e bilhetes coloridos que flutuam ===== */
+const NOTE_COLORS = ['#F79AB4', '#FFC764', '#BFA0F5', '#7FD9BA', '#FF9178', '#8EC2F7', '#FFE07A', '#F08FCB'];
+const NOTE_PAPER = ['#FFE0E9', '#FFF0C9', '#EEE3FE', '#DCF6EC', '#FFE3DA', '#E0EEFD', '#FFF6CF', '#FDE1F2'];
+const HEART_PATH = 'M0 10C-13 2-15-6-9.5-9.5-5.5-12-1.5-10 0-6.5 1.5-10 5.5-12 9.5-9.5 15-6 13 2 0 10Z';
+function noteShape(i) {
+  const c = NOTE_COLORS[i % NOTE_COLORS.length], k = i % 3;
+  if (k === 0) return `<path d="${HEART_PATH}" fill="${c}" stroke="rgba(255,255,255,.6)" stroke-width="1"/>`;
+  if (k === 1) return `<rect x="-17" y="-10.5" width="34" height="21" rx="3" fill="${c}" stroke="rgba(255,255,255,.55)" stroke-width="1"/><path d="M-16-9.5 0 2 16-9.5" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="1.2"/>`;
+  return `<rect x="-16" y="-6.5" width="32" height="13" rx="6.5" fill="${c}" stroke="rgba(255,255,255,.55)" stroke-width="1"/><rect x="-3" y="-7.5" width="6" height="15" rx="1.5" fill="#E9BF62"/>`;
+}
+const JAR_SPOTS = [[80, 114, 148, 182], [97, 131, 165], [76, 110, 146, 184], [94, 130, 168], [80, 114, 150, 184], [100, 136, 170]]
+  .flatMap((xs, r) => xs.map((x, j) => [x + (r * 7 + j * 5) % 9 - 4, 292 - r * 21, (r * 37 + j * 53) % 50 - 25]));
 function jarSVG(n) {
-  const cols = ['#FFF4D9', '#FBE3E1', '#E9F0E4', '#FFFFFF', '#F6E7CC', '#E5ECF4'];
-  const spots = [[60, 205, -14], [96, 210, 10], [132, 204, -6], [76, 182, 18], [114, 184, -20], [146, 178, 8], [58, 160, 6], [96, 160, -10], [134, 156, 16], [78, 138, -18], [116, 136, 4], [98, 116, 12]];
-  const notes = spots.slice(0, Math.min(Math.max(n, 8), 12)).map(([x, y, a], i) => `<g class="jn"><rect x="${x - 15}" y="${y - 8}" width="30" height="16" rx="2.5" transform="rotate(${a} ${x} ${y})" fill="${cols[i % cols.length]}" stroke="rgba(0,0,0,.12)" stroke-width="1"/><path d="M${x - 9} ${y} h18" transform="rotate(${a} ${x} ${y})" stroke="rgba(0,0,0,.14)" stroke-width="1"/></g>`).join('');
-  return `<svg viewBox="0 0 200 250" aria-hidden="true">
-    <ellipse cx="100" cy="238" rx="70" ry="8" fill="rgba(0,0,0,.08)"/>
-    <path d="M52 64h96v14c16 10 24 26 24 46v78c0 20-14 34-34 34H62c-20 0-34-14-34-34v-78c0-20 8-36 24-46z" fill="rgba(255,255,255,.45)" stroke="currentColor" stroke-opacity=".35" stroke-width="2"/>
-    ${notes}
-    <path d="M52 64h96v14c16 10 24 26 24 46v78c0 20-14 34-34 34H62c-20 0-34-14-34-34v-78c0-20 8-36 24-46z" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="2"/>
-    <path d="M44 104c-4 18-4 74 0 98" stroke="#fff" stroke-opacity=".75" stroke-width="5" stroke-linecap="round" fill="none"/>
-    <rect x="46" y="40" width="108" height="28" rx="7" style="fill:var(--acc)"/>
-    <rect x="46" y="40" width="108" height="9" rx="4" fill="#fff" fill-opacity=".18"/>
-    <path d="M100 40c-10-14-30-14-28-4 2 8 18 6 28 4zM100 40c10-14 30-14 28-4-2 8-18 6-28 4z" style="fill:var(--gold-l)"/>
-    <circle cx="100" cy="40" r="5" style="fill:var(--gold-l)"/>
+  const u = ++svgUid, cnt = Math.min(Math.max(n * 2, 14), JAR_SPOTS.length);
+  const notes = JAR_SPOTS.slice(0, cnt).map(([x, y, a], i) => `<g transform="translate(${x} ${y}) rotate(${a})"><g class="jn" style="--d:-${(i * .37 % 3.6).toFixed(2)}s;--t:${(3.2 + (i % 4) * .35).toFixed(2)}s">${noteShape(i)}</g></g>`).join('');
+  const BODY = 'M78 112C60 122 50 140 50 164V284C50 302 62 312 82 312H178C198 312 210 302 210 284V164C210 140 200 122 182 112Z';
+  const ridges = Array.from({ length: 14 }, (_, i) => `<path d="M${76 + i * 8} 58v30" stroke="rgba(110,70,12,.35)" stroke-width="2"/>`).join('');
+  const sparks = [[30, 128, 1], [228, 92, .8], [36, 262, .7], [230, 236, 1], [130, 22, .75], [18, 196, .6]].map(([x, y, s], i) => `<g transform="translate(${x} ${y}) scale(${s})"><path class="sp" style="--d:-${(i * .55).toFixed(2)}s" d="M0-12C1.5-3 3-1.5 12 0 3 1.5 1.5 3 0 12-1.5 3-3 1.5-12 0-3-1.5-1.5-3 0-12Z" fill="#FFE7A3"/></g>`).join('');
+  const hearts = [[112, 100, '#FF8FB1', 0], [146, 96, '#F3D58A', -1.7], [128, 104, '#FFB3C9', -3.4]].map(([x, y, c, d]) => `<g transform="translate(${x} ${y}) scale(.55)"><path class="jh" style="--d:${d}s" d="${HEART_PATH}" fill="${c}"/></g>`).join('');
+  return `<svg viewBox="0 0 260 330" aria-hidden="true"><defs>
+    <linearGradient id="jg${u}a" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".32"/><stop offset=".18" stop-color="#fff" stop-opacity=".08"/><stop offset=".55" stop-color="#fff" stop-opacity=".03"/><stop offset=".85" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>
+    <linearGradient id="jg${u}b" x1="0" x2="1"><stop offset="0" stop-color="#9A6820"/><stop offset=".25" stop-color="#F6D98C"/><stop offset=".5" stop-color="#C9943B"/><stop offset=".75" stop-color="#FBE6A6"/><stop offset="1" stop-color="#A06C22"/></linearGradient>
+    <linearGradient id="jg${u}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C8"/><stop offset=".45" stop-color="#EDC56A"/><stop offset="1" stop-color="#9A6820"/></linearGradient>
+    <linearGradient id="jg${u}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D63F70"/><stop offset="1" stop-color="#7A1238"/></linearGradient>
+    <radialGradient id="jg${u}e"><stop offset="0" stop-color="#FFD27A" stop-opacity=".6"/><stop offset=".55" stop-color="#FF9FC0" stop-opacity=".2"/><stop offset="1" stop-color="#FF9FC0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="jg${u}f" cx=".5" cy=".85" r=".75"><stop offset="0" stop-color="#FFE7B0" stop-opacity=".42"/><stop offset="1" stop-color="#FFE7B0" stop-opacity="0"/></radialGradient>
+    <clipPath id="jg${u}g"><path d="${BODY}"/></clipPath></defs>
+    <ellipse class="jar-glow" cx="130" cy="206" rx="128" ry="128" fill="url(#jg${u}e)"/>
+    <ellipse cx="130" cy="318" rx="88" ry="9" fill="rgba(0,0,0,.38)"/>
+    <g class="jar-body">
+      <path d="${BODY}" fill="url(#jg${u}f)"/>
+      <g clip-path="url(#jg${u}g)">${notes}</g>
+      <path d="${BODY}" fill="url(#jg${u}a)" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+      <path d="M62 146C56 176 56 252 64 286" stroke="#fff" stroke-opacity=".6" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M200 156C204 186 204 236 198 266" stroke="#fff" stroke-opacity=".22" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M130 232C118 223 115 214 121 209 125 206 130 209 130 213 130 209 135 206 139 209 145 214 142 223 130 232Z" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+      <rect x="72" y="86" width="116" height="28" rx="8" fill="url(#jg${u}a)" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+      <path d="M70 100C104 108 156 108 190 100V112C156 120 104 120 70 112Z" fill="url(#jg${u}d)" stroke="#E9BF62" stroke-width="1.2"/>
+      <g transform="translate(184 106)">
+        <path d="M0 0C-6-16-26-20-28-8-30 2-12 6 0 0Z" fill="url(#jg${u}d)" stroke="#E9BF62" stroke-width="1.2"/>
+        <path d="M0 0C6-16 26-20 28-8 30 2 12 6 0 0Z" fill="url(#jg${u}d)" stroke="#E9BF62" stroke-width="1.2"/>
+        <path d="M-2 2C-8 16-14 26-20 34H-12C-6 24-2 14 2 4Z" fill="url(#jg${u}d)" stroke="#E9BF62" stroke-width="1"/>
+        <path d="M2 2C6 16 10 26 16 36L22 32C16 22 8 12 4 2Z" fill="url(#jg${u}d)" stroke="#E9BF62" stroke-width="1"/>
+        <circle r="5.5" fill="url(#jg${u}c)" stroke="#8A5A18" stroke-width=".8"/>
+      </g>
+      <g transform="translate(70 118)">
+        <path d="M2-6C-4 2-8 8-10 14" stroke="#E9BF62" stroke-width="1.2" fill="none"/>
+        <path d="M-10 44C-24 35-26 24-19 19-15 16-10 19-10 23-10 19-5 16-1 19 6 24 4 35-10 44Z" fill="url(#jg${u}c)" stroke="#8A5A18" stroke-width="1"/>
+        <path d="M-10 37C-17 32-18 27-15 25-13 24-10 25-10 27-10 25-7 24-5 25-2 27-3 32-10 37Z" fill="#B0244E" opacity=".85"/>
+      </g>
+      <g class="lid">
+        <rect x="66" y="54" width="128" height="38" rx="10" fill="url(#jg${u}b)" stroke="#8A5A18" stroke-width="1.2"/>
+        ${ridges}
+        <rect x="68" y="56" width="124" height="9" rx="5" fill="#FFF6D8" fill-opacity=".45"/>
+        <ellipse cx="130" cy="54" rx="62" ry="10" fill="url(#jg${u}c)" stroke="#8A5A18" stroke-width="1"/>
+        <path d="M130 52C122 46 121 40 125 37 127.5 35.5 130 37 130 39.5 130 37 132.5 35.5 135 37 139 40 138 46 130 52Z" fill="#B0244E" stroke="#F3D58A" stroke-width="1.2"/>
+      </g>
+    </g>
+    <g>${hearts}</g>
+    <g>${sparks}</g>
   </svg>`;
 }
+
+/* ===== Roleta da Palavra: gira e sorteia um versículo ===== */
+const WHEEL_ICONS = ['M0 6C-9 0-11-6-6-9-3-11 0-9 0-6 0-9 3-11 6-9 11-6 9 0 0 6Z', 'M-2.2-11h4.4v7.2H9.4v4.4H2.2V11h-4.4V.6H-9.4v-4.4h7.2Z', 'M0-11C1.5-3 3-1.5 11 0 3 1.5 1.5 3 0 11-1.5 3-3 1.5-11 0-3-1.5-1.5-3 0-11Z'];
+const WHEEL_SUB = { amor: 'Toque em girar e receba uma palavra de Deus sobre o amor.', amigo: 'Toque em girar e receba uma palavra de Deus para a sua vida.', pais: 'Toque em girar e receba uma bênção da Palavra.' };
+function wheelHTML() {
+  const u = ++svgUid, P = Math.PI / 180, pt = (a, r) => `${(r * Math.sin(a * P)).toFixed(2)} ${(-r * Math.cos(a * P)).toFixed(2)}`;
+  let seg = '', bulbs = '';
+  for (let k = 0; k < 8; k++) {
+    const a0 = k * 45 - 22.5, gold = k % 2 === 1;
+    seg += `<path d="M0 0L${pt(a0, 100)}A100 100 0 0 1 ${pt(a0 + 45, 100)}Z" fill="url(#wg${u}${gold ? 'b' : 'a'})" stroke="#F3D58A" stroke-width="1.2"/><g transform="rotate(${k * 45}) translate(0 -64)"><path d="${WHEEL_ICONS[k % 3]}" fill="${gold ? '#6A1440' : '#F6DB92'}"/></g>`;
+  }
+  for (let k = 0; k < 16; k++) {
+    const x = (113 * Math.sin(k * 22.5 * P)).toFixed(1), y = (-113 * Math.cos(k * 22.5 * P)).toFixed(1);
+    bulbs += `<circle cx="${x}" cy="${y}" r="4.6" fill="#6E4410"/><circle class="bulb${k % 2 ? ' odd' : ''}" cx="${x}" cy="${y}" r="3.6" fill="#FFF6D2"/>`;
+  }
+  return `<div class="wheel-wrap"><div class="wheel-glow"></div>
+    <div class="wheel"><svg class="wheel-disc" viewBox="-104 -104 208 208" aria-hidden="true"><defs>
+      <radialGradient id="wg${u}a" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset=".15" stop-color="#A3305F"/><stop offset="1" stop-color="#4A0D2E"/></radialGradient>
+      <radialGradient id="wg${u}b" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset=".15" stop-color="#FFF0BE"/><stop offset=".7" stop-color="#E9BC5C"/><stop offset="1" stop-color="#B07A26"/></radialGradient></defs>
+      <circle r="103" fill="#B07A26"/>${seg}<circle r="100" fill="none" stroke="#F3D58A" stroke-width="2"/></svg></div>
+    <svg class="wheel-rim" viewBox="-124 -124 248 248" aria-hidden="true"><defs><linearGradient id="wg${u}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0BE"/><stop offset=".35" stop-color="#C9943B"/><stop offset=".6" stop-color="#FBE6A6"/><stop offset="1" stop-color="#9A6820"/></linearGradient></defs><circle r="113" fill="none" stroke="url(#wg${u}c)" stroke-width="13"/><circle r="106.5" fill="none" stroke="rgba(60,10,35,.6)" stroke-width="1.2"/>${bulbs}</svg>
+    <svg class="wheel-pin" viewBox="0 0 40 54" aria-hidden="true"><defs><linearGradient id="wg${u}d" x1="0" x2="1"><stop offset="0" stop-color="#B07A26"/><stop offset=".5" stop-color="#FFF0BE"/><stop offset="1" stop-color="#B07A26"/></linearGradient></defs><path d="M20 52 5 22a16 16 0 1 1 30 0Z" fill="url(#wg${u}d)" stroke="#7A4A12" stroke-width="1.5"/><circle cx="20" cy="17" r="7" fill="#B0244E" stroke="#FFE7A3" stroke-width="1.5"/><circle cx="17.5" cy="14.5" r="2" fill="#fff" opacity=".7"/></svg>
+    <button class="wheel-hub" aria-label="Girar a roleta">Girar</button></div>`;
+}
+/* versículos da roleta: os das ocasiões desse tipo de carta, menos os que já estão na carta */
+function wheelPool(L) {
+  const chosen = new Set(L.verses.map(v => v.id));
+  let ids = [...new Set((OCCASIONS[L.r] || OCCASIONS.amor).flatMap(o => o.verses))].filter(id => VERSES[id] && !chosen.has(id));
+  if (!ids.length) ids = Object.keys(VERSES);
+  return ids.map(id => ({ id, ref: VERSES[id][0], t: VERSES[id][1] }));
+}
+
 function polHTML(p, i) {
   if (!p.src) return `<figure class="pol empty"><div class="pol-empty">${ICON.image}<span>Sua foto aqui</span></div><figcaption>&nbsp;</figcaption></figure>`;
   return `<figure class="pol" data-i="${i}" tabindex="0" role="button" aria-label="Ampliar foto"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><figcaption>${esc(p.cap || '')}</figcaption></figure>`;
 }
 
+/* A carta inteira. Na carta aberta (mode "full") as partes aparecem uma de cada vez:
+   data-step diz o que libera a próxima (next = botão Continuar, spin = girar a roleta,
+   jar = ler todos os bilhetes, amen, reveal = revelar a foto, ask = dizer sim). */
 function letterHTML(L, mode, opt = {}) {
-  const mini = mode === 'mini', full = mode === 'full', C = L.C, rv = full ? ' rv' : '';
+  const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
   const pics = [0, 1, 2].map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
+  const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
+  const SKIP = demo ? '<button class="link l-skip" data-skip>Pular (só na prévia)</button>' : '';
+  const sec = (id, cls, step, inner) => `<section class="lsec${cls ? ' ' + cls : ''}${full ? ' wait' : ''}"${id ? ` id="${id}"` : ''}${full ? ` data-step="${step}"` : ''}>${inner}${full && (step === 'next' || step === 'spin') ? NEXT : ''}</section>`;
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  h += `<section class="lsec l-open${rv}" id="s-open"><p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p></section>`;
-  if (full && L.ml) h += `<section class="lsec${rv}" id="s-music"><p class="l-label">Nossa música</p><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button></section>`;
-  h += `<section class="lsec${rv}" id="s-verse">${verseHTML(L.verses[0], true)}</section>`;
+  const music = full && L.ml ? `<div class="l-music"><p class="l-label">Nossa música</p><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button></div>` : '';
+  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>${music}`);
+  h += sec('s-verse', '', 'next', `${verseHTML(L.verses[0], true)}${FLOURISH}`);
   if (pics.length || mini) {
-    h += `<section class="lsec${rv}" id="s-photos"><p class="l-label">Nossos momentos</p><div class="pols" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div></section>`;
+    h += sec('s-photos', '', 'next', `<p class="l-label">Nossos momentos</p><div class="pols" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`);
   }
+  h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
+    <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
+    <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="gold-t shine"></p><cite></cite></blockquote></div>${SKIP}`);
   if (L.stats || mini) {
     const st = L.stats, ph = !st;
-    h += `<section class="lsec l-numbers${rv}${ph ? ' ph-mode' : ''}" id="s-numbers" data-countup><p class="l-label">${esc(C.numbersLabel)}</p>
+    h += sec('s-numbers', `l-numbers${ph ? ' ph-mode' : ''}`, 'next', `<p class="l-label">${esc(C.numbersLabel)}</p>
       <p class="l-since">${ph ? 'Escolha a data para ver a história de vocês em números' : `${esc(C.since)} ${esc(longDate(parseISO(L.date)))}${esc(C.sinceSuffix || '')}`}</p>
-      <div class="l-big" data-count="${ph ? 0 : st.days}">${ph ? '—' : fmt(st.days)}</div><div class="l-bigl">${esc(C.big)}</div>
+      <div class="l-big gold-t" data-count="${ph ? 0 : st.days}">${ph ? '—' : fmt(st.days)}</div><div class="l-bigl">${esc(C.big)}</div>
       ${ph ? '' : `<div class="l-tick" data-tick="${L.date}">e contando · <span>${clockSince(L.date)}</span></div>`}
-      <div class="l-rows">${C.rows.map(([k, label]) => `<div class="l-row"><b data-count="${ph ? 0 : st[k]}">${ph ? '—' : fmt(st[k])}</b><span>${esc(label)}</span></div>`).join('')}</div>
-      <p class="l-foot">“Suas misericórdias não têm fim. Elas são novas a cada manhã.”<span>Lamentações 3:22-23</span></p></section>`;
+      <div class="l-rows">${C.rows.map(([k, label]) => `<div class="l-row"><b class="gold-t" data-count="${ph ? 0 : st[k]}">${ph ? '—' : fmt(st[k])}</b><span>${esc(label)}</span></div>`).join('')}</div>
+      <p class="l-foot">“Suas misericórdias não têm fim. Elas são novas a cada manhã.”<span>Lamentações 3:22-23</span></p>`);
   }
-  h += `<section class="lsec${rv}" id="s-message"><p class="l-label">${esc(C.msgLabel)}</p>${messageHTML(L.message, full)}</section>`;
-  h += `<section class="lsec${rv}" id="s-jar"><p class="l-label">O pote dos motivos</p><h3 class="l-h">${esc(C.jarH)}</h3><p class="l-sub">Toque no pote e tire um bilhete.</p>
-    <div class="jar-wrap"><button class="jar" aria-label="Tirar um bilhete do pote">${jarSVG(L.reasons.length)}</button>
+  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${messageHTML(L.message, full)}`);
+  const n = L.reasons.length;
+  h += sec('s-jar', '', 'jar', `<p class="l-label">O pote dos motivos</p><h3 class="l-h gold-t">${esc(C.jarH)}</h3><p class="l-sub">Toque no pote e tire um bilhete.</p>
+    <div class="jar-wrap"><button class="jar" aria-label="Tirar um bilhete do pote">${jarSVG(n)}</button>
+    ${n <= 14 ? `<div class="jar-prog" aria-hidden="true">${'<i></i>'.repeat(n)}</div>` : ''}
+    <p class="jar-hint"><b>0</b> de ${n} bilhetes lidos</p>
     <div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>
-    <p class="jar-hint"><b>0</b> de ${L.reasons.length} bilhetes lidos</p>
-    ${full ? `<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>${opt.mode === 'recipient' ? '' : '<button class="link gate-skip" data-skip>Pular (só na prévia)</button>'}` : ''}</div></section>`;
-  if (full) h += `<div class="gate" data-locked>`;
-  if (L.verses.length > 1) h += `<section class="lsec l-more${rv}">${orn()}${L.verses.slice(1).map(v => verseHTML(v, false)).join(orn())}</section>`;
-  if (L.prayer) h += `<section class="lsec${rv}" id="s-prayer"><div class="pray"><div class="dove">${ICON.dove}</div><p class="l-label">${esc(C.prayLabel)}</p><p class="pray-t">${esc(L.prayer)}</p><button class="amen" aria-pressed="false">Amém</button><p class="amen-note" hidden>Agora vocês oraram juntos.</p></div></section>`;
+    ${full ? '<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>' : ''}${SKIP}</div>`);
+  if (L.verses.length > 1) h += sec('', 'l-more', 'next', `${FLOURISH}${L.verses.slice(1).map(v => verseHTML(v, false)).join(orn())}`);
+  if (L.prayer) h += sec('s-prayer', '', 'amen', `<div class="pray"><div class="dove">${ICON.dove}</div><p class="l-label">${esc(C.prayLabel)}</p><p class="pray-t">${esc(L.prayer)}</p><button class="amen" aria-pressed="false">Amém</button><p class="amen-note" hidden>Agora vocês oraram juntos.</p></div>`);
   if (L.photos[3]) {
     const cap = L.captions[3];
-    h += `<section class="lsec${rv}" id="s-final"><p class="l-label">Uma última foto</p><figure class="reveal" role="button" tabindex="0" aria-label="Revelar a última foto"><div class="rv-img"><img src="${L.photos[3]}" alt=""><span class="veil">${ICON.sparkle}<span>Toque para revelar</span></span></div><figcaption>${cap ? esc(cap) : bible(VERSES.ec3_11[1])}</figcaption></figure>${cap ? '' : `<p class="l-ref">${VERSES.ec3_11[0]}</p>`}</section>`;
+    h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p><figure class="reveal" role="button" tabindex="0" aria-label="Revelar a última foto"><div class="rv-img"><img src="${L.photos[3]}" alt=""><span class="veil">${ICON.sparkle}<span>Toque para revelar</span></span></div><figcaption>${cap ? esc(cap) : bible(VERSES.ec3_11[1])}</figcaption></figure>${cap ? '' : `<p class="l-ref">${VERSES.ec3_11[0]}</p>`}`);
   }
   if (L.ask) {
-    h += `<section class="lsec${rv}" id="s-ask"><div class="ask"><p class="ask-k">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
+    h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
       <div class="ask-btns"><button class="ask-yes">Sim!</button><button class="ask-no">Não</button></div>
-      <div class="ask-done" hidden><b>Resposta: sim!</b><a class="l-btn light" href="${waLink(`Sim! Eu aceito, ${L.from}! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Contar para ${esc(L.from)}</a></div></div></section>`;
+      <div class="ask-done" hidden><b>Resposta: sim!</b><a class="l-btn light" href="${waLink(`Sim! Eu aceito, ${L.from}! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Contar para ${esc(L.from)}</a></div></div>`);
   }
-  h += `<section class="lsec l-closing${rv}" id="s-close">${orn()}<p class="l-close">${esc(C.closing)}</p><p class="l-sign">${esc(L.from)}</p>
+  h += sec('s-close', 'l-closing', 'end', `${orn()}<p class="l-close">${esc(C.closing)}</p><p class="l-sign gold-t shine">${esc(L.from)}</p>
     <div class="l-actions"><a class="l-btn" href="${waLink(`${L.from}, recebi a sua carta e amei! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Responder ${esc(L.from)}</a><button class="l-btn ghost" data-again>Ler de novo</button></div>
-    <div class="l-credit"><span class="row"><span class="seal"><span></span></span>Feito com ${BRAND}</span>${opt.mode === 'recipient' ? '<button data-make>Faça uma carta assim</button>' : ''}<small>Versículos da Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0.</small></div></section>`;
-  if (full) h += `</div>`;
+    <div class="l-credit"><span class="row"><span class="seal"><span></span></span>Feito com ${BRAND}</span>${opt.mode === 'recipient' ? '<button data-make>Faça uma carta assim</button>' : ''}<small>Versículos da Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0.</small></div>`);
   h += `</div></div>`;
   return h;
+}
+
+/* ===== Efeitos: abertura gloriosa, faíscas e chuva de corações ===== */
+function sparkHTML(n, near, far, delay) {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, d = near + Math.random() * far;
+    s += `<i class="gs ${i % 4 === 0 ? 'heart' : i % 3 === 0 ? 'star' : 'dot'}" style="--tx:${(Math.cos(a) * d).toFixed(0)}px;--ty:${(Math.sin(a) * d - 30).toFixed(0)}px;--r:${((Math.random() - .5) * 320).toFixed(0)}deg;--s:${(.6 + Math.random() * 1.2).toFixed(2)};--dl:${(delay + Math.random() * .35).toFixed(2)}s;--du:${(1.3 + Math.random() * 1.3).toFixed(2)}s"></i>`;
+  }
+  return s;
+}
+function glory(cv, env, mode) {
+  const host = cv.querySelector('.glory'); if (!host || reduced()) return;
+  const big = mode === 'full', r = env.getBoundingClientRect(), c = cv.getBoundingClientRect();
+  host.style.left = (r.left - c.left + r.width / 2) + 'px'; host.style.top = (r.top - c.top + r.height * .42) + 'px';
+  host.innerHTML = '<i class="g-rays"></i><i class="g-flash"></i><i class="g-ring"></i><i class="g-ring r2"></i>' + sparkHTML(big ? 46 : 22, big ? 130 : 70, big ? 260 : 110, .25);
+  void host.offsetWidth; host.classList.add('on');
+}
+function sparkBurst(host) {
+  if (!host || reduced()) return;
+  const g = document.createElement('div'); g.className = 'glory burst-c'; g.setAttribute('aria-hidden', 'true');
+  g.innerHTML = sparkHTML(18, 60, 110, 0); host.appendChild(g);
+  void g.offsetWidth; g.classList.add('on'); setTimeout(() => g.remove(), 2800);
+}
+function rain(host) {
+  if (!host || reduced()) return;
+  const r = document.createElement('div'), cols = ['#F3D58A', '#FFE7A3', '#FF9DBA', '#E9BC5C', '#FFC2D4'];
+  r.className = 'rain'; r.setAttribute('aria-hidden', 'true');
+  let s = '';
+  for (let i = 0; i < 34; i++) s += `<i class="${i % 3 ? '' : 'st'}" style="--x:${(Math.random() * 100).toFixed(1)}%;--s:${(9 + Math.random() * 12).toFixed(0)}px;--c:${cols[i % cols.length]};--du:${(3.2 + Math.random() * 2.6).toFixed(2)}s;--dl:${(Math.random() * 1.8).toFixed(2)}s;--dx:${((Math.random() - .5) * 120).toFixed(0)}px;--r:${((Math.random() - .5) * 720).toFixed(0)}deg"></i>`;
+  r.innerHTML = s; host.appendChild(r); setTimeout(() => r.remove(), 7500);
 }
 
 function bindCover(root, mode, hooks = {}) {
@@ -963,11 +1099,14 @@ function bindCover(root, mode, hooks = {}) {
   if (!env || !seal) return;
   seal.addEventListener('click', () => {
     if (env.dataset.state !== 'closed') return;
+    const full = mode === 'full', cv = root.querySelector('.cv');
     env.dataset.state = 'opening'; seal.classList.add('break');
-    const cv = root.querySelector('.cv'); if (cv) cv.classList.add('opening');
+    if (cv) { cv.classList.add('opening'); glory(cv, env, mode); }
+    try { if (navigator.vibrate) navigator.vibrate([18, 60, 30]); } catch (e) {}
     if (hooks.onSeal) hooks.onSeal();
     setTimeout(() => { env.dataset.state = 'open'; }, 240);
-    setTimeout(() => { if (hooks.onOpen) hooks.onOpen(); }, mode === 'full' ? 1700 : 1400);
+    if (cv && !reduced()) setTimeout(() => cv.classList.add('bloom'), full ? 1450 : 1150);
+    setTimeout(() => { if (hooks.onOpen) hooks.onOpen(); }, reduced() ? 300 : full ? 2050 : 1600);
   });
 }
 function countUp(root) {
@@ -987,58 +1126,136 @@ function burst(host) {
   }
 }
 function bindLetter(root, L, mode, hooks = {}) {
-  const full = mode === 'full', cleanups = [];
+  const full = mode === 'full', cleanups = [], timers = [];
+  const later = (f, ms) => { timers.push(setTimeout(f, ms)); };
+  cleanups.push(() => timers.forEach(clearTimeout));
   const tick = root.querySelector('[data-tick] span');
   if (tick) { const id = setInterval(() => { tick.textContent = clockSince(L.date); }, 1000); cleanups.push(() => clearInterval(id)); }
-  if (full && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => {
-      if (!e.isIntersecting) return;
-      const el = e.target; el.classList.add('in');
-      if (el.hasAttribute('data-countup')) countUp(el);
-      const msg = el.querySelector('.l-msg.typing'); if (msg) { msg.classList.remove('typing'); msg.classList.add('typed'); }
-      io.unobserve(el);
-    }), { root, threshold: .16 });
-    root.querySelectorAll('.rv').forEach(el => io.observe(el));
-    cleanups.push(() => io.disconnect());
-  } else {
-    root.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
-    root.querySelectorAll('.l-msg.typing').forEach(el => { el.classList.remove('typing'); el.classList.add('typed'); });
+
+  /* ----- passo a passo: cada parte aparece depois de uma ação ----- */
+  const steps = full ? [...root.querySelectorAll('.lb > .lsec')] : [];
+  let cur = -1;
+  const nextBtn = s => s.querySelector(':scope > .l-next-wrap .l-next');
+  const delayFor = s => s.id === 's-message' ? Math.min(3300, s.querySelectorAll('.w').length * 32) + 1000
+    : s.id === 's-photos' ? 700 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 2300 : s.id === 's-open' ? 1800 : 2000;
+  function show(s) {
+    s.classList.remove('wait', 'pre'); void s.offsetWidth; s.classList.add('in');
+    if (s.id === 's-numbers') countUp(s);
+    const msg = s.querySelector('.l-msg.typing'); if (msg) { msg.classList.remove('typing'); msg.classList.add('typed'); }
+    if (s.dataset.step === 'next') later(() => { const b = nextBtn(s); if (b) b.hidden = false; }, reduced() ? 0 : delayFor(s));
+    if (s.dataset.step === 'end') later(() => rain(hooks.host), 700);
   }
+  const topOf = el => { let y = 0; for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop; return y; };
+  function advance() {
+    if (cur + 1 >= steps.length) return;
+    const s = steps[++cur];
+    show(s);
+    if (cur > 0) later(() => {
+      const bar = hooks.host && hooks.host.querySelector('.vw-top'), pad = bar ? bar.getBoundingClientRect().bottom - root.getBoundingClientRect().top + 14 : 70;
+      root.scrollTo({ top: Math.max(0, topOf(s) + 40 - pad), behavior: reduced() ? 'auto' : 'smooth' });
+    }, 60);
+  }
+  /* a ação da parte foi feita: mostra o Continuar (wait vazio) ou segue sozinho depois de "wait" ms */
+  const done = (s, wait) => {
+    if (!full || !s || s.dataset.done) return;
+    s.dataset.done = '1';
+    s.querySelectorAll('.l-skip').forEach(x => { x.hidden = true; });
+    if (wait == null) { const b = nextBtn(s); if (b) b.hidden = false; return; }
+    later(() => { if (steps[cur] === s) advance(); }, reduced() ? 0 : wait);
+  };
+  root.querySelectorAll('.l-next').forEach(b => b.addEventListener('click', () => {
+    const s = b.closest('.lsec'); b.closest('.l-next-wrap').remove();
+    if (steps[cur] === s) advance();
+  }));
+  root.querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', () => {
+    const s = b.closest('.lsec'), w = s.querySelector(':scope > .l-next-wrap');
+    s.dataset.done = '1'; b.hidden = true; if (w) w.remove();
+    if (steps[cur] === s) advance();
+  }));
+  const msgEl = full && root.querySelector('.l-msg');
+  if (msgEl) msgEl.addEventListener('click', () => {
+    msgEl.classList.add('fast');
+    const s = msgEl.closest('.lsec'), b = nextBtn(s);
+    if (b && s.classList.contains('in')) later(() => { b.hidden = false; }, 300);
+  });
+
   if (full) root.querySelectorAll('.pol[data-i]').forEach(p => {
     const open = () => hooks.onPhoto && hooks.onPhoto(p.querySelector('img').src, p.querySelector('figcaption').textContent);
     p.addEventListener('click', open); p.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
   });
-  const jar = root.querySelector('.jar');
-  if (jar) {
-    const n = L.reasons.length, slip = root.querySelector('.slip'), hint = root.querySelector('.jar-hint'), notes = [...jar.querySelectorAll('.jn')];
-    let order = shuffle([...Array(n).keys()]), k = 0;
+
+  /* pote: cada toque tira um bilhete, que voa e abre; lidos todos, a carta continua */
+  const jarWrap = root.querySelector('.jar-wrap');
+  if (jarWrap) {
+    const jar = jarWrap.querySelector('.jar'), n = L.reasons.length, slip = jarWrap.querySelector('.slip'), hint = jarWrap.querySelector('.jar-hint');
+    const prog = [...jarWrap.querySelectorAll('.jar-prog i')], notes = [...jar.querySelectorAll('.jn')];
+    let order = shuffle([...Array(n).keys()]), k = 0, read = 0, busy = false;
     jar.addEventListener('click', () => {
+      if (busy) return; busy = true;
       if (k >= n) { k = 0; order = shuffle(order); notes.forEach(x => x.classList.remove('out')); }
-      const i = order[k++];
-      jar.classList.remove('shake'); void jar.offsetWidth; jar.classList.add('shake');
+      const i = order[k++]; read = Math.max(read, k);
+      jar.classList.remove('shake', 'tap'); void jar.offsetWidth; jar.classList.add('shake', 'tap');
       const keep = notes.length - Math.ceil(k * notes.length / n); notes.forEach((x, j) => x.classList.toggle('out', j >= keep));
-      slip.hidden = false; slip.querySelector('p').textContent = L.reasons[i]; slip.querySelector('.slip-n').textContent = `Bilhete ${k} de ${n}`;
-      slip.classList.remove('in'); void slip.offsetWidth; slip.classList.add('in');
-      hint.innerHTML = k === n ? 'Você leu todos. Toque de novo para reler.' : `<b>${k}</b> de ${n} bilhetes lidos`;
-      if (k === n) unlock();
+      const fly = document.createElement('i'); fly.className = 'fly-note'; fly.style.setProperty('--c', NOTE_COLORS[i % NOTE_COLORS.length]); jarWrap.appendChild(fly);
+      const quick = reduced();
+      try { fly.animate([{ transform: 'translate(0,0) rotate(0) scale(.6)', opacity: 0 }, { opacity: 1, offset: .15 }, { transform: `translate(${(Math.random() * 70 - 35).toFixed(0)}px,-120px) rotate(${(120 + Math.random() * 200).toFixed(0)}deg) scale(1.3)`, opacity: 1, offset: .6 }, { transform: 'translate(0,-50px) rotate(360deg) scale(2.3)', opacity: 0 }], { duration: quick ? 10 : 700, delay: quick ? 0 : 220, easing: 'cubic-bezier(.3,.7,.4,1)', fill: 'forwards' }); } catch (e) {}
+      setTimeout(() => {
+        fly.remove();
+        slip.hidden = false; slip.style.setProperty('--c', NOTE_PAPER[i % NOTE_PAPER.length]);
+        slip.querySelector('p').textContent = L.reasons[i]; slip.querySelector('.slip-n').textContent = `Bilhete ${k} de ${n}`;
+        slip.classList.remove('in'); void slip.offsetWidth; slip.classList.add('in');
+        prog.forEach((x, j) => x.classList.toggle('on', j < read));
+        hint.innerHTML = read >= n ? 'Você leu todos os motivos! ✨' : `<b>${read}</b> de ${n} bilhetes lidos`;
+        busy = false;
+        try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
+        if (read >= n && !jarWrap.classList.contains('done')) { jarWrap.classList.add('done'); burst(jarWrap); sparkBurst(jarWrap); done(jarWrap.closest('.lsec'), 2800); }
+      }, quick ? 20 : 820);
     });
   }
-  const gate = root.querySelector('.gate[data-locked]');
-  function unlock() {
-    if (!gate || !gate.hasAttribute('data-locked')) return;
-    gate.removeAttribute('data-locked');
-    root.querySelectorAll('.gate-note,[data-skip]').forEach(x => x.hidden = true);
-    setTimeout(() => { const t = gate.firstElementChild; if (t) root.scrollBy({ top: t.getBoundingClientRect().top - root.getBoundingClientRect().top - 140, behavior: 'smooth' }); }, 1600);
+
+  /* roleta: gira, para num versículo e libera o Continuar */
+  const wheel = root.querySelector('.wheel-wrap');
+  if (wheel) {
+    const s = wheel.closest('.lsec'), disc = wheel.querySelector('.wheel-disc'), hub = wheel.querySelector('.wheel-hub'), btn = s.querySelector('.wheel-btn'), res = s.querySelector('.wheel-res');
+    const pool = wheelPool(L);
+    let rot = 0, last = -1, busy = false;
+    const spin = () => {
+      if (busy) return; busy = true; btn.disabled = hub.disabled = true; res.classList.remove('on');
+      let idx; do { idx = Math.floor(Math.random() * pool.length); } while (pool.length > 1 && idx === last); last = idx;
+      const target = (360 - Math.floor(Math.random() * 8) * 45) % 360 + (Math.random() * 26 - 13);
+      rot += 360 * 6 + ((target - rot % 360) + 360) % 360;
+      disc.style.transform = `rotate(${rot}deg)`; wheel.classList.add('spinning');
+      try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
+      later(() => {
+        wheel.classList.remove('spinning'); busy = false; btn.disabled = hub.disabled = false;
+        const v = pool[idx];
+        res.querySelector('p').innerHTML = verseText(v.t); res.querySelector('cite').textContent = v.ref;
+        res.hidden = false; void res.offsetWidth; res.classList.add('on');
+        btn.innerHTML = `${ICON.sparkle}Girar de novo`;
+        sparkBurst(wheel);
+        try { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); } catch (e) {}
+        done(s);
+      }, reduced() ? 300 : 4800);
+    };
+    btn.addEventListener('click', spin); hub.addEventListener('click', spin);
   }
-  root.querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', unlock));
+
   const amen = root.querySelector('.amen');
-  if (amen) amen.addEventListener('click', () => { amen.classList.add('on'); amen.setAttribute('aria-pressed', 'true'); amen.textContent = 'Amém ✓'; const n = root.querySelector('.amen-note'); if (n) n.hidden = false; });
+  if (amen) amen.addEventListener('click', () => {
+    if (amen.classList.contains('on')) return;
+    amen.classList.add('on'); amen.setAttribute('aria-pressed', 'true'); amen.textContent = 'Amém ✓';
+    const note = root.querySelector('.amen-note'); if (note) note.hidden = false;
+    sparkBurst(amen.closest('.pray')); done(amen.closest('.lsec'), 1900);
+  });
   const rvl = root.querySelector('.reveal');
-  if (rvl) { const dev = () => rvl.classList.add('dev'); rvl.addEventListener('click', dev); rvl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dev(); } }); }
+  if (rvl) {
+    const dev = () => { if (rvl.classList.contains('dev')) return; rvl.classList.add('dev'); sparkBurst(rvl); done(rvl.closest('.lsec'), 3000); };
+    rvl.addEventListener('click', dev); rvl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dev(); } });
+  }
   const ask = root.querySelector('.ask');
   if (ask) {
     const no = ask.querySelector('.ask-no'), yes = ask.querySelector('.ask-yes'); let dodges = 0;
-    const accept = () => { ask.querySelector('.ask-btns').hidden = true; ask.querySelector('.ask-done').hidden = false; burst(ask); };
+    const accept = () => { ask.querySelector('.ask-btns').hidden = true; ask.querySelector('.ask-done').hidden = false; burst(ask); sparkBurst(ask); done(ask.closest('.lsec'), 2600); };
     const dodge = () => {
       if (no.dataset.yes) return;
       if (++dodges >= 4) { no.textContent = 'Sim também'; no.dataset.yes = '1'; no.style.transform = ''; return; }
@@ -1050,7 +1267,11 @@ function bindLetter(root, L, mode, hooks = {}) {
   }
   root.querySelectorAll('[data-again]').forEach(b => b.addEventListener('click', () => root.scrollTo({ top: 0, behavior: 'smooth' })));
   root.querySelectorAll('[data-make]').forEach(b => b.addEventListener('click', () => hooks.onMake && hooks.onMake()));
-  return () => cleanups.forEach(f => f());
+  const off = () => cleanups.forEach(f => f());
+  /* prime: deixa a 1ª parte no lugar (invisível) já no toque do selo, para o player de música carregar; start: mostra */
+  off.prime = () => { if (cur < 0 && steps[0]) { steps[0].classList.remove('wait'); steps[0].classList.add('pre'); } };
+  off.start = () => { if (cur < 0) advance(); };
+  return off;
 }
 
 /* ===== Visualizador em tela cheia ===== */
@@ -1064,17 +1285,21 @@ function openViewer(L, opt = {}) {
   let music = '';
   if (L.music === 'instrumental') music = `<button class="pill" id="vwMusic" aria-pressed="false" hidden><span class="eq"><i></i><i></i><i></i></span><span>Música</span></button>`;
   if (L.ml) music = `<button class="pill" id="vwMusic" aria-pressed="false" hidden><span class="eq"><i></i><i></i><i></i></span><span>Nossa música</span></button>`;
-  v.innerHTML = `<div class="vw-scroll locked${bottom ? ' has-bar' : ''}" id="vwScroll">${letterHTML(L, 'full', opt)}</div>
+  v.dataset.theme = L.theme;
+  v.innerHTML = `<div class="vw-fx" aria-hidden="true"><div class="cv-motes">${motes(24)}</div><div class="twinkle">${sparkles(12)}</div></div>
+    <div class="vw-scroll locked${bottom ? ' has-bar' : ''}" id="vwScroll">${letterHTML(L, 'full', opt)}</div>
     <div class="vw-cover lt" data-theme="${L.theme}" data-mode="full" id="vwCover">${coverHTML(L, 'full')}</div>
     <div class="vw-top"><button class="pill" id="vwClose">${ICON.x}<span>${mode === 'recipient' ? 'Fechar' : 'Voltar'}</span></button>${mode === 'recipient' ? '' : `<span class="pill pill-tag">${mode === 'example' ? 'Exemplo' : 'Prévia'}</span>`}<span class="vw-sp"></span>${music}</div>
     ${bottom}
     <div class="lightbox" id="lightbox" hidden><img alt=""><p></p></div>`;
   v.hidden = false; document.documentElement.classList.add('noscroll');
   const scroll = $('#vwScroll'), cover = $('#vwCover'), lb = $('#lightbox'), mBtn = $('#vwMusic');
-  viewerCleanup = bindLetter(scroll, L, 'full', {
+  const letter = bindLetter(scroll, L, 'full', {
+    host: v,
     onPhoto(src, cap) { lb.querySelector('img').src = src; lb.querySelector('p').textContent = cap; lb.hidden = false; },
     onMake() { closeViewer(); if (opt.onMake) opt.onMake(); }
   });
+  viewerCleanup = letter;
   lb.addEventListener('click', () => { lb.hidden = true; });
   const player = L.ml ? Som : Music;
   if (L.ml) Som.preparar(L.ml);
@@ -1084,11 +1309,13 @@ function openViewer(L, opt = {}) {
   }
   bindCover(cover, 'full', {
     onSeal() {
-      if (L.ml) Som.criar(L.ml, scroll.querySelector('#s-music .mbox'), scroll.querySelector('#s-music .som-btn'));
+      letter.prime();
+      if (L.ml) Som.criar(L.ml, scroll.querySelector('.l-music .mbox'), scroll.querySelector('.l-music .som-btn'));
       else if (L.music === 'instrumental') Music.start();
     },
     onOpen() {
       cover.classList.add('gone'); scroll.classList.remove('locked'); scroll.scrollTop = 0;
+      letter.start();
       if (mBtn) mBtn.hidden = false;
       const b = v.querySelector('.vw-bottom'); if (b) setTimeout(() => b.classList.remove('wait'), 900);
       setTimeout(() => { cover.hidden = true; }, 850);
@@ -1356,7 +1583,7 @@ function readyView() {
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
     <ul class="inc">
       <li>${ICON.checkc}<span><b>Carta animada</b> que abre quando ${esc(L.to)} quebra o selo${L.music === 'none' ? '' : ', com música'}</span></li>
-      <li>${ICON.checkc}<span><b>${L.verses.length} ${L.verses.length > 1 ? 'versículos' : 'versículo'}</b>, o pote com ${L.reasons.length} motivos${L.prayer ? ' e uma oração' : ''}</span></li>
+      <li>${ICON.checkc}<span><b>${L.verses.length} ${L.verses.length > 1 ? 'versículos' : 'versículo'}</b> em letras de ouro, a roleta da Palavra, o pote com ${L.reasons.length} motivos${L.prayer ? ' e uma oração' : ''}</span></li>
       ${third}
       <li>${ICON.checkc}<span><b>Link e cartão com QR code</b> para mandar no WhatsApp ou imprimir</span></li>
     </ul>
