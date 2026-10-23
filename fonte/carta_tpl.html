@@ -1228,6 +1228,12 @@ function cineOpen(host, L, onDone) {
     <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : ''}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);
+  /* o nome do casal fica sempre numa linha só: se não couber, a letra diminui */
+  const nome = o.querySelector('.co-2'), ajustar = () => {
+    nome.style.fontSize = ''; const w = nome.firstElementChild.offsetWidth, max = o.clientWidth * .8;
+    if (w > max) nome.style.fontSize = (parseFloat(getComputedStyle(nome).fontSize) * max / w) + 'px';
+  };
+  ajustar(); try { document.fonts.load('400 80px "Great Vibes"').then(ajustar, () => {}); } catch (e) {}
   let feito = false;
   const acabar = () => { if (feito) return; feito = true; o.classList.add('sai'); setTimeout(() => o.remove(), 900); onDone(); };
   o.querySelector('.co-skip').addEventListener('click', acabar);
@@ -1253,7 +1259,7 @@ function letterHTML(L, mode, opt = {}) {
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2>`);
+  h += sec('s-open', 'l-open', 'next', `<h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2>`);
   /* ordem: roleta, música, fotos, pote, versículos, carta escrita, números, última foto */
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>

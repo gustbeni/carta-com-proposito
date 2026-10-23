@@ -1088,7 +1088,7 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .co-bar.b{bottom:0}
 .cine-open p{position:relative;margin:0;opacity:0}
 .co-1{font:600 11.5px/1.5 var(--f-ui);letter-spacing:.32em;text-transform:uppercase;color:#ECC16B}
-.co-2{padding:0 .3em;font:400 clamp(60px,17vw,86px)/1.12 var(--f-script)} /* sem filter: no iPhone o filtro sobre o ouro (texto recortado) vira um borrão */
+.co-2{padding:0 .3em;white-space:nowrap;font:400 clamp(60px,17vw,86px)/1.12 var(--f-script)} /* sem filter: no iPhone o filtro sobre o ouro (texto recortado) vira um borrão */
 .co-2::before{content:"";position:absolute;left:8%;right:8%;top:10%;bottom:10%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,190,90,.28),rgba(255,190,90,0));pointer-events:none}
 .co-2 span{display:inline-block;padding:0 .3em;margin:0 -.3em}
 /* nomes em ouro sólido com brilho (sem texto recortado, que o iPhone borra nesta animação) */
@@ -1098,7 +1098,7 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .cine-open.on .co-2{animation:coName 2.4s cubic-bezier(.2,.8,.2,1) 1.6s both}
 .cine-open.on .co-3{animation:coIn 1.4s ease 3s both}
 @keyframes coIn{from{opacity:0;transform:translateY(10px);letter-spacing:.5em}to{opacity:1;transform:none}}
-@keyframes coName{0%{opacity:0;transform:scale(1.25);letter-spacing:.06em}100%{opacity:1;transform:none;letter-spacing:normal}}
+@keyframes coName{0%{opacity:0;transform:scale(1.25)}100%{opacity:1;transform:none}}
 .co-flare{position:absolute;left:50%;top:50%;z-index:3;width:140vmax;height:140vmax;margin:-70vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,250,230,.95) 0%,rgba(255,220,150,.6) 12%,rgba(255,200,110,0) 45%);opacity:0;pointer-events:none}
 .cine-open.on .co-flare{animation:coFlare 1.6s ease-out 5.4s both}
 @keyframes coFlare{0%{opacity:0;transform:scale(.1)}45%{opacity:1}100%{opacity:0;transform:scale(1.2)}}
@@ -2389,6 +2389,12 @@ function cineOpen(host, L, onDone) {
     <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : ''}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);
+  /* o nome do casal fica sempre numa linha só: se não couber, a letra diminui */
+  const nome = o.querySelector('.co-2'), ajustar = () => {
+    nome.style.fontSize = ''; const w = nome.firstElementChild.offsetWidth, max = o.clientWidth * .8;
+    if (w > max) nome.style.fontSize = (parseFloat(getComputedStyle(nome).fontSize) * max / w) + 'px';
+  };
+  ajustar(); try { document.fonts.load('400 80px "Great Vibes"').then(ajustar, () => {}); } catch (e) {}
   let feito = false;
   const acabar = () => { if (feito) return; feito = true; o.classList.add('sai'); setTimeout(() => o.remove(), 900); onDone(); };
   o.querySelector('.co-skip').addEventListener('click', acabar);
@@ -2414,7 +2420,7 @@ function letterHTML(L, mode, opt = {}) {
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2>`);
+  h += sec('s-open', 'l-open', 'next', `<h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2>`);
   /* ordem: roleta, música, fotos, pote, versículos, carta escrita, números, última foto */
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>

@@ -40,7 +40,7 @@ As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro
 
 **Detalhes dos pacotes:**
 - **Padrão, R$ 21,99:** 4 fotos (3 polaroides e 1 na câmera). Fica no ar por **3 meses** depois do pagamento (`DIAS_PADRAO`). Depois disso, `/api/carta` devolve `{ expirada: true }`. Só vale para pedidos com `reg.plano` (feitos depois dos pacotes). As cartas vendidas antes continuam para sempre.
-- **Premium, R$ 29,99:** vitalícia, com abertura de cinema (`cineOpen`), 6 polaroides em slides de cinema em que a foto salta 50% maior da polaroide (`slidesHTML`), câmera com raios de ouro e o **mini filme do casal** (`playFilm`): até 7 fotos com transições, frases, música e tela final. Se não houver fotos do filme, ele usa as fotos da carta.
+- **Premium, R$ 29,99:** vitalícia, com abertura de cinema (`cineOpen`; o nome do casal fica sempre numa linha só e diminui se não couber), 6 polaroides em slides de cinema em que a foto salta 50% maior da polaroide (`slidesHTML`), câmera com raios de ouro e o **mini filme do casal** (`playFilm`): até 7 fotos com transições, frases, música e tela final. Se não houver fotos do filme, ele usa as fotos da carta.
 - Quem diz se é Premium é o pedido (`reg.plano`), nunca a carta: `limparCarta(c, plano)` corta o que for do Premium num pedido Padrão, e `carta.mjs` acrescenta `pl: "p"` na entrega.
 - Fotos no rascunho: 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (`NFOTOS`). Na carta: `fu` (até 6), `fc`, `ffu`, `ffc` e `mf` (até 7).
 - No começo do site há "Ver prévia carta Premium" e "Ver prévia carta Padrão". As prévias usam as fotos de casal de `public/img/exemplo/`.
@@ -68,7 +68,7 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
 `/c/<id>` abre só a carta (o criador fica escondido). Ela começa num **envelope de ouro** com um **selo real** pequeno (cera vinho, contas, louros e uma cruzinha de ouro) e fitas de cetim. Sem versículo na capa. O **toque no selo** faz a abertura com raios de luz, clarão e faíscas douradas, e começa a música: a instrumental (Amazing Grace gerada no navegador, objeto `Music`) ou a música de vocês do YouTube ou Spotify (objeto `Som`; o servidor troca Spotify por YouTube).
 
 A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cada parte com `data-step`; `bindLetter` controla). A ordem e a ação de cada parte:
-1. **Abertura** ("Para Ana"): "Continuar". Só "Para" e o nome, sem o título da ocasião embaixo (o envelope, a abertura de cinema e a imagem do QR code também não mostram o título).
+1. **Abertura** ("Para Ana"): "Continuar". Só "Para" e o nome, sem a data de hoje em cima e sem o título da ocasião embaixo (o envelope, a abertura de cinema e a imagem do QR code também não mostram o título).
 2. **Roleta da Palavra**: fina, com Jesus ao lado empurrando. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta, e ele aparece letra por letra. Depois, "Continuar".
 3. **Nossa música** (só com música do YouTube ou Spotify): a música **começa no toque do selo** (`iniciarMusica` no `openViewer`, com o player escondido em `.mdock`); esta parte só mostra que ela está tocando. Se o celular bloquear o som, aparece o botão flutuante "Toque para ouvir com som". A instrumental também começa no selo.
 4. **Fotos**: polaroides grandes, penduradas e balançando (no Premium, slides de cinema). "Continuar".
