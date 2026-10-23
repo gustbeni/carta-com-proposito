@@ -10,9 +10,9 @@ Site que vende uma **carta cristã digital personalizada** por **R$ 21,99**, pag
 
 | Caminho | O que é |
 |---|---|
-| `fonte/carta_tpl.html` | **Fonte principal da página** (HTML + JS do criador e da carta). Edite aqui. |
+| `fonte/carta_tpl.html` | **Fonte principal da página** (HTML + JS do criador passo a passo e da carta). Os textos das cartas novas (`VERSES`, `OCCASIONS`, `MESSAGES`, `PRAYERS`, `REASONS`) ficam aqui. Edite aqui. |
 | `fonte/estilo-base.css` | CSS base, que entra no lugar de `{{CSS}}` |
-| `fonte/dados.json` | Versículos, orações e textos, que entram no lugar de `{{DADOS}}` |
+| `fonte/dados.json` | Textos das cartas vendidas antes da estética nova (versículos, títulos e orações antigos). Entram no lugar de `{{DADOS}}`. |
 | `fonte/montar.py` | Gera `public/index.html`. Rode `python3 fonte/montar.py` depois de editar a fonte. |
 | `public/index.html` | Página publicada. É gerada pelo script, **não edite à mão**. |
 | `public/privacidade.html`, `public/img/` | Política de privacidade e imagens do site |
@@ -27,10 +27,12 @@ Site que vende uma **carta cristã digital personalizada** por **R$ 21,99**, pag
 
 As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro guarda `{ carta, chave, email, pago, pagoEm, mpOrder, mpId, valor, nav, metaOk, musicaYT }`.
 
+A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/ml, fu/fc, ffu/ffc` (veja `cartaParaServidor` no `carta_tpl.html`). Cartas sem `x` são do formato antigo e continuam abrindo: `cartaDoServidor` converte usando o `dados.json`. As fotos ficam no Cloudinary (`kmd9kglx`, preset `carta_com_proposito`) e a carta guarda só o caminho.
+
 ## Regras importantes
 
 - **Cada deploy no Netlify gasta créditos (cerca de 15).** Junte várias mudanças num commit só. Para subir sem publicar, use `[skip netlify]` na mensagem do commit.
-- **Preço:** fica em `PRECO` no `comum.mjs`, que é o valor cobrado de verdade, e em `CONFIG.preco` no `carta_tpl.html`, que é só o texto mostrado. Mude sempre os dois. Os pedidos guardam `reg.valor`, então os criados antes de uma mudança de preço continuam sendo confirmados pelo valor antigo.
+- **Preço:** fica em `PRECO` no `comum.mjs`, que é o valor cobrado de verdade, e em `PRICE` no `carta_tpl.html`, que é só o texto mostrado (`PRICE_OLD` é o preço riscado). Mude sempre os dois. Os pedidos guardam `reg.valor`, então os criados antes de uma mudança de preço continuam sendo confirmados pelo valor antigo.
 - **Variáveis no Netlify** (nunca coloque os valores no código nem peça para colarem no chat):
   - `MP_ACCESS_TOKEN`: Mercado Pago, produção
   - `META_CAPI_TOKEN`: API de Conversões do Meta, marcada como secreta
@@ -42,20 +44,19 @@ As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro
 
 ## Como a carta funciona (quem recebe)
 
-A função `mostrarCarta` revela uma parte por vez. Algumas partes **esperam uma ação** da pessoa (`p._feito = proximo`):
-1. **Roleta:** girar
-2. **Pote dos motivos:** ler **todos** os bilhetes. Se o pote ficou vazio, a carta usa 5 bilhetes automáticos. Na prévia aparece "Pular".
-3. **Pergaminho:** a escrita termina sozinha
-4. **Cabine de fotos:** tocar para revelar
+`/c/<id>` abre só a carta (o criador fica escondido). Ela começa num envelope com selo de cera; o **toque no selo** abre a carta e começa a música: a instrumental (Amazing Grace gerada no navegador, objeto `Music`) ou a música de vocês do YouTube ou Spotify (objeto `Som`; o servidor troca Spotify por YouTube). Depois a carta rola com as partes: abertura, música, versículo, polaroides, história em números, mensagem, pote, outros versículos, oração com "Amém", foto final revelada no toque, pergunta (pedidos de namoro e noivado) e assinatura.
 
-As outras partes avançam sozinhas, depois de `tempoLer(p)`. A música começa no toque do selo do envelope. A carta usa tema escuro com dourado, envelope com selo de cera, rosas e polaroides.
+**Pote dos motivos:** o resto da carta só aparece depois de ler **todos** os bilhetes (`.gate[data-locked]`). Se o pote ficou vazio, a carta usa 5 bilhetes automáticos. Na prévia e no exemplo aparece "Pular".
+
+Temas claros: rosa, dourado e céu. Nada de logo do WhatsApp: o botão de enviar usa um ícone neutro.
 
 ## Para ver como ficou
 
-Abra o `public/index.html` gerado no navegador e use "Ver exemplo" ou "Ver a prévia". As funções do servidor só funcionam no Netlify, ou com `netlify dev`, que precisa da Netlify CLI e das variáveis.
+Abra o `public/index.html` gerado no navegador e use "Ver uma carta pronta" ou o ícone de olho (prévia). As funções do servidor só funcionam no Netlify, ou com `netlify dev`, que precisa da Netlify CLI e das variáveis.
 
 ## Situação em 22/10/2026
 
 - A campanha de vendas no Meta Ads está ativa (R$ 40 por dia). Foram 9 vendas na primeira semana, com custo por venda entre R$ 25 e R$ 30.
 - Hoje mudou: preço de 17,99 para 21,99, envio da compra pelo servidor (API de Conversões), aviso de campo faltando visível na hora de pagar, Spotify trocado por YouTube, e o pote exigindo a leitura de todos os bilhetes.
+- 23/10: nova estética (criador passo a passo, carta clara) aplicada por cima do site, com pagamento, Pixel, pote e música ligados.
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.
