@@ -17,3 +17,11 @@ pol_casal1.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792022628/anun
 pol_casal2.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792022643/anuncios/pol_casal2.jpg
 pol_casal3.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792022659/anuncios/pol_casal3.jpg
 gancho_mulher.jpg https://res.cloudinary.com/kmd9kglx/image/upload/v1792593796/anuncios/gancho_mulher.jpg
+f_playfair_it.ttf https://github.com/google/fonts/raw/main/ofl/playfairdisplay/PlayfairDisplay-Italic%5Bwght%5D.ttf
+f_parisienne.ttf https://github.com/google/fonts/raw/main/ofl/parisienne/Parisienne-Regular.ttf
+f_ebgaramond.ttf https://github.com/google/fonts/raw/main/ofl/ebgaramond/EBGaramond%5Bwght%5D.ttf
+f_ebgaramond_it.ttf https://github.com/google/fonts/raw/main/ofl/ebgaramond/EBGaramond-Italic%5Bwght%5D.ttf
+f_figtree.ttf https://github.com/google/fonts/raw/main/ofl/figtree/Figtree%5Bwght%5D.ttf
+f_cormorant.ttf https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf
+f_cormorant_it.ttf https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond-Italic%5Bwght%5D.ttf
+f_greatvibes.ttf https://github.com/google/fonts/raw/main/ofl/greatvibes/GreatVibes-Regular.ttf
