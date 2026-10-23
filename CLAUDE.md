@@ -45,7 +45,7 @@ As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro
 - Fotos no rascunho: 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (`NFOTOS`). Na carta: `fu` (até 6), `fc`, `ffu`, `ffc` e `mf` (até 7).
 - No começo do site há "Ver prévia carta Premium" e "Ver prévia carta Padrão". As prévias usam as fotos de casal de `public/img/exemplo/`.
 
-Enquanto a pessoa monta, as fotos ficam no aparelho (IndexedDB `cp2`, com o localStorage de reserva), em até 2048 px e boa qualidade.
+Enquanto a pessoa monta, as fotos ficam no aparelho (IndexedDB `cp2`, com o localStorage de reserva), em até 1440 px (as maiores guardadas antes são reduzidas ao abrir o site, para o iPhone não recarregar a página). Cada toque numa foto cria um seletor novo (`abrirGaleria`). A grade do mini filme usa as classes `photos film`; `.film` também é a tela do mini filme, por isso há regras `.photos.film` que desfazem o posicionamento dela.
 
 A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/ml, fu/fc, ffu/ffc` (veja `cartaParaServidor` no `carta_tpl.html`). Cartas sem `x` são do formato antigo e continuam abrindo: `cartaDoServidor` converte usando o `dados.json`. As fotos ficam no Cloudinary (`kmd9kglx`, preset `carta_com_proposito`) e a carta guarda só o caminho.
 
@@ -70,7 +70,7 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
 A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cada parte com `data-step`; `bindLetter` controla). A ordem e a ação de cada parte:
 1. **Abertura** ("Para Ana"): "Continuar".
 2. **Roleta da Palavra**: fina, com Jesus ao lado empurrando. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta, e ele aparece letra por letra. Depois, "Continuar".
-3. **Nossa música** (só com música do YouTube ou Spotify, com o player): a música começa **quando a pessoa sai da roleta** (`hooks.onMusica`, chamado no `advance`). A instrumental também começa aí.
+3. **Nossa música** (só com música do YouTube ou Spotify): a música **começa no toque do selo** (`iniciarMusica` no `openViewer`, com o player escondido em `.mdock`); esta parte só mostra que ela está tocando. Se o celular bloquear o som, aparece o botão flutuante "Toque para ouvir com som". A instrumental também começa no selo.
 4. **Fotos**: polaroides grandes, penduradas e balançando (no Premium, slides de cinema). "Continuar".
 5. **Pote dos motivos**: papeizinhos enrolados com fitas. Cada toque tira um bilhete que voa e "cola" na tela; é preciso ler **todos** ("Guardar no coração"). Se o pote ficou vazio, a carta usa 5 bilhetes automáticos.
 6. **Versículos escolhidos**: sem aspas, em ouro espelhado (`.mirror`, uma palavra por `.mw`). "Continuar".

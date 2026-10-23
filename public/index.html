@@ -901,6 +901,9 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .mbox iframe{display:block;width:100%;height:100%;border:0}
 .mbox.sp{min-height:152px}
 .som-btn{margin-top:14px}
+.mdock{position:fixed;left:0;bottom:0;width:200px;height:113px;opacity:.01;pointer-events:none;z-index:0;overflow:hidden}
+.mdock iframe{width:200px;height:113px;border:0}
+.som-flut{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);z-index:45;margin:0;transform:translateX(-50%);white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .msg-page{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px var(--gut);text-align:center}
 .msg-page .seal{--s:64px}
 .msg-page .sub{max-width:34ch}
@@ -962,7 +965,8 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .extra{margin-top:8px;padding:2px 0 4px}
 .extra .hint{margin-top:-6px}
 .extra .photos{margin-top:14px}
-.photos.film{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.photos.film{position:static;inset:auto;width:auto;height:auto;z-index:auto;opacity:1;transform:none;background:none;overflow:visible;color:inherit;transition:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px} /* a classe "film" também é a do mini filme; aqui é só a grade de fotos */
+.photos.film::after{content:none}
 .photos.film .ph{padding:5px 5px 6px}
 .photos.film .ph-drop{font-size:11.5px;gap:4px}
 .photos.film .ph-drop svg{width:20px;height:20px}
@@ -2414,7 +2418,7 @@ function letterHTML(L, mode, opt = {}) {
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
-  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Agora, com a nossa música</h3><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button>`);
+  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3><p class="l-sub">Ela está tocando desde que você abriu a carta 🎶<br>Para pausar, use o botão “Nossa música” lá em cima.</p>`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 ? ' pols6' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
     h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
@@ -2804,24 +2808,32 @@ function openViewer(L, opt = {}) {
   const scroll = $('#vwScroll'), cover = $('#vwCover'), lb = $('#lightbox'), mBtn = $('#vwMusic');
   const letter = bindLetter(scroll, L, 'full', {
     host: v, rapido: mode === 'example',
-    onMusica() {
-      if (L.ml) Som.criar(L.ml, scroll.querySelector('.l-music .mbox'), scroll.querySelector('.l-music .som-btn'));
-      else if (L.music === 'instrumental') Music.start();
-      if (mBtn) mBtn.hidden = false;
-    },
+    onMusica() { if (mBtn) mBtn.hidden = false; },
     onPhoto(src, cap) { lb.querySelector('img').src = src; lb.querySelector('p').textContent = cap; lb.hidden = false; },
     onMake() { closeViewer(); if (opt.onMake) opt.onMake(); }
   });
   viewerCleanup = letter;
   lb.addEventListener('click', () => { lb.hidden = true; });
   const player = L.ml ? Som : Music;
+  /* a música começa no toque do selo (o toque libera o som no celular) e segue tocando pela carta toda */
+  let musicaIniciada = false;
+  function iniciarMusica() {
+    if (musicaIniciada) return; musicaIniciada = true;
+    if (L.ml) {
+      const dock = document.createElement('div'); dock.className = 'mdock'; dock.setAttribute('aria-hidden', 'true');
+      const box = document.createElement('div'); dock.appendChild(box); v.appendChild(dock);
+      const av = document.createElement('button'); av.className = 'l-btn ghost som-btn som-flut'; av.hidden = true; av.innerHTML = `${ICON.music}Toque para ouvir com som`; v.appendChild(av);
+      Som.criar(L.ml, box, av);
+    } else if (L.music === 'instrumental') Music.start();
+    if (mBtn) mBtn.hidden = false;
+  }
   if (L.ml) Som.preparar(L.ml);
   if (mBtn) {
     musicOff = player.onChange(on => mBtn.setAttribute('aria-pressed', on ? 'true' : 'false'));
     mBtn.addEventListener('click', () => player.toggle());
   }
   bindCover(cover, 'full', {
-    onSeal() { letter.prime(); },
+    onSeal() { letter.prime(); iniciarMusica(); },
     onOpen() {
       const abrir = () => {
       cover.classList.add('gone'); scroll.classList.remove('locked'); scroll.scrollTop = 0;
@@ -3089,7 +3101,7 @@ const BIND = {
   },
   fotos(el) {
     const file = $('#fileIn');
-    el.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => { file.dataset.i = b.dataset.add; file.value = ''; file.click(); }));
+    el.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => abrirGaleria(+b.dataset.add)));
     el.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.rm; S.photos[i] = null; S.captions[i] = ''; savePhoto(i); save(); rerender(); }));
     el.querySelectorAll('[data-cap]').forEach(inp => inp.addEventListener('input', () => { S.captions[+inp.dataset.cap] = inp.value; changed(); }));
   },
@@ -3653,14 +3665,24 @@ function processImage(file) {
     img.src = url;
   });
 }
-$('#fileIn').addEventListener('change', async e => {
-  const f = e.target.files && e.target.files[0], i = +e.target.dataset.i;
+function abrirGaleria(i) {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+  inp.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
+  document.body.appendChild(inp);
+  let feito = false;
+  const pegar = () => { if (feito) return; const f = inp.files && inp.files[0]; if (!f) return; feito = true; escolherFoto(f, i); setTimeout(() => inp.remove(), 1000); };
+  inp.addEventListener('change', pegar); inp.addEventListener('input', pegar);
+  setTimeout(() => { if (!feito) inp.remove(); }, 10 * 60 * 1000);
+  inp.click();
+}
+$('#fileIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) escolherFoto(f, +e.target.dataset.i); });
+async function escolherFoto(f, i) {
   if (!f) return;
   if (!/^image\//.test(f.type) && !/\.(heic|heif)$/i.test(f.name)) { toast('Escolha uma imagem (JPG ou PNG).'); return; }
   const slot = $(`[data-add="${i}"]`); if (slot) slot.classList.add('busy');
   try { S.photos[i] = await processImage(f); savePhoto(i); save(); rerender(); }
   catch (err) { if (slot) slot.classList.remove('busy'); toast('Não conseguimos abrir essa foto. Tente outra.'); }
-});
+}
 
 /* ----- Quem recebe: /c/<id> ----- */
 async function abrirCartaRecebida(id) {
@@ -3721,6 +3743,7 @@ function iniciarCriador() {
     let mudou = false;
     fs.forEach((f, i) => { if (f && f !== S.photos[i]) { S.photos[i] = f; mudou = true; } });
     if (mudou) rerender();
+    fs.forEach((f, i) => { if (typeof f === 'string' && f.length > 900000) fetch(f).then(r => r.blob()).then(processImage).then(d => { if (S.photos[i] === f) { S.photos[i] = d; savePhoto(i); } }).catch(() => {}); });
   });
   /* volta do cartão (Mercado Pago manda para /?pedido=<id>) ou Pix ainda esperando */
   let q = null; try { q = new URLSearchParams(location.search).get('pedido'); } catch (e) {}

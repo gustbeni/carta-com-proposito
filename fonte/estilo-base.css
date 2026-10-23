@@ -889,6 +889,9 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .mbox iframe{display:block;width:100%;height:100%;border:0}
 .mbox.sp{min-height:152px}
 .som-btn{margin-top:14px}
+.mdock{position:fixed;left:0;bottom:0;width:200px;height:113px;opacity:.01;pointer-events:none;z-index:0;overflow:hidden}
+.mdock iframe{width:200px;height:113px;border:0}
+.som-flut{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);z-index:45;margin:0;transform:translateX(-50%);white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .msg-page{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px var(--gut);text-align:center}
 .msg-page .seal{--s:64px}
 .msg-page .sub{max-width:34ch}
@@ -950,7 +953,8 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .extra{margin-top:8px;padding:2px 0 4px}
 .extra .hint{margin-top:-6px}
 .extra .photos{margin-top:14px}
-.photos.film{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.photos.film{position:static;inset:auto;width:auto;height:auto;z-index:auto;opacity:1;transform:none;background:none;overflow:visible;color:inherit;transition:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px} /* a classe "film" também é a do mini filme; aqui é só a grade de fotos */
+.photos.film::after{content:none}
 .photos.film .ph{padding:5px 5px 6px}
 .photos.film .ph-drop{font-size:11.5px;gap:4px}
 .photos.film .ph-drop svg{width:20px;height:20px}
