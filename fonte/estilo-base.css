@@ -877,3 +877,167 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
   .cv-motes,.cv-rays,.twinkle,.vw-fx,.glory,.quill,.fh,.screen-flash{display:none}
 }
+
+/* ======================================================================
+   PACOTES: Padrão e Premium (escolha no fim) e a carta Premium
+   ====================================================================== */
+.ex-links{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:14px}
+.ex-links .ex-link{margin-top:0}
+.ex-premium{color:#F7D995}
+.planos{display:grid;gap:12px}
+.plano{position:relative;display:block;width:100%;padding:16px 16px 14px;border-radius:20px;background:var(--card);border:1px solid var(--line);transition:border-color .2s,background-color .2s,box-shadow .2s}
+.plano .pl-top{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:12px;align-items:center}
+.plano .pl-t b{display:block;font:600 18px/1.2 var(--f-ui);color:var(--ink)}
+.plano .pl-t small{display:block;margin-top:2px;font-size:13px;color:var(--ink-3)}
+.plano strong{font:600 22px/1 var(--f-display);color:var(--rubric-2);font-variant-numeric:lining-nums}
+.plano ul{list-style:none;margin:12px 0 0;padding:12px 0 0 34px;border-top:1px solid var(--line);display:grid;gap:7px}
+.plano li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;font-size:13.5px;line-height:1.4;color:var(--ink-2)}
+.plano li svg{width:15px;height:15px;color:var(--rubric);margin-top:2px}
+.plano li b{color:var(--ink)}
+.plano[aria-pressed="true"]{border-color:var(--rubric);background:rgba(236,193,107,.10);box-shadow:inset 0 0 0 1px var(--rubric)}
+.plano.premium{background:linear-gradient(160deg,rgba(236,193,107,.16),rgba(154,42,94,.22) 60%,var(--card));border-color:rgba(236,193,107,.5)}
+.plano.premium[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--rubric),0 0 34px -8px rgba(236,193,107,.55)}
+.plano.premium strong{background:var(--gold-grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:goldShine 6s linear infinite}
+.pl-badge{position:absolute;top:-10px;right:16px;padding:5px 10px;border-radius:999px;background:var(--gold-btn);color:#3A0B2B;font:700 10.5px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;box-shadow:0 6px 14px -6px rgba(236,180,80,.8)}
+.extra{margin-top:8px;padding:2px 0 4px}
+.extra .hint{margin-top:-6px}
+.extra .photos{margin-top:14px}
+.photos.film{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.photos.film .ph{padding:5px 5px 6px}
+.photos.film .ph-drop{font-size:11.5px;gap:4px}
+.photos.film .ph-drop svg{width:20px;height:20px}
+.photos.film .ph-drop small{font-size:10px}
+.plano-nota{margin:12px auto 0;max-width:34ch;font-size:14px;line-height:1.45;color:var(--rubric-2)}
+
+/* Premium: polaroides em slides de cinema; a foto salta da polaroide 50% maior */
+.cine-slides{position:relative;margin:6px -10px 0}
+.cs-stage{position:relative;aspect-ratio:1/1.24;overflow:visible;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cs-slide{position:absolute;inset:0;margin:0;display:grid;place-items:center;opacity:0;pointer-events:none}
+.cs-pol{position:relative;width:62%;padding:9px 9px 0;background:#FFF9EE;border-radius:3px;box-shadow:0 0 0 1px rgba(236,193,107,.55),0 30px 44px -22px rgba(0,0,0,.85);rotate:-3deg}
+.cs-slide:nth-child(even) .cs-pol{rotate:3deg}
+.cs-img{position:relative;aspect-ratio:1;background:#EDE0CC}
+.cs-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:1px;transform-origin:50% 60%;transition:none}
+.cs-pol figcaption{min-height:44px;padding:10px 4px 12px;text-align:center;font:italic 400 16px/1.25 var(--f-text);color:#5B3B44}
+.cs-slide.on{opacity:1;pointer-events:auto;animation:csIn 1s cubic-bezier(.2,.8,.2,1) both}
+.cs-slide.on .cs-img img{animation:csPop 3.6s cubic-bezier(.25,.8,.25,1) both}
+.cs-slide.on figcaption{animation:fade .8s ease 1.3s both}
+.cs-slide.sai{opacity:1;animation:csOut .9s cubic-bezier(.6,0,.4,1) forwards}
+@keyframes csIn{0%{opacity:0;transform:translateX(42%) rotate(8deg) scale(.86);filter:blur(10px) brightness(1.6)}60%{filter:blur(0) brightness(1.15)}100%{opacity:1;transform:none;filter:none}}
+@keyframes csOut{0%{opacity:1;transform:none;filter:none}100%{opacity:0;transform:translateX(-46%) rotate(-8deg) scale(.86);filter:blur(10px)}}
+/* a foto sai da moldura: cresce 1.5x com brilho de ouro e um zoom lento de cinema */
+@keyframes csPop{0%,22%{transform:none;box-shadow:none;border-radius:1px}46%{transform:translateY(-14%) scale(1.5);box-shadow:0 26px 50px -12px rgba(0,0,0,.75),0 0 0 3px rgba(255,236,190,.9),0 0 40px rgba(255,200,110,.55);border-radius:4px}100%{transform:translateY(-15%) scale(1.58);box-shadow:0 26px 50px -12px rgba(0,0,0,.75),0 0 0 3px rgba(255,236,190,.9),0 0 46px rgba(255,200,110,.6);border-radius:4px}}
+.cs-leak{position:absolute;inset:-8% -20%;z-index:3;pointer-events:none;opacity:0;background:linear-gradient(100deg,rgba(255,180,90,0) 30%,rgba(255,214,150,.55) 48%,rgba(255,150,170,.35) 56%,rgba(255,180,90,0) 72%);mix-blend-mode:screen}
+.cs-leak.on{animation:leak 1.1s ease-out}
+@keyframes leak{0%{opacity:0;transform:translateX(-40%)}35%{opacity:1}100%{opacity:0;transform:translateX(40%)}}
+.cs-bar{position:absolute;left:-6%;right:-6%;z-index:4;height:7%;background:#120310;pointer-events:none;opacity:.85;transition:height .8s ease}
+.cs-bar.t{top:-2%}
+.cs-bar.b{bottom:-2%}
+.cs-dots{display:flex;justify-content:center;gap:7px;margin-top:6px}
+.cs-dots i{width:22px;height:3px;border-radius:2px;background:rgba(240,210,160,.25);transition:background-color .4s}
+.cs-dots i.on{background:linear-gradient(90deg,#F3D58A,#E2B04A)}
+.cs-hint{margin:10px 0 0;font:italic 400 14px/1.3 var(--f-text);color:var(--ink-l3)}
+.cine-photos:not(.cs-fim) .pols{display:none!important}
+.cine-photos.cs-fim .cine-slides{display:none}
+.cine-photos.cs-fim .pols{display:grid;animation:fade .9s ease both}
+.pols.pols6{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;align-items:start}
+.pols.pols6 .pol{width:100%;align-self:start;margin-top:0;padding:7px 7px 0}
+.pols.pols6 .pol figcaption{min-height:34px;padding:7px 3px 9px;font-size:13px}
+.pols.pols6 .pol::before{width:52px;height:18px;top:-8px}
+.pols.pols6 .pol:nth-child(even){margin-top:18px}
+
+/* Premium: câmera mais gloriosa (raios de ouro atrás da foto revelada) */
+.cam-rays{position:absolute;left:50%;top:62%;z-index:0;width:150%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,222,150,.28) 0deg 5deg,rgba(255,222,150,0) 5deg 14deg);-webkit-mask:radial-gradient(closest-side,#000 10%,transparent 72%);mask:radial-gradient(closest-side,#000 10%,transparent 72%);opacity:0;transition:opacity 1.6s ease;pointer-events:none}
+.cam-wrap.premium.dev .cam-rays{opacity:1;animation:raysSpin 26s linear infinite}
+.cam-wrap.premium .cam-out{z-index:1}
+.cam-wrap.premium.dev .cam-pol{box-shadow:0 0 0 1px rgba(236,193,107,.6),0 0 40px rgba(255,200,110,.5),0 24px 36px -20px rgba(0,0,0,.85);transition:box-shadow 2s ease 3s}
+
+/* Premium: cartão do mini filme */
+.film-card{position:relative;display:block;width:100%;aspect-ratio:4/5;margin-top:4px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px rgba(236,193,107,.5),0 30px 50px -24px rgba(0,0,0,.85)}
+.film-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(1.05);animation:kb0 14s ease-in-out infinite alternate}
+.fc-bars::before,.fc-bars::after{content:"";position:absolute;left:0;right:0;height:9%;background:#0A0208}
+.fc-bars::before{top:0}
+.fc-bars::after{bottom:0}
+.fc-play{position:absolute;left:50%;top:44%;width:74px;height:74px;margin:-37px;border-radius:50%;display:grid;place-items:center;background:rgba(255,246,220,.18);border:1.5px solid rgba(255,236,190,.85);color:#FFF1C4;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:nextPulse 2.2s ease-in-out infinite}
+.fc-play svg{width:28px;height:28px;margin-left:4px}
+.fc-t{position:absolute;left:0;right:0;bottom:17%;padding:0 .3em;font:400 clamp(38px,11cqw,48px)/1.1 var(--f-script);filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
+.fc-s{position:absolute;left:0;right:0;bottom:11.5%;font:600 10.5px/1 var(--f-ui);letter-spacing:.22em;text-transform:uppercase;color:#F6E3B4}
+.lsec.visto .film-note{display:none}
+
+/* o filme em tela cheia */
+.film{position:absolute;inset:0;z-index:9;background:#050104;overflow:hidden;opacity:0;transition:opacity .6s ease;color:#FBEBD8}
+.film.on{opacity:1}
+.film.fecha{opacity:0}
+.fm-stage{position:absolute;inset:0}
+.fm-shot{position:absolute;inset:0;opacity:0}
+.fm-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fm-shot.on{opacity:1}
+.fm-shot.on.t-fade{animation:fmFade 1.2s ease both}
+.fm-shot.on.t-slide{animation:fmSlide 1.1s cubic-bezier(.2,.8,.2,1) both}
+.fm-shot.on.t-zoom{animation:fmZoom 1.3s cubic-bezier(.2,.8,.2,1) both}
+.fm-shot.on.t-flash{animation:fmFlash 1.1s ease both}
+.fm-shot.on.t-blur{animation:fmBlur 1.3s ease both}
+.fm-shot.sai{opacity:1;animation:fmSai 1.3s ease forwards}
+@keyframes fmFade{from{opacity:0}to{opacity:1}}
+@keyframes fmSlide{from{opacity:0;transform:translateX(30%)}to{opacity:1;transform:none}}
+@keyframes fmZoom{from{opacity:0;transform:scale(1.35)}to{opacity:1;transform:none}}
+@keyframes fmFlash{0%{opacity:0;filter:brightness(3)}40%{opacity:1;filter:brightness(1.8)}100%{opacity:1;filter:none}}
+@keyframes fmBlur{from{opacity:0;filter:blur(18px)}to{opacity:1;filter:none}}
+@keyframes fmSai{to{opacity:0}}
+.fm-shot.on img{animation:var(--kb) 4.6s ease-out both}
+.fm-shot.kb0{--kb:kb0}.fm-shot.kb1{--kb:kb1}.fm-shot.kb2{--kb:kb2}.fm-shot.kb3{--kb:kb3}
+@keyframes kb0{from{transform:scale(1.02)}to{transform:scale(1.16)}}
+@keyframes kb1{from{transform:scale(1.18) translate(3%,2%)}to{transform:scale(1.04)}}
+@keyframes kb2{from{transform:scale(1.12) translateX(-4%)}to{transform:scale(1.12) translateX(4%)}}
+@keyframes kb3{from{transform:scale(1.1) translateY(4%)}to{transform:scale(1.18) translateY(-3%)}}
+.film::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 80% at 50% 40%,rgba(0,0,0,0) 45%,rgba(0,0,0,.55) 100%),linear-gradient(to top,rgba(10,2,8,.85),rgba(10,2,8,0) 38%)}
+.fm-bar{position:absolute;left:0;right:0;z-index:3;height:0;background:#000;transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
+.film.on .fm-bar{height:8%}
+.fm-bar.t{top:0}
+.fm-bar.b{bottom:0}
+.fm-title{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;opacity:0;pointer-events:none}
+.fm-title span{font:italic 500 19px/1.3 var(--f-display);color:#EBCFA3}
+.fm-title b{font:400 clamp(58px,17vw,84px)/1.1 var(--f-script);padding:0 .3em;font-weight:400}
+.film.titulo .fm-title{animation:fmTit 2.8s ease both}
+@keyframes fmTit{0%{opacity:0;transform:scale(.94);filter:blur(6px)}25%,72%{opacity:1;transform:none;filter:none}100%{opacity:0;transform:scale(1.04)}}
+.fm-txt{position:absolute;left:24px;right:24px;bottom:calc(11% + 26px);z-index:4;margin:0;text-align:center;font:400 clamp(30px,8.6vw,40px)/1.2 var(--f-script);color:#FFF1CC;text-shadow:0 2px 14px rgba(0,0,0,.8),0 0 18px rgba(255,190,90,.4);opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.fm-txt.on{opacity:1;transform:none}
+.fm-prog{position:absolute;left:18px;right:18px;bottom:calc(8% + 10px);z-index:4;height:2px;border-radius:2px;background:rgba(255,236,190,.2)}
+.fm-prog i{display:block;height:100%;width:0;background:#F3D58A}
+.fm-x{position:absolute;top:calc(8% + 10px);right:14px;z-index:5;height:34px;padding:0 14px;border-radius:999px;background:rgba(0,0,0,.4);border:1px solid rgba(255,236,190,.4);font:600 12.5px/1 var(--f-ui);color:#F6E3B4}
+.film.final .fm-x,.film.final .fm-prog{display:none}
+.fm-end{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 24px;text-align:center;background:radial-gradient(90% 60% at 50% 45%,rgba(122,24,64,.92),rgba(20,3,14,.97));animation:fade 1.2s ease both}
+.fm-k{margin:0;font:600 11px/1.4 var(--f-ui);letter-spacing:.26em;text-transform:uppercase;color:#ECC16B}
+.fm-end b{font:400 clamp(54px,15vw,76px)/1.15 var(--f-script);padding:0 .3em;font-weight:400}
+.fm-d{margin:0;font:italic 600 19px/1.3 var(--f-verse);color:#FFF1CC}
+.fm-v{margin:10px 0 0;font:italic 500 18px/1.4 var(--f-display);color:#EBCFA3;max-width:26ch}
+.fm-btns{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:26px}
+
+/* Premium: abertura de cinema antes da carta */
+.cine-open{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:0 22px;background:radial-gradient(80% 55% at 50% 48%,#4A0E30 0%,#1A0412 60%,#070106 100%);opacity:0;transition:opacity .7s ease}
+.cine-open.on{opacity:1}
+.cine-open.sai{opacity:0;transition:opacity .9s ease}
+.co-dust{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.co-dust i{position:absolute;bottom:-12px;left:var(--x);width:var(--z);height:var(--z);border-radius:50%;background:rgba(255,214,130,.95);box-shadow:0 0 8px 1px rgba(255,214,130,.9);opacity:0;animation:mote var(--d) linear var(--dl) infinite}
+.co-bar{position:absolute;left:0;right:0;z-index:2;height:0;background:#000;transition:height 1s cubic-bezier(.2,.8,.2,1)}
+.cine-open.on .co-bar{height:11%}
+.co-bar.t{top:0}
+.co-bar.b{bottom:0}
+.cine-open p{position:relative;margin:0;opacity:0}
+.co-1{font:600 11.5px/1.5 var(--f-ui);letter-spacing:.32em;text-transform:uppercase;color:#ECC16B}
+.co-2{padding:0 .3em;font:400 clamp(60px,17vw,86px)/1.12 var(--f-script);filter:drop-shadow(0 0 22px rgba(255,190,90,.45))}
+.co-3{font:italic 600 19px/1.3 var(--f-verse);color:#FFF1CC}
+.cine-open.on .co-1{animation:coIn 1.4s ease .5s both}
+.cine-open.on .co-2{animation:coName 2.4s cubic-bezier(.2,.8,.2,1) 1.6s both}
+.cine-open.on .co-3{animation:coIn 1.4s ease 3s both}
+@keyframes coIn{from{opacity:0;transform:translateY(10px);letter-spacing:.5em}to{opacity:1;transform:none}}
+@keyframes coName{0%{opacity:0;transform:scale(1.25);filter:blur(14px) drop-shadow(0 0 22px rgba(255,190,90,.45))}100%{opacity:1;transform:none;filter:drop-shadow(0 0 22px rgba(255,190,90,.45))}}
+.co-flare{position:absolute;left:50%;top:50%;z-index:3;width:140vmax;height:140vmax;margin:-70vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,250,230,.95) 0%,rgba(255,220,150,.6) 12%,rgba(255,200,110,0) 45%);opacity:0;pointer-events:none}
+.cine-open.on .co-flare{animation:coFlare 1.6s ease-out 5.4s both}
+@keyframes coFlare{0%{opacity:0;transform:scale(.1)}45%{opacity:1}100%{opacity:0;transform:scale(1.2)}}
+.co-skip{position:absolute;right:14px;bottom:calc(11% + 14px);z-index:4;height:34px;padding:0 14px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,236,190,.35);font:600 12.5px/1 var(--f-ui);color:#F6E3B4}
+@media (prefers-reduced-motion:reduce){
+  .cs-slide.on .cs-img img{animation:none;transform:translateY(-15%) scale(1.5)}
+  .co-dust,.co-flare{display:none}
+}
+.plano[aria-pressed="true"] .radio{background:var(--gold-btn);border-color:#F3D58A}
+.plano[aria-pressed="true"] .radio::after{content:"";width:9px;height:5px;border:2px solid #3A0B2B;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}

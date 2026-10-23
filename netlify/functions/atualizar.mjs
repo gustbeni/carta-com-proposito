@@ -8,7 +8,7 @@ export default async (req) => {
   const reg = await loja().get("c/" + b.id, { type: "json" });
   if (!reg || typeof b.chave !== "string" || b.chave !== reg.chave) return resposta({ erro: "chave" }, 403);
   if (!(await confirmarPagamento(b.id, reg, { email: false }).catch(() => false))) return resposta({ erro: "nao-paga" }, 402);
-  const carta = limparCarta(b.carta);
+  const carta = limparCarta(b.carta, reg.plano);
   if (carta === "grande") return resposta({ erro: "grande" }, 413);
   if (!carta) return resposta({ erro: "carta" }, 400);
   const igual = JSON.stringify(carta) === JSON.stringify(reg.carta);

@@ -3,7 +3,16 @@ import { getStore } from "@netlify/blobs";
 import { createHash } from "node:crypto";
 import { emailLigado, enviarCartaPorEmail } from "./correio.mjs";
 
-export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade
+export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade (carta Padrão)
+export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // carta Premium
+export const DIAS_PADRAO = 90; // a carta Padrão fica no ar por 3 meses depois do pagamento; a Premium é vitalícia
+export const planoDe = p => p === "premium" ? "premium" : "padrao";
+export const valorDo = plano => planoDe(plano) === "premium" ? PRECO_PREMIUM : PRECO;
+// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 3 meses depois do pagamento
+export function expirou(reg) {
+  if (!reg || reg.plano !== "padrao") return false;
+  return Date.now() > (reg.pagoEm || reg.criado || 0) + DIAS_PADRAO * 864e5;
+}
 export const DESCRICAO = "Carta com Propósito";
 export const DIAS_PARA_EDITAR = 7;
 const MP = "https://api.mercadopago.com";
@@ -23,13 +32,20 @@ export function enderecoSite(req) {
   return (process.env.URL || new URL(req.url).origin).replace(/\/$/, "");
 }
 
-// confere se a carta tem um formato razoável e não é grande demais
-export function limparCarta(c) {
+// confere se a carta tem um formato razoável e não é grande demais.
+// O que é do Premium (mais polaroides e o mini filme) só fica se o pedido for Premium.
+export function limparCarta(c, plano) {
   if (!c || typeof c !== "object" || Array.isArray(c)) return null;
   if (!Array.isArray(c.v) || !c.v.length || typeof c.p !== "string" || !c.p.trim()) return null;
   const texto = JSON.stringify(c);
   if (texto.length > 20000) return "grande";
-  return JSON.parse(texto);
+  const limpa = JSON.parse(texto);
+  delete limpa.pl; // quem diz se é Premium é o pedido, nunca a carta
+  const premium = planoDe(plano) === "premium";
+  if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, premium ? 6 : 3);
+  if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, premium ? 6 : 3);
+  if (premium && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, 7); else delete limpa.mf;
+  return limpa;
 }
 
 export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
@@ -85,7 +101,7 @@ export async function mandarEmail(id, reg, { forcar = false } = {}) {
   if (!forcar && reg.emailOk) return true;
   try {
     const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
-    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p }), 9000);
+    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano }), 9000);
     reg.emailOk = Date.now(); reg.emailEnvios = (reg.emailEnvios || 0) + 1;
   } catch (e) {
     console.error("E-mail da carta não foi", e.code || (e.message === "demorou" ? "demorou" : "erro"), e.responseCode || ""); // sem o endereço de ninguém

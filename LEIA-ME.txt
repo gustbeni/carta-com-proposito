@@ -13,7 +13,8 @@ netlify/functions/config ..... diz ao site se o e-mail está ligado
 
 No Netlify, em Project configuration > Environment variables, crie:
   MP_ACCESS_TOKEN = Access Token de PRODUÇÃO do Mercado Pago (começa com APP_USR-)
-  (opcional) PRECO = 21.99
+  (opcional) PRECO = 21.99          (carta Padrão)
+  (opcional) PRECO_PREMIUM = 29.99  (carta Premium)
   META_CAPI_TOKEN = token da API de Conversões do Meta (secreto)
   EMAIL_USUARIO = o Gmail que manda a carta por e-mail (ex.: um Gmail só da loja)
   EMAIL_SENHA_APP = a "senha de app" desse Gmail (marque como secreta)

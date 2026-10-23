@@ -151,6 +151,9 @@ const ICON = {
 const BRAND = 'Carta com Propósito';
 const PRICE = 21.99;       // só o texto mostrado; o valor cobrado de verdade é PRECO em netlify/lib/comum.mjs
 const PRICE_OLD = 34.90;
+const PRICE_PREMIUM = 29.99; // só o texto; o valor cobrado é PRECO_PREMIUM em netlify/lib/comum.mjs
+const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
+const NFOTOS = 14; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium)
 const API = '/api';        // funções do Netlify (Mercado Pago, cartas)
 const CLOUD = { nome: 'kmd9kglx', preset: 'carta_com_proposito' }; // Cloudinary: guarda as fotos das cartas
 const SITE = 'https://carta-com-proposito.netlify.app';
@@ -358,23 +361,31 @@ const THEMES = [
 ];
 
 const FAQ = [
-  ['Como a pessoa recebe a carta?', 'Você recebe um link e um cartão com QR code. Pode mandar o link no WhatsApp ou imprimir o cartão e entregar junto com um presente.'],
+  ['Como a pessoa recebe a carta?', 'Você recebe um link e um cartão com QR code, e pode receber os dois também no seu e-mail. Pode mandar o link no WhatsApp ou imprimir o cartão e entregar junto com um presente.'],
   ['Precisa baixar alguma coisa?', 'Não. A carta abre direto no navegador do celular, sem aplicativo e sem cadastro.'],
   ['Posso ver antes de pagar?', 'Pode. Você monta a carta inteira e vê a prévia exatamente como a pessoa vai receber. Só paga se gostar.'],
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
-  ['Por quanto tempo o link funciona?', 'Para sempre. A carta fica guardada para ser aberta quantas vezes a pessoa quiser.'],
+  ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
+  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 polaroides em slides e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
 
 const EXAMPLE = {
   recipient: 'amor', occasion: 'aniv_namoro', to: 'Ana', from: 'Pedro', date: '2025-06-10',
-  captions: ['Nosso primeiro pôr do sol', 'Domingo na igrejinha', 'Café e devocional', ''],
+  captions: ['Nosso cantinho', 'Nosso primeiro pôr do sol', 'Seu abraço é meu lugar', 'Pra sempre nós', 'Rindo de tudo', 'Seu jeito de me olhar', 'O dia da surpresa'],
   verses: ['ec4_12', 'co13_4', 'ct8_7'],
   message: 'Ana, quando eu olho para a nossa história, vejo o cuidado de Deus em cada detalhe. Você chegou como resposta de oração e transformou os meus dias comuns em dias felizes.\n\nAgradeço por me amar com paciência, por sonhar comigo e por caminhar ao meu lado, inclusive nos dias difíceis. Eu te amo, e quero seguir aprendendo a te amar do jeito que Cristo ensina.',
   reasons: ['Seu sorriso logo cedo', 'O jeito que você ora por nós', 'Seu abraço que acalma', 'Como você me faz rir', 'Sua fé que me inspira', 'Você me faz querer ser melhor'],
   prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', theme: 'rosa'
 };
+/* fotos das prévias (casais felizes); a 4 é a foto final, revelada na câmera */
+const EXEMPLO_FOTOS = n => '/img/exemplo/casal' + n + '.jpg';
+function fotosExemplo(plano) {
+  const f = [1, 2, 3, 4].map(EXEMPLO_FOTOS);
+  if (plano !== 'premium') return f;
+  return f.concat([5, 6, 7].map(EXEMPLO_FOTOS), [5, 2, 1, 7, 3, 6, 4].map(EXEMPLO_FOTOS));
+}
 
 /* ===== Caixinha de música: Amazing Grace (melodia New Britain, domínio público), gerada no navegador ===== */
 const Music = (() => {
@@ -804,8 +815,14 @@ function resolveLetter(src) {
     date: validDate(src.date) ? src.date : '', stats: validDate(src.date) ? calcStats(src.date) : null,
     music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src),
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
+    premium: src.plano === 'premium', film: src.plano === 'premium' ? filmeFotos(src.photos || []) : [],
     initial: (src.from || '').trim() ? from.charAt(0).toUpperCase() : ''
   };
+}
+/* mini filme: as fotos do filme; se ficou vazio, usa as fotos da carta */
+function filmeFotos(ph) {
+  const proprias = ph.slice(7, 14).filter(Boolean);
+  return proprias.length ? proprias : [0, 1, 2, 4, 5, 6, 3].map(i => ph[i]).filter(Boolean);
 }
 function mlDe(src) { if (src.music !== 'link') return ''; const inf = lerMusica(src.musicLink); return inf ? inf.tipo + ':' + inf.id : ''; }
 
@@ -818,20 +835,25 @@ function cartaParaServidor(fotos) {
   if (L.prayer) P.ora = L.prayer;
   if (L.date) P.dt = L.date;
   if (L.music === 'instrumental') P.mu = 1; else if (L.ml) P.ml = L.ml;
-  const pol = [0, 1, 2].filter(i => S.photos[i] && fotos[i]);
+  const premium = S.plano === 'premium';
+  const pol = (premium ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).filter(i => S.photos[i] && fotos[i]);
   if (pol.length) { P.fu = pol.map(i => fotos[i]); if (pol.some(i => (S.captions[i] || '').trim())) P.fc = pol.map(i => (S.captions[i] || '').trim()); }
   if (S.photos[3] && fotos[3]) { P.ffu = fotos[3]; if ((S.captions[3] || '').trim()) P.ffc = S.captions[3].trim(); }
+  if (premium) { const mf = [7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
   return P;
 }
 function cartaDoServidor(P) {
   const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
   const nuvem = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null;
-  const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
+  const premium = P.pl === 'p'; // quem marca é o servidor, pelo pedido
+  const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, premium ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
+  const mf = premium && Array.isArray(P.mf) ? P.mf.slice(0, 7).map(nuvem).filter(Boolean) : [];
   const base = {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
-    photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu)],
-    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40)),
+    photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf),
+    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40))),
+    plano: premium ? 'premium' : 'padrao',
     music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', prayer: -1
   };
   let L;
@@ -1124,11 +1146,89 @@ function cameraSVG(u) {
 }
 function cameraHTML(L, mini) {
   const cap = L.captions[3];
-  return `<div class="cam-wrap${mini ? ' shot dev' : ''}">
+  return `<div class="cam-wrap${mini ? ' shot dev' : ''}${L.premium ? ' premium' : ''}">${L.premium ? '<i class="cam-rays" aria-hidden="true"></i>' : ''}
     <button class="camera" aria-label="Tirar e revelar a última foto">${cameraSVG(++svgUid)}<span class="cam-flash" aria-hidden="true"></span></button>
     <div class="cam-out"><div class="cam-slide"><figure class="cam-pol"><div class="cp-img"><img src="${L.photos[3]}" alt="${esc(cap || 'Foto')}"><i class="cp-veil"></i></div><figcaption>${cap ? esc(cap) : '&nbsp;'}</figcaption></figure></div></div>
     <p class="cam-hint">Toque na câmera para revelar a foto</p>
   </div>`;
+}
+
+/* ===== Premium: as polaroides passam como slides de cinema, e a foto salta da polaroide ===== */
+function slidesHTML(pics) {
+  return `<div class="cine-slides" aria-label="Apresentação das fotos">
+    <div class="cs-stage">${pics.map((p, i) => `<figure class="cs-slide" data-k="${i}"><div class="cs-pol"><div class="cs-img"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"></div><figcaption>${esc(p.cap || '')}</figcaption></div></figure>`).join('')}
+      <i class="cs-leak" aria-hidden="true"></i></div>
+    <div class="cs-dots" aria-hidden="true">${pics.map(() => '<i></i>').join('')}</div>
+    <p class="cs-hint">Toque na foto para passar</p>
+  </div>`;
+}
+/* ===== Premium: mini filme do casal ===== */
+const FRASES_FILME = {
+  amor: ['Tudo começou com um olhar…', 'E Deus foi escrevendo a nossa história', 'Cada momento com você é um presente', 'Você é a resposta das minhas orações', 'Com você, até os dias comuns brilham', 'O amor é paciente, o amor é bondoso', 'E isso é só o começo…'],
+  outro: ['Tantos momentos juntos…', 'Deus colocou você no meu caminho', 'Cada lembrança é um presente', 'Obrigado por cada abraço', 'Você deixa a vida mais bonita', 'O amor nunca falha', 'E ainda vem muito mais…']
+};
+function filmCardHTML(L) {
+  return `<p class="l-label">${L.r === 'amor' ? 'O mini filme do casal' : 'O nosso mini filme'}</p>
+    <button class="film-card" aria-label="Assistir ao mini filme"><img src="${L.film[0]}" alt=""><span class="fc-bars" aria-hidden="true"></span>
+      <span class="fc-play">${ICON.play}</span><span class="fc-t gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</span><span class="fc-s">${L.film.length} cenas · com música</span></button>
+    <p class="gate-note film-note">Assista ao filme para continuar a carta</p>`;
+}
+/* abre o filme em tela cheia: fotos com movimento, transições, frases, música e a tela final */
+function playFilm(host, L, onEnd) {
+  const fotos = L.film, frases = FRASES_FILME[L.r === 'amor' ? 'amor' : 'outro'], trans = ['fade', 'slide', 'zoom', 'flash', 'blur'];
+  const o = document.createElement('div'); o.className = 'film'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Mini filme');
+  o.innerHTML = `<div class="fm-stage"></div><i class="fm-bar t"></i><i class="fm-bar b"></i>
+    <div class="fm-title"><span>Um filme de ${esc(L.from)} para</span><b class="gold-t shine">${esc(L.to)}</b></div>
+    <p class="fm-txt"></p><div class="fm-prog"><i></i></div><button class="fm-x">Pular</button>
+    <div class="fm-end" hidden><p class="fm-k">Fim… ou melhor, o começo</p><b class="gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</b>
+      ${L.date ? `<p class="fm-d">Juntos desde ${esc(longDate(parseISO(L.date)))}</p>` : ''}<p class="fm-v">Que Deus continue escrevendo a nossa história</p>
+      <div class="fm-btns"><button class="l-btn" data-fim>${ICON.heartFill}Continuar a carta</button><button class="l-btn ghost" data-de-novo>Assistir de novo</button></div></div>`;
+  host.appendChild(o);
+  const stage = o.querySelector('.fm-stage'), txt = o.querySelector('.fm-txt'), prog = o.querySelector('.fm-prog i'), end = o.querySelector('.fm-end');
+  const tocouAntes = (L.ml || Music.playing); if (!tocouAntes) Music.start();
+  let timers = [], acabou = false;
+  const later = (f, ms) => timers.push(setTimeout(f, ms));
+  const DUR = reduced() ? 1600 : 3300, T0 = 2600;
+  const total = T0 + fotos.length * DUR;
+  function cena(i) {
+    const s = document.createElement('div'); s.className = `fm-shot t-${trans[i % trans.length]} kb${i % 4}`;
+    s.innerHTML = `<img src="${fotos[i]}" alt="">`; stage.appendChild(s);
+    void s.offsetWidth; s.classList.add('on');
+    const ant = stage.children[stage.children.length - 2]; if (ant) { ant.classList.add('sai'); setTimeout(() => ant.remove(), 1400); }
+    txt.classList.remove('on'); later(() => { txt.textContent = frases[i % frases.length]; txt.classList.add('on'); }, 500);
+  }
+  function fim() {
+    if (acabou) return; acabou = true; timers.forEach(clearTimeout); timers = [];
+    txt.classList.remove('on'); o.classList.add('final'); end.hidden = false; rain(o);
+  }
+  function rodar() {
+    acabou = false; end.hidden = true; o.classList.remove('final'); stage.innerHTML = ''; txt.classList.remove('on');
+    prog.style.transition = 'none'; prog.style.width = '0'; void prog.offsetWidth; prog.style.transition = `width ${total}ms linear`; prog.style.width = '100%';
+    o.classList.remove('titulo'); void o.offsetWidth; o.classList.add('titulo');
+    fotos.forEach((_, i) => later(() => cena(i), T0 + i * DUR));
+    later(fim, total + 300);
+  }
+  const fechar = () => { timers.forEach(clearTimeout); if (!tocouAntes) Music.stop(); o.classList.add('fecha'); setTimeout(() => o.remove(), 500); onEnd(); };
+  o.querySelector('.fm-x').addEventListener('click', fim);
+  o.querySelector('[data-fim]').addEventListener('click', fechar);
+  o.querySelector('[data-de-novo]').addEventListener('click', rodar);
+  requestAnimationFrame(() => { o.classList.add('on'); rodar(); });
+}
+/* Premium: abertura de cinema antes da carta, com faixas de cinema, nomes em ouro e um clarão */
+function cineOpen(host, L, onDone) {
+  const tipo = L.r === 'amor' ? 'amor' : L.r === 'amigo' ? 'amizade' : 'família';
+  const o = document.createElement('div'); o.className = 'cine-open';
+  o.innerHTML = `<div class="co-dust" aria-hidden="true">${motes(30)}</div><i class="co-bar t"></i><i class="co-bar b"></i>
+    <p class="co-1">Esta é uma história de ${tipo}</p>
+    <p class="co-2 gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</p>
+    <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : esc(L.title)}</p>
+    <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
+  host.appendChild(o);
+  let feito = false;
+  const acabar = () => { if (feito) return; feito = true; o.classList.add('sai'); setTimeout(() => o.remove(), 900); onDone(); };
+  o.querySelector('.co-skip').addEventListener('click', acabar);
+  requestAnimationFrame(() => o.classList.add('on'));
+  setTimeout(acabar, reduced() ? 600 : 7200);
 }
 
 function polHTML(p, i) {
@@ -1141,7 +1241,7 @@ function polHTML(p, i) {
    jar = ler todos os bilhetes, reveal = revelar a foto, ask = dizer sim, amen). A oração é a última. */
 function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
-  const pics = [0, 1, 2].map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
+  const pics = (L.premium ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
   const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
   const SKIP = demo ? '<button class="link l-skip" data-skip>Pular (só na prévia)</button>' : '';
   const sec = (id, cls, step, inner) => `<section class="lsec${cls ? ' ' + cls : ''}${full ? ' wait' : ''}"${id ? ` id="${id}"` : ''}${full ? ` data-step="${step}"` : ''}>${inner}${full && (step === 'next' || step === 'spin') ? NEXT : ''}</section>`;
@@ -1151,7 +1251,8 @@ function letterHTML(L, mode, opt = {}) {
   const music = full && L.ml ? `<div class="l-music"><p class="l-label">Nossa música</p><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button></div>` : '';
   h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>${music}`);
   if (pics.length || mini) {
-    h += sec('s-photos', '', 'next', `<p class="l-label">Nossos momentos</p><div class="pols" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`);
+    const grade = `<div class="pols${pics.length > 3 ? ' pols6' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
+    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade : grade}`);
   }
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
@@ -1166,6 +1267,7 @@ function letterHTML(L, mode, opt = {}) {
     ${full ? '' : '<div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>'}
     ${full ? '<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>' : ''}${SKIP}</div>`);
   if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
+  if (L.premium && L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L));
   h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
@@ -1271,6 +1373,7 @@ function bindLetter(root, L, mode, hooks = {}) {
     : s.id === 's-verses' ? Math.min(4200, s.querySelectorAll('.mw').length * 70) + 1200 : s.id === 's-open' ? 1800 : 2000;
   function show(s) {
     s.classList.remove('wait', 'pre'); void s.offsetWidth; s.classList.add('in');
+    if (s.classList.contains('cine-photos')) { slides(s); return; }
     if (s.id === 's-numbers') { countUp(s); later(() => sparkBurst(s.querySelector('.heart-count')), 2300); }
     if (s.id === 's-message') escrever(s);
     else if (s.dataset.step === 'next') later(() => { const b = nextBtn(s); if (b) b.hidden = false; }, reduced() ? 0 : delayFor(s));
@@ -1336,6 +1439,34 @@ function bindLetter(root, L, mode, hooks = {}) {
     s.querySelector('.parch').addEventListener('click', acabar);
     if (reduced()) acabar(); else { later(() => irPara(s.querySelector('.scroll'), -50), 1250); later(passo, 1300); }
   }
+
+  /* Premium: slides de cinema; cada foto salta da polaroide. No fim aparecem todas juntas */
+  function slides(s) {
+    const box = s.querySelector('.cine-slides'), ss = [...box.querySelectorAll('.cs-slide')], dots = [...box.querySelectorAll('.cs-dots i')];
+    let k = -1, t = null;
+    const ir = () => {
+      clearTimeout(t);
+      if (k >= 0) { ss[k].classList.remove('on'); ss[k].classList.add('sai'); }
+      k++;
+      if (k >= ss.length) {
+        s.classList.add('cs-fim');
+        later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
+        return;
+      }
+      const leak = box.querySelector('.cs-leak'); leak.classList.remove('on'); void leak.offsetWidth; leak.classList.add('on');
+      ss[k].classList.add('on'); dots.forEach((d, j) => d.classList.toggle('on', j <= k));
+      t = setTimeout(ir, reduced() ? 1200 : 3600); timers.push(t);
+    };
+    box.querySelector('.cs-stage').addEventListener('click', () => { if (k < ss.length) ir(); });
+    later(ir, reduced() ? 0 : 700);
+  }
+
+  /* Premium: mini filme do casal; depois de assistir (ou pular até o fim), a carta continua */
+  const filmBtn = root.querySelector('.film-card');
+  if (filmBtn) filmBtn.addEventListener('click', () => {
+    if (!full || !hooks.host) return;
+    playFilm(hooks.host, L, () => { const s = filmBtn.closest('.lsec'); s.classList.add('visto'); done(s, 900); });
+  });
 
   if (full) root.querySelectorAll('.pol[data-i]').forEach(p => {
     const open = () => hooks.onPhoto && hooks.onPhoto(p.querySelector('img').src, p.querySelector('figcaption').textContent);
@@ -1490,11 +1621,14 @@ function openViewer(L, opt = {}) {
       else if (L.music === 'instrumental') Music.start();
     },
     onOpen() {
+      const abrir = () => {
       cover.classList.add('gone'); scroll.classList.remove('locked'); scroll.scrollTop = 0;
       letter.start();
       if (mBtn) mBtn.hidden = false;
       const b = v.querySelector('.vw-bottom'); if (b) setTimeout(() => b.classList.remove('wait'), 900);
       setTimeout(() => { cover.hidden = true; }, 850);
+      };
+      if (L.premium) { cineOpen(v, L, abrir); setTimeout(() => cover.classList.add('gone'), 900); } else abrir();
     }
   });
   $('#vwClose').addEventListener('click', () => { closeViewer(); if (opt.onClose) opt.onClose(); });
@@ -1521,14 +1655,15 @@ document.addEventListener('keydown', e => {
 /* ===== Funil passo a passo ===== */
 const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
-const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', ''], verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
+const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
 const ui = { moreVerses: false };
 const desk = window.matchMedia('(min-width: 1040px)');
 
 function loadDraft() {
   const s = Object.assign(JSON.parse(JSON.stringify(BLANK)), store.get(KEY) || {});
-  s.photos = [0, 1, 2, 3].map(i => store.read(PKEY(i)));
+  s.photos = [...Array(NFOTOS).keys()].map(i => store.read(PKEY(i)));
+  while (s.captions.length < 7) s.captions.push('');
   if (!s.recipient || !OCC[s.occasion]) { if (s.view !== 'step' || s.step > 1) { s.view = 'step'; s.step = s.recipient ? 1 : 0; } }
   if (s.view === 'done' && !s.code) s.view = 'ready';
   return s;
@@ -1572,7 +1707,8 @@ const VIEWS = {
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
       <p class="sub">Leva uns 3 minutos.</p>
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b><small>${r.desc}</small></span><span class="radio"></span></button>`).join('')}</div>
-      <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver uma prévia</button>`;
+      <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
+      <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>`;
   },
   ocasiao() {
     return `<h1 class="h1" tabindex="-1">Qual é a <em>ocasião</em>?</h1>
@@ -1597,7 +1733,7 @@ const VIEWS = {
   },
   fotos() {
     return `<h1 class="h1" tabindex="-1">Fotos de <em>vocês</em></h1>
-      <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta.</p>
+      <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta. No Premium, que você escolhe no final, dá para colocar mais fotos.</p>
       <div class="photos">${[0, 1, 2, 3].map(photoSlot).join('')}</div>`;
   },
   versiculos() {
@@ -1666,8 +1802,10 @@ function countCard() {
 }
 function photoSlot(i) {
   const tag = i === 3 ? `<span class="ph-tag">${ICON.sparkle}Foto final</span>` : '';
-  if (S.photos[i]) return `<figure class="ph"><img src="${S.photos[i]}" alt="Foto ${i + 1}">${tag}<input class="cap" data-cap="${i}" maxlength="40" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}"><button class="x" data-rm="${i}" aria-label="Remover foto ${i + 1}">${ICON.x}</button></figure>`;
-  return `<button class="ph" data-add="${i}"><span class="ph-drop">${ICON.plus}${i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : `Polaroide ${i + 1}<small>toque para escolher</small>`}</span></button>`;
+  const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : i < 7 ? `Polaroide ${i < 3 ? i + 1 : i}<small>toque para escolher</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
+  const cap = i < 7 ? `<input class="cap" data-cap="${i}" maxlength="40" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}">` : '';
+  if (S.photos[i]) return `<figure class="ph"><img src="${S.photos[i]}" alt="Foto ${i + 1}">${tag}${cap}<button class="x" data-rm="${i}" aria-label="Remover foto ${i + 1}">${ICON.x}</button></figure>`;
+  return `<button class="ph" data-add="${i}"><span class="ph-drop">${ICON.plus}${nome}</span></button>`;
 }
 function verseCard(id) {
   const pos = S.verses.indexOf(id);
@@ -1684,7 +1822,8 @@ const BIND = {
       save(); track('escolheu_destinatario', { tipo: id });
       setTimeout(() => go(1), 240);
     }));
-    $('#exBtn').addEventListener('click', openExample);
+    $('#exBtn').addEventListener('click', () => openExample('padrao'));
+    $('#exPremium').addEventListener('click', () => openExample('premium'));
   },
   ocasiao(el) {
     el.querySelectorAll('[data-occ]').forEach(b => b.addEventListener('click', () => {
@@ -1762,20 +1901,33 @@ const BIND = {
 
 /* ----- Prévia pronta, pagamento e entrega ----- */
 function readyView() {
-  const L = resolveLetter(S), pics = S.photos.filter(Boolean).length;
-  const third = pics || L.stats ? `<li>${ICON.checkc}<span>${pics ? `<b>${pics} ${pics > 1 ? 'fotos' : 'foto'}</b>` : ''}${pics && L.stats ? ' e ' : ''}${L.stats ? `${pics ? 'a' : '<b>A</b>'} história de vocês em números` : ''}</span></li>` : '';
+  const L = resolveLetter(S), pics = S.photos.slice(0, L.premium ? 7 : 4).filter(Boolean).length, pago = editavel(), prem = S.plano === 'premium';
+  const plano = (id, titulo, sub, itens) => `<button class="plano${id === 'premium' ? ' premium' : ''}" data-plano="${id}" aria-pressed="${S.plano === id}">
+      ${id === 'premium' ? '<span class="pl-badge">Mais completo</span>' : ''}<span class="pl-top"><span class="radio"></span><span class="pl-t"><b>${titulo}</b><small>${sub}</small></span><strong>${brl(precoDe(id))}</strong></span>
+      <ul>${itens.map(x => `<li>${ICON.check}<span>${x}</span></li>`).join('')}</ul></button>`;
   return `<p class="eyebrow">Tudo pronto</p>
     <h1 class="h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> ficou linda</h1>
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
     <ul class="inc">
-      <li>${ICON.checkc}<span><b>Carta animada</b> que abre quando ${esc(L.to)} quebra o selo${L.music === 'none' ? '' : ', com música'}</span></li>
-      <li>${ICON.checkc}<span><b>Mensagem num pergaminho</b>, escrita como se fosse na hora</span></li>
-      <li>${ICON.checkc}<span><b>${L.verses.length} ${L.verses.length > 1 ? 'versículos' : 'versículo'}</b> em letras de ouro, a roleta da Palavra, o pote com ${L.reasons.length} motivos${L.prayer ? ' e uma oração' : ''}</span></li>
-      ${third}
-      <li>${ICON.checkc}<span><b>Link e cartão com QR code</b> para mandar no WhatsApp ou imprimir</span></li>
+      <li>${ICON.checkc}<span><b>Envelope de ouro</b> que abre quando ${esc(L.to)} quebra o selo${L.music === 'none' ? '' : ', com música'}</span></li>
+      <li>${ICON.checkc}<span><b>Mensagem num pergaminho</b>, escrita por uma pena na hora</span></li>
+      <li>${ICON.checkc}<span><b>${L.verses.length} ${L.verses.length > 1 ? 'versículos' : 'versículo'}</b> em ouro, a roleta da Palavra com Jesus e o pote com ${L.reasons.length} motivos${L.prayer ? ', e uma oração' : ''}</span></li>
+      ${pics || L.stats ? `<li>${ICON.checkc}<span>${pics ? `<b>${pics} ${pics > 1 ? 'fotos' : 'foto'}</b>${S.photos[3] ? ', a última revelada numa câmera antiga' : ''}` : ''}${pics && L.stats ? ', e ' : ''}${L.stats ? `${pics ? 'os' : '<b>Os</b>'} dias de vocês contados` : ''}</span></li>` : ''}
+      <li>${ICON.checkc}<span><b>Link e cartão com QR code</b> para mandar no WhatsApp ou imprimir, e também no seu e-mail</span></li>
     </ul>
-    ${editavel() ? '<p class="price-note">Esta carta já está paga. Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>' : `<div class="price"><strong>${brl(PRICE)}</strong><s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span></div>
+    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<p class="group-label">Escolha o pacote</p>
+    <div class="planos">
+      ${plano('padrao', 'Padrão', 'Fica no ar por 3 meses', ['4 fotos: 3 polaroides e 1 revelada na câmera', 'Roleta, pote, pergaminho, números e música', 'Link e QR code para entregar'])}
+      ${plano('premium', 'Premium ✨', 'Carta vitalícia, para sempre', ['Abertura de cinema', '7 fotos: 6 polaroides em slides de cinema, saltando da polaroide, e 1 na câmera com mais brilho', '<b>Mini filme do casal</b>: mais 7 fotos com transições, frases e música', 'Tudo o que tem na Padrão'])}
+    </div>`}
+    ${prem ? `<div class="extra">
+      <p class="group-label">Mais 3 polaroides do Premium</p><p class="hint">Elas entram nos slides de cinema junto com as outras.</p>
+      <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>
+      <p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
+      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>
+    </div>` : ''}
+    ${pago ? '' : `<div class="price"><strong>${brl(precoDe(S.plano))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
 }
@@ -1783,7 +1935,7 @@ function checkoutView() {
   const L = resolveLetter(S);
   return `<p class="eyebrow">Pagamento</p>
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
-    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta para ${esc(L.to)}</b><small>${esc(L.title)}</small></span><strong>${brl(PRICE)}</strong></div>
+    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${esc(L.title)}</small></span><strong>${brl(precoDe(S.plano))}</strong></div>
     <div class="form"><div class="field"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"><p class="hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
       <label class="check" id="mailRow"${cfg.email ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label></div></div>
     <p class="group-label">Forma de pagamento</p>
@@ -1800,6 +1952,7 @@ function doneView() {
   return `<div class="done-head"><div class="stamp"><span class="seal"><span>${sealInner(L)}</span></span></div>
       <p class="eyebrow">Pagamento aprovado</p>
       <h1 class="h1" tabindex="-1">A carta para <em>${esc(L.to)}</em> está selada</h1>
+      ${pedido && pedido.id === S.code && pedido.plano ? `<p class="plano-nota">${pedido.plano === 'premium' ? '✨ Carta Premium · vitalícia, o link funciona para sempre' : `Carta Padrão · fica no ar até ${esc(longDate(new Date((pedido.pagoEm || Date.now()) + 90 * 864e5)))}`}</p>` : ''}
       <p class="sub">Agora é só entregar. Escolha como:</p></div>
     <div class="share">
       <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
@@ -1812,6 +1965,11 @@ function doneView() {
     <p class="done-foot">Guarde este link. ${editavel() ? 'Você pode mudar a carta por 7 dias depois do pagamento, neste aparelho.<br>' : ''}<button class="link muted" id="newLetter">Criar outra carta</button></p>`;
 }
 function bindReady(el) {
+  el.querySelectorAll('[data-plano]').forEach(b => b.addEventListener('click', () => {
+    if (S.plano === b.dataset.plano) return;
+    S.plano = b.dataset.plano; save(); rerender(); track('escolheu_' + S.plano);
+  }));
+  BIND.fotos(el); // fotos extras do Premium
   $('#readyOpen', el).addEventListener('click', () => openPreview(true));
   $('#readyDesk', el).addEventListener('click', () => openPreview(true));
   $('#editBtn', el).addEventListener('click', openEditSheet);
@@ -1895,11 +2053,12 @@ async function api(caminho, corpo) {
   return j;
 }
 /* fotos vão para o Cloudinary; a carta guarda só o caminho de cada uma */
-const fotosUp = store.get('cp2:fotosUp') || [null, null, null, null];
+const fotosUp = (store.get('cp2:fotosUp') || []).concat(Array(NFOTOS).fill(null)).slice(0, NFOTOS);
 const fotoChave = d => d.length + ':' + d.slice(-48);
 async function subirFotos(msg) {
-  const out = [null, null, null, null], falta = [0, 1, 2, 3].filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
-  for (let i = 0; i < 4; i++) {
+  const usadas = S.plano === 'premium' ? [...Array(NFOTOS).keys()] : [0, 1, 2, 3];
+  const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
+  for (const i of usadas) {
     const d = S.photos[i]; if (!d) continue;
     if (falta.includes(i)) {
       msg(`Guardando as fotos (${falta.indexOf(i) + 1} de ${falta.length})…`);
@@ -1925,16 +2084,17 @@ async function pay() {
   if (ocupado) return;
   ocupado = true; $('#nextBtn').disabled = true;
   const metodo = S.pay === 'card' ? 'cartao' : 'pix';
-  openSheet(`<p class="eyebrow">${metodo === 'pix' ? 'Pix' : 'Cartão de crédito'} · ${brl(PRICE)}</p><h2 class="h2">Preparando o pagamento</h2><div class="waiting"><span class="spin"></span><span id="payMsg">Salvando a sua carta…</span></div>`);
+  const valor = precoDe(S.plano);
+  openSheet(`<p class="eyebrow">${metodo === 'pix' ? 'Pix' : 'Cartão de crédito'} · ${brl(valor)}</p><h2 class="h2">Preparando o pagamento</h2><div class="waiting"><span class="spin"></span><span id="payMsg">Salvando a sua carta…</span></div>`);
   const msg = t => { const m = $('#payMsg'); if (m) m.textContent = t; };
   try {
     const fotos = await subirFotos(msg);
     msg(metodo === 'pix' ? 'Gerando o seu Pix…' : 'Abrindo o Mercado Pago…');
-    track('InitiateCheckout', { currency: 'BRL', value: PRICE });
+    track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
     const querEmail = !!cfg.email && S.mailMe !== false;
-    const j = await api('/pagar', { metodo, email: S.email.trim(), enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
-    pedido = { id: j.id, chave: j.chave, pago: false, querEmail }; store.set(PED, pedido);
+    const j = await api('/pagar', { metodo, plano: S.plano, email: S.email.trim(), enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
+    pedido = { id: j.id, chave: j.chave, pago: false, querEmail, plano: S.plano, valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     openPix(j.pix || {});
     esperarPagamento(0);
@@ -1943,7 +2103,7 @@ async function pay() {
 }
 function openPix(pix) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
-  openSheet(`<p class="eyebrow">Pix · ${brl(PRICE)}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
+  openSheet(`<p class="eyebrow">Pix · ${brl(precoDe(S.plano))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
     <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
     <button class="btn btn-ghost w" id="copyPix">${ICON.copy}Copiar código Pix</button>
     <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta é liberada aqui mesmo, na hora.</li></ol>
@@ -1964,7 +2124,8 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden && pe
 function approve(j = {}) {
   clearTimeout(esperando); closeSheet();
   pedido.pago = true; if (j.email === 'enviado') pedido.emailOk = true;
-  if (!pedido.compraOk) { track('Purchase', { currency: 'BRL', value: PRICE }, { eventID: 'compra_' + pedido.id }); pedido.compraOk = true; }
+  if (!pedido.pagoEm) pedido.pagoEm = Date.now();
+  if (!pedido.compraOk) { track('Purchase', { currency: 'BRL', value: pedido.valor || precoDe(pedido.plano) }, { eventID: 'compra_' + pedido.id }); pedido.compraOk = true; }
   store.set(PED, pedido);
   S.code = pedido.id; S.view = 'done'; save(); render('fwd');
   toast('Pagamento confirmado!');
@@ -1982,16 +2143,15 @@ async function salvarMudancas() {
 }
 function resetDraft() {
   clearTimeout(esperando); pedido = null; store.raw(PED, null);
-  Object.assign(S, JSON.parse(JSON.stringify(BLANK)), { photos: [null, null, null, null], themeTouched: false });
-  [0, 1, 2, 3].forEach(i => { store.raw(PKEY(i), null); fotosDB.guardar(i, null).catch(() => {}); });
+  Object.assign(S, JSON.parse(JSON.stringify(BLANK)), { photos: Array(NFOTOS).fill(null), themeTouched: false });
+  [...Array(NFOTOS).keys()].forEach(i => { store.raw(PKEY(i), null); fotosDB.guardar(i, null).catch(() => {}); });
   save(); go(0, 'back');
 }
 
 /* ----- Exemplo e prévias ----- */
-function openExample() {
-  const pics = Art.example();
-  const L = resolveLetter({ ...EXAMPLE, photos: pics });
-  track('ViewContent', { content_name: 'Exemplo de carta' });
+function openExample(plano) {
+  const L = resolveLetter({ ...EXAMPLE, photos: fotosExemplo(plano), plano });
+  track('ViewContent', { content_name: plano === 'premium' ? 'Exemplo de carta Premium' : 'Exemplo de carta' });
   openViewer(L, { mode: 'example', onCreate: () => { if (S.step === 0 && S.view === 'step') { const b = $('.opt'); if (b) b.focus(); } } });
 }
 function openPreview(withBuy) {
@@ -2062,9 +2222,9 @@ function refreshBar() {
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
-    else { nx.innerHTML = `Quero enviar · ${brl(PRICE)}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
+    else { nx.innerHTML = `Quero enviar · ${brl(precoDe(S.plano))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
   } else if (S.view === 'checkout') {
-    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Pagar ${brl(PRICE)}${S.pay === 'pix' ? ' com Pix' : ''}`;
+    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Pagar ${brl(precoDe(S.plano))}${S.pay === 'pix' ? ' com Pix' : ''}`;
     note.textContent = 'O link da carta aparece aqui assim que o pagamento cair';
   }
 }
@@ -2125,6 +2285,10 @@ async function abrirCartaRecebida(id) {
     if (!j) await new Promise(ok => setTimeout(ok, 1500));
   }
   if (j && j.bloqueada) return telaEspera(j);
+  if (j && j.expirada) {
+    v.innerHTML = `<div class="msg-page"><span class="seal"><span>${ICON.heartFill}</span></span><h1 class="h1">${j.p ? 'Uma carta para ' + esc(String(j.p).slice(0, 40)) : 'Esta carta'}</h1><p class="sub">Esta carta foi feita na versão Padrão, que fica no ar por 3 meses, e esse prazo acabou.</p><a class="btn btn-primary" href="/">Fazer uma carta</a></div>`;
+    return;
+  }
   if (!j || !j.carta) {
     v.innerHTML = `<div class="msg-page"><span class="seal"><span>${ICON.heartFill}</span></span><h1 class="h1">Não encontramos esta carta</h1><p class="sub">Confira se o link está completo. Se a carta acabou de ser paga, espere um minutinho e abra de novo.</p><a class="btn btn-primary" href="/">Conhecer a ${BRAND}</a></div>`;
     return;
@@ -2158,13 +2322,11 @@ function iniciarCriador() {
   window.addEventListener('resize', () => { const m = $('#mini'), lt = m && m.firstElementChild; if (lt && desk.matches) lt.style.setProperty('--cover-h', m.clientHeight + 'px'); });
   render(null);
   /* fotos guardadas no IndexedDB chegam depois do primeiro desenho da tela */
-  Promise.all([0, 1, 2, 3].map(i => fotosDB.pegar(i).catch(() => null))).then(fs => {
+  Promise.all([...Array(NFOTOS).keys()].map(i => fotosDB.pegar(i).catch(() => null))).then(fs => {
     let mudou = false;
     fs.forEach((f, i) => { if (f && f !== S.photos[i]) { S.photos[i] = f; mudou = true; } });
     if (mudou) rerender();
   });
-  /* deixa as fotos do exemplo prontas sem atrasar a primeira tela */
-  (window.requestIdleCallback || (f => setTimeout(f, 2500)))(() => Art.example(), { timeout: 4000 });
   /* volta do cartão (Mercado Pago manda para /?pedido=<id>) ou Pix ainda esperando */
   let q = null; try { q = new URLSearchParams(location.search).get('pedido'); } catch (e) {}
   if (q) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }

@@ -7,7 +7,7 @@ export const emailLigado = () => !!(process.env.EMAIL_USUARIO && process.env.EMA
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-export function textoEmail(link, para) {
+export function textoEmail(link, para, plano) {
   const nome = String(para || "").trim() || "quem você ama";
   const assunto = `Sua carta para ${nome} está pronta 💌`;
   const texto = [
@@ -18,6 +18,7 @@ export function textoEmail(link, para) {
     "",
     "O QR code da carta vai junto, como imagem. Você pode imprimir e entregar com um presente: é só apontar a câmera do celular.",
     "",
+    plano === "padrao" ? "A carta Padrão fica no ar por 3 meses depois do pagamento." : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre." : "",
     "Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento, no mesmo aparelho em que comprou.",
     "",
     "Com carinho,",
@@ -42,7 +43,7 @@ export function textoEmail(link, para) {
     <p style="margin:12px 0 0;font:400 14px/1.5 Arial,sans-serif;color:#E5CBBE">Este é o QR code da carta. Imprima e entregue junto com um presente: é só apontar a câmera do celular.</p>
   </td></tr>
   <tr><td style="padding:18px 28px 30px;text-align:center;font:400 13px/1.55 Arial,sans-serif;color:#B8919F">
-    Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento, no mesmo aparelho em que comprou.
+    ${plano === "padrao" ? "A carta Padrão fica no ar por 3 meses depois do pagamento.<br>" : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre.<br>" : ""}Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento, no mesmo aparelho em que comprou.
   </td></tr>
 </table>
 </td></tr></table></body></html>`;
@@ -50,13 +51,13 @@ export function textoEmail(link, para) {
 }
 
 // "transporte" só é passado nos testes; no site o e-mail sai pelo Gmail
-export async function enviarCartaPorEmail({ link, emailDestino, para, transporte }) {
+export async function enviarCartaPorEmail({ link, emailDestino, para, plano, transporte }) {
   const t = transporte || nodemailer.createTransport({
     service: "gmail",
     auth: { user: process.env.EMAIL_USUARIO, pass: String(process.env.EMAIL_SENHA_APP || "").replace(/\s+/g, "") },
   });
   const qr = await QRCode.toBuffer(link, { width: 480, margin: 2, errorCorrectionLevel: "M", color: { dark: "#221A17", light: "#FFFFFF" } });
-  const { assunto, texto, html } = textoEmail(link, para);
+  const { assunto, texto, html } = textoEmail(link, para, plano);
   return t.sendMail({
     from: { name: "Carta com Propósito", address: process.env.EMAIL_USUARIO || "carta@exemplo.com" },
     to: emailDestino,
