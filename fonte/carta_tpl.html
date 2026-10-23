@@ -778,7 +778,6 @@ const Art = (() => {
     x.fillStyle = T.acc; x.font = '600 28px Figtree, sans-serif'; spaced(x, 'UMA CARTA PARA', w / 2, 492, 9);
     let fs = 176; x.font = `400 ${fs}px "Great Vibes", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Great Vibes", cursive`; }
     x.save(); x.shadowColor = 'rgba(255,190,90,.45)'; x.shadowBlur = 30; x.fillStyle = G; x.fillText(L.to, w / 2, 668); x.restore();
-    x.fillStyle = T.ink2; x.font = 'italic 500 48px "Cormorant Garamond", Georgia, serif'; x.fillText(L.title, w / 2, 752);
     const qs = 460, qx = (w - qs) / 2, qy = 860;
     x.save(); x.shadowColor = 'rgba(255,200,110,.35)'; x.shadowBlur = 40; x.fillStyle = '#fff'; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.fill(); x.restore();
     x.strokeStyle = G; x.lineWidth = 4; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.stroke();
@@ -932,7 +931,6 @@ function coverHTML(L, mode) {
     ${fx ? `<div class="cv-rays" aria-hidden="true"></div><div class="cv-motes" aria-hidden="true">${motes(mode === 'full' ? 26 : 12)}</div><div class="twinkle" aria-hidden="true">${sparkles(mode === 'full' ? 14 : 8)}</div>` : ''}
     <p class="cv-kicker">Uma carta para</p>
     <h2 class="cv-name gold-t shine">${esc(L.to)}</h2>
-    <p class="cv-title">${esc(L.title)}</p>
     ${envHTML(L, { static: mode === 'thumb' })}
     <p class="cv-hint">Toque no selo para abrir</p>
     ${fx ? '<div class="glory" aria-hidden="true"></div>' : ''}
@@ -1227,7 +1225,7 @@ function cineOpen(host, L, onDone) {
   o.innerHTML = `<div class="co-dust" aria-hidden="true">${motes(30)}</div><i class="co-bar t"></i><i class="co-bar b"></i>
     <p class="co-1">Esta é uma história de ${tipo}</p>
     <p class="co-2"><span class="co-nome">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
-    <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : esc(L.title)}</p>
+    <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : ''}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);
   let feito = false;
@@ -1255,7 +1253,7 @@ function letterHTML(L, mode, opt = {}) {
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>`);
+  h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2>`);
   /* ordem: roleta, música, fotos, pote, versículos, carta escrita, números, última foto */
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>

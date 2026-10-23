@@ -68,7 +68,7 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
 `/c/<id>` abre só a carta (o criador fica escondido). Ela começa num **envelope de ouro** com um **selo real** pequeno (cera vinho, contas, louros e uma cruzinha de ouro) e fitas de cetim. Sem versículo na capa. O **toque no selo** faz a abertura com raios de luz, clarão e faíscas douradas, e começa a música: a instrumental (Amazing Grace gerada no navegador, objeto `Music`) ou a música de vocês do YouTube ou Spotify (objeto `Som`; o servidor troca Spotify por YouTube).
 
 A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cada parte com `data-step`; `bindLetter` controla). A ordem e a ação de cada parte:
-1. **Abertura** ("Para Ana"): "Continuar".
+1. **Abertura** ("Para Ana"): "Continuar". Só "Para" e o nome, sem o título da ocasião embaixo (o envelope, a abertura de cinema e a imagem do QR code também não mostram o título).
 2. **Roleta da Palavra**: fina, com Jesus ao lado empurrando. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta, e ele aparece letra por letra. Depois, "Continuar".
 3. **Nossa música** (só com música do YouTube ou Spotify): a música **começa no toque do selo** (`iniciarMusica` no `openViewer`, com o player escondido em `.mdock`); esta parte só mostra que ela está tocando. Se o celular bloquear o som, aparece o botão flutuante "Toque para ouvir com som". A instrumental também começa no selo.
 4. **Fotos**: polaroides grandes, penduradas e balançando (no Premium, slides de cinema). "Continuar".
