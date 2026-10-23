@@ -1226,7 +1226,7 @@ function cineOpen(host, L, onDone) {
   const o = document.createElement('div'); o.className = 'cine-open';
   o.innerHTML = `<div class="co-dust" aria-hidden="true">${motes(30)}</div><i class="co-bar t"></i><i class="co-bar b"></i>
     <p class="co-1">Esta é uma história de ${tipo}</p>
-    <p class="co-2 gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</p>
+    <p class="co-2"><span class="gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
     <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : esc(L.title)}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);
@@ -1378,7 +1378,7 @@ function bindLetter(root, L, mode, hooks = {}) {
   let cur = -1;
   const nextBtn = s => s.querySelector(':scope > .l-next-wrap .l-next');
   const delayFor = s => s.id === 's-photos' ? 900 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 2800
-    : s.id === 's-verses' ? Math.min(4200, s.querySelectorAll('.mw').length * 70) + 1200 : s.id === 's-open' ? 1800 : 2000;
+    : s.id === 's-verses' ? 2000 : s.id === 's-open' ? 1800 : 2000;
   function show(s) {
     s.classList.remove('wait', 'pre'); void s.offsetWidth; s.classList.add('in');
     if (s.classList.contains('cine-photos')) { slides(s); return; }
@@ -1392,7 +1392,7 @@ function bindLetter(root, L, mode, hooks = {}) {
       if (s.id === 's-wheel') auto('.wheel-btn');
       if (s.id === 's-final') auto('.camera');
       const dica = hooks.host && hooks.host.querySelector('.vw-dica');
-      if (dica) dica.hidden = s.dataset.step === 'end';
+      if (dica) dica.hidden = s.id !== 's-open'; /* só no começo da carta */
     }
   }
   const topOf = el => { let y = 0; for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop; return y; };
@@ -2489,11 +2489,11 @@ function processImage(file) {
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(file), img = new Image();
     img.onload = () => {
-      const k = Math.min(1, 2048 / Math.max(img.naturalWidth, img.naturalHeight));
+      const k = Math.min(1, 1440 / Math.max(img.naturalWidth, img.naturalHeight)); /* menor = o iPhone não recarrega a página ao escolher várias fotos */
       const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
       const c = document.createElement('canvas'); c.width = w; c.height = h;
       const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .92));
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .86));
     };
     img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
     img.src = url;

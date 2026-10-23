@@ -528,7 +528,14 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .mw,.ch{display:inline-block;padding:0 .08em;margin:0 -.08em;background-image:var(--shine),var(--mirror);background-size:300% 100%,100% 100%;background-position:150% 0,0 0;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .mw{animation:mwShine 7s ease-in-out calc(1.4s + var(--i)*.09s) infinite}
 @keyframes mwShine{0%{background-position:150% 0,0 0}18%,100%{background-position:-50% 0,0 0}}
-.lt[data-mode="full"] .lsec.in .mw{animation:mwIn .9s var(--ease) calc(.25s + var(--i)*.07s) both,mwShine 7s ease-in-out calc(1.6s + var(--i)*.09s) infinite}
+.lt[data-mode="full"] .lsec.in .mw{animation:mwShine 7s ease-in-out calc(2.2s + var(--i)*.09s) infinite}
+/* versículos: surgem de uma vez, como se saíssem de uma fumaça dourada */
+.lt[data-mode="full"] .lsec.l-verses .l-verse p{opacity:0}
+.lt[data-mode="full"] .lsec.l-verses.in .l-verse p{animation:vFumaca 1.7s cubic-bezier(.2,.7,.2,1) .25s both}
+.l-verse::after{content:"";position:absolute;inset:-14% -8%;z-index:1;pointer-events:none;opacity:0;border-radius:50%;background:radial-gradient(38% 46% at 28% 58%,rgba(255,238,210,.55),transparent 70%),radial-gradient(42% 50% at 72% 44%,rgba(255,226,186,.5),transparent 72%),radial-gradient(34% 40% at 50% 74%,rgba(255,246,228,.45),transparent 70%);filter:blur(16px)}
+.lt[data-mode="full"] .lsec.l-verses.in .l-verse::after{animation:vNevoa 2.3s ease-out .1s both}
+@keyframes vFumaca{0%{opacity:0;transform:translateY(12px) scale(1.04);filter:blur(14px) drop-shadow(0 1px 0 rgba(70,30,0,.6))}45%{opacity:.75;filter:blur(5px) drop-shadow(0 1px 0 rgba(70,30,0,.6))}100%{opacity:1;transform:none;filter:drop-shadow(0 1px 0 rgba(70,30,0,.6)) drop-shadow(0 0 12px rgba(255,190,90,.3))}}
+@keyframes vNevoa{0%{opacity:0;transform:translateY(24px) scale(.85)}22%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.3)}}
 @keyframes mwIn{0%{opacity:0;transform:translateY(.4em) scale(.9);filter:blur(6px)}100%{opacity:1;transform:none;filter:none}}
 .l-verses .flourish{margin:30px auto}
 /* versículo da roleta: letra por letra, cada uma acende e assenta no lugar */
@@ -1078,6 +1085,7 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .cine-open p{position:relative;margin:0;opacity:0}
 .co-1{font:600 11.5px/1.5 var(--f-ui);letter-spacing:.32em;text-transform:uppercase;color:#ECC16B}
 .co-2{padding:0 .3em;font:400 clamp(60px,17vw,86px)/1.12 var(--f-script);filter:drop-shadow(0 0 22px rgba(255,190,90,.45))}
+.co-2 span{display:inline-block;padding:0 .3em;margin:0 -.3em}
 .co-3{font:italic 600 19px/1.3 var(--f-verse);color:#FFF1CC}
 .cine-open.on .co-1{animation:coIn 1.4s ease .5s both}
 .cine-open.on .co-2{animation:coName 2.4s cubic-bezier(.2,.8,.2,1) 1.6s both}
@@ -2372,7 +2380,7 @@ function cineOpen(host, L, onDone) {
   const o = document.createElement('div'); o.className = 'cine-open';
   o.innerHTML = `<div class="co-dust" aria-hidden="true">${motes(30)}</div><i class="co-bar t"></i><i class="co-bar b"></i>
     <p class="co-1">Esta é uma história de ${tipo}</p>
-    <p class="co-2 gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</p>
+    <p class="co-2"><span class="gold-t shine">${esc(L.to)} &amp; ${esc(L.from)}</span></p>
     <p class="co-3">${L.date ? 'desde ' + esc(longDate(parseISO(L.date))) : esc(L.title)}</p>
     <i class="co-flare" aria-hidden="true"></i><button class="co-skip">Pular</button>`;
   host.appendChild(o);
@@ -2524,7 +2532,7 @@ function bindLetter(root, L, mode, hooks = {}) {
   let cur = -1;
   const nextBtn = s => s.querySelector(':scope > .l-next-wrap .l-next');
   const delayFor = s => s.id === 's-photos' ? 900 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 2800
-    : s.id === 's-verses' ? Math.min(4200, s.querySelectorAll('.mw').length * 70) + 1200 : s.id === 's-open' ? 1800 : 2000;
+    : s.id === 's-verses' ? 2000 : s.id === 's-open' ? 1800 : 2000;
   function show(s) {
     s.classList.remove('wait', 'pre'); void s.offsetWidth; s.classList.add('in');
     if (s.classList.contains('cine-photos')) { slides(s); return; }
@@ -2538,7 +2546,7 @@ function bindLetter(root, L, mode, hooks = {}) {
       if (s.id === 's-wheel') auto('.wheel-btn');
       if (s.id === 's-final') auto('.camera');
       const dica = hooks.host && hooks.host.querySelector('.vw-dica');
-      if (dica) dica.hidden = s.dataset.step === 'end';
+      if (dica) dica.hidden = s.id !== 's-open'; /* só no começo da carta */
     }
   }
   const topOf = el => { let y = 0; for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop; return y; };
@@ -3635,11 +3643,11 @@ function processImage(file) {
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(file), img = new Image();
     img.onload = () => {
-      const k = Math.min(1, 2048 / Math.max(img.naturalWidth, img.naturalHeight));
+      const k = Math.min(1, 1440 / Math.max(img.naturalWidth, img.naturalHeight)); /* menor = o iPhone não recarrega a página ao escolher várias fotos */
       const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
       const c = document.createElement('canvas'); c.width = w; c.height = h;
       const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .92));
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .86));
     };
     img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
     img.src = url;
