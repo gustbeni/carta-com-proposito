@@ -2445,7 +2445,7 @@ function letterHTML(L, mode, opt = {}) {
   }
   if (L.prayer) h += sec('s-prayer', '', 'amen', `<div class="pray"><div class="dove">${ICON.dove}</div><p class="l-label">${esc(C.prayLabel)}</p><p class="pray-t">${esc(L.prayer)}</p><button class="amen" aria-pressed="false">Amém</button><p class="amen-note" hidden>Agora vocês oraram juntos.</p></div>`);
   h += sec('s-close', 'l-closing', 'end', `${orn()}<p class="l-close">${esc(C.closing)}</p><p class="l-sign gold-t shine">${esc(L.from)}</p>
-    <div class="l-actions"><a class="l-btn" href="${waLink(`${L.from}, recebi a sua carta e amei! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Responder ${esc(L.from)}</a><button class="l-btn ghost" data-again>Ler de novo</button></div>
+    <div class="l-actions">${opt.mode === 'recipient' ? `<a class="l-btn" href="${waLink(`${L.from}, recebi a sua carta e amei! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Responder ${esc(L.from)}</a>` : ''}<button class="l-btn ghost" data-again>Ler de novo</button>${opt.mode === 'preview' ? `<button class="l-btn ghost" data-editar>Voltar a editar</button>` : ''}</div>
     <div class="l-credit"><span class="row"><span class="seal"><span></span></span>Feito com ${BRAND}</span>${opt.mode === 'recipient' ? '<button data-make>Faça uma carta assim</button>' : ''}<small>Versículos da Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0.</small></div>`);
   h += `</div></div>`;
   return h;
@@ -2848,6 +2848,8 @@ function openViewer(L, opt = {}) {
     }
   });
   $('#vwClose').addEventListener('click', () => { closeViewer(); if (opt.onClose) opt.onClose(); });
+  /* prévia de quem está montando: "Voltar a editar" no fim da carta */
+  v.querySelectorAll('[data-editar]').forEach(b => b.addEventListener('click', () => { closeViewer(); if (opt.onEdit) opt.onEdit(); else if (opt.onClose) opt.onClose(); }));
   const buy = $('#vwBuy'); if (buy) buy.addEventListener('click', () => { closeViewer(); opt.onBuy && opt.onBuy(); });
   const edit = $('#vwEdit'); if (edit) edit.addEventListener('click', () => { closeViewer(); opt.onEdit && opt.onEdit(); });
   const create = $('#vwCreate'); if (create) create.addEventListener('click', () => { closeViewer(); opt.onCreate && opt.onCreate(); });
