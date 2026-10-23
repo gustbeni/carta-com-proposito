@@ -8,7 +8,7 @@
 <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1595171231774957&ev=PageView&noscript=1"></noscript>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600;700&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Playfair+Display:ital,wght@1,600&family=Parisienne&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600;700&family=Great+Vibes&display=swap">
 <style>
 {{CSS}}
 </style>
@@ -33,7 +33,7 @@
           <button class="btn btn-primary" id="nextBtn">Continuar</button>
           <button class="circle eye" id="eyeBtn" aria-label="Ver a prévia da carta"></button>
         </div>
-        <p class="bar-note" id="barNote">Salvo neste aparelho · Você só paga no final</p>
+        <p class="bar-note" id="barNote">Salvo neste aparelho</p>
       </nav>
     </main>
     <aside class="live" aria-label="Prévia ao vivo">
@@ -80,7 +80,7 @@ function calcStats(s) {
   let years = now.getFullYear() - d.getFullYear();
   if (now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate())) years--;
   const days = Math.floor(ms / 864e5);
-  return { days, weeks: Math.floor(days / 7), hours: Math.floor(ms / 36e5), years: Math.max(0, years) };
+  return { days, nights: days, weeks: Math.floor(days / 7), hours: Math.floor(ms / 36e5), years: Math.max(0, years) };
 }
 function clockSince(s) {
   const ms = (new Date() - parseISO(s)) % 864e5;
@@ -141,6 +141,7 @@ const ICON = {
   edit: sv('<path d="M4.5 19.5h4l10-10a2.8 2.8 0 0 0-4-4l-10 10z"/><path d="m13.5 6.5 4 4"/>'),
   music: sv('<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>'),
   calendar: sv('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8.5 3.5v3M15.5 3.5v3"/>'),
+  mail: sv('<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7.5 7.5 5.5 7.5-5.5"/>'),
   cross: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v17M6.5 9h11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   heartFill: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 20.3S3.8 15.3 3.8 9.4A4.4 4.4 0 0 1 12 7a4.4 4.4 0 0 1 8.2 2.4c0 5.9-8.2 10.9-8.2 10.9z"/></svg>',
   dove: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 31.5c5.2.4 9.6-1.2 13-4.4"/><path d="M20 27.1c2.6-2.6 6-3.9 9.8-3.6 2.3.2 4.4 1.4 5.8 3.2l3.6.4-3 1.8c-.6 5.3-5.4 9.1-11.6 9.1-5 0-9.2-2.1-12.1-5.6"/><path d="M22.4 25.6c-2.2-5.7-1.4-12.2 3.3-16.6 1 5.6 3.2 9.6 7.4 12.7"/><path d="M19 27.8c-4.4-2.6-6.9-7.2-6.4-12.6 3.2 3 6.4 5.6 10.4 8.4"/><circle cx="35.2" cy="26.5" r=".7" fill="currentColor" stroke="none"/><path d="M27.5 36.6c.4 2.4-.4 4.6-2.2 6.4M25.6 40c-1.3-.2-2.4.3-3.2 1.3M26.4 38.3c1.2-.6 2.4-.5 3.4.3"/></svg>'
@@ -228,7 +229,7 @@ const OCCASIONS = {
   amor: [
     { id: 'aniv_namoro', label: 'Aniversário de namoro', title: 'Feliz aniversário de namoro', verses: ['ec4_12', 'co13_4', 'ct8_7', 'cl3_14', 'ec4_9', 'co13_7', 'ct3_4', 'jr31_3', 'jo4_19', 'ef4_2', 'ct8_6', 'co13_13', 'rt1_16'] },
     { id: 'aniv_casamento', label: 'Aniversário de casamento', title: 'Feliz aniversário de casamento', verses: ['mt19_6', 'ec4_12', 'sl127_1', 'co13_7', 'rt1_16', 'cl3_14', 'gn2_24', 'ct8_7', 'ef4_2', 'ec4_9', 'co13_4', 'pe4_8'],
-      copy: { dateH: 'Quando vocês se <em>casaram</em>?', dateLabel: 'Data do casamento', since: 'Casados desde', big: 'dias de casados' } },
+      copy: { dateH: 'Quando vocês se <em>casaram</em>?', dateLabel: 'Data do casamento', since: 'Casados desde', big: 'dias em que o meu amor se renovou' } },
     { id: 'aniv_amor', label: 'Aniversário do meu amor', title: 'Feliz aniversário, meu amor', verses: ['sl20_4', 'jr29_11', 'nm6_24', 'co13_4', 'ct4_7', 'sf3_17', 'ec4_12', 'rm8_28', 'jo4_19', 'jr31_3'] },
     { id: 'dia_namorados', label: 'Dia dos Namorados', title: 'Feliz Dia dos Namorados', verses: ['ct8_6', 'co13_4', 'ec4_12', 'ct8_7', 'ct3_4', 'jo4_19', 'cl3_14', 'co13_13', 'ct4_7', 'jo4_7'] },
     { id: 'te_amo', label: 'Só pra dizer te amo', title: 'Só pra dizer que eu te amo', verses: ['jo4_19', 'co13_4', 'ct8_7', 'ct3_4', 'jr31_3', 'co13_13', 'ec4_12', 'ct8_6', 'jo4_7', 'ct4_7'] },
@@ -260,7 +261,7 @@ const COPY = {
   amor: {
     namesH: 'O <em>casal</em>', toLabel: 'Nome do seu amor', toPh: 'Ex.: Ana', toFallback: 'Meu amor',
     dateH: 'Desde quando vocês estão <em>juntos</em>?', dateLabel: 'Começamos a namorar em',
-    since: 'Juntos desde', big: 'dias juntos', rows: [['weeks', 'domingos lado a lado'], ['hours', 'horas de uma história que Deus escreveu']],
+    since: 'Juntos desde', big: 'dias em que o meu amor se renovou', rows: [['hours', 'horas pensando em nós'], ['nights', 'noites sonhando com nós dois']],
     numbersLabel: 'Nossa história em números', jarH: 'Por que eu te amo', reasonsH: 'Por que você ama <em>{para}</em>?',
     prayH: 'Uma oração por <em>vocês</em>', prayLabel: 'Uma oração por nós', msgLabel: 'Do meu coração para o seu',
     closing: 'Com todo o meu amor,'
@@ -742,10 +743,10 @@ const Art = (() => {
     x.fillStyle = rad(x, cx - r * .3, cy - r * .35, r * .1, r * 1.1, [[0, T.sealHi], [.5, T.seal], [1, T.sealLo]]);
     x.beginPath(); for (let i = 0; i <= 48; i++) { const a = i / 48 * TAU, rr2 = r * (1 + .035 * Math.sin(a * 5) + .02 * Math.sin(a * 9)); i ? x.lineTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2) : x.moveTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2); } x.fill();
     x.restore();
-    x.strokeStyle = 'rgba(243,213,138,.55)'; x.lineWidth = r * .045; x.beginPath(); x.arc(cx, cy, r * .66, 0, TAU); x.stroke();
-    x.font = `italic 600 ${r * .9}px "Cormorant Garamond", Georgia, serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillStyle = 'rgba(0,0,0,.35)'; x.fillText(initial || '♥', cx, cy + r * .02 + 3);
-    x.fillStyle = '#F6DB92'; x.fillText(initial || '♥', cx, cy + r * .02);
+    x.strokeStyle = 'rgba(40,0,10,.35)'; x.lineWidth = r * .03; x.beginPath(); x.arc(cx, cy, r * .86, 0, TAU); x.stroke();
+    for (let k = 0; k < 28; k++) { const a = k / 28 * TAU; x.fillStyle = 'rgba(40,0,10,.42)'; x.beginPath(); x.arc(cx + Math.cos(a) * r * .74, cy + Math.sin(a) * r * .74, r * .042, 0, TAU); x.fill(); }
+    const u = r / 50; x.save(); x.shadowColor = 'rgba(40,0,10,.6)'; x.shadowBlur = u * 2; x.fillStyle = '#F3D58A';
+    x.fillRect(cx - 1.7 * u, cy - 12 * u, 3.4 * u, 25 * u); x.fillRect(cx - 9.3 * u, cy - 4.8 * u, 18.6 * u, 3.4 * u); x.restore();
   }
   function spaced(x, text, cx, y, sp) {
     const chars = [...text], widths = chars.map(ch => x.measureText(ch).width), total = widths.reduce((a, b) => a + b, 0) + sp * (chars.length - 1);
@@ -854,10 +855,28 @@ function cartaDoServidor(P) {
   return L;
 }
 const waLink = (text, fone) => 'https://wa.me/' + (fone || '') + '?text=' + encodeURIComponent(text);
-const sealInner = L => L.initial ? esc(L.initial) : ICON.heartFill;
 const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
-const verseText = t => esc(t).replace(/SENHOR/g, 'Senhor');
+const verseRaw = t => String(t || '').replace(/SENHOR/g, 'Senhor');
 let svgUid = 0; // ids únicos para os degradês de cada desenho
+
+/* Selo de cera real: contas em volta, ramos de louro e uma cruzinha de ouro no centro */
+const SEAL_EMBLEM = (() => {
+  const P = Math.PI / 180;
+  let beads = '', laurel = '';
+  for (let k = 0; k < 28; k++) {
+    const a = k * 360 / 28 * P, x = 50 + 37 * Math.cos(a), y = 50 + 37 * Math.sin(a);
+    beads += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.1" fill="rgba(40,0,10,.42)"/><circle cx="${(x - .6).toFixed(1)}" cy="${(y - .6).toFixed(1)}" r=".9" fill="rgba(255,205,210,.32)"/>`;
+  }
+  const leaf = (a, side) => { const x = 50 + 26 * Math.cos(a * P), y = 50 + 26 * Math.sin(a * P); return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4.6" ry="1.9" transform="rotate(${(a + side * 55).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="rgba(40,0,10,.38)"/>`; };
+  for (let k = 0; k < 6; k++) laurel += leaf(112 + k * 17, -1) + leaf(68 - k * 17, 1);
+  return `<svg class="seal-em" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="43" fill="none" stroke="rgba(40,0,10,.35)" stroke-width="1.6"/><circle cx="50" cy="50.9" r="43" fill="none" stroke="rgba(255,200,205,.16)" stroke-width="1"/>
+    ${beads}<circle cx="50" cy="50" r="31" fill="none" stroke="rgba(40,0,10,.3)" stroke-width="1.2"/>
+    <path d="M50 76C40 74 30 66 26 52M50 76C60 74 70 66 74 52" fill="none" stroke="rgba(40,0,10,.35)" stroke-width="1.3"/>${laurel}
+    <path d="M48.3 38h3.4v7.2h7.6v3.4h-7.6V63h-3.4V48.6h-7.6v-3.4h7.6z" fill="#F3D58A" stroke="#5A0F1E" stroke-width=".7"/><path d="M48.3 38h1.4v24.6h-1.4z" fill="#FFF3C8" opacity=".7"/>
+  </svg>`;
+})();
+const sealInner = () => SEAL_EMBLEM;
 
 function motes(n) {
   let h = '';
@@ -881,7 +900,8 @@ function envHTML(L, opts = {}) {
     <div class="env-flap"><i class="out"></i><i class="in"></i></div>
     <span class="env-shine"></span>
     <span class="env-ring"></span>
-    ${opts.static ? `<span class="seal env-seal"><span>${sealInner(L)}</span></span>` : `<button class="seal env-seal" aria-label="Abrir a carta"><span>${sealInner(L)}</span></button>`}
+    <span class="env-ribbon" aria-hidden="true"><i></i><i></i></span>
+    ${opts.static ? `<span class="seal env-seal"><span>${SEAL_EMBLEM}</span></span>` : `<button class="seal env-seal" aria-label="Abrir a carta"><span>${SEAL_EMBLEM}</span></button>`}
   </div>`;
 }
 function coverHTML(L, mode) {
@@ -893,36 +913,54 @@ function coverHTML(L, mode) {
     <p class="cv-title">${esc(L.title)}</p>
     ${envHTML(L, { static: mode === 'thumb' })}
     <p class="cv-hint">Toque no selo para abrir</p>
-    <p class="cv-verse">“Põe-me como selo sobre o teu coração.”<span>Cantares 8:6</span></p>
     ${fx ? '<div class="glory" aria-hidden="true"></div>' : ''}
   </section>`;
 }
 const orn = () => `<div class="orn" aria-hidden="true">${ICON.cross}</div>`;
 const FLOURISH = '<svg class="flourish" viewBox="0 0 240 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 14C40 14 56 3 80 8c16 4 22 13 34 6"/><path d="M232 14c-32 0-48-11-72-6-16 4-22 13-34 6"/><path d="M80 8c-6 4-2 10 4 7M160 8c6 4 2 10-4 7"/><path d="M120 5l6 9-6 9-6-9z" fill="currentColor" stroke="none"/><circle cx="104" cy="14" r="1.8" fill="currentColor" stroke="none"/><circle cx="136" cy="14" r="1.8" fill="currentColor" stroke="none"/></svg>';
-function verseHTML(v, hero) { return `<blockquote class="l-verse${hero ? ' hero' : ''}"><p class="gold-t${hero ? ' shine' : ''}">${verseText(v.t)}</p><cite>${esc(v.ref)}</cite></blockquote>`; }
-function messageHTML(text, typing) {
-  const paras = text.split(/\n+/).filter(p => p.trim());
-  const total = paras.reduce((n, p) => n + p.split(/\s+/).length, 0);
+
+/* Versículo em ouro espelhado: cada palavra é um pedaço de ouro, e um brilho passa de palavra em palavra */
+function verseHTML(v) {
+  const words = verseRaw(v.t).split(/\s+/).filter(Boolean).map((w, i) => `<span class="mw" style="--i:${i}">${esc(w)}</span>`).join(' ');
+  return `<blockquote class="l-verse"><p class="mirror">${words}</p><cite>${esc(v.ref)}</cite></blockquote>`;
+}
+/* versículo que aparece letra por letra (resultado da roleta) */
+function charsHTML(t) {
+  const txt = verseRaw(t), step = Math.min(34, 4200 / Math.max(txt.length, 1));
   let k = 0;
-  const body = paras.map((p, pi) => `<p${pi === 0 ? ' class="first"' : ''}>${p.trim().split(/\s+/).map(w => { const d = Math.round(Math.min(k * 32, 3200 * k / Math.max(total, 1))); k++; return `<span class="w" style="--d:${d}ms">${esc(w)}</span>`; }).join(' ')}</p>`).join('');
-  return `<div class="l-msg${typing ? ' typing' : ''}">${body}</div>`;
+  return txt.split(/\s+/).filter(Boolean).map(w => `<span class="wd">${[...w].map(ch => `<span class="ch" style="--d:${Math.round(k++ * step)}ms">${esc(ch)}</span>`).join('')}</span>`).join(' ');
 }
 
-/* ===== Pote dos motivos: vidro, tampa de ouro, laço vinho e bilhetes coloridos que flutuam ===== */
+/* ===== Mensagem: pergaminho com uma pena escrevendo ===== */
+const QUILL = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M3 46 9 37" stroke="#2A1608" stroke-width="2.4" stroke-linecap="round"/><path d="M9 37C14 25 26 11 46 2 40 15 30 28 12 40Z" fill="#FFF8EC" stroke="#C9A46A" stroke-width=".8"/><path d="M9 37C21 25 33 13 46 2" stroke="#B4822C" stroke-width="1.3" fill="none"/><path d="M20 26l-6-3M25 20l-6-4M30 15l-5-4M23 28l7 1M28 22l7 1M33 16l6 1" stroke="#D9C4A0" stroke-width=".8"/><circle cx="3.4" cy="45.6" r="1.7" fill="#2A1608"/></svg>';
+const INKWELL = '<svg class="inkwell" viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="35" rx="15" ry="4" fill="rgba(60,30,10,.25)"/><path d="M8 20c0-6 5-9 12-9s12 3 12 9v10c0 3-5 5-12 5S8 33 8 30z" fill="#2A1A24"/><path d="M11 21c2-3 6-4 9-4" stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="13" y="7" width="14" height="6" rx="2" fill="#C9943B"/><ellipse cx="20" cy="7.5" rx="7" ry="2" fill="#F3D58A"/></svg>';
+function scrollHTML(text, full) {
+  const t = esc(text.trim()).replace(/\n{3,}/g, '\n\n');
+  return `<div class="scroll">
+    <div class="rod" aria-hidden="true"></div>
+    <div class="parch-wrap"><div class="parch"><div class="parch-in">
+      <div class="parch-txt"><p class="ghost" aria-hidden="true">${t}</p><p class="ink">${full ? '' : t}</p></div>
+      ${INKWELL}
+    </div></div></div>
+    <div class="rod" aria-hidden="true"></div>
+  </div>`;
+}
+
+/* ===== Pote dos motivos: papeizinhos enrolados com fitinhas coloridas ===== */
 const NOTE_COLORS = ['#F79AB4', '#FFC764', '#BFA0F5', '#7FD9BA', '#FF9178', '#8EC2F7', '#FFE07A', '#F08FCB'];
 const NOTE_PAPER = ['#FFE0E9', '#FFF0C9', '#EEE3FE', '#DCF6EC', '#FFE3DA', '#E0EEFD', '#FFF6CF', '#FDE1F2'];
+const RIBBONS = ['#C2185B', '#B07A26', '#6A3FB5', '#1F8A6A', '#D2462E', '#2B6CB0', '#B8860B', '#A0307A'];
 const HEART_PATH = 'M0 10C-13 2-15-6-9.5-9.5-5.5-12-1.5-10 0-6.5 1.5-10 5.5-12 9.5-9.5 15-6 13 2 0 10Z';
 function noteShape(i) {
-  const c = NOTE_COLORS[i % NOTE_COLORS.length], k = i % 3;
-  if (k === 0) return `<path d="${HEART_PATH}" fill="${c}" stroke="rgba(255,255,255,.6)" stroke-width="1"/>`;
-  if (k === 1) return `<rect x="-17" y="-10.5" width="34" height="21" rx="3" fill="${c}" stroke="rgba(255,255,255,.55)" stroke-width="1"/><path d="M-16-9.5 0 2 16-9.5" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="1.2"/>`;
-  return `<rect x="-16" y="-6.5" width="32" height="13" rx="6.5" fill="${c}" stroke="rgba(255,255,255,.55)" stroke-width="1"/><rect x="-3" y="-7.5" width="6" height="15" rx="1.5" fill="#E9BF62"/>`;
+  const p = NOTE_PAPER[i % 8], r = RIBBONS[(i * 3) % 8], k = i % 3;
+  if (k === 1) return `<path d="M-19-4C-9-12 7 4 19-4V5C7 13-9-3-19 5Z" fill="${p}" stroke="rgba(0,0,0,.14)" stroke-width=".8"/><path d="M-13 0h7M-3 2h9M9-1h5" stroke="rgba(90,40,20,.45)" stroke-width="1" stroke-linecap="round"/><path d="M-19-4V5" stroke="${r}" stroke-width="2.2"/>`;
+  return `<rect x="-17" y="-6.5" width="34" height="13" rx="6.5" fill="${p}" stroke="rgba(0,0,0,.14)" stroke-width=".8"/><ellipse cx="-14" cy="0" rx="3.6" ry="6.4" fill="${p}" stroke="rgba(0,0,0,.18)" stroke-width=".8"/><path d="M-14-2.6a2.4 2.4 0 1 1 0 5" fill="none" stroke="rgba(0,0,0,.2)" stroke-width=".8"/><rect x="-1.8" y="-7.4" width="5" height="14.8" rx="1.4" fill="${r}"/><path d="M.7 6.6-3.5 14M.7 6.6 4.6 13.6" stroke="${r}" stroke-width="1.8" stroke-linecap="round"/>`;
 }
 const JAR_SPOTS = [[80, 114, 148, 182], [97, 131, 165], [76, 110, 146, 184], [94, 130, 168], [80, 114, 150, 184], [100, 136, 170]]
   .flatMap((xs, r) => xs.map((x, j) => [x + (r * 7 + j * 5) % 9 - 4, 292 - r * 21, (r * 37 + j * 53) % 50 - 25]));
 function jarSVG(n) {
   const u = ++svgUid, cnt = Math.min(Math.max(n * 2, 14), JAR_SPOTS.length);
-  const notes = JAR_SPOTS.slice(0, cnt).map(([x, y, a], i) => `<g transform="translate(${x} ${y}) rotate(${a})"><g class="jn" style="--d:-${(i * .37 % 3.6).toFixed(2)}s;--t:${(3.2 + (i % 4) * .35).toFixed(2)}s">${noteShape(i)}</g></g>`).join('');
+  const notes = JAR_SPOTS.slice(0, cnt).map(([x, y, a], i) => `<g transform="translate(${x} ${y}) rotate(${a})"><g class="jn" style="--d:-${(i * .37 % 3.6).toFixed(2)}s;--t:${(3 + (i % 4) * .35).toFixed(2)}s">${noteShape(i)}</g></g>`).join('');
   const BODY = 'M78 112C60 122 50 140 50 164V284C50 302 62 312 82 312H178C198 312 210 302 210 284V164C210 140 200 122 182 112Z';
   const ridges = Array.from({ length: 14 }, (_, i) => `<path d="M${76 + i * 8} 58v30" stroke="rgba(110,70,12,.35)" stroke-width="2"/>`).join('');
   const sparks = [[30, 128, 1], [228, 92, .8], [36, 262, .7], [230, 236, 1], [130, 22, .75], [18, 196, .6]].map(([x, y, s], i) => `<g transform="translate(${x} ${y}) scale(${s})"><path class="sp" style="--d:-${(i * .55).toFixed(2)}s" d="M0-12C1.5-3 3-1.5 12 0 3 1.5 1.5 3 0 12-1.5 3-3 1.5-12 0-3-1.5-1.5-3 0-12Z" fill="#FFE7A3"/></g>`).join('');
@@ -943,7 +981,6 @@ function jarSVG(n) {
       <path d="${BODY}" fill="url(#jg${u}a)" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
       <path d="M62 146C56 176 56 252 64 286" stroke="#fff" stroke-opacity=".6" stroke-width="7" stroke-linecap="round" fill="none"/>
       <path d="M200 156C204 186 204 236 198 266" stroke="#fff" stroke-opacity=".22" stroke-width="4" stroke-linecap="round" fill="none"/>
-      <path d="M130 232C118 223 115 214 121 209 125 206 130 209 130 213 130 209 135 206 139 209 145 214 142 223 130 232Z" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
       <rect x="72" y="86" width="116" height="28" rx="8" fill="url(#jg${u}a)" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
       <path d="M70 100C104 108 156 108 190 100V112C156 120 104 120 70 112Z" fill="url(#jg${u}d)" stroke="#E9BF62" stroke-width="1.2"/>
       <g transform="translate(184 106)">
@@ -971,28 +1008,58 @@ function jarSVG(n) {
   </svg>`;
 }
 
-/* ===== Roleta da Palavra: gira e sorteia um versículo ===== */
-const WHEEL_ICONS = ['M0 6C-9 0-11-6-6-9-3-11 0-9 0-6 0-9 3-11 6-9 11-6 9 0 0 6Z', 'M-2.2-11h4.4v7.2H9.4v4.4H2.2V11h-4.4V.6H-9.4v-4.4h7.2Z', 'M0-11C1.5-3 3-1.5 11 0 3 1.5 1.5 3 0 11-1.5 3-3 1.5-11 0-3-1.5-1.5-3 0-11Z'];
+/* ===== Roleta da Palavra, fina e elegante, com Jesus girando ===== */
+const WHEEL_ICONS = ['M0 6C-9 0-11-6-6-9-3-11 0-9 0-6 0-9 3-11 6-9 11-6 9 0 0 6Z', 'M-1.6-10h3.2v6.6h6.6v3.2H1.6V10h-3.2V-.2H-8.2v-3.2h6.6Z', 'M0-10C1.4-2.8 2.8-1.4 10 0 2.8 1.4 1.4 2.8 0 10-1.4 2.8-2.8 1.4-10 0-2.8-1.4-1.4-2.8 0-10Z'];
 const WHEEL_SUB = { amor: 'Toque em girar e receba uma palavra de Deus sobre o amor.', amigo: 'Toque em girar e receba uma palavra de Deus para a sua vida.', pais: 'Toque em girar e receba uma bênção da Palavra.' };
+function jesusSVG(u) {
+  return `<svg viewBox="0 0 140 232" aria-hidden="true"><defs>
+    <radialGradient id="jz${u}a"><stop offset=".45" stop-color="#FFE7A3" stop-opacity=".55"/><stop offset="1" stop-color="#FFE7A3" stop-opacity="0"/></radialGradient>
+    <linearGradient id="jz${u}b" x1="0" x2="1"><stop offset="0" stop-color="#E4D6BE"/><stop offset=".35" stop-color="#FFFCF5"/><stop offset=".7" stop-color="#F6EEDF"/><stop offset="1" stop-color="#D9C9AE"/></linearGradient></defs>
+    <g class="jz-body">
+      <circle class="jz-halo" cx="62" cy="44" r="38" fill="url(#jz${u}a)"/>
+      <circle cx="62" cy="44" r="27" fill="none" stroke="#F3D58A" stroke-width="2.6" opacity=".95"/>
+      <path d="M41 40C38 62 36 86 40 106 48 101 54 94 62 94 70 94 76 101 84 106 88 86 86 62 83 40Z" fill="#5B3A22"/>
+      <path d="M40 101C32 109 28 131 26 161 24 187 22 207 20 223H104C102 207 100 187 98 161 96 131 92 109 84 101 76 97 48 97 40 101Z" fill="url(#jz${u}b)" stroke="#D9C9AE"/>
+      <path d="M50 122C48 152 46 192 44 221M74 122C76 152 78 192 80 221M62 130V221" stroke="rgba(150,120,90,.22)" stroke-width="2" fill="none"/>
+      <path d="M21 215H103" stroke="#E9BC5C" stroke-width="4"/>
+      <path d="M44 101C56 121 72 151 92 177L100 169C82 143 66 117 54 99Z" fill="#8E1838" stroke="#E9BC5C" stroke-width="1"/>
+      <ellipse cx="48" cy="225" rx="9" ry="4" fill="#7A4A2A"/><ellipse cx="76" cy="225" rx="9" ry="4" fill="#7A4A2A"/>
+      <path d="M40 105C30 121 28 141 34 157L44 153C40 139 42 125 48 113Z" fill="#F4EBDB" stroke="#D9C9AE"/>
+      <circle cx="39" cy="157" r="6" fill="#E3B48C"/>
+      <rect x="56" y="70" width="12" height="15" rx="4" fill="#E3B48C"/>
+      <ellipse cx="62" cy="54" rx="16" ry="18" fill="#EBC29C"/>
+      <path d="M44 53C42 35 52 26 62 26 72 26 82 35 80 53 76 43 70 38 62 38 54 38 48 43 44 53Z" fill="#5B3A22"/>
+      <path d="M45 49C42 61 43 73 47 81L51 66ZM79 49C82 61 81 73 77 81L73 66Z" fill="#5B3A22"/>
+      <path d="M47 58C47 72 54 81 62 81 70 81 77 72 77 58 73 66 68 69 62 69 56 69 51 66 47 58Z" fill="#5B3A22"/>
+      <path d="M55 63C58 61 61 62 62 63 63 62 66 61 69 63 66 65 63 65 62 64 61 65 58 65 55 63Z" fill="#4A2E1A"/>
+      <path d="M53 53q3 2.4 6 0M65 53q3 2.4 6 0" stroke="#3A2414" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <circle cx="51" cy="60" r="3" fill="#E58A8A" opacity=".35"/><circle cx="73" cy="60" r="3" fill="#E58A8A" opacity=".35"/>
+      <path d="M58.5 66.5q3.5 2.6 7 0" stroke="#F1D2B0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    </g>
+    <g class="jz-arm">
+      <path d="M80 101C94 101 110 96 124 88L129 99C115 109 99 115 84 117Z" fill="#F4EBDB" stroke="#D9C9AE"/>
+      <circle cx="129" cy="92" r="7.4" fill="#E3B48C"/><path d="M131 86c3 1 5 3 5 6" stroke="#D49C74" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+  </svg>`;
+}
 function wheelHTML() {
-  const u = ++svgUid, P = Math.PI / 180, pt = (a, r) => `${(r * Math.sin(a * P)).toFixed(2)} ${(-r * Math.cos(a * P)).toFixed(2)}`;
-  let seg = '', bulbs = '';
-  for (let k = 0; k < 8; k++) {
-    const a0 = k * 45 - 22.5, gold = k % 2 === 1;
-    seg += `<path d="M0 0L${pt(a0, 100)}A100 100 0 0 1 ${pt(a0 + 45, 100)}Z" fill="url(#wg${u}${gold ? 'b' : 'a'})" stroke="#F3D58A" stroke-width="1.2"/><g transform="rotate(${k * 45}) translate(0 -64)"><path d="${WHEEL_ICONS[k % 3]}" fill="${gold ? '#6A1440' : '#F6DB92'}"/></g>`;
+  const u = ++svgUid, P = Math.PI / 180, N = 12, pt = (a, r) => `${(r * Math.sin(a * P)).toFixed(2)} ${(-r * Math.cos(a * P)).toFixed(2)}`;
+  let seg = '', pearls = '';
+  for (let k = 0; k < N; k++) {
+    const a0 = k * 30 - 15, gold = k % 2 === 1;
+    seg += `<path d="M0 0L${pt(a0, 100)}A100 100 0 0 1 ${pt(a0 + 30, 100)}Z" fill="url(#wg${u}${gold ? 'b' : 'a'})" stroke="#F3D58A" stroke-width=".6"/><g transform="rotate(${k * 30}) translate(0 -70) scale(.62)"><path d="${WHEEL_ICONS[k % 3]}" fill="none" stroke="${gold ? '#7A1E46' : '#F6DB92'}" stroke-width="1.6" stroke-linejoin="round"/></g>`;
   }
-  for (let k = 0; k < 16; k++) {
-    const x = (113 * Math.sin(k * 22.5 * P)).toFixed(1), y = (-113 * Math.cos(k * 22.5 * P)).toFixed(1);
-    bulbs += `<circle cx="${x}" cy="${y}" r="4.6" fill="#6E4410"/><circle class="bulb${k % 2 ? ' odd' : ''}" cx="${x}" cy="${y}" r="3.6" fill="#FFF6D2"/>`;
-  }
-  return `<div class="wheel-wrap"><div class="wheel-glow"></div>
-    <div class="wheel"><svg class="wheel-disc" viewBox="-104 -104 208 208" aria-hidden="true"><defs>
-      <radialGradient id="wg${u}a" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset=".15" stop-color="#A3305F"/><stop offset="1" stop-color="#4A0D2E"/></radialGradient>
-      <radialGradient id="wg${u}b" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset=".15" stop-color="#FFF0BE"/><stop offset=".7" stop-color="#E9BC5C"/><stop offset="1" stop-color="#B07A26"/></radialGradient></defs>
-      <circle r="103" fill="#B07A26"/>${seg}<circle r="100" fill="none" stroke="#F3D58A" stroke-width="2"/></svg></div>
-    <svg class="wheel-rim" viewBox="-124 -124 248 248" aria-hidden="true"><defs><linearGradient id="wg${u}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0BE"/><stop offset=".35" stop-color="#C9943B"/><stop offset=".6" stop-color="#FBE6A6"/><stop offset="1" stop-color="#9A6820"/></linearGradient></defs><circle r="113" fill="none" stroke="url(#wg${u}c)" stroke-width="13"/><circle r="106.5" fill="none" stroke="rgba(60,10,35,.6)" stroke-width="1.2"/>${bulbs}</svg>
-    <svg class="wheel-pin" viewBox="0 0 40 54" aria-hidden="true"><defs><linearGradient id="wg${u}d" x1="0" x2="1"><stop offset="0" stop-color="#B07A26"/><stop offset=".5" stop-color="#FFF0BE"/><stop offset="1" stop-color="#B07A26"/></linearGradient></defs><path d="M20 52 5 22a16 16 0 1 1 30 0Z" fill="url(#wg${u}d)" stroke="#7A4A12" stroke-width="1.5"/><circle cx="20" cy="17" r="7" fill="#B0244E" stroke="#FFE7A3" stroke-width="1.5"/><circle cx="17.5" cy="14.5" r="2" fill="#fff" opacity=".7"/></svg>
-    <button class="wheel-hub" aria-label="Girar a roleta">Girar</button></div>`;
+  for (let k = 0; k < 24; k++) pearls += `<circle class="bulb${k % 2 ? ' odd' : ''}" cx="${(106.5 * Math.sin(k * 15 * P)).toFixed(1)}" cy="${(-106.5 * Math.cos(k * 15 * P)).toFixed(1)}" r="1.9" fill="#FFF6D2"/>`;
+  return `<div class="wheel-stage"><div class="jesus">${jesusSVG(u)}</div>
+    <div class="wheel-wrap"><div class="wheel-glow"></div>
+      <svg class="wheel-disc" viewBox="-112 -112 224 224" aria-hidden="true"><defs>
+        <radialGradient id="wg${u}a" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset=".1" stop-color="#9E2D5B"/><stop offset="1" stop-color="#4A0D2E"/></radialGradient>
+        <radialGradient id="wg${u}b" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset=".1" stop-color="#FFF4D2"/><stop offset=".75" stop-color="#ECC774"/><stop offset="1" stop-color="#C08B34"/></radialGradient></defs>
+        ${seg}<circle r="34" fill="none" stroke="#F3D58A" stroke-width=".8" opacity=".8"/></svg>
+      <svg class="wheel-rim" viewBox="-112 -112 224 224" aria-hidden="true"><circle r="100.6" fill="none" stroke="#F3D58A" stroke-width="1.8"/><circle r="103.6" fill="none" stroke="#B4822C" stroke-width=".8"/><circle r="109.5" fill="none" stroke="#F3D58A" stroke-width=".6" opacity=".7"/>${pearls}</svg>
+      <svg class="wheel-pin" viewBox="0 0 24 36" aria-hidden="true"><path d="M12 35 4.6 13A7.6 7.6 0 1 1 19.4 13Z" fill="#F3D58A" stroke="#8A5A18" stroke-width="1"/><circle cx="12" cy="11.6" r="3.4" fill="#B0244E" stroke="#FFE7A3" stroke-width="1"/></svg>
+      <button class="wheel-hub" aria-label="Girar a roleta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 4h2.4v5.6h5v2.4h-5V20h-2.4v-8h-5V9.6h5z" fill="currentColor"/></svg></button>
+    </div></div>`;
 }
 /* versículos da roleta: os das ocasiões desse tipo de carta, menos os que já estão na carta */
 function wheelPool(L) {
@@ -1002,6 +1069,68 @@ function wheelPool(L) {
   return ids.map(id => ({ id, ref: VERSES[id][0], t: VERSES[id][1] }));
 }
 
+/* ===== Números: relógio, coração e luas ===== */
+const CLOCK_IC = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="rgba(255,226,180,.08)" stroke="#E9BC5C" stroke-width="2"/><path d="M20 6v3M20 31v3M6 20h3M31 20h3" stroke="#E9BC5C" stroke-width="2" stroke-linecap="round"/><g class="ck-h"><path d="M20 20V12" stroke="#F6DB92" stroke-width="2.4" stroke-linecap="round"/></g><g class="ck-m"><path d="M20 20h9" stroke="#FFF1C4" stroke-width="1.6" stroke-linecap="round"/></g><circle cx="20" cy="20" r="2" fill="#F6DB92"/></svg>';
+const MOON_IC = '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M25 7a14 14 0 1 0 8 23A12 12 0 0 1 25 7Z" fill="#F6DB92" stroke="#B4822C" stroke-width="1"/><path class="st" d="M9 8l1 2.4 2.4 1-2.4 1L9 15l-1-2.6-2.4-1L8 10.4Z" fill="#FFF1C4"/><path class="st s2" d="M33 6l.7 1.6 1.6.7-1.6.7L33 10.6l-.7-1.6-1.6-.7 1.6-.7Z" fill="#FFF1C4"/></svg>';
+const HOURGLASS = '<svg class="hg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9" stroke="#E9BC5C" stroke-width="1.6" fill="none" stroke-linecap="round"/><path class="sand" d="M9 19.5c1-2 2-2.6 3-3 1 .4 2 1 3 3Z" fill="#F6DB92"/></svg>';
+function numbersHTML(L, C, ph) {
+  const st = L.stats, num = k => ph ? '—' : fmt(st[k]);
+  const ic = { hours: CLOCK_IC, nights: MOON_IC, years: HOURGLASS, weeks: ICON.calendar };
+  let ticks = '';
+  for (let k = 0; k < 60; k++) ticks += `<path d="M100 ${k % 5 ? 8 : 5}V${k % 5 ? 13 : 17}" transform="rotate(${k * 6} 100 100)" stroke="#E9BC5C" stroke-width="${k % 5 ? .8 : 2}" opacity="${k % 5 ? .55 : .95}"/>`;
+  const hearts = Array.from({ length: 7 }, (_, i) => `<i class="fh" style="--x:${8 + i * 13}%;--d:${(i * .9).toFixed(1)}s;--s:${10 + (i % 3) * 5}px"></i>`).join('');
+  return `<p class="l-label">${esc(C.numbersLabel)}</p>
+    <div class="since">${ph ? '<span class="since-d">Escolha a data para ver a história de vocês em números</span>' : `<span class="since-k gold-t">${esc(C.since)}</span><span class="since-d">${esc(longDate(parseISO(L.date)))}${esc(C.sinceSuffix || '')}</span>`}</div>
+    <div class="heart-count">
+      <svg class="hc-dial" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="97" fill="none" stroke="#E9BC5C" stroke-width=".8" opacity=".6"/>${ticks}</svg>
+      <svg class="hc-hand" viewBox="0 0 200 200" aria-hidden="true"><path d="M100 100V22" stroke="#F6DB92" stroke-width="1.4" stroke-linecap="round"/><path d="M100 26C96 22 95 18 97.5 16.5 99 15.6 100 16.6 100 18 100 16.6 101 15.6 102.5 16.5 105 18 104 22 100 26Z" fill="#FF8FB1"/><circle cx="100" cy="100" r="3" fill="#F6DB92"/></svg>
+      <svg class="hc-heart" viewBox="-20 -18 40 36" aria-hidden="true"><path d="${HEART_PATH}" transform="translate(0 2) scale(1.55)" fill="rgba(176,36,78,.28)" stroke="#F3D58A" stroke-width=".7"/></svg>
+      <div class="hc-num"><b class="l-big gold-t" data-count="${ph ? 0 : st.days}">${num('days')}</b></div>
+      ${ph ? '' : hearts}
+    </div>
+    <div class="l-bigl">${esc(C.big)}</div>
+    ${ph ? '' : `<div class="l-tick">${HOURGLASS}<span>e contando · <span data-tick="${L.date}">${clockSince(L.date)}</span></span></div>`}
+    <div class="l-rows">${C.rows.map(([k, label]) => `<div class="l-row"><span class="r-ic">${ic[k] || CLOCK_IC}</span><b class="gold-t" data-count="${ph ? 0 : st[k]}">${num(k)}</b><span class="r-l">${esc(label)}</span></div>`).join('')}</div>`;
+}
+
+/* ===== Última foto: câmera antiga que tira e revela a foto aos poucos ===== */
+function cameraSVG(u) {
+  let marks = '';
+  for (let k = 0; k < 24; k++) marks += `<path d="M160 70v5" transform="rotate(${k * 15} 160 128)" stroke="#E9C46A" stroke-width="${k % 3 ? .8 : 1.6}"/>`;
+  return `<svg class="cam-svg" viewBox="0 0 320 210" aria-hidden="true"><defs>
+    <linearGradient id="cm${u}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A382A"/><stop offset=".5" stop-color="#3A2219"/><stop offset="1" stop-color="#241410"/></linearGradient>
+    <linearGradient id="cm${u}b" x1="0" x2="1"><stop offset="0" stop-color="#9A6820"/><stop offset=".25" stop-color="#F6D98C"/><stop offset=".5" stop-color="#C9943B"/><stop offset=".75" stop-color="#FBE6A6"/><stop offset="1" stop-color="#A06C22"/></linearGradient>
+    <radialGradient id="cm${u}c" cx=".38" cy=".34" r=".85"><stop offset="0" stop-color="#8A73C9"/><stop offset=".35" stop-color="#3B2557"/><stop offset=".7" stop-color="#140C1F"/><stop offset="1" stop-color="#05030A"/></radialGradient>
+    <linearGradient id="cm${u}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6DA"/><stop offset=".45" stop-color="#C9A46A"/><stop offset=".55" stop-color="#7A5420"/><stop offset="1" stop-color="#E8CF9A"/></linearGradient>
+    <pattern id="cm${u}p" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r=".9" fill="rgba(0,0,0,.28)"/></pattern></defs>
+    <g class="cam-top">
+      <g class="cam-bulb"><rect x="42" y="4" width="62" height="34" rx="7" fill="url(#cm${u}b)" stroke="#5A3A10"/><rect x="49" y="9" width="48" height="24" rx="5" fill="#FFF8E6"/><path d="M53 13h40M53 21h40M53 29h40" stroke="#E8D9B8" stroke-width="1.2"/></g>
+      <g class="cam-btn"><rect x="232" y="14" width="34" height="16" rx="4" fill="url(#cm${u}b)" stroke="#5A3A10"/><rect x="238" y="7" width="22" height="10" rx="4" fill="#C9302C" stroke="#6B1210"/></g>
+    </g>
+    <rect x="16" y="30" width="288" height="42" rx="12" fill="url(#cm${u}b)" stroke="#6B4612"/>
+    <text x="160" y="57" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="700" font-size="16" fill="#5A3A10">Propósito</text>
+    <rect x="230" y="38" width="48" height="26" rx="6" fill="#1A1020" stroke="#E9C46A" stroke-width="2"/><path d="M236 44h14" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+    <rect x="8" y="58" width="304" height="144" rx="24" fill="url(#cm${u}a)"/>
+    <rect x="8" y="58" width="304" height="144" rx="24" fill="url(#cm${u}p)"/>
+    <rect x="8" y="68" width="304" height="5" fill="url(#cm${u}b)" opacity=".9"/><rect x="8" y="184" width="304" height="4" fill="url(#cm${u}b)" opacity=".9"/>
+    <circle class="cam-led" cx="40" cy="96" r="4.5" fill="#FF5A5A"/>
+    <circle cx="160" cy="128" r="62" fill="url(#cm${u}d)" stroke="#5A3A10" stroke-width="1.5"/>
+    <circle cx="160" cy="128" r="53" fill="#140D18" stroke="#E9C46A" stroke-width="1.2"/>${marks}
+    <circle cx="160" cy="128" r="39" fill="url(#cm${u}c)"/>
+    <circle cx="160" cy="128" r="21" fill="#07040C" stroke="rgba(255,255,255,.1)"/>
+    <g class="cam-glint"><path d="M131 106A40 40 0 0 1 168 92" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55" fill="none"/><circle cx="175" cy="112" r="4" fill="#fff" opacity=".75"/></g>
+    <rect x="66" y="193" width="188" height="7" rx="3.5" fill="#0D0705"/>
+  </svg>`;
+}
+function cameraHTML(L, mini) {
+  const cap = L.captions[3];
+  return `<div class="cam-wrap${mini ? ' shot dev' : ''}">
+    <button class="camera" aria-label="Tirar e revelar a última foto">${cameraSVG(++svgUid)}<span class="cam-flash" aria-hidden="true"></span></button>
+    <div class="cam-out"><div class="cam-slide"><figure class="cam-pol"><div class="cp-img"><img src="${L.photos[3]}" alt="${esc(cap || 'Foto')}"><i class="cp-veil"></i></div><figcaption>${cap ? esc(cap) : '&nbsp;'}</figcaption></figure></div></div>
+    <p class="cam-hint">Toque na câmera para revelar a foto</p>
+  </div>`;
+}
+
 function polHTML(p, i) {
   if (!p.src) return `<figure class="pol empty"><div class="pol-empty">${ICON.image}<span>Sua foto aqui</span></div><figcaption>&nbsp;</figcaption></figure>`;
   return `<figure class="pol" data-i="${i}" tabindex="0" role="button" aria-label="Ampliar foto"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><figcaption>${esc(p.cap || '')}</figcaption></figure>`;
@@ -1009,7 +1138,7 @@ function polHTML(p, i) {
 
 /* A carta inteira. Na carta aberta (mode "full") as partes aparecem uma de cada vez:
    data-step diz o que libera a próxima (next = botão Continuar, spin = girar a roleta,
-   jar = ler todos os bilhetes, amen, reveal = revelar a foto, ask = dizer sim). */
+   jar = ler todos os bilhetes, reveal = revelar a foto, ask = dizer sim, amen). A oração é a última. */
 function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
   const pics = [0, 1, 2].map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
@@ -1021,41 +1150,29 @@ function letterHTML(L, mode, opt = {}) {
   h += `<div class="lb">`;
   const music = full && L.ml ? `<div class="l-music"><p class="l-label">Nossa música</p><div class="mbox"></div><button class="l-btn ghost som-btn" hidden>${ICON.music}Toque para ouvir com som</button></div>` : '';
   h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>${music}`);
-  h += sec('s-verse', '', 'next', `${verseHTML(L.verses[0], true)}${FLOURISH}`);
   if (pics.length || mini) {
     h += sec('s-photos', '', 'next', `<p class="l-label">Nossos momentos</p><div class="pols" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`);
   }
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
-    <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="gold-t shine"></p><cite></cite></blockquote></div>${SKIP}`);
-  if (L.stats || mini) {
-    const st = L.stats, ph = !st;
-    h += sec('s-numbers', `l-numbers${ph ? ' ph-mode' : ''}`, 'next', `<p class="l-label">${esc(C.numbersLabel)}</p>
-      <p class="l-since">${ph ? 'Escolha a data para ver a história de vocês em números' : `${esc(C.since)} ${esc(longDate(parseISO(L.date)))}${esc(C.sinceSuffix || '')}`}</p>
-      <div class="l-big gold-t" data-count="${ph ? 0 : st.days}">${ph ? '—' : fmt(st.days)}</div><div class="l-bigl">${esc(C.big)}</div>
-      ${ph ? '' : `<div class="l-tick" data-tick="${L.date}">e contando · <span>${clockSince(L.date)}</span></div>`}
-      <div class="l-rows">${C.rows.map(([k, label]) => `<div class="l-row"><b class="gold-t" data-count="${ph ? 0 : st[k]}">${ph ? '—' : fmt(st[k])}</b><span>${esc(label)}</span></div>`).join('')}</div>
-      <p class="l-foot">“Suas misericórdias não têm fim. Elas são novas a cada manhã.”<span>Lamentações 3:22-23</span></p>`);
-  }
-  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${messageHTML(L.message, full)}`);
+    <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
+  if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
+  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full)}`);
   const n = L.reasons.length;
   h += sec('s-jar', '', 'jar', `<p class="l-label">O pote dos motivos</p><h3 class="l-h gold-t">${esc(C.jarH)}</h3><p class="l-sub">Toque no pote e tire um bilhete.</p>
     <div class="jar-wrap"><button class="jar" aria-label="Tirar um bilhete do pote">${jarSVG(n)}</button>
     ${n <= 14 ? `<div class="jar-prog" aria-hidden="true">${'<i></i>'.repeat(n)}</div>` : ''}
     <p class="jar-hint"><b>0</b> de ${n} bilhetes lidos</p>
-    <div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>
+    ${full ? '' : '<div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>'}
     ${full ? '<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>' : ''}${SKIP}</div>`);
-  if (L.verses.length > 1) h += sec('', 'l-more', 'next', `${FLOURISH}${L.verses.slice(1).map(v => verseHTML(v, false)).join(orn())}`);
-  if (L.prayer) h += sec('s-prayer', '', 'amen', `<div class="pray"><div class="dove">${ICON.dove}</div><p class="l-label">${esc(C.prayLabel)}</p><p class="pray-t">${esc(L.prayer)}</p><button class="amen" aria-pressed="false">Amém</button><p class="amen-note" hidden>Agora vocês oraram juntos.</p></div>`);
-  if (L.photos[3]) {
-    const cap = L.captions[3];
-    h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p><figure class="reveal" role="button" tabindex="0" aria-label="Revelar a última foto"><div class="rv-img"><img src="${L.photos[3]}" alt=""><span class="veil">${ICON.sparkle}<span>Toque para revelar</span></span></div><figcaption>${cap ? esc(cap) : bible(VERSES.ec3_11[1])}</figcaption></figure>${cap ? '' : `<p class="l-ref">${VERSES.ec3_11[0]}</p>`}`);
-  }
+  if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
+  h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
       <div class="ask-btns"><button class="ask-yes">Sim!</button><button class="ask-no">Não</button></div>
       <div class="ask-done" hidden><b>Resposta: sim!</b><a class="l-btn light" href="${waLink(`Sim! Eu aceito, ${L.from}! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Contar para ${esc(L.from)}</a></div></div>`);
   }
+  if (L.prayer) h += sec('s-prayer', '', 'amen', `<div class="pray"><div class="dove">${ICON.dove}</div><p class="l-label">${esc(C.prayLabel)}</p><p class="pray-t">${esc(L.prayer)}</p><button class="amen" aria-pressed="false">Amém</button><p class="amen-note" hidden>Agora vocês oraram juntos.</p></div>`);
   h += sec('s-close', 'l-closing', 'end', `${orn()}<p class="l-close">${esc(C.closing)}</p><p class="l-sign gold-t shine">${esc(L.from)}</p>
     <div class="l-actions"><a class="l-btn" href="${waLink(`${L.from}, recebi a sua carta e amei! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Responder ${esc(L.from)}</a><button class="l-btn ghost" data-again>Ler de novo</button></div>
     <div class="l-credit"><span class="row"><span class="seal"><span></span></span>Feito com ${BRAND}</span>${opt.mode === 'recipient' ? '<button data-make>Faça uma carta assim</button>' : ''}<small>Versículos da Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0.</small></div>`);
@@ -1093,6 +1210,20 @@ function rain(host) {
   for (let i = 0; i < 34; i++) s += `<i class="${i % 3 ? '' : 'st'}" style="--x:${(Math.random() * 100).toFixed(1)}%;--s:${(9 + Math.random() * 12).toFixed(0)}px;--c:${cols[i % cols.length]};--du:${(3.2 + Math.random() * 2.6).toFixed(2)}s;--dl:${(Math.random() * 1.8).toFixed(2)}s;--dx:${((Math.random() - .5) * 120).toFixed(0)}px;--r:${((Math.random() - .5) * 720).toFixed(0)}deg"></i>`;
   r.innerHTML = s; host.appendChild(r); setTimeout(() => r.remove(), 7500);
 }
+/* bilhete que sai do pote e "cola" na tela de quem lê */
+function noteOverlay(host, from, text, n, total, paper, onClose) {
+  const o = document.createElement('div'), hb = host.getBoundingClientRect(), fb = from.getBoundingClientRect();
+  o.className = 'note-ov';
+  o.style.setProperty('--fx', `${(fb.left + fb.width / 2 - hb.left - hb.width / 2).toFixed(0)}px`);
+  o.style.setProperty('--fy', `${(fb.top + fb.height * .25 - hb.top - hb.height / 2).toFixed(0)}px`);
+  o.innerHTML = `<div class="note-card" role="dialog" aria-live="polite" style="--c:${paper}"><i class="tape a"></i><i class="tape b"></i><div class="note-in"><p></p><span class="note-n">Bilhete ${n} de ${total}</span><button class="note-ok">${ICON.heartFill}Guardar no coração</button></div></div>`;
+  o.querySelector('p').textContent = text;
+  host.appendChild(o); void o.offsetWidth; o.classList.add('on');
+  let closed = false;
+  const close = () => { if (closed) return; closed = true; o.classList.add('out'); setTimeout(() => o.remove(), 480); onClose(); };
+  o.addEventListener('click', e => { if (e.target === o || e.target.closest('.note-ok')) close(); });
+  setTimeout(() => { const b = o.querySelector('.note-ok'); if (b) b.focus({ preventScroll: true }); }, 600);
+}
 
 function bindCover(root, mode, hooks = {}) {
   const env = root.querySelector('.env'), seal = root.querySelector('button.env-seal');
@@ -1112,7 +1243,7 @@ function bindCover(root, mode, hooks = {}) {
 function countUp(root) {
   root.querySelectorAll('[data-count]').forEach(el => {
     const to = +el.dataset.count; if (!to) return;
-    const t0 = performance.now(), dur = 1700;
+    const t0 = performance.now(), dur = 2200;
     const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(Math.round(to * e)); if (p < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   });
@@ -1129,38 +1260,46 @@ function bindLetter(root, L, mode, hooks = {}) {
   const full = mode === 'full', cleanups = [], timers = [];
   const later = (f, ms) => { timers.push(setTimeout(f, ms)); };
   cleanups.push(() => timers.forEach(clearTimeout));
-  const tick = root.querySelector('[data-tick] span');
+  const tick = root.querySelector('[data-tick]');
   if (tick) { const id = setInterval(() => { tick.textContent = clockSince(L.date); }, 1000); cleanups.push(() => clearInterval(id)); }
 
   /* ----- passo a passo: cada parte aparece depois de uma ação ----- */
   const steps = full ? [...root.querySelectorAll('.lb > .lsec')] : [];
   let cur = -1;
   const nextBtn = s => s.querySelector(':scope > .l-next-wrap .l-next');
-  const delayFor = s => s.id === 's-message' ? Math.min(3300, s.querySelectorAll('.w').length * 32) + 1000
-    : s.id === 's-photos' ? 700 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 2300 : s.id === 's-open' ? 1800 : 2000;
+  const delayFor = s => s.id === 's-photos' ? 900 + s.querySelectorAll('.pol').length * 450 : s.id === 's-numbers' ? 2800
+    : s.id === 's-verses' ? Math.min(4200, s.querySelectorAll('.mw').length * 70) + 1200 : s.id === 's-open' ? 1800 : 2000;
   function show(s) {
     s.classList.remove('wait', 'pre'); void s.offsetWidth; s.classList.add('in');
-    if (s.id === 's-numbers') countUp(s);
-    const msg = s.querySelector('.l-msg.typing'); if (msg) { msg.classList.remove('typing'); msg.classList.add('typed'); }
-    if (s.dataset.step === 'next') later(() => { const b = nextBtn(s); if (b) b.hidden = false; }, reduced() ? 0 : delayFor(s));
+    if (s.id === 's-numbers') { countUp(s); later(() => sparkBurst(s.querySelector('.heart-count')), 2300); }
+    if (s.id === 's-message') escrever(s);
+    else if (s.dataset.step === 'next') later(() => { const b = nextBtn(s); if (b) b.hidden = false; }, reduced() ? 0 : delayFor(s));
     if (s.dataset.step === 'end') later(() => rain(hooks.host), 700);
   }
   const topOf = el => { let y = 0; for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop; return y; };
+  /* rola até "el" ficar logo abaixo dos botões de cima */
+  const irPara = (el, off = 0) => {
+    const bar = hooks.host && hooks.host.querySelector('.vw-top'), pad = bar ? bar.getBoundingClientRect().bottom - root.getBoundingClientRect().top + 14 : 70;
+    root.scrollTo({ top: Math.max(0, topOf(el) + off - pad), behavior: reduced() ? 'auto' : 'smooth' });
+  };
+  /* rola só o necessário para "el" não ficar escondido atrás da barra de baixo */
+  const mostrar = (el, folga = 170) => {
+    if (!full || !el) return;
+    const r = root.getBoundingClientRect(), b = el.getBoundingClientRect();
+    if (b.bottom > r.bottom - folga) root.scrollBy({ top: b.bottom - (r.bottom - folga), behavior: reduced() ? 'auto' : 'smooth' });
+  };
   function advance() {
     if (cur + 1 >= steps.length) return;
     const s = steps[++cur];
     show(s);
-    if (cur > 0) later(() => {
-      const bar = hooks.host && hooks.host.querySelector('.vw-top'), pad = bar ? bar.getBoundingClientRect().bottom - root.getBoundingClientRect().top + 14 : 70;
-      root.scrollTo({ top: Math.max(0, topOf(s) + 40 - pad), behavior: reduced() ? 'auto' : 'smooth' });
-    }, 60);
+    if (cur > 0) later(() => irPara(s, 40), 60);
   }
   /* a ação da parte foi feita: mostra o Continuar (wait vazio) ou segue sozinho depois de "wait" ms */
   const done = (s, wait) => {
     if (!full || !s || s.dataset.done) return;
     s.dataset.done = '1';
     s.querySelectorAll('.l-skip').forEach(x => { x.hidden = true; });
-    if (wait == null) { const b = nextBtn(s); if (b) b.hidden = false; return; }
+    if (wait == null) { const b = nextBtn(s); if (b) { b.hidden = false; if (s.id === 's-wheel') mostrar(b, 130); } return; }
     later(() => { if (steps[cur] === s) advance(); }, reduced() ? 0 : wait);
   };
   root.querySelectorAll('.l-next').forEach(b => b.addEventListener('click', () => {
@@ -1172,72 +1311,113 @@ function bindLetter(root, L, mode, hooks = {}) {
     s.dataset.done = '1'; b.hidden = true; if (w) w.remove();
     if (steps[cur] === s) advance();
   }));
-  const msgEl = full && root.querySelector('.l-msg');
-  if (msgEl) msgEl.addEventListener('click', () => {
-    msgEl.classList.add('fast');
-    const s = msgEl.closest('.lsec'), b = nextBtn(s);
-    if (b && s.classList.contains('in')) later(() => { b.hidden = false; }, 300);
-  });
+
+  /* mensagem: a pena escreve o texto no pergaminho; tocar no papel termina na hora */
+  function escrever(s) {
+    const ink = s.querySelector('.ink'), txt = s.querySelector('.ghost').textContent, quill = document.createElement('span');
+    quill.className = 'quill'; quill.innerHTML = QUILL;
+    let i = 0, n = 0, fim = false;
+    const acabar = () => {
+      if (fim) return; fim = true; ink.textContent = txt; s.classList.add('written');
+      later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 600);
+    };
+    /* a tela acompanha a pena quando ela chega perto da barra de baixo */
+    const seguir = () => {
+      const r = root.getBoundingClientRect(), q = quill.getBoundingClientRect();
+      if (q.bottom > r.bottom - 190) root.scrollBy({ top: r.height * .35, behavior: 'smooth' });
+    };
+    const passo = () => {
+      if (fim) return;
+      i = Math.min(txt.length, i + 2); ink.textContent = txt.slice(0, i); ink.appendChild(quill);
+      if (++n % 6 === 0) seguir();
+      if (i < txt.length) later(passo, /[.,!?;:]/.test(txt[i - 1]) ? 170 : 36); else later(acabar, 700);
+    };
+    s.querySelector('.parch').addEventListener('click', acabar);
+    if (reduced()) acabar(); else { later(() => irPara(s.querySelector('.scroll'), -50), 1250); later(passo, 1300); }
+  }
 
   if (full) root.querySelectorAll('.pol[data-i]').forEach(p => {
     const open = () => hooks.onPhoto && hooks.onPhoto(p.querySelector('img').src, p.querySelector('figcaption').textContent);
     p.addEventListener('click', open); p.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
   });
 
-  /* pote: cada toque tira um bilhete, que voa e abre; lidos todos, a carta continua */
+  /* pote: cada toque tira um papelzinho; na carta aberta ele cola na tela, lidos todos a carta continua */
   const jarWrap = root.querySelector('.jar-wrap');
   if (jarWrap) {
     const jar = jarWrap.querySelector('.jar'), n = L.reasons.length, slip = jarWrap.querySelector('.slip'), hint = jarWrap.querySelector('.jar-hint');
     const prog = [...jarWrap.querySelectorAll('.jar-prog i')], notes = [...jar.querySelectorAll('.jn')];
     let order = shuffle([...Array(n).keys()]), k = 0, read = 0, busy = false;
+    const marcar = () => {
+      prog.forEach((x, j) => x.classList.toggle('on', j < read));
+      hint.innerHTML = read >= n ? 'Você leu todos os motivos! ✨' : `<b>${read}</b> de ${n} bilhetes lidos`;
+    };
+    const terminou = () => {
+      if (read < n || jarWrap.classList.contains('done')) return;
+      jarWrap.classList.add('done'); burst(jarWrap); sparkBurst(jarWrap); done(jarWrap.closest('.lsec'), 1600);
+      later(() => notes.forEach(x => x.classList.remove('out')), reduced() ? 0 : 700); // o pote se enche de novo
+    };
     jar.addEventListener('click', () => {
       if (busy) return; busy = true;
       if (k >= n) { k = 0; order = shuffle(order); notes.forEach(x => x.classList.remove('out')); }
-      const i = order[k++]; read = Math.max(read, k);
+      const i = order[k++], num = k; read = Math.max(read, k);
       jar.classList.remove('shake', 'tap'); void jar.offsetWidth; jar.classList.add('shake', 'tap');
       const keep = notes.length - Math.ceil(k * notes.length / n); notes.forEach((x, j) => x.classList.toggle('out', j >= keep));
-      const fly = document.createElement('i'); fly.className = 'fly-note'; fly.style.setProperty('--c', NOTE_COLORS[i % NOTE_COLORS.length]); jarWrap.appendChild(fly);
-      const quick = reduced();
-      try { fly.animate([{ transform: 'translate(0,0) rotate(0) scale(.6)', opacity: 0 }, { opacity: 1, offset: .15 }, { transform: `translate(${(Math.random() * 70 - 35).toFixed(0)}px,-120px) rotate(${(120 + Math.random() * 200).toFixed(0)}deg) scale(1.3)`, opacity: 1, offset: .6 }, { transform: 'translate(0,-50px) rotate(360deg) scale(2.3)', opacity: 0 }], { duration: quick ? 10 : 700, delay: quick ? 0 : 220, easing: 'cubic-bezier(.3,.7,.4,1)', fill: 'forwards' }); } catch (e) {}
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
+      if (full && hooks.host) {
+        later(() => noteOverlay(hooks.host, jar, L.reasons[i], num, n, NOTE_PAPER[i % 8], () => { busy = false; marcar(); terminou(); }), reduced() ? 0 : 260);
+        return;
+      }
       setTimeout(() => {
-        fly.remove();
-        slip.hidden = false; slip.style.setProperty('--c', NOTE_PAPER[i % NOTE_PAPER.length]);
-        slip.querySelector('p').textContent = L.reasons[i]; slip.querySelector('.slip-n').textContent = `Bilhete ${k} de ${n}`;
+        slip.hidden = false; slip.style.setProperty('--c', NOTE_PAPER[i % 8]);
+        slip.querySelector('p').textContent = L.reasons[i]; slip.querySelector('.slip-n').textContent = `Bilhete ${num} de ${n}`;
         slip.classList.remove('in'); void slip.offsetWidth; slip.classList.add('in');
-        prog.forEach((x, j) => x.classList.toggle('on', j < read));
-        hint.innerHTML = read >= n ? 'Você leu todos os motivos! ✨' : `<b>${read}</b> de ${n} bilhetes lidos`;
-        busy = false;
-        try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
-        if (read >= n && !jarWrap.classList.contains('done')) { jarWrap.classList.add('done'); burst(jarWrap); sparkBurst(jarWrap); done(jarWrap.closest('.lsec'), 2800); }
-      }, quick ? 20 : 820);
+        busy = false; marcar();
+      }, reduced() ? 20 : 500);
     });
   }
 
-  /* roleta: gira, para num versículo e libera o Continuar */
-  const wheel = root.querySelector('.wheel-wrap');
-  if (wheel) {
-    const s = wheel.closest('.lsec'), disc = wheel.querySelector('.wheel-disc'), hub = wheel.querySelector('.wheel-hub'), btn = s.querySelector('.wheel-btn'), res = s.querySelector('.wheel-res');
+  /* roleta: Jesus gira, a roleta para e o versículo aparece letra por letra */
+  const stage = root.querySelector('.wheel-stage');
+  if (stage) {
+    const s = stage.closest('.lsec'), wheel = stage.querySelector('.wheel-wrap'), disc = stage.querySelector('.wheel-disc'), hub = stage.querySelector('.wheel-hub'), btn = s.querySelector('.wheel-btn'), res = s.querySelector('.wheel-res');
     const pool = wheelPool(L);
     let rot = 0, last = -1, busy = false;
     const spin = () => {
       if (busy) return; busy = true; btn.disabled = hub.disabled = true; res.classList.remove('on');
       let idx; do { idx = Math.floor(Math.random() * pool.length); } while (pool.length > 1 && idx === last); last = idx;
-      const target = (360 - Math.floor(Math.random() * 8) * 45) % 360 + (Math.random() * 26 - 13);
+      const target = (360 - Math.floor(Math.random() * 12) * 30) % 360 + (Math.random() * 20 - 10);
       rot += 360 * 6 + ((target - rot % 360) + 360) % 360;
-      disc.style.transform = `rotate(${rot}deg)`; wheel.classList.add('spinning');
+      stage.classList.remove('spinning'); void stage.offsetWidth; stage.classList.add('spinning');
+      later(() => { disc.style.transform = `rotate(${rot}deg)`; wheel.classList.add('spinning'); }, reduced() ? 0 : 280);
       try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
       later(() => {
-        wheel.classList.remove('spinning'); busy = false; btn.disabled = hub.disabled = false;
-        const v = pool[idx];
-        res.querySelector('p').innerHTML = verseText(v.t); res.querySelector('cite').textContent = v.ref;
-        res.hidden = false; void res.offsetWidth; res.classList.add('on');
+        wheel.classList.remove('spinning'); stage.classList.remove('spinning'); busy = false; btn.disabled = hub.disabled = false;
+        const v = pool[idx], p = res.querySelector('p');
+        p.classList.remove('lit'); p.innerHTML = charsHTML(v.t); res.querySelector('cite').textContent = v.ref;
+        res.hidden = false; void res.offsetWidth; res.classList.add('on'); mostrar(res, 150);
         btn.innerHTML = `${ICON.sparkle}Girar de novo`;
         sparkBurst(wheel);
         try { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); } catch (e) {}
-        done(s);
-      }, reduced() ? 300 : 4800);
+        const total = Math.min(4200, verseRaw(v.t).length * 34) + 1100;
+        later(() => { p.classList.add('lit'); done(s); }, reduced() ? 0 : total);
+      }, reduced() ? 300 : 5100);
     };
     btn.addEventListener('click', spin); hub.addEventListener('click', spin);
+  }
+
+  /* câmera antiga: flash, a foto sai e vai se revelando aos poucos */
+  const cam = root.querySelector('.cam-wrap');
+  if (cam && !cam.classList.contains('shot')) {
+    const camera = cam.querySelector('.camera');
+    camera.addEventListener('click', () => {
+      if (cam.classList.contains('shot')) return;
+      cam.classList.add('shot');
+      try { if (navigator.vibrate) navigator.vibrate([10, 30, 60]); } catch (e) {}
+      if (full && hooks.host && !reduced()) { const f = document.createElement('div'); f.className = 'screen-flash'; hooks.host.appendChild(f); setTimeout(() => f.remove(), 900); }
+      later(() => mostrar(cam.querySelector('.cam-pol'), 140), reduced() ? 0 : 1400);
+      later(() => { cam.classList.add('dev'); sparkBurst(cam); }, reduced() ? 0 : 2200);
+      done(cam.closest('.lsec'), 10500);
+    });
   }
 
   const amen = root.querySelector('.amen');
@@ -1245,13 +1425,8 @@ function bindLetter(root, L, mode, hooks = {}) {
     if (amen.classList.contains('on')) return;
     amen.classList.add('on'); amen.setAttribute('aria-pressed', 'true'); amen.textContent = 'Amém ✓';
     const note = root.querySelector('.amen-note'); if (note) note.hidden = false;
-    sparkBurst(amen.closest('.pray')); done(amen.closest('.lsec'), 1900);
+    sparkBurst(amen.closest('.pray')); done(amen.closest('.lsec'), 2000);
   });
-  const rvl = root.querySelector('.reveal');
-  if (rvl) {
-    const dev = () => { if (rvl.classList.contains('dev')) return; rvl.classList.add('dev'); sparkBurst(rvl); done(rvl.closest('.lsec'), 3000); };
-    rvl.addEventListener('click', dev); rvl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dev(); } });
-  }
   const ask = root.querySelector('.ask');
   if (ask) {
     const no = ask.querySelector('.ask-no'), yes = ask.querySelector('.ask-yes'); let dodges = 0;
@@ -1345,7 +1520,7 @@ document.addEventListener('keydown', e => {
 /* ===== Funil passo a passo ===== */
 const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
-const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', ''], verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', theme: null, email: '', pay: 'pix', code: null };
+const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', ''], verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
 const ui = { moreVerses: false };
 const desk = window.matchMedia('(min-width: 1040px)');
@@ -1358,7 +1533,19 @@ function loadDraft() {
   return s;
 }
 function save() { const { photos, ...rest } = S; store.set(KEY, rest); }
-function savePhoto(i) { if (!store.raw(PKEY(i), S.photos[i])) toast('Não deu para guardar a foto neste aparelho, mas ela continua na carta.'); }
+/* fotos guardadas no aparelho: IndexedDB aguenta fotos grandes; se não der, tenta o localStorage */
+const fotosDB = (() => {
+  let dbp = null;
+  const abrir = () => dbp || (dbp = new Promise((ok, erro) => {
+    try { const r = indexedDB.open('cp2', 1); r.onupgradeneeded = () => r.result.createObjectStore('fotos'); r.onsuccess = () => ok(r.result); r.onerror = () => erro(r.error); } catch (e) { erro(e); }
+  }));
+  const tx = (modo, f) => abrir().then(db => new Promise((ok, erro) => { const t = db.transaction('fotos', modo), r = f(t.objectStore('fotos')); t.oncomplete = () => ok(r && r.result); t.onerror = () => erro(t.error); }));
+  return { pegar: i => tx('readonly', st => st.get(i)), guardar: (i, v) => tx('readwrite', st => v == null ? st.delete(i) : st.put(v, i)) };
+})();
+function savePhoto(i) {
+  const v = S.photos[i];
+  fotosDB.guardar(i, v).then(() => store.raw(PKEY(i), null)).catch(() => { if (!store.raw(PKEY(i), v)) toast('Não deu para guardar a foto neste aparelho, mas ela continua na carta.'); });
+}
 const toName = () => (S.to || '').trim() || copyFor(S.recipient || 'amor', OCC[S.occasion]).toFallback;
 const curOcc = () => OCC[S.occasion] || OCCASIONS[S.recipient || 'amor'][0];
 const curTheme = () => S.theme || (REC[S.recipient] || REC.amor).theme;
@@ -1370,7 +1557,7 @@ const STEPS = [
   { id: 'nomes', label: 'Nomes', sec: 's-cover', ok: () => !!(S.to.trim() && S.from.trim()), summary: () => `${S.to} e ${S.from}` },
   { id: 'data', label: 'Data especial', sec: 's-numbers', optional: true, empty: () => !S.date, ok: () => !S.date || validDate(S.date), summary: () => S.date ? longDate(parseISO(S.date)) : 'Sem data' },
   { id: 'fotos', label: 'Fotos', sec: 's-photos', optional: true, empty: () => !S.photos.some(Boolean), ok: () => true, summary: () => { const n = S.photos.filter(Boolean).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos'; } },
-  { id: 'versiculos', label: 'Versículos', sec: 's-verse', ok: () => S.verses.length > 0, summary: () => S.verses.map(id => VERSES[id][0]).join(' · ') },
+  { id: 'versiculos', label: 'Versículos', sec: 's-verses', ok: () => S.verses.length > 0, summary: () => S.verses.map(id => VERSES[id][0]).join(' · ') },
   { id: 'mensagem', label: 'Mensagem', sec: 's-message', optional: true, empty: () => !S.message.trim(), ok: () => true, summary: () => S.message.trim() ? S.message.trim().slice(0, 60) + '…' : 'Mensagem pronta' },
   { id: 'motivos', label: 'Pote dos motivos', sec: 's-jar', optional: true, empty: () => !S.reasons.length, ok: () => true, summary: () => S.reasons.length ? `${S.reasons.length} motivos` : '5 motivos prontos' },
   { id: 'oracao', label: 'Oração', sec: 's-prayer', ok: () => S.prayer !== 3 || !!S.prayerCustom.trim(), summary: () => S.prayer === -1 ? 'Sem oração' : S.prayer === 3 ? 'Oração própria' : `Oração ${S.prayer + 1}` },
@@ -1382,10 +1569,9 @@ const VIEWS = {
     return `<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
       <p class="eyebrow">Uma carta de amor com a Palavra de Deus</p>
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
-      <p class="sub">Leva uns 3 minutos. Você só paga quando ela estiver do seu jeito.</p>
+      <p class="sub">Leva uns 3 minutos.</p>
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b><small>${r.desc}</small></span><span class="radio"></span></button>`).join('')}</div>
-      <button class="link ex-link" id="exBtn">${ICON.play} Ver uma carta pronta</button>
-      <ul class="trustrow"><li>${ICON.check}Sem cadastro</li><li>${ICON.check}Pix ou cartão</li><li>${ICON.check}Garantia de 7 dias</li></ul>`;
+      <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver uma prévia</button>`;
   },
   ocasiao() {
     return `<h1 class="h1" tabindex="-1">Qual é a <em>ocasião</em>?</h1>
@@ -1410,7 +1596,7 @@ const VIEWS = {
   },
   fotos() {
     return `<h1 class="h1" tabindex="-1">Fotos de <em>vocês</em></h1>
-      <p class="sub">Até 4. As três primeiras viram polaroides, e a última é revelada no fim da carta.</p>
+      <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta.</p>
       <div class="photos">${[0, 1, 2, 3].map(photoSlot).join('')}</div>`;
   },
   versiculos() {
@@ -1583,6 +1769,7 @@ function readyView() {
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
     <ul class="inc">
       <li>${ICON.checkc}<span><b>Carta animada</b> que abre quando ${esc(L.to)} quebra o selo${L.music === 'none' ? '' : ', com música'}</span></li>
+      <li>${ICON.checkc}<span><b>Mensagem num pergaminho</b>, escrita como se fosse na hora</span></li>
       <li>${ICON.checkc}<span><b>${L.verses.length} ${L.verses.length > 1 ? 'versículos' : 'versículo'}</b> em letras de ouro, a roleta da Palavra, o pote com ${L.reasons.length} motivos${L.prayer ? ' e uma oração' : ''}</span></li>
       ${third}
       <li>${ICON.checkc}<span><b>Link e cartão com QR code</b> para mandar no WhatsApp ou imprimir</span></li>
@@ -1596,7 +1783,8 @@ function checkoutView() {
   return `<p class="eyebrow">Pagamento</p>
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
     <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta para ${esc(L.to)}</b><small>${esc(L.title)}</small></span><strong>${brl(PRICE)}</strong></div>
-    <div class="form"><div class="field"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"><p class="hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div></div>
+    <div class="form"><div class="field"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"><p class="hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
+      <label class="check" id="mailRow"${cfg.email ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label></div></div>
     <p class="group-label">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-pay="pix" aria-pressed="${S.pay === 'pix'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
@@ -1604,7 +1792,7 @@ function checkoutView() {
     </div>
     <p class="trust">${ICON.lock}Pagamento seguro pelo Mercado Pago · 7 dias de garantia</p>
     <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div>
-    <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve só para o comprovante. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
+    <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }
 function doneView() {
   const L = resolveLetter(S), url = cartaUrl(S.code), link = url.replace(/^https?:\/\//, '');
@@ -1616,6 +1804,7 @@ function doneView() {
       <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
       <div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" id="copyLink">${ICON.copy}Copiar</button></div>
       <div class="qr-card"><div class="qr" id="qrBox"></div><div><b>Cartão com QR code</b><p>Imprima e entregue junto com um presente. É só apontar a câmera.</p><button class="btn btn-ghost sm" id="cardBtn">${ICON.download}Baixar cartão</button></div></div>
+      <div id="mailArea"></div>
       <button class="btn btn-ghost w" id="openLetter">${ICON.eye}Abrir a carta</button>
       ${editavel() ? `<button class="btn btn-ghost w" id="editPaid">${ICON.edit}Mudar alguma coisa</button>` : ''}
     </div>
@@ -1627,8 +1816,10 @@ function bindReady(el) {
   $('#editBtn', el).addEventListener('click', openEditSheet);
 }
 function bindCheckout(el) {
-  const em = $('#fEmail', el), err = $('#emailErr', el);
+  const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
   em.addEventListener('input', () => { S.email = em.value.trim(); err.hidden = true; em.classList.remove('bad'); save(); });
+  mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
+  carregarConfig().then(() => { const r = $('#mailRow', el); if (r) r.hidden = !cfg.email; });
   el.querySelectorAll('[data-pay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.pay; el.querySelectorAll('[data-pay]').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); refreshBar(); }));
 }
 function bindDone(el) {
@@ -1637,6 +1828,7 @@ function bindDone(el) {
   $('#openLetter', el).addEventListener('click', () => openViewer(L, { mode: 'recipient', onMake: () => { resetDraft(); } }));
   $('#newLetter', el).addEventListener('click', () => { if (confirm('Começar uma carta nova? A carta que você já pagou continua funcionando pelo link e pelo QR code.')) resetDraft(); });
   const ed = $('#editPaid', el); if (ed) ed.addEventListener('click', openEditSheet);
+  carregarConfig().then(() => pintarEmail(el, true));
   let qrCanvas = null;
   if (window.QRCode) {
     try { new QRCode($('#qrBox', el), { text: url, width: 200, height: 200, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
@@ -1648,6 +1840,28 @@ function bindDone(el) {
     const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
     openSheet(`<p class="eyebrow">Cartão para imprimir</p><h2 class="h2">Pronto para entregar</h2><p class="sub">No celular, toque e segure a imagem para salvar. No computador, clique com o botão direito.</p><img class="card-img" src="${png}" alt="Cartão com QR code da carta para ${esc(L.to)}">${framed ? '' : `<a class="btn btn-primary w" style="margin-top:20px" href="${png}" download="carta-para-${esc(L.to.toLowerCase().replace(/[^a-z0-9]+/gi, '-'))}.png">${ICON.download}Baixar imagem</a>`}`);
   });
+}
+
+/* e-mail com o link e o QR code: avisa que foi (ou está indo) ou oferece mandar */
+function pintarEmail(el, conferir) {
+  const box = $('#mailArea', el); if (!box) return;
+  if (!cfg.email || !editavel()) { box.innerHTML = ''; return; }
+  const foi = pedido.emailOk, pediu = pedido.querEmail;
+  box.innerHTML = foi || pediu
+    ? `<p class="mail-note">${ICON.mail}<span>${foi ? 'Enviamos' : 'Estamos enviando'} o link e o QR code para <b>${esc(S.email)}</b>. Se não aparecer, olhe a caixa de spam. <button class="link" id="mailBtn">Mandar de novo</button></span></p>`
+    : `<button class="btn btn-ghost w" id="mailBtn">${ICON.mail}Receber a carta no meu e-mail</button>`;
+  $('#mailBtn', box).addEventListener('click', async e => {
+    const b = e.currentTarget; if (b.disabled) return; b.disabled = true;
+    try {
+      await api('/email', { id: pedido.id, chave: pedido.chave });
+      pedido.emailOk = pedido.querEmail = true; store.set(PED, pedido); pintarEmail(el);
+      toast('Enviamos o link e o QR code para o seu e-mail');
+    } catch (err) { b.disabled = false; toast(err.dados && err.dados.erro === 'limite' ? 'Já mandamos algumas vezes. Olhe a caixa de spam.' : 'Não foi possível mandar agora. Tente de novo daqui a pouco.'); }
+  });
+  /* se ainda estava indo, confere de novo daqui a pouco */
+  if (conferir && pediu && !foi) setTimeout(() => api('/status?id=' + encodeURIComponent(pedido.id)).then(j => {
+    if (j.email === 'enviado' && pedido && !pedido.emailOk) { pedido.emailOk = true; store.set(PED, pedido); pintarEmail(el); }
+  }).catch(() => {}), 7000);
 }
 
 /* ----- Folhas ----- */
@@ -1668,6 +1882,10 @@ function openEditSheet() {
 const PED = 'cp2:pedido';
 let pedido = store.get(PED);       // { id, chave, pago, compraOk }
 let esperando = null, ocupado = false;
+/* o servidor diz se o envio por e-mail está ligado (só perguntamos no pagamento e na carta paga) */
+const cfg = {};
+let cfgPromessa = null;
+const carregarConfig = () => cfgPromessa || (cfgPromessa = api('/config').then(j => { cfg.email = !!j.email; }).catch(() => { cfg.email = false; }));
 const editavel = () => !!(S.code && pedido && pedido.id === S.code && pedido.chave);
 async function api(caminho, corpo) {
   const r = await fetch(API + caminho, corpo ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) } : { cache: 'no-store' });
@@ -1712,8 +1930,10 @@ async function pay() {
     const fotos = await subirFotos(msg);
     msg(metodo === 'pix' ? 'Gerando o seu Pix…' : 'Abrindo o Mercado Pago…');
     track('InitiateCheckout', { currency: 'BRL', value: PRICE });
-    const j = await api('/pagar', { metodo, email: S.email.trim(), carta: cartaParaServidor(fotos) });
-    pedido = { id: j.id, chave: j.chave, pago: false }; store.set(PED, pedido);
+    await carregarConfig();
+    const querEmail = !!cfg.email && S.mailMe !== false;
+    const j = await api('/pagar', { metodo, email: S.email.trim(), enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
+    pedido = { id: j.id, chave: j.chave, pago: false, querEmail }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     openPix(j.pix || {});
     esperarPagamento(0);
@@ -1736,13 +1956,13 @@ function openPix(pix) {
 async function esperarPagamento(n) {
   clearTimeout(esperando); esperando = null;
   if (!pedido || pedido.pago) return;
-  try { const j = await api('/status?id=' + encodeURIComponent(pedido.id)); if (j.pago) return approve(); } catch (e) {}
+  try { const j = await api('/status?id=' + encodeURIComponent(pedido.id)); if (j.pago) return approve(j); } catch (e) {}
   if (n < 450) esperando = setTimeout(() => esperarPagamento(n + 1), n < 150 ? 4000 : 8000);
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && pedido && !pedido.pago) esperarPagamento(0); });
-function approve() {
+function approve(j = {}) {
   clearTimeout(esperando); closeSheet();
-  pedido.pago = true;
+  pedido.pago = true; if (j.email === 'enviado') pedido.emailOk = true;
   if (!pedido.compraOk) { track('Purchase', { currency: 'BRL', value: PRICE }, { eventID: 'compra_' + pedido.id }); pedido.compraOk = true; }
   store.set(PED, pedido);
   S.code = pedido.id; S.view = 'done'; save(); render('fwd');
@@ -1762,7 +1982,7 @@ async function salvarMudancas() {
 function resetDraft() {
   clearTimeout(esperando); pedido = null; store.raw(PED, null);
   Object.assign(S, JSON.parse(JSON.stringify(BLANK)), { photos: [null, null, null, null], themeTouched: false });
-  [0, 1, 2, 3].forEach(i => store.raw(PKEY(i), null));
+  [0, 1, 2, 3].forEach(i => { store.raw(PKEY(i), null); fotosDB.guardar(i, null).catch(() => {}); });
   save(); go(0, 'back');
 }
 
@@ -1837,7 +2057,7 @@ function refreshBar() {
     const st = STEPS[S.step], last = S.step === STEPS.length - 1;
     nx.disabled = !st.ok();
     nx.innerHTML = last ? `Ver minha carta ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
-    note.textContent = editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho · Você só paga no final';
+    note.textContent = editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
@@ -1874,10 +2094,11 @@ function processImage(file) {
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(file), img = new Image();
     img.onload = () => {
-      const k = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight));
+      const k = Math.min(1, 2048 / Math.max(img.naturalWidth, img.naturalHeight));
       const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
-      const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .82));
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .92));
     };
     img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
     img.src = url;
@@ -1935,6 +2156,12 @@ function iniciarCriador() {
   desk.addEventListener ? desk.addEventListener('change', () => renderMini(true)) : desk.addListener(() => renderMini(true));
   window.addEventListener('resize', () => { const m = $('#mini'), lt = m && m.firstElementChild; if (lt && desk.matches) lt.style.setProperty('--cover-h', m.clientHeight + 'px'); });
   render(null);
+  /* fotos guardadas no IndexedDB chegam depois do primeiro desenho da tela */
+  Promise.all([0, 1, 2, 3].map(i => fotosDB.pegar(i).catch(() => null))).then(fs => {
+    let mudou = false;
+    fs.forEach((f, i) => { if (f && f !== S.photos[i]) { S.photos[i] = f; mudou = true; } });
+    if (mudou) rerender();
+  });
   /* deixa as fotos do exemplo prontas sem atrasar a primeira tela */
   (window.requestIdleCallback || (f => setTimeout(f, 2500)))(() => Art.example(), { timeout: 4000 });
   /* volta do cartão (Mercado Pago manda para /?pedido=<id>) ou Pix ainda esperando */

@@ -1,6 +1,7 @@
 // Funções compartilhadas: Mercado Pago + armazenamento das cartas (Netlify Blobs)
 import { getStore } from "@netlify/blobs";
 import { createHash } from "node:crypto";
+import { emailLigado, enviarCartaPorEmail } from "./correio.mjs";
 
 export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade
 export const DESCRICAO = "Carta com Propósito";
@@ -44,8 +45,9 @@ export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
 
 // procura no Mercado Pago um pagamento aprovado para esta carta
 // Pix: API de Orders (reg.mpOrder). Cartão: Checkout Pro (busca de pagamentos por external_reference).
-export async function confirmarPagamento(id, reg) {
-  if (reg.pago) return true;
+// Depois de pago, manda o e-mail com o link e o QR code (se a pessoa pediu e se ainda não foi).
+export async function confirmarPagamento(id, reg, { email = true } = {}) {
+  if (reg.pago) { if (email) await mandarEmail(id, reg); return true; }
   const valorPedido = Number(reg.valor) || 17.99; // pedidos antigos foram criados a 17,99
   let aprovado = null;
   if (reg.mpOrder) {
@@ -65,7 +67,32 @@ export async function confirmarPagamento(id, reg) {
   reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado;
   await loja().setJSON("c/" + id, reg);
   try { await avisarMeta(id, reg); } catch (e) { console.error("Meta CAPI", e.message); }
+  if (email) await mandarEmail(id, reg);
   return true;
+}
+
+// E-mail com o link e o QR code para quem comprou. Só manda uma vez (e desiste depois de 3 erros);
+// "forcar" é o botão "Receber no meu e-mail" da tela da carta paga.
+function prazo(p, ms) {
+  let t; const limite = new Promise((_, nao) => { t = setTimeout(() => nao(new Error("demorou")), ms); });
+  return Promise.race([p, limite]).finally(() => clearTimeout(t));
+}
+export async function mandarEmail(id, reg, { forcar = false } = {}) {
+  if (!emailLigado() || !reg.pago || !reg.email) return false;
+  if (!forcar && (!reg.querEmail || reg.emailOk || (reg.emailErros || 0) >= 3)) return !!reg.emailOk;
+  const atual = await loja().get("c/" + id, { type: "json" }).catch(() => null);
+  if (atual) Object.assign(reg, atual); // outra chamada pode ter acabado de mandar
+  if (!forcar && reg.emailOk) return true;
+  try {
+    const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p }), 9000);
+    reg.emailOk = Date.now(); reg.emailEnvios = (reg.emailEnvios || 0) + 1;
+  } catch (e) {
+    console.error("E-mail da carta não foi", e.code || (e.message === "demorou" ? "demorou" : "erro"), e.responseCode || ""); // sem o endereço de ninguém
+    reg.emailErros = (reg.emailErros || 0) + 1;
+  }
+  await loja().setJSON("c/" + id, reg);
+  return !!reg.emailOk;
 }
 
 // guarda dados do navegador de quem está comprando, para o Meta reconhecer a compra
