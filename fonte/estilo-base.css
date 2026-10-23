@@ -831,7 +831,10 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 @keyframes nextIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes nextPulse{0%,100%{box-shadow:0 0 0 0 rgba(236,193,107,.4)}50%{box-shadow:0 0 0 11px rgba(236,193,107,0)}}
 @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
-.l-skip{display:flex;margin:14px auto 0;font-size:13px;color:var(--ink-l3)}
+.l-skip{display:flex;align-items:center;gap:6px;margin:18px auto 0;height:40px;padding:0 18px;border-radius:999px;background:rgba(236,193,107,.16);border:1px dashed rgba(236,193,107,.75);color:#F7DE9C;font:600 13.5px/1 var(--f-ui);letter-spacing:.04em;position:relative;z-index:3}
+.l-skip svg{width:16px;height:16px;transform:rotate(-90deg)}
+.l-skip:active{transform:scale(.97)}
+.lsec.written .l-skip,.cine-photos.cs-fim .l-skip{display:none}
 .rain{position:absolute;inset:0;z-index:5;overflow:hidden;pointer-events:none}
 .rain i{position:absolute;top:-30px;left:var(--x);width:var(--s);height:var(--s);background:var(--c);-webkit-mask:var(--heart) center/contain no-repeat;mask:var(--heart) center/contain no-repeat;animation:fall var(--du) linear var(--dl) forwards}
 .rain i.st{-webkit-mask:none;mask:none;clip-path:var(--star)}

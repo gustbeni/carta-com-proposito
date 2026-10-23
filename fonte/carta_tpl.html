@@ -960,9 +960,9 @@ const INKWELL = '<svg class="inkwell" viewBox="0 0 40 40" aria-hidden="true"><el
 const CREST = '<svg class="crest" viewBox="0 0 120 54" aria-hidden="true"><path d="M8 40C26 40 34 46 44 46M112 40C94 40 86 46 76 46" stroke="#9C6B1E" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="6" cy="40" r="2" fill="#9C6B1E"/><circle cx="114" cy="40" r="2" fill="#9C6B1E"/><path d="M42 44h36l4-22-11 9-11-17-11 17-11-9z" fill="url(#crG)" stroke="#7A4E12" stroke-width="1"/><path d="M41 44h38v5H41z" fill="#B4822C" stroke="#7A4E12" stroke-width=".8"/><circle cx="50" cy="46.5" r="1.4" fill="#8E1838"/><circle cx="60" cy="46.5" r="1.6" fill="#2B4C9A"/><circle cx="70" cy="46.5" r="1.4" fill="#8E1838"/><circle cx="38" cy="22" r="2.4" fill="#E9BC5C"/><circle cx="82" cy="22" r="2.4" fill="#E9BC5C"/><path d="M58.6 4h2.8v4.6h4.4v2.6h-4.4V18h-2.8v-6.8h-4.4V8.6h4.4z" fill="#B4822C"/><defs><linearGradient id="crG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF0BE"/><stop offset=".5" stop-color="#E2B04A"/><stop offset="1" stop-color="#9C6B1E"/></linearGradient></defs></svg>';
 /* Pergaminho real: chega enrolado, amarrado com fita e selo de cera; o selo se rompe, ele desenrola,
    a pena escreve, um selo carimba o fim e, no Continuar, ele se enrola e é selado de novo */
-function scrollHTML(text, full) {
+function scrollHTML(text, full, aberto) {
   const t = esc(text.trim()).replace(/\n{3,}/g, '\n\n');
-  return `<div class="scroll royal${full ? ' fechado' : ''}">
+  return `<div class="scroll royal${full && !aberto ? ' fechado' : ''}">
     <div class="rod" aria-hidden="true"><i class="fin l"></i><i class="fin r"></i></div>
     <div class="parch-wrap"><div class="parch"><div class="parch-in">
       ${CREST}
@@ -970,7 +970,7 @@ function scrollHTML(text, full) {
       <div class="parch-foot">${INKWELL}<span class="seal stamp-seal"><span>${SEAL_EMBLEM}</span></span></div>
     </div></div></div>
     <div class="rod" aria-hidden="true"><i class="fin l"></i><i class="fin r"></i></div>
-    ${full ? `<div class="tie" aria-hidden="true"><i class="tie-band"></i><i class="tie-tail a"></i><i class="tie-tail b"></i><span class="seal tie-seal"><span>${SEAL_EMBLEM}</span></span></div>` : ''}
+    ${full && !aberto ? `<div class="tie" aria-hidden="true"><i class="tie-band"></i><i class="tie-tail a"></i><i class="tie-tail b"></i><span class="seal tie-seal"><span>${SEAL_EMBLEM}</span></span></div>` : ''}
   </div>`;
 }
 
@@ -1249,7 +1249,8 @@ function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
   const pics = (L.premium ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
   const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
-  const SKIP = demo ? '<button class="link l-skip" data-skip>Pular (só na prévia)</button>' : '';
+  const SKIP = demo ? `<button class="l-skip" data-skip>Pular esta parte${ICON.down}</button>` : '';
+  const rapido = full && opt.mode === 'example';
   const sec = (id, cls, step, inner) => `<section class="lsec${cls ? ' ' + cls : ''}${full ? ' wait' : ''}"${id ? ` id="${id}"` : ''}${full ? ` data-step="${step}"` : ''}>${inner}${full && (step === 'next' || step === 'spin') ? NEXT : ''}</section>`;
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
@@ -1258,13 +1259,13 @@ function letterHTML(L, mode, opt = {}) {
   h += sec('s-open', 'l-open', 'next', `<p class="l-date">${esc(longDate(new Date()))}</p><h2 class="l-to gold-t shine">Para ${esc(L.to)},</h2><p class="l-occ">${esc(L.title)}</p>${music}`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 ? ' pols6' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
-    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade : grade}`);
+    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
   }
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
   if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
-  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full)}`);
+  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}${SKIP}`);
   const n = L.reasons.length;
   h += sec('s-jar', '', 'jar', `<p class="l-label">O pote dos motivos</p><h3 class="l-h gold-t">${esc(C.jarH)}</h3><p class="l-sub">Toque no pote e tire um bilhete.</p>
     <div class="jar-wrap"><button class="jar" aria-label="Tirar um bilhete do pote">${jarSVG(n)}</button>
@@ -1272,8 +1273,8 @@ function letterHTML(L, mode, opt = {}) {
     <p class="jar-hint"><b>0</b> de ${n} bilhetes lidos</p>
     ${full ? '' : '<div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>'}
     ${full ? '<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>' : ''}${SKIP}</div>`);
-  if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
-  if (L.premium && L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L));
+  if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}${SKIP}`);
+  if (L.premium && L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L) + SKIP);
   h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
@@ -1415,7 +1416,7 @@ function bindLetter(root, L, mode, hooks = {}) {
     const s = b.closest('.lsec'); b.closest('.l-next-wrap').remove();
     if (steps[cur] !== s) return;
     /* pergaminho: enrola de novo, a fita volta e o selo carimba antes de seguir */
-    const sc = s.id === 's-message' && full && !reduced() ? s.querySelector('.scroll') : null;
+    const sc = s.id === 's-message' && full && !reduced() && !hooks.rapido ? s.querySelector('.scroll') : null;
     if (sc) {
       sc.classList.remove('aberto'); sc.classList.add('fechando', 'fechado');
       /* a tela acompanha o pergaminho enquanto ele enrola, para ele não sumir lá em cima */
@@ -1453,11 +1454,14 @@ function bindLetter(root, L, mode, hooks = {}) {
       if (fim) return;
       i = Math.min(txt.length, i + 2); ink.textContent = txt.slice(0, i); ink.appendChild(quill);
       if (++n % 6 === 0) seguir();
-      if (i < txt.length) later(passo, /[.,!?;:]/.test(txt[i - 1]) ? 170 : 36); else later(acabar, 700);
+      if (hooks.rapido) { i = Math.min(txt.length, i + 4); ink.textContent = txt.slice(0, i); ink.appendChild(quill); }
+      if (i < txt.length) later(passo, /[.,!?;:]/.test(txt[i - 1]) ? (hooks.rapido ? 60 : 170) : (hooks.rapido ? 22 : 36)); else later(acabar, hooks.rapido ? 300 : 700);
     };
     s.querySelector('.parch').addEventListener('click', acabar);
     const sc = s.querySelector('.scroll');
     if (reduced()) { sc.classList.remove('fechado'); sc.classList.add('aberto', 'rompe'); return acabar(); }
+    /* nas prévias de exemplo o pergaminho já chega aberto e a pena escreve bem mais rápido */
+    if (hooks.rapido) { sc.classList.add('aberto'); later(passo, 500); return; }
     /* o selo se rompe, a fita cai e o pergaminho desenrola; depois a pena começa */
     later(() => { sc.classList.add('rompe'); sparkBurst(sc); try { if (navigator.vibrate) navigator.vibrate(14); } catch (e) {} }, 1600);
     later(() => { sc.classList.remove('fechado'); sc.classList.add('aberto'); }, 2300);
@@ -1627,7 +1631,7 @@ function openViewer(L, opt = {}) {
   v.hidden = false; document.documentElement.classList.add('noscroll');
   const scroll = $('#vwScroll'), cover = $('#vwCover'), lb = $('#lightbox'), mBtn = $('#vwMusic');
   const letter = bindLetter(scroll, L, 'full', {
-    host: v,
+    host: v, rapido: mode === 'example',
     onPhoto(src, cap) { lb.querySelector('img').src = src; lb.querySelector('p').textContent = cap; lb.hidden = false; },
     onMake() { closeViewer(); if (opt.onMake) opt.onMake(); }
   });
