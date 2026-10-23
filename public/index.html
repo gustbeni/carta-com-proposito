@@ -3352,7 +3352,30 @@ async function mostrarCartao(L, url) {
   if (window.QRCode) { const big = document.createElement('div'); try { new QRCode(big, { text: url, width: 512, height: 512, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); qrCanvas = big.querySelector('canvas'); } catch (e) {} }
   const png = await Art.card(L, qrCanvas);
   const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
-  openSheet(`<p class="eyebrow">Cartão para imprimir</p><h2 class="h2">Pronto para entregar</h2><p class="sub">No celular, toque e segure a imagem para salvar. No computador, clique com o botão direito.</p><img class="card-img" src="${png}" alt="Cartão com QR code da carta para ${esc(L.to)}">${framed ? '' : `<a class="btn btn-primary w" style="margin-top:20px" href="${png}" download="carta-para-${esc(L.to.toLowerCase().replace(/[^a-z0-9]+/gi, '-'))}.png">${ICON.download}Baixar imagem</a>`}`);
+  openSheet(`<p class="eyebrow">Cartão para imprimir</p><h2 class="h2">Pronto para entregar</h2><p class="sub">No celular, toque e segure a imagem para salvar. No computador, clique com o botão direito.</p><img class="card-img" src="${png}" alt="Cartão com QR code da carta para ${esc(L.to)}">${framed ? '' : `<button class="btn btn-primary w" style="margin-top:20px" id="baixarCartao">${ICON.download}Salvar imagem</button><p class="hint" id="baixarDica" style="text-align:center;margin-top:10px" hidden></p>`}`);
+  const bt = $('#baixarCartao'); if (!bt) return;
+  const nome = `carta-para-${L.to.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'voce'}.png`;
+  let blob = null; try { blob = await (await fetch(png)).blob(); } catch (e) {} // pronto antes do toque: o iPhone só abre o menu se for direto no toque
+  bt.addEventListener('click', () => baixarImagem(blob, nome, $('#baixarDica')));
+}
+/* salvar a imagem do cartão: no iPhone (e dentro do Instagram) o "download" comum não funciona,
+   então usa o menu de compartilhar do celular ("Salvar imagem"); se não der, baixa ou abre a imagem */
+async function baixarImagem(blob, nome, dica) {
+  const aviso = t => { if (dica) { dica.hidden = false; dica.textContent = t; } };
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const appInterno = /Instagram|FBAN|FBAV|FB_IAB|Line\/|WhatsApp/i.test(navigator.userAgent);
+  if (blob && navigator.canShare) {
+    try {
+      const arq = new File([blob], nome, { type: 'image/png' });
+      if (navigator.canShare({ files: [arq] })) { await navigator.share({ files: [arq] }); aviso('No menu que abriu, toque em "Salvar imagem" para guardar na galeria.'); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  if (blob && !ios && !appInterno) {
+    const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = nome; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+    aviso('A imagem foi baixada. Procure na pasta de downloads.'); return;
+  }
+  aviso(appInterno ? 'Aqui dentro do Instagram o download é bloqueado. Toque e segure a imagem acima e escolha "Salvar na Fotos". Ou abra o site no Safari (menu ⋯ › Abrir no navegador).' : 'Toque e segure a imagem acima e escolha "Salvar na Fotos".');
+  const img = document.querySelector('.card-img'); if (img) img.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 /* editar: se a carta foi montada neste aparelho, usa o rascunho daqui; se não, traz a carta do servidor para o criador */
 function editarCarta(c) {
