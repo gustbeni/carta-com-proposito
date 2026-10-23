@@ -26,12 +26,15 @@ Site que vende uma **carta cristã digital personalizada** em dois pacotes, **Pa
 | `netlify/functions/musica.mjs` | `/api/musica?s=track/ID`: recebe um Spotify e devolve o YouTube equivalente |
 | `netlify/functions/buscar.mjs` | `/api/buscar?q=`: busca a música pelo nome no YouTube (`sugestoesYouTube`) e devolve sugestões. Guarda cada busca por 14 dias no Blobs (store `buscas`). Quando o limite diário do YouTube acaba, responde `{ limite: true }` até o dia seguinte, e o site esconde a busca e fica só com o link. |
 | `netlify/functions/config.mjs` | `/api/config`: diz ao site se o envio por e-mail está ligado (só é chamado no pagamento e na carta paga) |
+| `netlify/functions/acesso.mjs` | `/api/acesso`: página **/meuacesso**. Recebe o e-mail da compra e devolve as cartas pagas (com a chave, para editar). Sem código de confirmação, por decisão do dono; tem limite de 40 consultas por hora por IP. Na primeira chamada liga ao e-mail as cartas vendidas antes (store `acessos`, chave `e/<hash do e-mail>`; o e-mail não fica escrito). O `pagar.mjs` já guarda cada compra nova ali. |
 | `netlify/functions/email.mjs` | `/api/email`: botão "Receber a carta no meu e-mail" da carta paga (pede a chave, no máximo 5 envios) |
 | `ads/` | Imagens baixadas pela Action `baixar.yml` (lista em `ads/urls.txt`) |
 
 As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro guarda `{ carta, chave, email, querEmail, plano, pago, pagoEm, mpOrder, mpId, valor, nav, metaOk, musicaYT, emailOk, emailEnvios, emailErros }`.
 
 **E-mail da carta:** na hora de pagar aparece "Quero receber a carta (link e QR code) neste e-mail" (marcado). Quando o pagamento é confirmado (`confirmarPagamento`, chamado pelo `status`, pelo `aviso` e pela `carta`), `mandarEmail` manda uma vez só e desiste depois de 3 erros. Na carta paga aparece "Enviamos..." ou o botão para receber. Só funciona com `EMAIL_USUARIO` e `EMAIL_SENHA_APP` no Netlify; sem elas, a opção nem aparece.
+
+**Meu acesso (/meuacesso):** depois do pagamento a pessoa cai nessa página (no lugar da antiga "página de obrigado"). Ela lista as cartas do e-mail com copiar o link, enviar, baixar o QR code, abrir e editar (7 dias). O e-mail fica lembrado no aparelho (`cp2:acesso`). Editar uma carta de outro aparelho traz a carta do servidor para o criador (`rascunhoDoServidor`) e salva pelo `/api/atualizar`, sem mandar as fotos de novo. O e-mail da carta também leva o link do Meu acesso, e o começo do site tem "Já comprou? Entrar no Meu acesso".
 
 **Pacotes (escolhidos só no fim, na prévia pronta):**
 - **Padrão, R$ 21,99:** 4 fotos (3 polaroides e 1 na câmera). Fica no ar por **3 meses** depois do pagamento (`DIAS_PADRAO`). Depois disso, `/api/carta` devolve `{ expirada: true }`. Só vale para pedidos com `reg.plano` (feitos depois dos pacotes). As cartas vendidas antes continuam para sempre.
@@ -75,7 +78,7 @@ A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cad
 10. **Oração**: é a última etapa; tocar em "Amém".
 11. **Despedida**: assinatura grande em ouro e chuva de corações.
 
-Na prévia e no exemplo, a roleta e o pote têm "Pular". Quem recebe não tem.
+Na prévia de quem está montando, a roleta, o pote e outras partes têm "Pular esta parte". Nas prévias de exemplo do começo (`hooks.rapido`) não há "Pular": o pergaminho já vem aberto e escreve rápido, a roleta e a câmera disparam sozinhas, e rolar a tela para baixo passa para a próxima parte (aviso "Role a tela para ver a próxima parte"). Quem recebe não tem nada disso.
 
 Visual: fundo de veludo (temas `rosa` = Vinho, `dourado` = Púrpura, `ceu` = Noite), tudo com ouro. Nomes e assinatura na fonte Great Vibes (classe `gold-t`); versículos em Playfair Display itálico com ouro espelhado; mensagem em Parisienne; bilhetes em Cormorant Garamond. Nada de logo do WhatsApp: o botão de enviar usa um ícone neutro.
 
@@ -92,4 +95,5 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 23/10, madrugada: pacotes Padrão (R$ 21,99, 3 meses) e Premium (R$ 29,99, vitalícia, abertura de cinema, slides das fotos, mini filme do casal), duas prévias no começo, e correção do pergaminho. Também na `nova-estetica`, sem publicar.
 - 23/10: **tudo publicado** (merge da `nova-estetica` na `main`), com o pergaminho real e a busca de música pelo nome. Falta fazer uma compra de teste com Pix e abrir a carta num iPhone.
 - 23/10, depois: prévias de exemplo mais rápidas (pergaminho já aberto, pena rápida, sem enrolar no Continuar; `hooks.rapido`) e botão "Pular esta parte" em destaque em mais partes. Publicado.
+- 23/10, tarde: página /meuacesso no lugar da página de obrigado, e prévias de exemplo que passam sozinhas ao rolar a tela. Na `nova-estetica`, sem publicar.
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.

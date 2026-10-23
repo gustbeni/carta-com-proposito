@@ -1109,6 +1109,38 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .sug-msg{display:flex;align-items:center;gap:8px;margin:2px 0;font-size:13.5px;color:var(--ink-3)}
 .busca-ou{margin:4px 0 -2px}
 
+/* Prévia de exemplo: aviso para rolar a tela */
+.vw-dica{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 98px);z-index:30;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:rgba(30,6,24,.78);border:1px solid rgba(236,193,107,.45);color:#F7DE9C;font:600 13px/1 var(--f-ui);letter-spacing:.02em;white-space:nowrap;transform:translateX(-50%);pointer-events:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);animation:dicaIn .6s var(--ease) both}
+.vw-dica svg{width:16px;height:16px;animation:nudge 1.4s ease-in-out infinite}
+@keyframes dicaIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translateX(-50%)}}
+
+/* Meu acesso (/meuacesso) */
+body.na-acesso .live{display:none!important}
+@media (min-width:1040px){body.na-acesso .layout{display:block}}
+.ja-comprou{margin:22px 0 0;font-size:14px;color:var(--ink-3)}
+.ja-comprou .link{display:inline;padding:0}
+.ace-mail{margin-top:18px;text-align:left}
+.ace-form{display:grid;gap:14px;margin-top:24px}
+.ace-quem{margin:20px 0 0;text-align:center;font-size:14px;line-height:1.5;color:var(--ink-3)}
+.ace-quem b{color:var(--ink-2);font-weight:600;overflow-wrap:anywhere}
+.ace-quem .link{display:inline;padding:0;font-size:14px}
+.ace-erro{text-align:center}
+.ace-erro .link{display:inline;padding:0;font-size:13px}
+.ace-vazio{margin:22px 0 0;padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--line);text-align:center;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.ace-lista{display:grid;gap:20px;margin-top:22px}
+.ace-card{display:grid;gap:12px;padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(255,226,160,.07),rgba(255,226,160,.02));border:1px solid rgba(236,193,107,.32);box-shadow:0 24px 40px -30px rgba(0,0,0,.8)}
+.ace-top{display:flex;align-items:center;gap:14px}
+.ace-top .seal{--s:48px;flex:none}
+.ace-para{margin:0 -.2em;padding:0 .2em;font:400 38px/1.15 var(--f-script);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ace-occ{margin:2px 0 0;font-size:13.5px;line-height:1.4;color:var(--ink-3)}
+.ace-meta{margin:0;font-size:14px;line-height:1.45;color:var(--rubric-2)}
+.ace-meta.fim{color:var(--err)}
+.ace-acoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.ace-acoes .btn{padding-inline:12px}
+.ace-nota{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-3);text-align:center}
+.ace-nota .link{display:inline;padding:0;font-size:12.5px}
+body.na-acesso .progress{visibility:hidden}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -2347,8 +2379,8 @@ function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
   const pics = (L.premium ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
   const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
-  const SKIP = demo ? `<button class="l-skip" data-skip>Pular esta parte${ICON.down}</button>` : '';
   const rapido = full && opt.mode === 'example';
+  const SKIP = demo && !rapido ? `<button class="l-skip" data-skip>Pular esta parte${ICON.down}</button>` : ''; // nas prévias de exemplo a carta passa sozinha ao rolar
   const sec = (id, cls, step, inner) => `<section class="lsec${cls ? ' ' + cls : ''}${full ? ' wait' : ''}"${id ? ` id="${id}"` : ''}${full ? ` data-step="${step}"` : ''}>${inner}${full && (step === 'next' || step === 'spin') ? NEXT : ''}</section>`;
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
@@ -2483,6 +2515,14 @@ function bindLetter(root, L, mode, hooks = {}) {
     if (s.id === 's-message') escrever(s);
     else if (s.dataset.step === 'next') later(() => { const b = nextBtn(s); if (b) b.hidden = false; }, reduced() ? 0 : delayFor(s));
     if (s.dataset.step === 'end') later(() => rain(hooks.host), 700);
+    if (hooks.rapido) {
+      /* prévia de exemplo: a roleta gira e a câmera dispara sozinhas */
+      const auto = sel => later(() => { const b = s.querySelector(sel); if (steps[cur] === s && !s.dataset.done && b) b.click(); }, 900);
+      if (s.id === 's-wheel') auto('.wheel-btn');
+      if (s.id === 's-final') auto('.camera');
+      const dica = hooks.host && hooks.host.querySelector('.vw-dica');
+      if (dica) dica.hidden = s.dataset.step === 'end';
+    }
   }
   const topOf = el => { let y = 0; for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop; return y; };
   /* rola até "el" ficar logo abaixo dos botões de cima */
@@ -2496,8 +2536,10 @@ function bindLetter(root, L, mode, hooks = {}) {
     const r = root.getBoundingClientRect(), b = el.getBoundingClientRect();
     if (b.bottom > r.bottom - folga) root.scrollBy({ top: b.bottom - (r.bottom - folga), behavior: reduced() ? 'auto' : 'smooth' });
   };
+  let ultimoAvanco = 0;
   function advance() {
     if (cur + 1 >= steps.length) return;
+    ultimoAvanco = Date.now();
     const s = steps[++cur];
     show(s);
     if (cur > 0) later(() => irPara(s, 40), 60);
@@ -2532,6 +2574,23 @@ function bindLetter(root, L, mode, hooks = {}) {
     s.dataset.done = '1'; b.hidden = true; if (w) w.remove();
     if (steps[cur] === s) advance();
   }));
+
+  /* prévia de exemplo: rolar a tela para baixo (no fim do que já apareceu) passa para o próximo efeito */
+  if (full && hooks.rapido) {
+    const noFim = () => root.scrollTop + root.clientHeight >= root.scrollHeight - 30;
+    const pular = () => {
+      const s = steps[cur];
+      if (!s || cur + 1 >= steps.length || Date.now() - ultimoAvanco < 1200) return;
+      s.dataset.done = '1'; s.classList.add('cs-fim');
+      const w = s.querySelector(':scope > .l-next-wrap'); if (w) w.remove();
+      advance();
+    };
+    let soma = 0, y0 = null;
+    root.addEventListener('wheel', e => { if (e.deltaY > 0 && noFim()) { soma += e.deltaY; if (soma > 60) { soma = 0; pular(); } } else soma = 0; }, { passive: true });
+    root.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive: true });
+    root.addEventListener('touchmove', e => { if (y0 != null && y0 - e.touches[0].clientY > 50 && noFim()) { y0 = null; pular(); } }, { passive: true });
+    root.addEventListener('touchend', () => { y0 = null; }, { passive: true });
+  }
 
   /* mensagem: a pena escreve o texto no pergaminho; tocar no papel termina na hora */
   function escrever(s) {
@@ -2724,7 +2783,7 @@ function openViewer(L, opt = {}) {
     <div class="vw-scroll locked${bottom ? ' has-bar' : ''}" id="vwScroll">${letterHTML(L, 'full', opt)}</div>
     <div class="vw-cover lt" data-theme="${L.theme}" data-mode="full" id="vwCover">${coverHTML(L, 'full')}</div>
     <div class="vw-top"><button class="pill" id="vwClose">${ICON.x}<span>${mode === 'recipient' ? 'Fechar' : 'Voltar'}</span></button>${mode === 'recipient' ? '' : `<span class="pill pill-tag">${mode === 'example' ? 'Exemplo' : 'Prévia'}</span>`}<span class="vw-sp"></span>${music}</div>
-    ${bottom}
+    ${bottom}${mode === 'example' ? `<div class="vw-dica" aria-hidden="true" hidden>${ICON.down}<span>Role a tela para ver a próxima parte</span></div>` : ''}
     <div class="lightbox" id="lightbox" hidden><img alt=""><p></p></div>`;
   v.hidden = false; document.documentElement.classList.add('noscroll');
   const scroll = $('#vwScroll'), cover = $('#vwCover'), lb = $('#lightbox'), mBtn = $('#vwMusic');
@@ -2784,7 +2843,7 @@ const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
 const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
-const ui = { moreVerses: false };
+const ui = { moreVerses: false, acesso: false };
 const desk = window.matchMedia('(min-width: 1040px)');
 
 function loadDraft() {
@@ -2835,7 +2894,8 @@ const VIEWS = {
       <p class="sub">Leva uns 3 minutos.</p>
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b><small>${r.desc}</small></span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
-      <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>`;
+      <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>
+      <p class="ja-comprou">Já comprou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>`;
   },
   ocasiao() {
     return `<h1 class="h1" tabindex="-1">Qual é a <em>ocasião</em>?</h1>
@@ -2954,6 +3014,7 @@ const BIND = {
     }));
     $('#exBtn').addEventListener('click', () => openExample('padrao'));
     $('#exPremium').addEventListener('click', () => openExample('premium'));
+    $('#meuAcessoLink').addEventListener('click', e => { e.preventDefault(); irAcesso(); });
   },
   ocasiao(el) {
     el.querySelectorAll('[data-occ]').forEach(b => b.addEventListener('click', () => {
@@ -3109,23 +3170,6 @@ function checkoutView() {
     <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div>
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }
-function doneView() {
-  const L = resolveLetter(S), url = cartaUrl(S.code), link = url.replace(/^https?:\/\//, '');
-  return `<div class="done-head"><div class="stamp"><span class="seal"><span>${sealInner(L)}</span></span></div>
-      <p class="eyebrow">Pagamento aprovado</p>
-      <h1 class="h1" tabindex="-1">A carta para <em>${esc(L.to)}</em> está selada</h1>
-      ${pedido && pedido.id === S.code && pedido.plano ? `<p class="plano-nota">${pedido.plano === 'premium' ? '✨ Carta Premium · vitalícia, o link funciona para sempre' : `Carta Padrão · fica no ar até ${esc(longDate(new Date((pedido.pagoEm || Date.now()) + 90 * 864e5)))}`}</p>` : ''}
-      <p class="sub">Agora é só entregar. Escolha como:</p></div>
-    <div class="share">
-      <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
-      <div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" id="copyLink">${ICON.copy}Copiar</button></div>
-      <div class="qr-card"><div class="qr" id="qrBox"></div><div><b>Cartão com QR code</b><p>Imprima e entregue junto com um presente. É só apontar a câmera.</p><button class="btn btn-ghost sm" id="cardBtn">${ICON.download}Baixar cartão</button></div></div>
-      <div id="mailArea"></div>
-      <button class="btn btn-ghost w" id="openLetter">${ICON.eye}Abrir a carta</button>
-      ${editavel() ? `<button class="btn btn-ghost w" id="editPaid">${ICON.edit}Mudar alguma coisa</button>` : ''}
-    </div>
-    <p class="done-foot">Guarde este link. ${editavel() ? 'Você pode mudar a carta por 7 dias depois do pagamento, neste aparelho.<br>' : ''}<button class="link muted" id="newLetter">Criar outra carta</button></p>`;
-}
 function bindReady(el) {
   el.querySelectorAll('[data-plano]').forEach(b => b.addEventListener('click', () => {
     if (S.plano === b.dataset.plano) return;
@@ -3143,24 +3187,161 @@ function bindCheckout(el) {
   carregarConfig().then(() => { const r = $('#mailRow', el); if (r) r.hidden = !cfg.email; });
   el.querySelectorAll('[data-pay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.pay; el.querySelectorAll('[data-pay]').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); refreshBar(); }));
 }
-function bindDone(el) {
-  const L = resolveLetter(S), url = cartaUrl(S.code);
-  $('#copyLink', el).addEventListener('click', () => copyText(url, 'Link copiado'));
-  $('#openLetter', el).addEventListener('click', () => openViewer(L, { mode: 'recipient', onMake: () => { resetDraft(); } }));
-  $('#newLetter', el).addEventListener('click', () => { if (confirm('Começar uma carta nova? A carta que você já pagou continua funcionando pelo link e pelo QR code.')) resetDraft(); });
-  const ed = $('#editPaid', el); if (ed) ed.addEventListener('click', openEditSheet);
-  carregarConfig().then(() => pintarEmail(el, true));
-  let qrCanvas = null;
-  if (window.QRCode) {
-    try { new QRCode($('#qrBox', el), { text: url, width: 200, height: 200, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
-    const big = document.createElement('div');
-    try { new QRCode(big, { text: url, width: 512, height: 512, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); qrCanvas = big.querySelector('canvas'); } catch (e) {}
-  } else { $('#qrBox', el).innerHTML = `<div style="display:grid;place-items:center;height:100%;color:var(--ink-3)">${ICON.image}</div>`; }
-  $('#cardBtn', el).addEventListener('click', async () => {
-    const png = await Art.card(L, qrCanvas);
-    const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
-    openSheet(`<p class="eyebrow">Cartão para imprimir</p><h2 class="h2">Pronto para entregar</h2><p class="sub">No celular, toque e segure a imagem para salvar. No computador, clique com o botão direito.</p><img class="card-img" src="${png}" alt="Cartão com QR code da carta para ${esc(L.to)}">${framed ? '' : `<a class="btn btn-primary w" style="margin-top:20px" href="${png}" download="carta-para-${esc(L.to.toLowerCase().replace(/[^a-z0-9]+/gi, '-'))}.png">${ICON.download}Baixar imagem</a>`}`);
+/* ===== Meu acesso (/meuacesso): com o e-mail da compra, a pessoa vê todas as cartas pagas,
+   copia o link, baixa o QR code, abre e edita (por 7 dias). Depois do pagamento ela cai aqui. ===== */
+const ACE = 'cp2:acesso';
+const acesso = { email: (store.get(ACE) || {}).email || '', cartas: null, carregando: false, erro: '', novo: null, trocar: false };
+const naAcesso = () => ui.acesso || S.view === 'done';
+const rotaAcessoUrl = () => /^\/meuacesso\/?$/i.test(location.pathname);
+function irAcesso(novo, trocarUrl) {
+  ui.acesso = true; acesso.novo = novo || null;
+  if (!rotaAcessoUrl()) { try { history[trocarUrl ? 'replaceState' : 'pushState'](null, '', '/meuacesso'); } catch (e) {} }
+  carregarAcesso(); render('fwd');
+}
+function sairAcesso() {
+  ui.acesso = false; acesso.novo = null;
+  if (rotaAcessoUrl()) { try { history.pushState(null, '', '/'); } catch (e) {} }
+}
+async function carregarAcesso(email) {
+  if (email != null) acesso.email = email.trim().toLowerCase();
+  if (!isEmail(acesso.email)) { acesso.cartas = null; return; }
+  store.set(ACE, { email: acesso.email });
+  acesso.carregando = true; acesso.erro = ''; redesenharAcesso();
+  try { const j = await api('/acesso', { email: acesso.email }); acesso.cartas = Array.isArray(j.cartas) ? j.cartas : []; }
+  catch (e) { acesso.erro = e.status === 429 ? 'Muitas consultas seguidas. Espere um pouco e tente de novo.' : 'Não foi possível buscar as cartas agora. Confira sua internet e tente de novo.'; }
+  acesso.carregando = false; redesenharAcesso();
+}
+const redesenharAcesso = () => { if (naAcesso()) render(null); };
+function itensAcesso() {
+  const lista = [];
+  (acesso.cartas || []).forEach(c => { try { lista.push({ ...c, L: cartaDoServidor(c.carta || {}) }); } catch (e) {} });
+  /* a compra que acabou de cair neste aparelho aparece mesmo antes do servidor listar */
+  if (pedido && pedido.pago && S.view === 'done' && S.code === pedido.id && !lista.some(c => c.id === pedido.id)) {
+    const pg = pedido.pagoEm || Date.now();
+    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' ? pg + 90 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, L: resolveLetter(S), local: true });
+  }
+  return lista;
+}
+const podeEditar = c => Date.now() < c.editarAte && (c.local || !!(c.carta && c.carta.x === 2));
+const dataCurta = t => new Date(t).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+function acessoView() {
+  const itens = itensAcesso(), novo = acesso.novo && itens.find(c => c.id === acesso.novo);
+  const temLista = isEmail(acesso.email) && (acesso.cartas || itens.length) && !acesso.trocar;
+  let h = novo
+    ? `<div class="done-head"><div class="stamp"><span class="seal"><span>${sealInner(novo.L)}</span></span></div>
+      <p class="eyebrow">Pagamento aprovado</p>
+      <h1 class="h1" tabindex="-1">A carta para <em>${esc(novo.L.to)}</em> está selada</h1>
+      <p class="sub">Agora é só entregar. Ela fica guardada aqui no <b>Meu acesso</b>: volte quando quiser pelo endereço ${esc(siteBase().replace(/^https?:\/\//, ''))}/meuacesso.</p>
+      <div id="mailArea" class="ace-mail"></div></div>`
+    : `<div class="done-head"><p class="eyebrow">Meu acesso</p><h1 class="h1" tabindex="-1">Suas <em>cartas</em></h1>
+      <p class="sub">${temLista ? 'Copie o link, baixe o QR code ou mude a carta.' : 'Digite o e-mail que você usou no pagamento para ver as cartas que comprou.'}</p></div>`;
+  if (!temLista) {
+    h += `<form class="ace-form" id="aceForm" novalidate><div class="field"><label for="aceEmail">E-mail da compra</label><input class="input" id="aceEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(acesso.email)}"><p class="err" id="aceErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
+      <button class="btn btn-primary w" type="submit">Ver minhas cartas</button></form>`;
+  } else {
+    h += `<p class="ace-quem">Cartas de <b>${esc(acesso.email)}</b> · <button class="link" id="aceTrocar">Trocar e-mail</button></p>`;
+  }
+  if (acesso.carregando && !itens.length) h += `<div class="waiting"><span class="spin"></span>Buscando suas cartas…</div>`;
+  if (acesso.erro) h += `<p class="err ace-erro">${esc(acesso.erro)} <button class="link" id="aceDeNovo">Tentar de novo</button></p>`;
+  if (temLista && !acesso.carregando && !acesso.erro && !itens.length) h += `<p class="ace-vazio">Não achamos cartas pagas com este e-mail. Confira se é o mesmo e-mail que você usou no pagamento.</p>`;
+  if (temLista && itens.length) h += `<div class="ace-lista">${itens.map(c => cartaAcessoHTML(c, novo && c.id === novo.id)).join('')}</div>`;
+  h += `<p class="done-foot"><button class="btn btn-ghost w" id="aceNova">${ICON.sparkle}Criar outra carta</button></p>`;
+  return h;
+}
+function cartaAcessoHTML(c, ehNovo) {
+  const L = c.L, url = cartaUrl(c.id), link = url.replace(/^https?:\/\//, '');
+  const meta = c.expirada ? `<p class="ace-meta fim">Carta Padrão · o prazo de 3 meses acabou em ${esc(dataCurta(c.expira))}</p>`
+    : c.plano === 'premium' ? `<p class="ace-meta">✨ Premium · vitalícia, o link funciona para sempre</p>`
+    : c.plano === 'padrao' ? `<p class="ace-meta">Padrão · fica no ar até ${esc(dataCurta(c.expira))}</p>` : '';
+  const edita = podeEditar(c);
+  return `<article class="ace-card lt" data-theme="${esc(L.theme)}" data-id="${esc(c.id)}">
+    <div class="ace-top"><span class="seal"><span>${sealInner(L)}</span></span><div style="min-width:0"><p class="ace-para gold-t">Para ${esc(L.to)}</p><p class="ace-occ">${esc(L.title)} · paga em ${esc(dataCurta(c.pagoEm))}</p></div></div>
+    ${meta}
+    ${c.expirada ? '' : `<div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" data-copiar>${ICON.copy}Copiar</button></div>
+    <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
+    <div class="qr-card"><div class="qr" data-qr></div><div><b>Cartão com QR code</b><p>Imprima e entregue junto com um presente. É só apontar a câmera.</p><button class="btn btn-ghost sm" data-cartao>${ICON.download}Baixar QR code</button></div></div>
+    <div class="ace-acoes"><button class="btn btn-ghost" data-abrir>${ICON.eye}Abrir a carta</button>${edita ? `<button class="btn btn-ghost" data-editar>${ICON.edit}Editar a carta</button>` : ''}</div>
+    <p class="ace-nota">${edita ? `Você pode mudar esta carta até ${esc(dataCurta(c.editarAte))}. O link e o QR code continuam os mesmos.` : 'O prazo de 7 dias para mudar esta carta acabou.'}${ehNovo || !cfg.email ? '' : ` <button class="link" data-email>Receber no meu e-mail</button>`}</p>`}
+  </article>`;
+}
+function bindAcesso(el) {
+  const f = $('#aceForm', el);
+  if (f) f.addEventListener('submit', e => {
+    e.preventDefault(); const v = $('#aceEmail', el).value.trim();
+    if (!isEmail(v)) { $('#aceErr', el).hidden = false; $('#aceEmail', el).classList.add('bad'); return; }
+    acesso.trocar = false; acesso.cartas = null; carregarAcesso(v);
   });
+  const tr = $('#aceTrocar', el); if (tr) tr.addEventListener('click', () => { acesso.trocar = true; render(null); const i = $('#aceEmail'); if (i) i.focus(); });
+  const dn = $('#aceDeNovo', el); if (dn) dn.addEventListener('click', () => carregarAcesso());
+  $('#aceNova', el).addEventListener('click', criarOutra);
+  if ($('#mailArea', el)) carregarConfig().then(() => pintarEmail(el, true));
+  const itens = itensAcesso();
+  el.querySelectorAll('.ace-card').forEach(card => {
+    const c = itens.find(x => x.id === card.dataset.id); if (!c) return;
+    const url = cartaUrl(c.id), on = (sel, fn) => { const b = card.querySelector(sel); if (b) b.addEventListener('click', fn); };
+    const qr = card.querySelector('[data-qr]');
+    if (qr && window.QRCode) { try { new QRCode(qr, { text: url, width: 200, height: 200, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {} }
+    on('[data-copiar]', () => copyText(url, 'Link copiado'));
+    on('[data-cartao]', () => mostrarCartao(c.L, url));
+    on('[data-abrir]', () => openViewer(c.L, { mode: 'recipient', onMake: criarOutra }));
+    on('[data-editar]', () => editarCarta(c));
+    on('[data-email]', async e => {
+      const b = e.currentTarget; if (b.disabled) return; b.disabled = true;
+      try { await api('/email', { id: c.id, chave: c.chave }); toast('Enviamos o link e o QR code para o seu e-mail'); }
+      catch (err) { b.disabled = false; toast(err.dados && err.dados.erro === 'limite' ? 'Já mandamos algumas vezes. Olhe a caixa de spam.' : 'Não foi possível mandar agora. Tente de novo daqui a pouco.'); }
+    });
+  });
+  if (!cfg.email) carregarConfig().then(() => { if (cfg.email && naAcesso() && el.querySelector('.ace-card')) render(null); });
+}
+async function mostrarCartao(L, url) {
+  let qrCanvas = null;
+  if (window.QRCode) { const big = document.createElement('div'); try { new QRCode(big, { text: url, width: 512, height: 512, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); qrCanvas = big.querySelector('canvas'); } catch (e) {} }
+  const png = await Art.card(L, qrCanvas);
+  const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+  openSheet(`<p class="eyebrow">Cartão para imprimir</p><h2 class="h2">Pronto para entregar</h2><p class="sub">No celular, toque e segure a imagem para salvar. No computador, clique com o botão direito.</p><img class="card-img" src="${png}" alt="Cartão com QR code da carta para ${esc(L.to)}">${framed ? '' : `<a class="btn btn-primary w" style="margin-top:20px" href="${png}" download="carta-para-${esc(L.to.toLowerCase().replace(/[^a-z0-9]+/gi, '-'))}.png">${ICON.download}Baixar imagem</a>`}`);
+}
+/* editar: se a carta foi montada neste aparelho, usa o rascunho daqui; se não, traz a carta do servidor para o criador */
+function editarCarta(c) {
+  if (c.local || (S.code === c.id && pedido && pedido.id === c.id && pedido.chave)) { S.view = 'ready'; save(); sairAcesso(); render('fwd'); return; }
+  const rascunho = !S.code && S.view !== 'done' && (S.recipient || (S.to || '').trim());
+  if (rascunho && !confirm('Você tem uma carta sendo montada neste aparelho. Para editar esta, o rascunho será trocado por ela. Continuar?')) return;
+  const R = rascunhoDoServidor(c.carta, c.plano);
+  Object.assign(S, JSON.parse(JSON.stringify(BLANK)), R.campos, { photos: R.fotos, email: acesso.email, code: c.id, view: 'ready', step: STEPS.length - 1, themeTouched: true });
+  R.caminhos.forEach((u, i) => { fotosUp[i] = u ? { k: fotoChave(R.fotos[i]), u } : null; });
+  store.set('cp2:fotosUp', fotosUp);
+  S.photos.forEach((_, i) => savePhoto(i));
+  pedido = { id: c.id, chave: c.chave, pago: true, compraOk: true, plano: c.plano || 'padrao', pagoEm: c.pagoEm, emailOk: c.emailOk, querEmail: c.emailOk };
+  store.set(PED, pedido);
+  save(); sairAcesso(); render('fwd');
+  toast('Carta aberta para editar. No fim, toque em "Salvar as mudanças".');
+}
+/* o contrário de cartaParaServidor: a carta salva vira o rascunho do criador */
+function rascunhoDoServidor(P, plano) {
+  const r = REC[P.r] ? P.r : 'amor', ok = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? u : null;
+  const fu = Array.isArray(P.fu) ? P.fu : [], fc = Array.isArray(P.fc) ? P.fc : [], mf = Array.isArray(P.mf) ? P.mf : [];
+  const caminhos = Array(NFOTOS).fill(null);
+  [0, 1, 2, 4, 5, 6].forEach((i, j) => { caminhos[i] = ok(fu[j]); });
+  caminhos[3] = ok(P.ffu);
+  mf.slice(0, 7).forEach((u, j) => { caminhos[7 + j] = ok(u); });
+  const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
+  const names = { to: txt(P.p, 40), from: txt(P.d, 40) };
+  let prayer = -1, prayerCustom = '';
+  if (P.ora) { const k = PRAYERS[r].findIndex(t => fill(t, names) === P.ora); if (k >= 0 && k < 3) prayer = k; else { prayer = 3; prayerCustom = txt(P.ora, 800); } }
+  const mus = infoMusica(P.ml);
+  const campos = {
+    recipient: r, occasion: OCC[P.oc] ? P.oc : OCCASIONS[r][0].id, to: names.to, from: names.from, date: txt(P.dt, 10),
+    verses: (Array.isArray(P.v) ? P.v : []).filter(id => VERSES[id]), message: txt(P.m, 1500),
+    reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
+    prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao',
+    music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '',
+    theme: THEMES.some(t => t.id === P.th) ? P.th : null,
+    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)))
+  };
+  return { campos, caminhos, fotos: caminhos.map(u => u ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null) };
+}
+function criarOutra() {
+  closeViewer(true); sairAcesso();
+  if (S.view === 'done' || S.code) resetDraft(); else render('back');
 }
 
 /* e-mail com o link e o QR code: avisa que foi (ou está indo) ou oferece mandar */
@@ -3289,7 +3470,9 @@ function approve(j = {}) {
   if (!pedido.pagoEm) pedido.pagoEm = Date.now();
   if (!pedido.compraOk) { track('Purchase', { currency: 'BRL', value: pedido.valor || precoDe(pedido.plano) }, { eventID: 'compra_' + pedido.id }); pedido.compraOk = true; }
   store.set(PED, pedido);
-  S.code = pedido.id; S.view = 'done'; save(); render('fwd');
+  S.code = pedido.id; S.view = 'done'; save();
+  if (isEmail(S.email)) acesso.email = S.email.trim().toLowerCase();
+  irAcesso(pedido.id, true);
   toast('Pagamento confirmado!');
 }
 /* depois de pago, quem comprou pode mudar a carta por 7 dias (o servidor confere o prazo) */
@@ -3299,7 +3482,7 @@ async function salvarMudancas() {
   try {
     const fotos = await subirFotos(t => { nx.textContent = t; });
     await api('/atualizar', { id: pedido.id, chave: pedido.chave, carta: cartaParaServidor(fotos) });
-    S.view = 'done'; save(); render('fwd'); toast('Mudanças salvas. O mesmo link já abre a carta nova.');
+    S.view = 'done'; save(); irAcesso(); toast('Mudanças salvas. O mesmo link já abre a carta nova.');
   } catch (e) { toast(erroTexto(e, true)); }
   ocupado = false; refreshBar();
 }
@@ -3352,10 +3535,11 @@ function changed() { save(); refreshBar(); schedulePreview(); }
 
 function render(dir) {
   const scr = $('#screen');
-  if (S.view === 'step') { const id = STEPS[S.step].id; scr.innerHTML = VIEWS[id](); BIND[id](scr); }
+  document.body.classList.toggle('na-acesso', naAcesso());
+  if (naAcesso()) { scr.innerHTML = acessoView(); bindAcesso(scr); }
+  else if (S.view === 'step') { const id = STEPS[S.step].id; scr.innerHTML = VIEWS[id](); BIND[id](scr); }
   else if (S.view === 'ready') { scr.innerHTML = readyView(); bindReady(scr); }
   else if (S.view === 'checkout') { scr.innerHTML = checkoutView(); bindCheckout(scr); }
-  else if (S.view === 'done') { scr.innerHTML = doneView(); bindDone(scr); }
   if (dir) {
     scr.classList.remove('enter', 'enter-back'); void scr.offsetWidth; scr.classList.add(dir === 'back' ? 'enter-back' : 'enter');
     window.scrollTo(0, 0);
@@ -3366,13 +3550,13 @@ function render(dir) {
 }
 function updateChrome() {
   const n = STEPS.length;
-  $('#stepcount').textContent = S.view === 'step' ? `Passo ${S.step + 1} de ${n}` : ({ ready: editavel() ? 'Editando a carta' : 'Prévia pronta', checkout: 'Pagamento', done: 'Carta selada' })[S.view];
+  $('#stepcount').textContent = naAcesso() ? 'Meu acesso' : S.view === 'step' ? `Passo ${S.step + 1} de ${n}` : ({ ready: editavel() ? 'Editando a carta' : 'Prévia pronta', checkout: 'Pagamento', done: 'Carta selada' })[S.view];
   $('#progress').style.setProperty('--p', `${S.view === 'step' ? (S.step + 1) / n * 100 : 100}%`);
   refreshBar();
 }
 function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn');
-  const hide = S.view === 'done' || (S.view === 'step' && S.step === 0);
+  const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);
   if (hide) return;
   eye.hidden = S.view === 'checkout';
@@ -3479,7 +3663,14 @@ function iniciarCriador() {
   $('#nextBtn').addEventListener('click', next);
   $('#backBtn').addEventListener('click', back);
   $('#eyeBtn').addEventListener('click', () => openPreview(S.view === 'ready' || S.step === STEPS.length - 1));
-  $('#brandBtn').addEventListener('click', () => { if (S.view === 'done') return; go(0, 'back'); });
+  $('#brandBtn').addEventListener('click', () => { if (S.view === 'done') return; if (ui.acesso) { sairAcesso(); render('back'); return; } go(0, 'back'); });
+  /* /meuacesso: entrou pelo endereço ou a carta deste aparelho já está paga */
+  if (rotaAcessoUrl() || S.view === 'done') { ui.acesso = true; if (!rotaAcessoUrl()) { try { history.replaceState(null, '', '/meuacesso'); } catch (e) {} } carregarAcesso(); }
+  window.addEventListener('popstate', () => {
+    const a = rotaAcessoUrl();
+    if (a && !ui.acesso) { ui.acesso = true; carregarAcesso(); render('fwd'); }
+    else if (!a && ui.acesso) { ui.acesso = false; acesso.novo = null; if (S.view === 'done') resetDraft(); else render('back'); }
+  });
   desk.addEventListener ? desk.addEventListener('change', () => renderMini(true)) : desk.addListener(() => renderMini(true));
   window.addEventListener('resize', () => { const m = $('#mini'), lt = m && m.firstElementChild; if (lt && desk.matches) lt.style.setProperty('--cover-h', m.clientHeight + 'px'); });
   render(null);
