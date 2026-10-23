@@ -593,27 +593,65 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .r-l{display:block;margin-top:8px;font:italic 600 17px/1.25 var(--f-display);color:var(--ink-l2)}
 .l-numbers.ph-mode .l-big,.l-numbers.ph-mode .l-row b{opacity:.45}
 
-/* Mensagem: pergaminho entre dois bastões de ouro; uma pena escreve o texto na hora */
-.scroll{position:relative;margin:6px -6px 0;filter:drop-shadow(0 22px 26px rgba(0,0,0,.5))}
-.rod{position:relative;z-index:2;height:18px;margin:0 6px;border-radius:9px;background:linear-gradient(180deg,#FFF3C8 0%,#EDC56A 38%,#A8741F 78%,#6E4612 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 6px rgba(0,0,0,.45)}
-.rod::before,.rod::after{content:"";position:absolute;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF6D8,#E2B04A 45%,#7A4E12);box-shadow:0 2px 5px rgba(0,0,0,.5)}
-.rod::before{left:-12px}
-.rod::after{right:-12px}
-.parch-wrap{display:grid;grid-template-rows:1fr;margin:-9px 14px}
+/* Mensagem: pergaminho real. Chega enrolado com fita de cetim e selo de cera, desenrola, a pena escreve,
+   o selo carimba o fim e, no Continuar, ele se enrola e é selado de novo */
+.scroll{position:relative;margin:10px -8px 0;filter:drop-shadow(0 24px 28px rgba(0,0,0,.55))}
+.rod{position:relative;z-index:2;height:20px;margin:0 10px;border-radius:10px;background:linear-gradient(180deg,#FFF3C8 0%,#F1CF7B 22%,#C9943B 48%,#8A5A18 74%,#5A3A10 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 3px 7px rgba(0,0,0,.5)}
+.rod::before{content:"";position:absolute;inset:3px 26px;border-radius:6px;background:repeating-linear-gradient(90deg,rgba(90,58,16,.35) 0 2px,transparent 2px 9px)}
+.fin{position:absolute;top:50%;width:28px;height:28px;margin-top:-14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF6D8,#E2B04A 42%,#7A4E12);box-shadow:0 2px 6px rgba(0,0,0,.55),inset 0 0 0 2px rgba(255,240,196,.35)}
+.fin::after{content:"";position:absolute;left:50%;top:-9px;width:10px;height:11px;margin-left:-5px;background:linear-gradient(180deg,#FFF0BE,#C9943B);clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:2px}
+.fin.l{left:-14px}
+.fin.r{right:-14px}
+.parch-wrap + .rod .fin::after{top:auto;bottom:-9px;clip-path:polygon(0 0,100% 0,50% 100%)}
+.parch-wrap{display:grid;grid-template-rows:1fr;margin:-10px 16px;transition:grid-template-rows 1.7s cubic-bezier(.45,.05,.25,1)}
+.scroll.fechado .parch-wrap{grid-template-rows:0fr}
+.scroll.fechando .parch-wrap{transition-duration:1.4s}
 .parch{min-height:0;overflow:hidden}
-.parch-in{position:relative;padding:40px 24px 24px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(130% 90% at 50% 50%,#FBF0D2 0%,#F1DDB0 58%,#DCBD83 100%);box-shadow:inset 0 0 34px rgba(120,70,20,.38),inset 16px 0 18px -12px rgba(110,60,15,.45),inset -16px 0 18px -12px rgba(110,60,15,.45)}
-.parch-in::before{content:"";position:absolute;inset:16px 12px;border:1px solid rgba(140,90,30,.38);box-shadow:inset 0 0 0 3px rgba(240,224,190,.55),inset 0 0 0 4px rgba(140,90,30,.22);pointer-events:none}
+.parch-in{position:relative;padding:34px 28px 22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .24 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(120% 85% at 50% 45%,#FBF1D6 0%,#F0DCAE 52%,#D9B577 82%,#B88845 100%);box-shadow:inset 0 0 40px rgba(110,60,15,.45),inset 18px 0 22px -14px rgba(90,45,10,.55),inset -18px 0 22px -14px rgba(90,45,10,.55)}
+/* moldura de ouro em folha: dupla linha e cantos ornamentados */
+.parch-in::before{content:"";position:absolute;inset:12px 10px;border:1.5px solid rgba(156,107,30,.7);box-shadow:inset 0 0 0 4px rgba(250,236,200,.5),inset 0 0 0 5px rgba(156,107,30,.4);pointer-events:none}
+.parch-in::after{content:"";position:absolute;inset:6px 4px;pointer-events:none;opacity:.9;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' fill='none' stroke='%239C6B1E' stroke-linecap='round'%3E%3Cpath d='M5 75V32C5 16 16 5 32 5h43' stroke-width='2'/%3E%3Cpath d='M12 68V35c0-13 10-23 23-23h33' stroke-width='1' opacity='.6'/%3E%3Cpath d='M22 31c5-9 19-6 15 3-3 6-11 5-10-1 .6-3 4.6-3 5 0' stroke-width='1.6'/%3E%3Ccircle cx='9' cy='9' r='3' fill='%239C6B1E' stroke='none'/%3E%3C/svg%3E") left top/40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' fill='none' stroke='%239C6B1E' stroke-linecap='round'%3E%3Cg transform='matrix(-1 0 0 1 80 0)'%3E%3Cpath d='M5 75V32C5 16 16 5 32 5h43' stroke-width='2'/%3E%3Cpath d='M12 68V35c0-13 10-23 23-23h33' stroke-width='1' opacity='.6'/%3E%3Cpath d='M22 31c5-9 19-6 15 3-3 6-11 5-10-1 .6-3 4.6-3 5 0' stroke-width='1.6'/%3E%3Ccircle cx='9' cy='9' r='3' fill='%239C6B1E' stroke='none'/%3E%3C/g%3E%3C/svg%3E") right top/40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' fill='none' stroke='%239C6B1E' stroke-linecap='round'%3E%3Cg transform='matrix(1 0 0 -1 0 80)'%3E%3Cpath d='M5 75V32C5 16 16 5 32 5h43' stroke-width='2'/%3E%3Cpath d='M12 68V35c0-13 10-23 23-23h33' stroke-width='1' opacity='.6'/%3E%3Cpath d='M22 31c5-9 19-6 15 3-3 6-11 5-10-1 .6-3 4.6-3 5 0' stroke-width='1.6'/%3E%3Ccircle cx='9' cy='9' r='3' fill='%239C6B1E' stroke='none'/%3E%3C/g%3E%3C/svg%3E") left bottom/40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' fill='none' stroke='%239C6B1E' stroke-linecap='round'%3E%3Cg transform='matrix(-1 0 0 -1 80 80)'%3E%3Cpath d='M5 75V32C5 16 16 5 32 5h43' stroke-width='2'/%3E%3Cpath d='M12 68V35c0-13 10-23 23-23h33' stroke-width='1' opacity='.6'/%3E%3Cpath d='M22 31c5-9 19-6 15 3-3 6-11 5-10-1 .6-3 4.6-3 5 0' stroke-width='1.6'/%3E%3Ccircle cx='9' cy='9' r='3' fill='%239C6B1E' stroke='none'/%3E%3C/g%3E%3C/svg%3E") right bottom/40px no-repeat}
+.crest{display:block;width:118px;height:auto;margin:0 auto 10px}
+.lt[data-mode="full"] .scroll.aberto .crest{animation:crestIn 1.2s cubic-bezier(.2,.8,.2,1) 1.3s both}
+@keyframes crestIn{0%{opacity:0;transform:translateY(-8px) scale(.85);filter:drop-shadow(0 0 0 rgba(255,200,110,0))}60%{opacity:1;filter:drop-shadow(0 0 10px rgba(255,200,110,.9))}100%{opacity:1;transform:none;filter:drop-shadow(0 0 3px rgba(255,200,110,.4))}}
 .parch-txt{position:relative;text-align:left}
-.parch-txt p{margin:0;font:400 clamp(21px,6.3cqw,25px)/1.6 var(--f-ink);color:#33190A;white-space:pre-line;overflow-wrap:break-word;text-wrap:wrap}
+.parch-txt p{margin:0;font:400 clamp(21px,6.3cqw,25px)/1.6 var(--f-ink);color:#2B1608;white-space:pre-line;overflow-wrap:break-word;text-wrap:wrap}
 /* o texto escrito e o texto completo quebram as linhas do mesmo jeito: as palavras não pulam de linha no fim */
 .parch-txt .ghost{visibility:hidden}
-.parch-txt .ink{position:absolute;inset:0;text-shadow:0 0 .6px rgba(51,25,10,.55)}
-.inkwell{display:block;width:36px;height:36px;margin:14px 2px 0 auto}
+.parch-txt .ink{position:absolute;inset:0;text-shadow:0 0 .6px rgba(43,22,8,.55)}
+.parch-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+.inkwell{display:block;width:32px;height:32px}
+.stamp-seal{--s:58px;opacity:0;transform:scale(2.4) rotate(-20deg)}
+.lt:not([data-mode="full"]) .stamp-seal,.lsec.written .stamp-seal{opacity:1;transform:rotate(-8deg)}
+.lt[data-mode="full"] .lsec.written .stamp-seal{animation:carimbo .7s cubic-bezier(.3,1.4,.5,1) .2s both}
+@keyframes carimbo{0%{opacity:0;transform:scale(2.4) rotate(-20deg)}60%{opacity:1;transform:scale(.92) rotate(-6deg)}100%{opacity:1;transform:rotate(-8deg)}}
+.lt[data-mode="full"] .lsec.written .parch{animation:tremor .35s ease .62s}
+@keyframes tremor{30%{transform:translateY(2px)}60%{transform:translateY(-1px)}}
+/* fita de cetim e selo de cera que amarram o pergaminho enrolado */
+.tie{position:absolute;left:50%;top:50%;z-index:4;width:0;height:0;pointer-events:none}
+.tie-band{position:absolute;left:-14px;top:-34px;width:28px;height:68px;border-radius:3px;background:linear-gradient(90deg,#5E0C26,#A3204A 40%,#C23A62 52%,#7A1236);box-shadow:inset 0 0 0 1.5px rgba(233,188,92,.7),0 2px 6px rgba(0,0,0,.45)}
+.tie-tail{position:absolute;top:10px;width:16px;height:56px;transform-origin:50% 0;background:linear-gradient(90deg,#5E0C26,#B02A55 50%,#6E1030);clip-path:polygon(0 0,100% 0,100% 100%,50% 86%,0 100%);box-shadow:inset 0 0 0 1px rgba(233,188,92,.6)}
+.tie-tail.a{left:-18px;transform:rotate(18deg)}
+.tie-tail.b{left:2px;transform:rotate(-14deg)}
+.tie-seal{position:absolute;left:-30px;top:-30px;--s:60px}
+.scroll.fechado:not(.rompe) .tie{animation:tieGlow 2.2s ease-in-out infinite}
+@keyframes tieGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(255,200,110,0))}50%{filter:drop-shadow(0 0 12px rgba(255,200,110,.75))}}
+.scroll.rompe .tie-seal{animation:selaRompe .8s cubic-bezier(.4,0,.6,1) forwards}
+.scroll.rompe .tie-band,.scroll.rompe .tie-tail{animation:fitaCai .9s cubic-bezier(.5,0,.75,0) .15s forwards}
+@keyframes selaRompe{0%{transform:none}25%{transform:scale(1.15) rotate(-6deg)}100%{transform:translate(40px,70px) rotate(70deg) scale(.6);opacity:0}}
+@keyframes fitaCai{to{transform:translateY(90px) rotate(10deg);opacity:0}}
+.scroll.selado .tie{animation:none}
+.scroll.selado .tie-band,.scroll.selado .tie-tail{animation:fitaVolta .6s cubic-bezier(.2,.8,.2,1) both}
+.scroll.selado .tie-tail.a{animation-delay:.1s}
+.scroll.selado .tie-tail.b{animation-delay:.18s}
+.scroll.selado .tie-seal{animation:carimbo .7s cubic-bezier(.3,1.4,.5,1) .35s both}
+@keyframes fitaVolta{from{opacity:0;transform:translateY(-30px) scaleY(.4)}}
+.scroll.selado .tie-tail.a{transform:rotate(18deg)}
+.scroll.selado .tie-tail.b{transform:rotate(-14deg)}
+.scroll.fechando .parch-txt{transition:opacity .6s ease;opacity:.4}
 .quill{position:relative;display:inline-block;width:0;height:0;vertical-align:baseline}
 .quill svg{position:absolute;left:-3px;bottom:-3px;width:52px;height:52px;transform-origin:4px 49px;animation:quillWrite .26s ease-in-out infinite alternate;filter:drop-shadow(2px 5px 3px rgba(60,30,10,.35))}
 @keyframes quillWrite{from{transform:rotate(-5deg) translate(-1px,0)}to{transform:rotate(4deg) translate(1px,-2px)}}
-.lt[data-mode="full"] .lsec.in .parch-wrap{animation:unroll 1.3s cubic-bezier(.3,.7,.3,1) .2s both}
-@keyframes unroll{from{grid-template-rows:0fr}to{grid-template-rows:1fr}}
 
 /* Pote dos motivos: vidro encorpado, tampa de ouro, laço e bilhetes coloridos */
 .jar-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:14px}
@@ -2013,15 +2051,21 @@ function charsHTML(t) {
 /* ===== Mensagem: pergaminho com uma pena escrevendo ===== */
 const QUILL = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M3 46 9 37" stroke="#2A1608" stroke-width="2.4" stroke-linecap="round"/><path d="M9 37C14 25 26 11 46 2 40 15 30 28 12 40Z" fill="#FFF8EC" stroke="#C9A46A" stroke-width=".8"/><path d="M9 37C21 25 33 13 46 2" stroke="#B4822C" stroke-width="1.3" fill="none"/><path d="M20 26l-6-3M25 20l-6-4M30 15l-5-4M23 28l7 1M28 22l7 1M33 16l6 1" stroke="#D9C4A0" stroke-width=".8"/><circle cx="3.4" cy="45.6" r="1.7" fill="#2A1608"/></svg>';
 const INKWELL = '<svg class="inkwell" viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="35" rx="15" ry="4" fill="rgba(60,30,10,.25)"/><path d="M8 20c0-6 5-9 12-9s12 3 12 9v10c0 3-5 5-12 5S8 33 8 30z" fill="#2A1A24"/><path d="M11 21c2-3 6-4 9-4" stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="13" y="7" width="14" height="6" rx="2" fill="#C9943B"/><ellipse cx="20" cy="7.5" rx="7" ry="2" fill="#F3D58A"/></svg>';
+/* brasão real no alto do pergaminho: coroa de ouro com uma cruzinha */
+const CREST = '<svg class="crest" viewBox="0 0 120 54" aria-hidden="true"><path d="M8 40C26 40 34 46 44 46M112 40C94 40 86 46 76 46" stroke="#9C6B1E" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="6" cy="40" r="2" fill="#9C6B1E"/><circle cx="114" cy="40" r="2" fill="#9C6B1E"/><path d="M42 44h36l4-22-11 9-11-17-11 17-11-9z" fill="url(#crG)" stroke="#7A4E12" stroke-width="1"/><path d="M41 44h38v5H41z" fill="#B4822C" stroke="#7A4E12" stroke-width=".8"/><circle cx="50" cy="46.5" r="1.4" fill="#8E1838"/><circle cx="60" cy="46.5" r="1.6" fill="#2B4C9A"/><circle cx="70" cy="46.5" r="1.4" fill="#8E1838"/><circle cx="38" cy="22" r="2.4" fill="#E9BC5C"/><circle cx="82" cy="22" r="2.4" fill="#E9BC5C"/><path d="M58.6 4h2.8v4.6h4.4v2.6h-4.4V18h-2.8v-6.8h-4.4V8.6h4.4z" fill="#B4822C"/><defs><linearGradient id="crG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF0BE"/><stop offset=".5" stop-color="#E2B04A"/><stop offset="1" stop-color="#9C6B1E"/></linearGradient></defs></svg>';
+/* Pergaminho real: chega enrolado, amarrado com fita e selo de cera; o selo se rompe, ele desenrola,
+   a pena escreve, um selo carimba o fim e, no Continuar, ele se enrola e é selado de novo */
 function scrollHTML(text, full) {
   const t = esc(text.trim()).replace(/\n{3,}/g, '\n\n');
-  return `<div class="scroll">
-    <div class="rod" aria-hidden="true"></div>
+  return `<div class="scroll royal${full ? ' fechado' : ''}">
+    <div class="rod" aria-hidden="true"><i class="fin l"></i><i class="fin r"></i></div>
     <div class="parch-wrap"><div class="parch"><div class="parch-in">
+      ${CREST}
       <div class="parch-txt"><p class="ghost" aria-hidden="true">${t}</p><p class="ink">${full ? '' : t}</p></div>
-      ${INKWELL}
+      <div class="parch-foot">${INKWELL}<span class="seal stamp-seal"><span>${SEAL_EMBLEM}</span></span></div>
     </div></div></div>
-    <div class="rod" aria-hidden="true"></div>
+    <div class="rod" aria-hidden="true"><i class="fin l"></i><i class="fin r"></i></div>
+    ${full ? `<div class="tie" aria-hidden="true"><i class="tie-band"></i><i class="tie-tail a"></i><i class="tie-tail b"></i><span class="seal tie-seal"><span>${SEAL_EMBLEM}</span></span></div>` : ''}
   </div>`;
 }
 
@@ -2464,7 +2508,20 @@ function bindLetter(root, L, mode, hooks = {}) {
   };
   root.querySelectorAll('.l-next').forEach(b => b.addEventListener('click', () => {
     const s = b.closest('.lsec'); b.closest('.l-next-wrap').remove();
-    if (steps[cur] === s) advance();
+    if (steps[cur] !== s) return;
+    /* pergaminho: enrola de novo, a fita volta e o selo carimba antes de seguir */
+    const sc = s.id === 's-message' && full && !reduced() ? s.querySelector('.scroll') : null;
+    if (sc) {
+      sc.classList.remove('aberto'); sc.classList.add('fechando', 'fechado');
+      /* a tela acompanha o pergaminho enquanto ele enrola, para ele não sumir lá em cima */
+      const segue = setInterval(() => { const r = root.getBoundingClientRect(), b = sc.getBoundingClientRect(), alvo = r.top + r.height * .42; if (Math.abs(b.top + b.height / 2 - alvo) > 4) root.scrollBy({ top: b.top + b.height / 2 - alvo }); }, 40);
+      later(() => clearInterval(segue), 1700); cleanups.push(() => clearInterval(segue));
+      later(() => { sc.classList.remove('rompe'); sc.classList.add('selado'); }, 1500);
+      later(() => sparkBurst(sc), 2000);
+      later(() => { if (steps[cur] === s) advance(); }, 3800);
+      return;
+    }
+    advance();
   }));
   root.querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', () => {
     const s = b.closest('.lsec'), w = s.querySelector(':scope > .l-next-wrap');
@@ -2494,7 +2551,13 @@ function bindLetter(root, L, mode, hooks = {}) {
       if (i < txt.length) later(passo, /[.,!?;:]/.test(txt[i - 1]) ? 170 : 36); else later(acabar, 700);
     };
     s.querySelector('.parch').addEventListener('click', acabar);
-    if (reduced()) acabar(); else { later(() => irPara(s.querySelector('.scroll'), -50), 1250); later(passo, 1300); }
+    const sc = s.querySelector('.scroll');
+    if (reduced()) { sc.classList.remove('fechado'); sc.classList.add('aberto', 'rompe'); return acabar(); }
+    /* o selo se rompe, a fita cai e o pergaminho desenrola; depois a pena começa */
+    later(() => { sc.classList.add('rompe'); sparkBurst(sc); try { if (navigator.vibrate) navigator.vibrate(14); } catch (e) {} }, 1600);
+    later(() => { sc.classList.remove('fechado'); sc.classList.add('aberto'); }, 2300);
+    later(() => irPara(sc, -50), 2500);
+    later(passo, 4100);
   }
 
   /* Premium: slides de cinema; cada foto salta da polaroide. No fim aparecem todas juntas */

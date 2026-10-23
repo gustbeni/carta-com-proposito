@@ -67,7 +67,7 @@ A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cad
 2. **Fotos**: as três primeiras viram polaroides grandes, penduradas e balançando. "Continuar".
 3. **Roleta da Palavra**: fina, com Jesus ao lado empurrando. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta, e ele aparece letra por letra. Depois, "Continuar".
 4. **Números**: "Juntos desde" + data bem grandes, os dias dentro de um coração num relógio ("dias em que o meu amor se renovou"), horas e noites. "Continuar".
-5. **Mensagem**: num pergaminho que se desenrola; uma pena escreve o texto na hora (tocar no papel termina). "Continuar".
+5. **Mensagem**: pergaminho real. Chega enrolado com fita de cetim e selo de cera, o selo se rompe e ele desenrola, com coroa no topo e moldura de ouro. A pena escreve o texto na hora (tocar no papel termina) e um selo carimba o fim. No "Continuar", ele se enrola, a fita volta e o selo carimba antes de seguir.
 6. **Pote dos motivos**: papeizinhos enrolados com fitas. Cada toque tira um bilhete que voa e "cola" na tela; é preciso ler **todos** ("Guardar no coração"). Se o pote ficou vazio, a carta usa 5 bilhetes automáticos.
 7. **Última foto**: câmera antiga. O toque dá o flash, a foto sai pela fenda e vai se revelando. A carta segue sozinha.
 8. **Versículos escolhidos**: sem aspas, em ouro espelhado (`.mirror`, uma palavra por `.mw`). "Continuar".
