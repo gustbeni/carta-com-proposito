@@ -182,6 +182,23 @@ export async function buscarYouTube(q) {
   const it = (j.items || []).find(x => x.id && x.id.videoId); if (!it) return null;
   return { y: it.id.videoId, t: desfazer(it.snippet.title), c: desfazer(it.snippet.channelTitle) };
 }
+// várias sugestões para a busca pelo nome da música. Se o limite diário do YouTube acabou, avisa com { limite: true }
+export async function sugestoesYouTube(q, n = 6) {
+  const u = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&regionCode=BR&relevanceLanguage=pt&maxResults=" + n + "&q=" + encodeURIComponent(q) + "&key=" + encodeURIComponent(YT_CHAVE);
+  const r = await fetch(u, { headers: { Referer: "https://carta-com-proposito.netlify.app/" } });
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    const motivo = (((j.error || {}).errors || [])[0] || {}).reason || "";
+    console.error("YouTube sugestões", r.status, motivo);
+    if (r.status === 403 || r.status === 429) throw Object.assign(new Error("limite"), { limite: true });
+    throw new Error("youtube " + r.status);
+  }
+  const j = await r.json();
+  return (j.items || []).filter(x => x.id && x.id.videoId).map(x => ({
+    y: x.id.videoId, t: desfazer(x.snippet.title), c: desfazer(x.snippet.channelTitle),
+    img: (((x.snippet.thumbnails || {}).default || {}).url || "").replace(/^http:/, "https:"),
+  }));
+}
 export async function spotifyParaYouTube(tipoId) {
   const n = await nomeSpotify(tipoId); if (!n || !n.musica) return null;
   const achou = await buscarYouTube((n.musica + " " + (n.artista || "")).trim());

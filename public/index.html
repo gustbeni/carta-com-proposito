@@ -1054,6 +1054,20 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .plano[aria-pressed="true"] .radio{background:var(--gold-btn);border-color:#F3D58A}
 .plano[aria-pressed="true"] .radio::after{content:"";width:9px;height:5px;border:2px solid #3A0B2B;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
 
+/* Busca da música pelo nome (sugestões do YouTube) */
+.busca{display:flex;flex-direction:column;gap:8px}
+.sugs-yt{display:flex;flex-direction:column;gap:6px}
+.sugs-yt:empty{display:none}
+.sug-yt{display:grid;grid-template-columns:64px minmax(0,1fr) 18px;gap:12px;align-items:center;width:100%;padding:6px 10px 6px 6px;border-radius:14px;background:var(--card);border:1px solid var(--line);transition:border-color .2s,background-color .2s}
+.sug-yt img,.sug-yt .sug-img{width:64px;height:48px;border-radius:9px;object-fit:cover;background:rgba(255,236,214,.08)}
+.sug-yt b{display:block;font:600 13.5px/1.3 var(--f-ui);color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sug-yt small{display:block;margin-top:2px;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sug-yt svg{width:18px;height:18px;color:var(--rubric)}
+.sug-yt:hover{border-color:var(--line-2)}
+.sug-yt.on{border-color:var(--rubric);background:rgba(236,193,107,.10);box-shadow:inset 0 0 0 1px var(--rubric)}
+.sug-msg{display:flex;align-items:center;gap:8px;margin:2px 0;font-size:13.5px;color:var(--ink-3)}
+.busca-ou{margin:4px 0 -2px}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -2698,7 +2712,7 @@ document.addEventListener('keydown', e => {
 /* ===== Funil passo a passo ===== */
 const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
-const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
+const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
 const ui = { moreVerses: false };
 const desk = window.matchMedia('(min-width: 1040px)');
@@ -2824,8 +2838,10 @@ const VIEWS = {
       <p class="group-label">Música</p>
       <div class="stack tight">
         <div class="mrow${S.music === 'instrumental' ? ' on' : ''}"><button class="mpick" data-m="instrumental" aria-pressed="${S.music === 'instrumental'}"><span class="radio"></span><span><b>Instrumental suave</b><small>Amazing Grace em caixinha de música</small></span></button><button class="circle sm${Music.playing ? ' on' : ''}" id="mPlay" aria-label="Ouvir">${Music.playing ? ICON.pause : ICON.play}</button></div>
-        <div class="mrow${S.music === 'link' ? ' on' : ''}"><button class="mpick" data-m="link" aria-pressed="${S.music === 'link'}"><span class="radio"></span><span><b>Uma música de vocês</b><small>Cole o link do YouTube ou do Spotify</small></span></button></div>
-        ${S.music === 'link' ? `<input class="input" id="fLink" inputmode="url" autocomplete="off" placeholder="https://youtu.be/…" value="${esc(S.musicLink)}"><p class="hint" id="linkHint">${linkHint()}</p>` : ''}
+        <div class="mrow${S.music === 'link' ? ' on' : ''}"><button class="mpick" data-m="link" aria-pressed="${S.music === 'link'}"><span class="radio"></span><span><b>Uma música de vocês</b><small>${buscaMusica.limite ? 'Cole o link do YouTube ou do Spotify' : 'Busque pelo nome ou cole o link do YouTube'}</small></span></button></div>
+        ${S.music === 'link' ? `${buscaMusica.limite ? '' : `<div class="busca"><input class="input" id="fBusca" type="search" autocomplete="off" enterkeyhint="search" placeholder="Nome da música ou do cantor" value="${esc(buscaMusica.q)}"><div class="sugs-yt" id="sugsYt" aria-live="polite"></div></div>
+        <p class="hint busca-ou">ou cole o link:</p>`}
+        <input class="input" id="fLink" inputmode="url" autocomplete="off" placeholder="https://youtu.be/…" value="${esc(S.musicLink)}"><p class="hint" id="linkHint">${linkHint()}</p>` : ''}
         <div class="mrow${S.music === 'none' ? ' on' : ''}"><button class="mpick" data-m="none" aria-pressed="${S.music === 'none'}"><span class="radio"></span><span><b>Sem música</b></span></button></div>
       </div>`;
   }
@@ -2835,6 +2851,7 @@ function linkHint() {
   const inf = lerMusica(S.musicLink);
   if (!S.musicLink.trim()) return 'No YouTube ou no Spotify, toque em Compartilhar e depois em Copiar link.';
   if (!inf) return 'Esse link não funciona. Cole um link do YouTube ou do Spotify.';
+  if (inf.tipo === 'y' && S.musicNome) return `♪ ${S.musicNome} ✓ A música começa quando o selo for quebrado.`;
   return inf.tipo === 'y' ? 'Link do YouTube ✓ A música começa quando o selo for quebrado.' : 'Link do Spotify ✓ Na carta, tocamos a mesma música pelo YouTube, que toca completa.';
 }
 function autoGrow(ta, min) { ta.style.height = 'auto'; ta.style.height = Math.max(min, ta.scrollHeight + 2) + 'px'; }
@@ -2938,9 +2955,48 @@ const BIND = {
     el.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { S.music = b.dataset.m; if (S.music !== 'instrumental') Music.stop(); save(); rerender(); if (S.music === 'link') setTimeout(() => { const l = $('#fLink'); if (l) l.focus(); }, 60); }));
     const play = $('#mPlay', el);
     if (play) play.addEventListener('click', () => { Music.toggle(); play.classList.toggle('on', Music.playing); play.innerHTML = Music.playing ? ICON.pause : ICON.play; });
-    const link = $('#fLink', el); if (link) link.addEventListener('input', () => { S.musicLink = link.value.trim(); $('#linkHint', el).textContent = linkHint(); changed(); });
+    const link = $('#fLink', el); if (link) link.addEventListener('input', () => { S.musicLink = link.value.trim(); S.musicNome = ''; $('#linkHint', el).textContent = linkHint(); pintarSugestoes(el); changed(); });
+    const busca = $('#fBusca', el);
+    if (busca) {
+      busca.addEventListener('input', () => { buscaMusica.q = busca.value; clearTimeout(buscaMusica.timer); buscaMusica.timer = setTimeout(() => buscarMusica(el), 650); });
+      busca.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(buscaMusica.timer); buscarMusica(el); busca.blur(); } });
+      pintarSugestoes(el);
+    }
   }
 };
+
+/* ----- Busca da música pelo nome (sugestões do YouTube). Se o limite do dia acabar, fica só o link ----- */
+const buscaMusica = { q: '', itens: [], timer: null, n: 0, carregando: false, limite: (() => { try { return sessionStorage.getItem('cp2:buscaLimite') === new Date().toDateString(); } catch (e) { return false; } })() };
+async function buscarMusica(el) {
+  const q = buscaMusica.q.trim(), n = ++buscaMusica.n;
+  if (q.length < 3) { buscaMusica.itens = []; return pintarSugestoes(el); }
+  buscaMusica.carregando = true; pintarSugestoes(el);
+  let j = null;
+  try { j = await api('/buscar?q=' + encodeURIComponent(q)); } catch (e) {}
+  if (n !== buscaMusica.n) return; // chegou uma busca mais nova
+  buscaMusica.carregando = false;
+  if (j && j.limite) {
+    buscaMusica.limite = true; try { sessionStorage.setItem('cp2:buscaLimite', new Date().toDateString()); } catch (e) {}
+    toast('A busca de músicas está indisponível agora. Cole o link do YouTube ou do Spotify.');
+    return rerender();
+  }
+  buscaMusica.itens = j && j.itens ? j.itens : null;
+  pintarSugestoes(el);
+}
+function pintarSugestoes(el) {
+  const box = $('#sugsYt', el); if (!box) return;
+  const atual = (lerMusica(S.musicLink) || {}).id;
+  if (buscaMusica.carregando) { box.innerHTML = `<p class="sug-msg"><span class="spin"></span>Procurando…</p>`; return; }
+  if (buscaMusica.itens === null) { box.innerHTML = '<p class="sug-msg">Não deu para buscar agora. Tente de novo ou cole o link.</p>'; return; }
+  if (!buscaMusica.itens.length) { box.innerHTML = buscaMusica.q.trim().length >= 3 ? '<p class="sug-msg">Nada encontrado. Tente com o nome do cantor.</p>' : ''; return; }
+  box.innerHTML = buscaMusica.itens.map(x => `<button class="sug-yt${x.y === atual ? ' on' : ''}" data-yt="${esc(x.y)}">${x.img ? `<img src="${esc(x.img)}" alt="" loading="lazy">` : '<span class="sug-img"></span>'}<span><b>${esc(x.t)}</b><small>${esc(x.c)}</small></span>${x.y === atual ? ICON.check : ''}</button>`).join('');
+  box.querySelectorAll('[data-yt]').forEach(b => b.addEventListener('click', () => {
+    const it = buscaMusica.itens.find(x => x.y === b.dataset.yt); if (!it) return;
+    S.musicLink = 'https://youtu.be/' + it.y; S.musicNome = it.t;
+    const link = $('#fLink', el); if (link) link.value = S.musicLink;
+    $('#linkHint', el).textContent = linkHint(); pintarSugestoes(el); changed();
+  }));
+}
 
 /* ----- Prévia pronta, pagamento e entrega ----- */
 function readyView() {

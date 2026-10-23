@@ -24,6 +24,7 @@ Site que vende uma **carta cristã digital personalizada** em dois pacotes, **Pa
 | `netlify/functions/carta.mjs` | Entrega a carta paga. Se a música for do Spotify, troca pela versão do YouTube e guarda em `reg.musicaYT`. |
 | `netlify/functions/atualizar.mjs` | Edição da carta até 7 dias depois do pagamento, usando a chave guardada no aparelho de quem comprou |
 | `netlify/functions/musica.mjs` | `/api/musica?s=track/ID`: recebe um Spotify e devolve o YouTube equivalente |
+| `netlify/functions/buscar.mjs` | `/api/buscar?q=`: busca a música pelo nome no YouTube (`sugestoesYouTube`) e devolve sugestões. Guarda cada busca por 14 dias no Blobs (store `buscas`). Quando o limite diário do YouTube acaba, responde `{ limite: true }` até o dia seguinte, e o site esconde a busca e fica só com o link. |
 | `netlify/functions/config.mjs` | `/api/config`: diz ao site se o envio por e-mail está ligado (só é chamado no pagamento e na carta paga) |
 | `netlify/functions/email.mjs` | `/api/email`: botão "Receber a carta no meu e-mail" da carta paga (pede a chave, no máximo 5 envios) |
 | `ads/` | Imagens baixadas pela Action `baixar.yml` (lista em `ads/urls.txt`) |
