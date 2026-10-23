@@ -26,6 +26,7 @@ Site que vende uma **carta cristã digital personalizada** em dois pacotes, **Pa
 | `netlify/functions/musica.mjs` | `/api/musica?s=track/ID`: recebe um Spotify e devolve o YouTube equivalente |
 | `netlify/functions/buscar.mjs` | `/api/buscar?q=`: busca a música pelo nome no YouTube (`sugestoesYouTube`) e devolve sugestões. Guarda cada busca por 14 dias no Blobs (store `buscas`). Quando o limite diário do YouTube acaba, responde `{ limite: true }` até o dia seguinte, e o site esconde a busca e fica só com o link. |
 | `netlify/functions/config.mjs` | `/api/config`: diz ao site se o envio por e-mail está ligado (só é chamado no pagamento e na carta paga) |
+| `netlify/functions/acesso.mjs` | `/api/acesso`: página **/meuacesso**. Recebe o e-mail da compra e devolve as cartas pagas (com a chave, para editar). Sem código de confirmação, por decisão do dono; tem limite de 40 consultas por hora por IP. Na primeira chamada liga ao e-mail as cartas vendidas antes (store `acessos`, chave `e/<hash do e-mail>`; o e-mail não fica escrito). O `pagar.mjs` já guarda cada compra nova ali. |
 | `netlify/functions/email.mjs` | `/api/email`: botão "Receber a carta no meu e-mail" da carta paga (pede a chave, no máximo 5 envios) |
 | `ads/` | Imagens baixadas pela Action `baixar.yml` (lista em `ads/urls.txt`) |
 
@@ -33,7 +34,11 @@ As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro
 
 **E-mail da carta:** na hora de pagar aparece "Quero receber a carta (link e QR code) neste e-mail" (marcado). Quando o pagamento é confirmado (`confirmarPagamento`, chamado pelo `status`, pelo `aviso` e pela `carta`), `mandarEmail` manda uma vez só e desiste depois de 3 erros. Na carta paga aparece "Enviamos..." ou o botão para receber. Só funciona com `EMAIL_USUARIO` e `EMAIL_SENHA_APP` no Netlify; sem elas, a opção nem aparece.
 
-**Pacotes (escolhidos só no fim, na prévia pronta):**
+**Meu acesso (/meuacesso):** depois do pagamento a pessoa cai nessa página (no lugar da antiga "página de obrigado"). Ela lista as cartas do e-mail com copiar o link, enviar, baixar o QR code, abrir e editar (7 dias). O e-mail fica lembrado no aparelho (`cp2:acesso`). Editar uma carta de outro aparelho traz a carta do servidor para o criador (`rascunhoDoServidor`) e salva pelo `/api/atualizar`, sem mandar as fotos de novo. O e-mail da carta também leva o link do Meu acesso, e o começo do site tem "Já comprou? Entrar no Meu acesso".
+
+**Pacotes:** no criador, depois de "Cor e música", vem a etapa `premium` ("Você não quer ver a sua carta na versão Premium?"), com os benefícios, "Ver a minha carta na versão Premium", o botão de baixo "Quero a Premium" e "Não, quero continuar na versão Padrão". Quem escolhe o Premium ganha a etapa `extras` (mais 3 polaroides e as 7 fotos do mini filme). A última etapa tem "Ver carta final", que abre a carta e leva à tela pronta (com o pacote escolhido e "Trocar"), e daí ao pagamento. As etapas que não valem para a carta somem (`so`, `passosValidos`); numa carta já paga a oferta não aparece. Em "Editar alguma coisa", o botão vira "Pronto" e volta direto para a carta pronta (`ui.editando`).
+
+**Detalhes dos pacotes:**
 - **Padrão, R$ 21,99:** 4 fotos (3 polaroides e 1 na câmera). Fica no ar por **3 meses** depois do pagamento (`DIAS_PADRAO`). Depois disso, `/api/carta` devolve `{ expirada: true }`. Só vale para pedidos com `reg.plano` (feitos depois dos pacotes). As cartas vendidas antes continuam para sempre.
 - **Premium, R$ 29,99:** vitalícia, com abertura de cinema (`cineOpen`), 6 polaroides em slides de cinema em que a foto salta 50% maior da polaroide (`slidesHTML`), câmera com raios de ouro e o **mini filme do casal** (`playFilm`): até 7 fotos com transições, frases, música e tela final. Se não houver fotos do filme, ele usa as fotos da carta.
 - Quem diz se é Premium é o pedido (`reg.plano`), nunca a carta: `limparCarta(c, plano)` corta o que for do Premium num pedido Padrão, e `carta.mjs` acrescenta `pl: "p"` na entrega.
@@ -63,19 +68,21 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
 `/c/<id>` abre só a carta (o criador fica escondido). Ela começa num **envelope de ouro** com um **selo real** pequeno (cera vinho, contas, louros e uma cruzinha de ouro) e fitas de cetim. Sem versículo na capa. O **toque no selo** faz a abertura com raios de luz, clarão e faíscas douradas, e começa a música: a instrumental (Amazing Grace gerada no navegador, objeto `Music`) ou a música de vocês do YouTube ou Spotify (objeto `Som`; o servidor troca Spotify por YouTube).
 
 A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cada parte com `data-step`; `bindLetter` controla). A ordem e a ação de cada parte:
-1. **Abertura** ("Para Ana", com o player da música): "Continuar".
-2. **Fotos**: as três primeiras viram polaroides grandes, penduradas e balançando. "Continuar".
-3. **Roleta da Palavra**: fina, com Jesus ao lado empurrando. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta, e ele aparece letra por letra. Depois, "Continuar".
-4. **Números**: "Juntos desde" + data bem grandes, os dias dentro de um coração num relógio ("dias em que o meu amor se renovou"), horas e noites. "Continuar".
-5. **Mensagem**: pergaminho real. Chega enrolado com fita de cetim e selo de cera, o selo se rompe e ele desenrola, com coroa no topo e moldura de ouro. A pena escreve o texto na hora (tocar no papel termina) e um selo carimba o fim. No "Continuar", ele se enrola, a fita volta e o selo carimba antes de seguir.
-6. **Pote dos motivos**: papeizinhos enrolados com fitas. Cada toque tira um bilhete que voa e "cola" na tela; é preciso ler **todos** ("Guardar no coração"). Se o pote ficou vazio, a carta usa 5 bilhetes automáticos.
-7. **Última foto**: câmera antiga. O toque dá o flash, a foto sai pela fenda e vai se revelando. A carta segue sozinha.
-8. **Versículos escolhidos**: sem aspas, em ouro espelhado (`.mirror`, uma palavra por `.mw`). "Continuar".
-9. **Pedido** (namoro e noivado): "Sim".
-10. **Oração**: é a última etapa; tocar em "Amém".
-11. **Despedida**: assinatura grande em ouro e chuva de corações.
+1. **Abertura** ("Para Ana"): "Continuar".
+2. **Roleta da Palavra**: fina, com Jesus ao lado empurrando. Sorteia um versículo das ocasiões do mesmo tipo de carta que não esteja na carta, e ele aparece letra por letra. Depois, "Continuar".
+3. **Nossa música** (só com música do YouTube ou Spotify, com o player): a música começa **quando a pessoa sai da roleta** (`hooks.onMusica`, chamado no `advance`). A instrumental também começa aí.
+4. **Fotos**: polaroides grandes, penduradas e balançando (no Premium, slides de cinema). "Continuar".
+5. **Pote dos motivos**: papeizinhos enrolados com fitas. Cada toque tira um bilhete que voa e "cola" na tela; é preciso ler **todos** ("Guardar no coração"). Se o pote ficou vazio, a carta usa 5 bilhetes automáticos.
+6. **Versículos escolhidos**: sem aspas, em ouro espelhado (`.mirror`, uma palavra por `.mw`). "Continuar".
+7. **Mensagem**: pergaminho real. Chega enrolado com fita de cetim e selo de cera, o selo se rompe e ele desenrola, com coroa no topo e moldura de ouro. A pena escreve o texto na hora (tocar no papel termina) e um selo carimba o fim. No "Continuar" ele **fica aberto** (não se enrola mais).
+8. **Números**: "Juntos desde" + data bem grandes, os dias dentro de um coração num relógio, horas e noites. "Continuar".
+9. **Última foto**: câmera antiga (um pouco menor). O toque dá o flash e a foto, 30% maior que antes, sai pela fenda e se revela mais rápido. A carta segue sozinha.
+10. **Mini filme** (Premium).
+11. **Pedido** (namoro e noivado): "Sim".
+12. **Oração**: é a última etapa; tocar em "Amém".
+13. **Despedida**: assinatura grande em ouro e chuva de corações.
 
-Na prévia e no exemplo, a roleta e o pote têm "Pular". Quem recebe não tem.
+Na prévia de quem está montando, a roleta, o pote e outras partes têm "Pular esta parte". Nas prévias de exemplo do começo (`hooks.rapido`) não há "Pular": o pergaminho já vem aberto e escreve rápido, a roleta e a câmera disparam sozinhas, e rolar a tela para baixo passa para a próxima parte (aviso "Role a tela para ver a próxima parte"). Quem recebe não tem nada disso.
 
 Visual: fundo de veludo (temas `rosa` = Vinho, `dourado` = Púrpura, `ceu` = Noite), tudo com ouro. Nomes e assinatura na fonte Great Vibes (classe `gold-t`); versículos em Playfair Display itálico com ouro espelhado; mensagem em Parisienne; bilhetes em Cormorant Garamond. Nada de logo do WhatsApp: o botão de enviar usa um ícone neutro.
 
@@ -92,4 +99,6 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 23/10, madrugada: pacotes Padrão (R$ 21,99, 3 meses) e Premium (R$ 29,99, vitalícia, abertura de cinema, slides das fotos, mini filme do casal), duas prévias no começo, e correção do pergaminho. Também na `nova-estetica`, sem publicar.
 - 23/10: **tudo publicado** (merge da `nova-estetica` na `main`), com o pergaminho real e a busca de música pelo nome. Falta fazer uma compra de teste com Pix e abrir a carta num iPhone.
 - 23/10, depois: prévias de exemplo mais rápidas (pergaminho já aberto, pena rápida, sem enrolar no Continuar; `hooks.rapido`) e botão "Pular esta parte" em destaque em mais partes. Publicado.
+- 23/10, noite: oferta do Premium como etapa do criador, nova ordem da carta (música depois da roleta), pergaminho que fica aberto, câmera menor com foto maior e edição que volta direto para a carta pronta. Publicado.
+- 23/10, tarde: página /meuacesso no lugar da página de obrigado, e prévias de exemplo que passam sozinhas ao rolar a tela. Publicado.
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.

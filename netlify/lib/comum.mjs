@@ -19,6 +19,17 @@ const MP = "https://api.mercadopago.com";
 
 export const loja = () => getStore({ name: "cartas", consistency: "strong" });
 
+// Página /meuacesso: guarda quais cartas cada e-mail comprou (store "acessos", chave e/<hash do e-mail>).
+// O e-mail não fica escrito aqui, só o hash dele.
+export const acessos = () => getStore({ name: "acessos", consistency: "strong" });
+export const chaveEmail = email => "e/" + sha(email);
+export async function guardarNoAcesso(email, id) {
+  const k = chaveEmail(email), atual = (await acessos().get(k, { type: "json" }).catch(() => null)) || { ids: [] };
+  if (atual.ids.includes(id)) return;
+  atual.ids.push(id);
+  await acessos().setJSON(k, atual);
+}
+
 export function resposta(dados, status = 200) {
   return new Response(JSON.stringify(dados), {
     status,
@@ -124,7 +135,7 @@ export function dadosNavegador(req) {
 
 // API de Conversões: o próprio servidor avisa o Meta que a compra foi paga
 // (conta a venda mesmo se a pessoa fechou o site antes do Pix cair)
-const sha = v => createHash("sha256").update(String(v).trim().toLowerCase()).digest("hex");
+export const sha = v => createHash("sha256").update(String(v).trim().toLowerCase()).digest("hex");
 export async function avisarMeta(id, reg) {
   const token = process.env.META_CAPI_TOKEN;
   if (!token || reg.metaOk) return;

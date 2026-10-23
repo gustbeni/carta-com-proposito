@@ -1,6 +1,6 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
-import { DESCRICAO, loja, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo } from "../lib/comum.mjs";
+import { DESCRICAO, loja, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, guardarNoAcesso } from "../lib/comum.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return resposta({ erro: "metodo" }, 405);
@@ -18,6 +18,7 @@ export default async (req) => {
   const site = enderecoSite(req);
   const reg = { carta, chave, email, querEmail: b.enviarEmail === true, plano, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
   await loja().setJSON("c/" + id, reg);
+  await guardarNoAcesso(email, id).catch(e => console.error("acesso", e.message)); // para aparecer em /meuacesso
 
   try {
     if (metodo === "pix") {

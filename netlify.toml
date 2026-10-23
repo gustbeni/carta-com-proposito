@@ -9,3 +9,8 @@
   from = "/c/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/meuacesso"
+  to = "/index.html"
+  status = 200
