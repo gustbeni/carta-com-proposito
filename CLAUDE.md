@@ -82,7 +82,7 @@ A carta aparece **passo a passo**, uma parte de cada vez (`letterHTML` marca cad
 12. **Oração**: é a última etapa; tocar em "Amém".
 13. **Despedida**: assinatura grande em ouro e chuva de corações.
 
-Na prévia de quem está montando, a roleta, o pote e outras partes têm "Pular esta parte". Nas prévias de exemplo do começo (`hooks.rapido`) não há "Pular": o pergaminho já vem aberto e escreve rápido, a roleta e a câmera disparam sozinhas, e rolar a tela para baixo passa para a próxima parte (aviso "Role a tela para ver a próxima parte"). Quem recebe não tem nada disso.
+Na prévia de quem está montando, a roleta, o pote e outras partes têm "Pular esta parte" (menos o pergaminho e a última foto, onde o botão ficava em cima de onde se toca). Nas prévias de exemplo do começo (`hooks.rapido`) não há "Pular": o pergaminho já vem aberto e escreve rápido, a roleta e a câmera disparam sozinhas, e rolar a tela para baixo passa para a próxima parte (aviso "Role a tela para ver a próxima parte"). Quem recebe não tem nada disso.
 
 Visual: fundo de veludo (temas `rosa` = Vinho, `dourado` = Púrpura, `ceu` = Noite), tudo com ouro. Nomes e assinatura na fonte Great Vibes (classe `gold-t`); versículos em Playfair Display itálico com ouro espelhado; mensagem em Parisienne; bilhetes em Cormorant Garamond. Nada de logo do WhatsApp: o botão de enviar usa um ícone neutro.
 

@@ -2434,9 +2434,9 @@ function letterHTML(L, mode, opt = {}) {
     ${full ? '' : '<div class="slip" hidden aria-live="polite"><p></p><span class="slip-n"></span></div>'}
     ${full ? '<p class="gate-note">Leia todos os bilhetes para continuar a carta</p>' : ''}${SKIP}</div>`);
   h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
-  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}${SKIP}`);
+  h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}`);
   if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
-  if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}${SKIP}`);
+  if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
   if (L.premium && L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L) + SKIP);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
