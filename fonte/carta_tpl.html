@@ -373,7 +373,7 @@ const FAQ = [
 
 const EXAMPLE = {
   recipient: 'amor', occasion: 'aniv_namoro', to: 'Ana', from: 'Pedro', date: '2025-06-10',
-  captions: ['Nosso cantinho', 'Nosso primeiro pôr do sol', 'Seu abraço é meu lugar', 'Pra sempre nós', 'Rindo de tudo', 'Seu jeito de me olhar', 'O dia da surpresa'],
+  captions: ['Nosso cantinho', 'Nosso primeiro pôr do sol', 'Seu abraço é meu lugar', 'Pra sempre nós', 'Testa com testa', 'Abraço de fim de tarde', 'Nossa viagem dos sonhos'],
   verses: ['ec4_12', 'co13_4', 'ct8_7'],
   message: 'Ana, quando eu olho para a nossa história, vejo o cuidado de Deus em cada detalhe. Você chegou como resposta de oração e transformou os meus dias comuns em dias felizes.\n\nAgradeço por me amar com paciência, por sonhar comigo e por caminhar ao meu lado, inclusive nos dias difíceis. Eu te amo, e quero seguir aprendendo a te amar do jeito que Cristo ensina.',
   reasons: ['Seu sorriso logo cedo', 'O jeito que você ora por nós', 'Seu abraço que acalma', 'Como você me faz rir', 'Sua fé que me inspira', 'Você me faz querer ser melhor'],
@@ -1901,7 +1901,7 @@ const BIND = {
 
 /* ----- Prévia pronta, pagamento e entrega ----- */
 function readyView() {
-  const L = resolveLetter(S), pics = S.photos.slice(0, L.premium ? 7 : 4).filter(Boolean).length, pago = editavel(), prem = S.plano === 'premium';
+  const L = resolveLetter(S), pago = editavel(), prem = S.plano === 'premium';
   const plano = (id, titulo, sub, itens) => `<button class="plano${id === 'premium' ? ' premium' : ''}" data-plano="${id}" aria-pressed="${S.plano === id}">
       ${id === 'premium' ? '<span class="pl-badge">Mais completo</span>' : ''}<span class="pl-top"><span class="radio"></span><span class="pl-t"><b>${titulo}</b><small>${sub}</small></span><strong>${brl(precoDe(id))}</strong></span>
       <ul>${itens.map(x => `<li>${ICON.check}<span>${x}</span></li>`).join('')}</ul></button>`;
@@ -1909,13 +1909,6 @@ function readyView() {
     <h1 class="h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> ficou linda</h1>
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
-    <ul class="inc">
-      <li>${ICON.checkc}<span><b>Envelope de ouro</b> que abre quando ${esc(L.to)} quebra o selo${L.music === 'none' ? '' : ', com música'}</span></li>
-      <li>${ICON.checkc}<span><b>Mensagem num pergaminho</b>, escrita por uma pena na hora</span></li>
-      <li>${ICON.checkc}<span><b>${L.verses.length} ${L.verses.length > 1 ? 'versículos' : 'versículo'}</b> em ouro, a roleta da Palavra com Jesus e o pote com ${L.reasons.length} motivos${L.prayer ? ', e uma oração' : ''}</span></li>
-      ${pics || L.stats ? `<li>${ICON.checkc}<span>${pics ? `<b>${pics} ${pics > 1 ? 'fotos' : 'foto'}</b>${S.photos[3] ? ', a última revelada numa câmera antiga' : ''}` : ''}${pics && L.stats ? ', e ' : ''}${L.stats ? `${pics ? 'os' : '<b>Os</b>'} dias de vocês contados` : ''}</span></li>` : ''}
-      <li>${ICON.checkc}<span><b>Link e cartão com QR code</b> para mandar no WhatsApp ou imprimir, e também no seu e-mail</span></li>
-    </ul>
     ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<p class="group-label">Escolha o pacote</p>
     <div class="planos">
       ${plano('padrao', 'Padrão', 'Fica no ar por 3 meses', ['4 fotos: 3 polaroides e 1 revelada na câmera', 'Roleta, pote, pergaminho, números e música', 'Link e QR code para entregar'])}
