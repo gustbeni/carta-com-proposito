@@ -1321,10 +1321,11 @@ function bindLetter(root, L, mode, hooks = {}) {
       if (fim) return; fim = true; ink.textContent = txt; s.classList.add('written');
       later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 600);
     };
-    /* a tela acompanha a pena quando ela chega perto da barra de baixo */
+    /* a tela acompanha a pena só o necessário, sem cortar o alto do pergaminho à toa */
     const seguir = () => {
-      const r = root.getBoundingClientRect(), q = quill.getBoundingClientRect();
-      if (q.bottom > r.bottom - 190) root.scrollBy({ top: r.height * .35, behavior: 'smooth' });
+      const r = root.getBoundingClientRect(), q = quill.getBoundingClientRect(), barra = hooks.host && hooks.host.querySelector('.vw-bottom:not(.wait)');
+      const falta = q.bottom - (r.bottom - (barra ? 170 : 70));
+      if (falta > 0) root.scrollBy({ top: falta + 60, behavior: 'smooth' });
     };
     const passo = () => {
       if (fim) return;
