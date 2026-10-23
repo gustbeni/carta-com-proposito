@@ -6,10 +6,14 @@ netlify/functions/status ..... o site pergunta se o pagamento já caiu
 netlify/functions/aviso ...... o Mercado Pago avisa quando o pagamento é aprovado
 netlify/functions/carta ...... entrega a carta para quem escaneou (só se estiver paga)
 netlify/functions/atualizar .. salva mudanças na carta até 7 dias depois de pagar
-netlify/lib/comum.mjs ........ preço cobrado (PRECO = 17.99) e ligação com o Mercado Pago
+netlify/lib/comum.mjs ........ preço cobrado (PRECO = 21.99) e ligação com o Mercado Pago
 
 No Netlify, em Project configuration > Environment variables, crie:
   MP_ACCESS_TOKEN = Access Token de PRODUÇÃO do Mercado Pago (começa com APP_USR-)
-  (opcional) PRECO = 17.99
+  (opcional) PRECO = 21.99
+  META_CAPI_TOKEN = token da API de Conversões do Meta (secreto)
 
 Este site precisa ser publicado pelo GitHub (as funções não funcionam arrastando a pasta).
+
+Para editar a página: mude os arquivos da pasta fonte/ e rode  python3 fonte/montar.py
+Mais detalhes em CLAUDE.md
