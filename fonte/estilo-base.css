@@ -1081,11 +1081,11 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .co-2 span{display:inline-block;padding:0 .3em;margin:0 -.3em}
 /* nomes em ouro sólido com brilho (sem texto recortado, que o iPhone borra nesta animação) */
 .co-nome{color:#F3D08A;-webkit-text-fill-color:#F3D08A;text-shadow:0 1px 0 #FFF2C8,0 2px 0 #B8862F,0 3px 2px rgba(70,30,0,.55),0 0 24px rgba(255,190,90,.55)}
-.co-3{font:italic 600 19px/1.3 var(--f-verse);color:#FFF1CC}
+.co-3{font:italic 600 19px/1.3 var(--f-verse);color:#FFF1CC;white-space:nowrap}
 .cine-open.on .co-1{animation:coIn 1.4s ease .5s both}
 .cine-open.on .co-2{animation:coName 2.4s cubic-bezier(.2,.8,.2,1) 1.6s both}
 .cine-open.on .co-3{animation:coIn 1.4s ease 3s both}
-@keyframes coIn{from{opacity:0;transform:translateY(10px);letter-spacing:.5em}to{opacity:1;transform:none}}
+@keyframes coIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}} /* sem mexer no espaçamento: ele fazia o texto quebrar de linha no meio da animação */
 @keyframes coName{0%{opacity:0;transform:scale(1.25)}100%{opacity:1;transform:none}}
 .co-flare{position:absolute;left:50%;top:50%;z-index:3;width:140vmax;height:140vmax;margin:-70vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,250,230,.95) 0%,rgba(255,220,150,.6) 12%,rgba(255,200,110,0) 45%);opacity:0;pointer-events:none}
 .cine-open.on .co-flare{animation:coFlare 1.6s ease-out 5.4s both}

@@ -1233,12 +1233,15 @@ function cineOpen(host, L, onDone) {
     nome.style.fontSize = ''; const w = nome.firstElementChild.offsetWidth, max = o.clientWidth * .8;
     if (w > max) nome.style.fontSize = (parseFloat(getComputedStyle(nome).fontSize) * max / w) + 'px';
   };
-  ajustar(); try { document.fonts.load('400 80px "Great Vibes"').then(ajustar, () => {}); } catch (e) {}
+  ajustar();
   let feito = false;
   const acabar = () => { if (feito) return; feito = true; o.classList.add('sai'); setTimeout(() => o.remove(), 900); onDone(); };
   o.querySelector('.co-skip').addEventListener('click', acabar);
-  requestAnimationFrame(() => o.classList.add('on'));
-  setTimeout(acabar, reduced() ? 600 : 7200);
+  /* só começa com a letra cursiva já carregada, para o nome não trocar de fonte no meio (espera no máximo 0,8 s) */
+  let comecou = false;
+  const comecar = () => { if (comecou || feito) return; comecou = true; ajustar(); requestAnimationFrame(() => o.classList.add('on')); setTimeout(acabar, reduced() ? 600 : 7200); };
+  try { document.fonts.load('400 80px "Great Vibes"').then(() => { ajustar(); comecar(); }, comecar); } catch (e) { comecar(); }
+  setTimeout(comecar, 800);
 }
 
 function polHTML(p, i) {
