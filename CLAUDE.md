@@ -102,3 +102,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 23/10, noite: oferta do Premium como etapa do criador, nova ordem da carta (música depois da roleta), pergaminho que fica aberto, câmera menor com foto maior e edição que volta direto para a carta pronta. Publicado.
 - 23/10, tarde: página /meuacesso no lugar da página de obrigado, e prévias de exemplo que passam sozinhas ao rolar a tela. Publicado.
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.
+- 23/10, noite: carta só com "Para" e o nome (sem data e sem título da ocasião), nome do casal e data numa linha só na abertura de cinema (que espera a letra cursiva carregar), e contagem dos números que começa quando a parte aparece. Publicado.
