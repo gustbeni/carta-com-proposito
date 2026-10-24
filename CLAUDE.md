@@ -105,3 +105,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 24/10: compra de teste com Pix feita no site novo, e deu tudo certo (pagamento, carta e Meu acesso). Os 3 vídeos de anúncio foram aprovados. No conjunto antigo da campanha (que já tinha aprendido com as vendas), o anúncio antigo foi editado com um dos vídeos novos e duplicado mais 2 vezes com os outros vídeos. Os 3 começam à meia-noite, com R$ 40 por dia para o conjunto todo.
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.
 - 23/10, noite: carta só com "Para" e o nome (sem data e sem título da ocasião), nome do casal e data numa linha só na abertura de cinema (que espera a letra cursiva carregar), e contagem dos números que começa quando a parte aparece. Publicado.
+- 24/10: aviso de venda no celular do dono pelo app ntfy (`NTFY_TOPICO` criada no Netlify). Publicado.
