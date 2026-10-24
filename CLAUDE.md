@@ -52,6 +52,7 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
 ## Regras importantes
 
 - **Cada deploy no Netlify gasta créditos (cerca de 15).** Junte várias mudanças num commit só. Para subir sem publicar, use `[skip netlify]` na mensagem do commit.
+- **Pedido do dono (24/10): sempre juntar as alterações e publicar de uma vez só.** Cada mudança vai num commit com `[skip netlify]`. Só publique (commit sem `[skip netlify]`) quando o dono pedir ("publica"), ou quando for algo urgente que quebra vendas, e aí avise antes. Ao terminar cada alteração, **lembre o dono** do que está guardado sem publicar e pergunte se quer juntar mais coisas antes de publicar. Em 24/10 restavam cerca de 430 dos 1.000 créditos do plano, que vencem em 10/11. Se acabarem, o site continua no ar, mas as publicações travam.
 - **Preço:** fica em `PRECO` e `PRECO_PREMIUM` no `comum.mjs`, que são os valores cobrados de verdade, e em `PRICE` e `PRICE_PREMIUM` no `carta_tpl.html`, que são só o texto mostrado (`PRICE_OLD` é o preço riscado da Padrão). Mude sempre os dois lados. Os pedidos guardam `reg.valor`, então os criados antes de uma mudança de preço continuam sendo confirmados pelo valor antigo.
 - **Variáveis no Netlify** (nunca coloque os valores no código nem peça para colarem no chat):
   - `MP_ACCESS_TOKEN`: Mercado Pago, produção
