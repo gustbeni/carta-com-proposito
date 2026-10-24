@@ -91,11 +91,32 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
     } catch (e) {}
   }
   if (!aprovado) return false;
-  reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado;
+  const tok = Math.random().toString(36).slice(2);
+  reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado; reg.avisoTok = tok;
   await loja().setJSON("c/" + id, reg);
   try { await avisarMeta(id, reg); } catch (e) { console.error("Meta CAPI", e.message); }
+  try { await avisarDono(id, reg, tok); } catch (e) { console.error("Aviso de venda", e.message); }
   if (email) await mandarEmail(id, reg);
   return true;
+}
+
+// Toque no celular do dono a cada venda, pelo app ntfy (variável NTFY_TOPICO no Netlify).
+// Se o status e o webhook confirmarem ao mesmo tempo, só quem gravou por último avisa (avisoTok).
+// Não manda nome nem e-mail de quem comprou.
+async function avisarDono(id, reg, tok) {
+  const topico = (process.env.NTFY_TOPICO || "").trim();
+  if (!topico) return;
+  await new Promise(r => setTimeout(r, 800));
+  const atual = await loja().get("c/" + id, { type: "json" }).catch(() => null);
+  if (atual && atual.avisoTok && atual.avisoTok !== tok) return;
+  const premium = planoDe(reg.plano) === "premium";
+  const valor = (Number(reg.valor) || PRECO).toFixed(2).replace(".", ",");
+  const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+  const q = new URLSearchParams({ title: "Nova venda! 💌", tags: "moneybag", priority: "high", click: site + "/c/" + id });
+  await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
+    method: "POST",
+    body: `Carta ${premium ? "Premium" : "Padrão"} · R$ ${valor}\nToque para ver a carta.`,
+  }), 5000);
 }
 
 // E-mail com o link e o QR code para quem comprou. Só manda uma vez (e desiste depois de 3 erros);

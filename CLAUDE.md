@@ -57,6 +57,7 @@ A `carta` nova tem `x: 2` e os campos `r, oc, p, d, v, m, mot, ora, dt, th, mu/m
   - `MP_ACCESS_TOKEN`: Mercado Pago, produção
   - `META_CAPI_TOKEN`: API de Conversões do Meta, marcada como secreta
   - `EMAIL_USUARIO` e `EMAIL_SENHA_APP`: conta do Gmail que manda a carta por e-mail e a "senha de app" dela (16 letras, criada em myaccount.google.com/apppasswords com a verificação em duas etapas ligada)
+  - `NTFY_TOPICO`: nome do canal do app ntfy que dá um toque no celular do dono a cada venda (`avisarDono` no `comum.mjs`, chamado no `confirmarPagamento`; manda só o pacote, o valor e o link da carta, sem dados de quem comprou). Sem ela, não avisa.
   - opcionais: `PRECO`, `PRECO_PREMIUM`, `YOUTUBE_KEY`, `META_PIXEL_ID`, `META_TEST_CODE`
 - **Meta:** Pixel `1595171231774957`. O navegador envia `Purchase` com `eventID: "compra_<id>"`, e o servidor envia o mesmo `event_id`, então o Meta não conta a venda em dobro. O domínio está na lista de permissões do Pixel.
 - **Mercado Pago:** o webhook de produção aponta para `/api/aviso`, com os eventos Order e Pagamentos.
