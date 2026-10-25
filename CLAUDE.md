@@ -107,3 +107,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - Planejado para sexta, 23/10: analisar a semana, subir um segundo vídeo no mesmo conjunto de anúncios e passar o orçamento para R$ 50.
 - 23/10, noite: carta só com "Para" e o nome (sem data e sem título da ocasião), nome do casal e data numa linha só na abertura de cinema (que espera a letra cursiva carregar), e contagem dos números que começa quando a parte aparece. Publicado.
 - 24/10: aviso de venda no celular do dono pelo app ntfy (`NTFY_TOPICO` criada no Netlify). Publicado.
+- 24/10 (sábado), primeiro dia completo com o site novo e os 3 vídeos: 5 vendas (2 pelo orgânico, perfil e link da bio), com cerca de R$ 40 de anúncio. Vendas confirmadas no Meta e aviso no celular funcionando.
