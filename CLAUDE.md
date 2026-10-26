@@ -18,7 +18,7 @@ Site que vende uma **carta cristã digital personalizada** em dois pacotes, **Pa
 | `public/privacidade.html`, `public/img/` | Política de privacidade e imagens do site |
 | `netlify/lib/comum.mjs` | Preços (`PRECO` e `PRECO_PREMIUM`), pacotes (`planoDe`, `valorDo`, `expirou`), Mercado Pago, confirmação de pagamento, API de Conversões do Meta, envio do e-mail (`mandarEmail`) e troca de Spotify por YouTube |
 | `netlify/lib/correio.mjs` | Monta e manda o e-mail com o link e o QR code da carta (Gmail, com nodemailer e qrcode) |
-| `netlify/functions/pagar.mjs` | Cria a carta (ainda não paga) e gera o Pix (API de Orders) ou o link do cartão (Checkout Pro) |
+| `netlify/functions/pagar.mjs` | Cria a carta (ainda não paga) e gera o Pix (API de Orders, vale 2 horas: `PT2H`, e o site espera e confere pelo mesmo tempo, `PIX_MS`) ou o link do cartão (Checkout Pro) |
 | `netlify/functions/status.mjs` | O site pergunta a cada poucos segundos se o pagamento caiu |
 | `netlify/functions/aviso.mjs` | Webhook do Mercado Pago (`/api/aviso`) |
 | `netlify/functions/carta.mjs` | Entrega a carta paga. Se a música for do Spotify, troca pela versão do YouTube e guarda em `reg.musicaYT`. |

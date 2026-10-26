@@ -2367,24 +2367,31 @@ async function pay() {
   } catch (e) { closeSheet(); toast(erroTexto(e)); }
   ocupado = false; refreshBar();
 }
+const PIX_MS = 2 * 36e5;
 function openPix(pix) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
   openSheet(`<p class="eyebrow">Pix · ${brl(precoDe(S.plano))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
     <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
     <button class="btn btn-ghost w" id="copyPix">${ICON.copy}Copiar código Pix</button>
     <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta é liberada aqui mesmo, na hora.</li></ol>
-    <div class="waiting"><span class="spin"></span>Aguardando pagamento · expira em <b id="pixTimer">30:00</b></div>
+    <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por <b id="pixTimer">2:00:00</b></div>
     <p class="hint pix-note">Pode sair do site para pagar. Quando você voltar, a carta é liberada aqui.</p>`, () => clearInterval(timer));
   $('#copyPix').addEventListener('click', () => copyText(copia, 'Código Pix copiado'));
-  const end = Date.now() + 30 * 60e3;
-  const timer = setInterval(() => { const left = Math.max(0, end - Date.now()), t = $('#pixTimer'); if (!t) return clearInterval(timer); t.textContent = `${pad(Math.floor(left / 6e4))}:${pad(Math.floor(left / 1e3) % 60)}`; }, 1000);
+  /* o Pix vale por 2 horas (PT2H no pagar.mjs); depois disso o Mercado Pago cancela e é preciso gerar outro */
+  const end = Date.now() + PIX_MS;
+  const timer = setInterval(() => {
+    const left = Math.max(0, end - Date.now()), t = $('#pixTimer'); if (!t) return clearInterval(timer);
+    t.textContent = `${Math.floor(left / 36e5)}:${pad(Math.floor(left / 6e4) % 60)}:${pad(Math.floor(left / 1e3) % 60)}`;
+    if (!left) { clearInterval(timer); const w = t.closest('.waiting'); if (w) w.innerHTML = 'Este Pix expirou. Feche e toque em pagar de novo para gerar outro.'; }
+  }, 1000);
 }
 /* pergunta ao servidor se o pagamento caiu (o webhook /api/aviso também confirma do lado do servidor) */
 async function esperarPagamento(n) {
   clearTimeout(esperando); esperando = null;
   if (!pedido || pedido.pago) return;
   try { const j = await api('/status?id=' + encodeURIComponent(pedido.id)); if (j.pago) return approve(j); } catch (e) {}
-  if (n < 450) esperando = setTimeout(() => esperarPagamento(n + 1), n < 150 ? 4000 : 8000);
+  /* 10 minutos de 4 em 4 segundos, depois de 8 em 8 até completar as 2 horas do Pix */
+  if (n < 150 + (PIX_MS - 600e3) / 8000) esperando = setTimeout(() => esperarPagamento(n + 1), n < 150 ? 4000 : 8000);
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && pedido && !pedido.pago) esperarPagamento(0); });
 function approve(j = {}) {

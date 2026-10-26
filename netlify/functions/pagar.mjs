@@ -28,7 +28,7 @@ export default async (req) => {
         description: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO,
         payer: { email },
         items: [{ title: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO, unit_price: valor, quantity: 1, description: "Carta on-line com QR code" }],
-        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT30M" }] },
+        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT2H" }] },
       };
       let o;
       try { o = await mp("/v1/orders", { metodo: "POST", idem: id, corpo: pedidoMP }); }
