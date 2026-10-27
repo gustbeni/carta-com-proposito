@@ -1,5 +1,5 @@
 // Entrega a carta para quem escaneou o QR code (só se estiver paga)
-import { loja, resposta, idValido, confirmarPagamento, spotifyParaYouTube, expirou } from "../lib/comum.mjs";
+import { loja, resposta, idValido, confirmarPagamento, spotifyParaYouTube, expirou, cartaEntregue } from "../lib/comum.mjs";
 
 export default async (req) => {
   const id = new URL(req.url).searchParams.get("id");
@@ -26,7 +26,6 @@ export default async (req) => {
     }
     if (conv && conv.y) carta = { ...c, ml: "y:" + conv.y };
   }
-  if (reg.plano === "premium") carta = { ...carta, pl: "p" };
-  return resposta({ carta });
+  return resposta({ carta: cartaEntregue(reg, carta) });
 };
 export const config = { path: "/api/carta" };

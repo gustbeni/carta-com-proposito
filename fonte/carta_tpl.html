@@ -153,6 +153,17 @@ const PRICE = 21.99;       // só o texto mostrado; o valor cobrado de verdade �
 const PRICE_OLD = 34.90;
 const PRICE_PREMIUM = 29.99; // só o texto; o valor cobrado é PRECO_PREMIUM em netlify/lib/comum.mjs
 const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
+/* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
+   A Premium já vem com todos. */
+const EXTRAS = [
+  { id: 'vit', preco: 1.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
+  { id: 'filme', preco: 2.99, t: 'Mini filme do casal', d: 'Até 7 fotos viram um filminho com transições, frases, música e tela final.' },
+  { id: 'cine', preco: 1.99, t: 'Abertura gloriosa de cinema', d: 'A carta começa como um filme, com os nomes de vocês em ouro.' },
+  { id: 'fotos', preco: 1.99, t: 'Mais 3 fotos', d: 'Mais 3 polaroides penduradas, 6 no total.' }
+];
+const extrasValidos = (plano, ex) => plano === 'premium' || !Array.isArray(ex) ? [] : EXTRAS.map(e => e.id).filter(k => ex.includes(k));
+const temRec = (src, k) => src.plano === 'premium' || extrasValidos(src.plano, src.extras).includes(k);
+const precoTotal = (plano, ex) => plano === 'premium' ? PRICE_PREMIUM : Math.round((PRICE + EXTRAS.filter(e => extrasValidos(plano, ex).includes(e.id)).reduce((t, e) => t + e.preco, 0)) * 100) / 100;
 const NFOTOS = 14; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium)
 const API = '/api';        // funções do Netlify (Mercado Pago, cartas)
 const CLOUD = { nome: 'kmd9kglx', preset: 'carta_com_proposito' }; // Cloudinary: guarda as fotos das cartas
@@ -367,6 +378,7 @@ const FAQ = [
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
   ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 polaroides em slides e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Na tela da carta pronta você pode adicionar à Padrão: carta vitalícia (+ R$ 1,99), mini filme do casal (+ R$ 2,99), abertura gloriosa de cinema (+ R$ 1,99) e mais 3 fotos (+ R$ 1,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -814,7 +826,8 @@ function resolveLetter(src) {
     date: validDate(src.date) ? src.date : '', stats: validDate(src.date) ? calcStats(src.date) : null,
     music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src),
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
-    premium: src.plano === 'premium', film: src.plano === 'premium' ? filmeFotos(src.photos || []) : [],
+    premium: src.plano === 'premium', cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), vitalicia: temRec(src, 'vit'),
+    film: temRec(src, 'filme') ? filmeFotos(src.photos || []) : [],
     initial: (src.from || '').trim() ? from.charAt(0).toUpperCase() : ''
   };
 }
@@ -834,25 +847,25 @@ function cartaParaServidor(fotos) {
   if (L.prayer) P.ora = L.prayer;
   if (L.date) P.dt = L.date;
   if (L.music === 'instrumental') P.mu = 1; else if (L.ml) P.ml = L.ml;
-  const premium = S.plano === 'premium';
-  const pol = (premium ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).filter(i => S.photos[i] && fotos[i]);
+  const pol = (temRec(S, 'fotos') ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).filter(i => S.photos[i] && fotos[i]);
   if (pol.length) { P.fu = pol.map(i => fotos[i]); if (pol.some(i => (S.captions[i] || '').trim())) P.fc = pol.map(i => (S.captions[i] || '').trim()); }
   if (S.photos[3] && fotos[3]) { P.ffu = fotos[3]; if ((S.captions[3] || '').trim()) P.ffc = S.captions[3].trim(); }
-  if (premium) { const mf = [7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
+  if (temRec(S, 'filme')) { const mf = [7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
   return P;
 }
 function cartaDoServidor(P) {
   const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
   const nuvem = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null;
-  const premium = P.pl === 'p'; // quem marca é o servidor, pelo pedido
-  const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, premium ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
-  const mf = premium && Array.isArray(P.mf) ? P.mf.slice(0, 7).map(nuvem).filter(Boolean) : [];
+  const premium = P.pl === 'p'; // quem marca é o servidor, pelo pedido (pl = Premium, ex = adicionais da Padrão)
+  const extras = premium ? [] : extrasValidos('padrao', P.ex), tem = k => premium || extras.includes(k);
+  const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, tem('fotos') ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
+  const mf = tem('filme') && Array.isArray(P.mf) ? P.mf.slice(0, 7).map(nuvem).filter(Boolean) : [];
   const base = {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
     photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf),
     captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40))),
-    plano: premium ? 'premium' : 'padrao',
+    plano: premium ? 'premium' : 'padrao', extras,
     music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', prayer: -1
   };
   let L;
@@ -1254,7 +1267,7 @@ function polHTML(p, i) {
    jar = ler todos os bilhetes, reveal = revelar a foto, ask = dizer sim, amen). A oração é a última. */
 function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
-  const pics = (L.premium ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
+  const pics = (L.maisFotos ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
   const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
   const rapido = full && opt.mode === 'example';
   const SKIP = demo && !rapido ? `<button class="l-skip" data-skip>Pular esta parte${ICON.down}</button>` : ''; // nas prévias de exemplo a carta passa sozinha ao rolar
@@ -1283,7 +1296,7 @@ function letterHTML(L, mode, opt = {}) {
   h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}`);
   if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
   if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
-  if (L.premium && L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L) + SKIP);
+  if (L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L) + SKIP);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
       <div class="ask-btns"><button class="ask-yes">Sim!</button><button class="ask-no">Não</button></div>
@@ -1690,7 +1703,7 @@ function openViewer(L, opt = {}) {
       const b = v.querySelector('.vw-bottom'); if (b) setTimeout(() => b.classList.remove('wait'), 900);
       setTimeout(() => { cover.hidden = true; }, 850);
       };
-      if (L.premium) { cineOpen(v, L, abrir); setTimeout(() => cover.classList.add('gone'), 900); } else abrir();
+      if (L.cine) { cineOpen(v, L, abrir); setTimeout(() => cover.classList.add('gone'), 900); } else abrir();
     }
   });
   $('#vwClose').addEventListener('click', () => { closeViewer(); if (opt.onClose) opt.onClose(); });
@@ -1719,7 +1732,7 @@ document.addEventListener('keydown', e => {
 /* ===== Funil passo a passo ===== */
 const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
-const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
+const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', extras: [], verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
 const ui = { moreVerses: false, acesso: false, editando: false };
 const desk = window.matchMedia('(min-width: 1040px)');
@@ -1764,7 +1777,7 @@ const STEPS = [
   { id: 'final', label: 'Cor e música', sec: 's-cover', ok: () => S.music !== 'link' || !!lerMusica(S.musicLink), summary: () => `${THEMES.find(t => t.id === curTheme()).label} · ${S.music === 'none' ? 'sem música' : S.music === 'link' ? 'música de vocês' : 'instrumental'}` },
   /* oferta do Premium (some numa carta já paga) e, se escolher o Premium, as fotos a mais */
   { id: 'premium', label: 'Versão Premium', sec: 's-cover', so: () => !editavel(), ok: () => true, summary: () => S.plano === 'premium' ? 'Premium ✨' : 'Padrão' },
-  { id: 'extras', label: 'Fotos do Premium', sec: 's-photos', so: () => S.plano === 'premium', optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
+  { id: 'extras', label: 'Fotos a mais', sec: 's-photos', so: () => temRec(S, 'fotos') || temRec(S, 'filme'), optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
 ];
 /* nem toda etapa vale para toda carta (Premium, carta já paga) */
 const passoValido = i => !!STEPS[i] && (!STEPS[i].so || STEPS[i].so());
@@ -1833,12 +1846,13 @@ const VIEWS = {
       <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão · ${brl(PRICE)}</button></div>`;
   },
   extras() {
-    return `<p class="eyebrow">Versão Premium ✨</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
-      <p class="sub">Coloque mais 3 polaroides e as fotos do mini filme do casal.</p>
-      <p class="group-label">Mais 3 polaroides</p><p class="hint">Elas entram nos slides de cinema junto com as outras.</p>
-      <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>
-      <p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
-      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>`;
+    const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme');
+    return `<p class="eyebrow">${prem ? 'Versão Premium ✨' : 'Adicionais ✨'}</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
+      <p class="sub">${f && fm ? 'Coloque mais 3 polaroides e as fotos do mini filme do casal.' : f ? 'Coloque mais 3 polaroides.' : 'Escolha as fotos do mini filme do casal.'}</p>
+      ${f ? `<p class="group-label">Mais 3 polaroides</p><p class="hint">${prem ? 'Elas entram nos slides de cinema junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
+      <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>` : ''}
+      ${fm ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
+      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}`;
   },
   mensagem() {
     const opts = messageOptions(S.recipient, S.occasion);
@@ -2053,16 +2067,28 @@ function readyView() {
     <h1 class="h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> ficou linda</h1>
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
-    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : 'Fica no ar por 3 meses'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
-    ${pago ? '' : `<div class="price"><strong>${brl(precoDe(S.plano))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
+    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 3 meses'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
+    ${pago || prem ? '' : bumpsHTML()}
+    ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
+}
+/* order bump: adicionais avulsos para quem fica na Padrão */
+function bumpsHTML() {
+  const ex = extrasValidos(S.plano, S.extras), soma = precoTotal('padrao', ex);
+  const faltaFoto = ex.includes('fotos') && ![4, 5, 6].some(i => S.photos[i]);
+  return `<div class="bumps"><p class="bumps-t">${ICON.sparkle}Deixe a sua carta ainda mais especial</p>
+    ${EXTRAS.map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
+      <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
+    ${ex.includes('fotos') || ex.includes('filme') ? `<button class="link bump-fotos" id="bumpFotos">${ICON.image}${faltaFoto ? 'Escolher as 3 fotos a mais' : 'Ver ou trocar as fotos dos adicionais'}</button>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a <b>Premium</b> sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro. <button class="link" id="bumpPrem">Quero a Premium</button></p>` : ''}
+  </div>`;
 }
 function checkoutView() {
   const L = resolveLetter(S);
   return `<p class="eyebrow">Pagamento</p>
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
-    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${esc(L.title)}</small></span><strong>${brl(precoDe(S.plano))}</strong></div>
+    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => S.extras.includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
     <div class="form"><div class="field"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"><p class="hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
       <label class="check" id="mailRow"${cfg.email ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label></div></div>
     <p class="group-label">Forma de pagamento</p>
@@ -2076,6 +2102,14 @@ function checkoutView() {
 }
 function bindReady(el) {
   const tp = $('#trocarPlano', el); if (tp) tp.addEventListener('click', () => go(idxPasso('premium'), 'back'));
+  el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
+    const k = c.dataset.extra, ex = new Set(S.extras || []);
+    if (c.checked) { ex.add(k); track('adicional_' + k); } else ex.delete(k);
+    S.extras = EXTRAS.map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
+    if (c.checked && k === 'fotos' && ![4, 5, 6].some(i => S.photos[i])) toast('Agora escolha as 3 fotos a mais');
+  }));
+  const bf = $('#bumpFotos', el); if (bf) bf.addEventListener('click', () => { ui.editando = true; go(idxPasso('extras'), 'back'); });
+  const bp = $('#bumpPrem', el); if (bp) bp.addEventListener('click', () => { S.plano = 'premium'; save(); track('escolheu_premium'); render(); refreshBar(); toast('Agora é Premium ✨'); });
   $('#readyOpen', el).addEventListener('click', () => openPreview(true));
   $('#readyDesk', el).addEventListener('click', () => openPreview(true));
   $('#editBtn', el).addEventListener('click', openEditSheet);
@@ -2118,7 +2152,7 @@ function itensAcesso() {
   /* a compra que acabou de cair neste aparelho aparece mesmo antes do servidor listar */
   if (pedido && pedido.pago && S.view === 'done' && S.code === pedido.id && !lista.some(c => c.id === pedido.id)) {
     const pg = pedido.pagoEm || Date.now();
-    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' ? pg + 90 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, L: resolveLetter(S), local: true });
+    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' && !(pedido.extras || []).includes('vit') ? pg + 90 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, L: resolveLetter(S), local: true });
   }
   return lista;
 }
@@ -2152,6 +2186,7 @@ function cartaAcessoHTML(c, ehNovo) {
   const L = c.L, url = cartaUrl(c.id), link = url.replace(/^https?:\/\//, '');
   const meta = c.expirada ? `<p class="ace-meta fim">Carta Padrão · o prazo de 3 meses acabou em ${esc(dataCurta(c.expira))}</p>`
     : c.plano === 'premium' ? `<p class="ace-meta">✨ Premium · vitalícia, o link funciona para sempre</p>`
+    : c.plano === 'padrao' && !c.expira ? `<p class="ace-meta">Padrão · vitalícia, o link funciona para sempre</p>`
     : c.plano === 'padrao' ? `<p class="ace-meta">Padrão · fica no ar até ${esc(dataCurta(c.expira))}</p>` : '';
   const edita = podeEditar(c);
   return `<article class="ace-card lt" data-theme="${esc(L.theme)}" data-id="${esc(c.id)}">
@@ -2228,18 +2263,18 @@ function editarCarta(c) {
   if (c.local || (S.code === c.id && pedido && pedido.id === c.id && pedido.chave)) { S.view = 'ready'; save(); sairAcesso(); render('fwd'); return; }
   const rascunho = !S.code && S.view !== 'done' && (S.recipient || (S.to || '').trim());
   if (rascunho && !confirm('Você tem uma carta sendo montada neste aparelho. Para editar esta, o rascunho será trocado por ela. Continuar?')) return;
-  const R = rascunhoDoServidor(c.carta, c.plano);
+  const R = rascunhoDoServidor(c.carta, c.plano, c.extras);
   Object.assign(S, JSON.parse(JSON.stringify(BLANK)), R.campos, { photos: R.fotos, email: acesso.email, code: c.id, view: 'ready', step: idxPasso('final'), themeTouched: true });
   R.caminhos.forEach((u, i) => { fotosUp[i] = u ? { k: fotoChave(R.fotos[i]), u } : null; });
   store.set('cp2:fotosUp', fotosUp);
   S.photos.forEach((_, i) => savePhoto(i));
-  pedido = { id: c.id, chave: c.chave, pago: true, compraOk: true, plano: c.plano || 'padrao', pagoEm: c.pagoEm, emailOk: c.emailOk, querEmail: c.emailOk };
+  pedido = { id: c.id, chave: c.chave, pago: true, compraOk: true, plano: c.plano || 'padrao', extras: c.extras || [], pagoEm: c.pagoEm, emailOk: c.emailOk, querEmail: c.emailOk };
   store.set(PED, pedido);
   save(); sairAcesso(); render('fwd');
   toast('Carta aberta para editar. No fim, toque em "Salvar as mudanças".');
 }
 /* o contrário de cartaParaServidor: a carta salva vira o rascunho do criador */
-function rascunhoDoServidor(P, plano) {
+function rascunhoDoServidor(P, plano, extras) {
   const r = REC[P.r] ? P.r : 'amor', ok = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? u : null;
   const fu = Array.isArray(P.fu) ? P.fu : [], fc = Array.isArray(P.fc) ? P.fc : [], mf = Array.isArray(P.mf) ? P.mf : [];
   const caminhos = Array(NFOTOS).fill(null);
@@ -2255,7 +2290,7 @@ function rascunhoDoServidor(P, plano) {
     recipient: r, occasion: OCC[P.oc] ? P.oc : OCCASIONS[r][0].id, to: names.to, from: names.from, date: txt(P.dt, 10),
     verses: (Array.isArray(P.v) ? P.v : []).filter(id => VERSES[id]), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
-    prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao',
+    prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao', extras: extrasValidos(plano === 'premium' ? 'premium' : 'padrao', extras || P.ex),
     music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '',
     theme: THEMES.some(t => t.id === P.th) ? P.th : null,
     captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)))
@@ -2322,7 +2357,7 @@ async function api(caminho, corpo) {
 const fotosUp = (store.get('cp2:fotosUp') || []).concat(Array(NFOTOS).fill(null)).slice(0, NFOTOS);
 const fotoChave = d => d.length + ':' + d.slice(-48);
 async function subirFotos(msg) {
-  const usadas = S.plano === 'premium' ? [...Array(NFOTOS).keys()] : [0, 1, 2, 3];
+  const usadas = [0, 1, 2, 3].concat(temRec(S, 'fotos') ? [4, 5, 6] : [], temRec(S, 'filme') ? [7, 8, 9, 10, 11, 12, 13] : []);
   const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
   for (const i of usadas) {
     const d = S.photos[i]; if (!d) continue;
@@ -2350,7 +2385,7 @@ async function pay() {
   if (ocupado) return;
   ocupado = true; $('#nextBtn').disabled = true;
   const metodo = S.pay === 'card' ? 'cartao' : 'pix';
-  const valor = precoDe(S.plano);
+  const valor = precoTotal(S.plano, S.extras);
   openSheet(`<p class="eyebrow">${metodo === 'pix' ? 'Pix' : 'Cartão de crédito'} · ${brl(valor)}</p><h2 class="h2">Preparando o pagamento</h2><div class="waiting"><span class="spin"></span><span id="payMsg">Salvando a sua carta…</span></div>`);
   const msg = t => { const m = $('#payMsg'); if (m) m.textContent = t; };
   try {
@@ -2359,8 +2394,8 @@ async function pay() {
     track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
     const querEmail = !!cfg.email && S.mailMe !== false;
-    const j = await api('/pagar', { metodo, plano: S.plano, email: S.email.trim(), enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
-    pedido = { id: j.id, chave: j.chave, pago: false, querEmail, plano: S.plano, valor }; store.set(PED, pedido);
+    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.email.trim(), enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
+    pedido = { id: j.id, chave: j.chave, pago: false, querEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     openPix(j.pix || {});
     esperarPagamento(0);
@@ -2370,7 +2405,7 @@ async function pay() {
 const PIX_MS = 2 * 36e5;
 function openPix(pix) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
-  openSheet(`<p class="eyebrow">Pix · ${brl(precoDe(S.plano))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
+  openSheet(`<p class="eyebrow">Pix · ${brl(precoTotal(S.plano, S.extras))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
     <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
     <button class="btn btn-ghost w" id="copyPix">${ICON.copy}Copiar código Pix</button>
     <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta é liberada aqui mesmo, na hora.</li></ol>
@@ -2503,9 +2538,9 @@ function refreshBar() {
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
-    else { nx.innerHTML = `Quero enviar · ${brl(precoDe(S.plano))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
+    else { nx.innerHTML = `Quero enviar · ${brl(precoTotal(S.plano, S.extras))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
   } else if (S.view === 'checkout') {
-    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Pagar ${brl(precoDe(S.plano))}${S.pay === 'pix' ? ' com Pix' : ''}`;
+    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Pagar ${brl(precoTotal(S.plano, S.extras))}${S.pay === 'pix' ? ' com Pix' : ''}`;
     note.textContent = 'O link da carta aparece aqui assim que o pagamento cair';
   }
 }

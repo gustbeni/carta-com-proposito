@@ -1159,3 +1159,18 @@ body.na-acesso .progress{visibility:hidden}
 .plano-escolhido b{display:block;font:600 15.5px/1.3 var(--f-ui)}
 .plano-escolhido small{display:block;margin-top:2px;font-size:13px;color:var(--ink-3)}
 .plano-escolhido .link{flex:none;padding:6px 0}
+
+/* adicionais da carta Padrão (order bump) */
+.bumps{margin:18px 0 6px;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.bumps-t{display:flex;align-items:center;gap:8px;margin:0 0 10px;font:600 15px/1.3 var(--f-ui);color:var(--ink)}
+.bumps-t svg{width:18px;height:18px;color:#F3D58A}
+.bump{position:relative;display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 12px;margin-top:8px;border-radius:14px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s,background-color .2s}
+.bump input{position:absolute;opacity:0;width:1px;height:1px}
+.bump input:checked + .check-box{background:var(--gold-btn);border-color:#F3D58A;color:#3A0B2B}
+.bump.on{border-color:rgba(243,213,138,.7);background:rgba(243,213,138,.07)}
+.bump-txt{min-width:0}.bump-txt b{display:block;font:600 14.5px/1.3 var(--f-ui);color:var(--ink)}
+.bump-txt small{display:block;margin-top:2px;font:400 12.5px/1.35 var(--f-ui);color:var(--ink-3, var(--ink))}
+.bump strong{font:700 14px/1 var(--f-ui);color:#F3D58A;white-space:nowrap}
+.bump-fotos{display:inline-flex;align-items:center;gap:6px;margin-top:12px}
+.bump-fotos svg{width:17px;height:17px}
+.bump-prem{margin:12px 0 0;font:400 13px/1.45 var(--f-ui);color:var(--ink)}

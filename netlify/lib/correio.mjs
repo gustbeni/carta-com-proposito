@@ -19,7 +19,7 @@ export function textoEmail(link, para, plano) {
     "",
     "O QR code da carta vai junto, como imagem. Você pode imprimir e entregar com um presente: é só apontar a câmera do celular.",
     "",
-    plano === "padrao" ? "A carta Padrão fica no ar por 3 meses depois do pagamento." : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre." : "",
+    plano === "padrao" ? "A carta Padrão fica no ar por 3 meses depois do pagamento." : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre." : plano === "vitalicia" ? "Sua carta é vitalícia: o link funciona para sempre." : "",
     "Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento.",
     "",
     `Para ver todas as suas cartas (link, QR code e edição), entre em ${acesso} com este e-mail.`,
@@ -46,7 +46,7 @@ export function textoEmail(link, para, plano) {
     <p style="margin:12px 0 0;font:400 14px/1.5 Arial,sans-serif;color:#E5CBBE">Este é o QR code da carta. Imprima e entregue junto com um presente: é só apontar a câmera do celular.</p>
   </td></tr>
   <tr><td style="padding:18px 28px 30px;text-align:center;font:400 13px/1.55 Arial,sans-serif;color:#B8919F">
-    ${plano === "padrao" ? "A carta Padrão fica no ar por 3 meses depois do pagamento.<br>" : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre.<br>" : ""}Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento.<br><br>Para ver todas as suas cartas (link, QR code e edição), entre em <a href="${esc(acesso)}" style="color:#F7D995">Meu acesso</a> com este e-mail.
+    ${plano === "padrao" ? "A carta Padrão fica no ar por 3 meses depois do pagamento.<br>" : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre.<br>" : plano === "vitalicia" ? "Sua carta é vitalícia: o link funciona para sempre.<br>" : ""}Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento.<br><br>Para ver todas as suas cartas (link, QR code e edição), entre em <a href="${esc(acesso)}" style="color:#F7D995">Meu acesso</a> com este e-mail.
   </td></tr>
 </table>
 </td></tr></table></body></html>`;

@@ -7,10 +7,23 @@ export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de v
 export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // carta Premium
 export const DIAS_PADRAO = 90; // a carta Padrão fica no ar por 3 meses depois do pagamento; a Premium é vitalícia
 export const planoDe = p => p === "premium" ? "premium" : "padrao";
-export const valorDo = plano => planoDe(plano) === "premium" ? PRECO_PREMIUM : PRECO;
-// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 3 meses depois do pagamento
+// adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
+export const EXTRAS = { vit: 1.99, filme: 2.99, cine: 1.99, fotos: 1.99 };
+export const extrasDe = (lista, plano) => planoDe(plano) === "premium" || !Array.isArray(lista) ? [] : Object.keys(EXTRAS).filter(k => lista.includes(k));
+export const valorDo = (plano, extras = []) => planoDe(plano) === "premium" ? PRECO_PREMIUM
+  : Math.round((PRECO + extrasDe(extras, plano).reduce((s, k) => s + EXTRAS[k], 0)) * 100) / 100;
+// o pedido tem este recurso? (Premium tem tudo; Padrão só os adicionais que comprou)
+export const temRecurso = (reg, k) => !!reg && (reg.plano === "premium" || (Array.isArray(reg.extras) && reg.extras.includes(k)));
+// a carta como vai para o site: o servidor marca o que o pedido liberou (pl = Premium, ex = adicionais)
+export function cartaEntregue(reg, carta = reg.carta) {
+  if (reg.plano === "premium") return { ...carta, pl: "p" };
+  const ex = extrasDe(reg.extras, reg.plano);
+  return ex.length ? { ...carta, ex } : carta;
+}
+// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 3 meses depois do pagamento,
+// a não ser que tenha comprado o adicional "carta vitalícia"
 export function expirou(reg) {
-  if (!reg || reg.plano !== "padrao") return false;
+  if (!reg || reg.plano !== "padrao" || temRecurso(reg, "vit")) return false;
   return Date.now() > (reg.pagoEm || reg.criado || 0) + DIAS_PADRAO * 864e5;
 }
 export const DESCRICAO = "Carta com Propósito";
@@ -44,18 +57,19 @@ export function enderecoSite(req) {
 }
 
 // confere se a carta tem um formato razoável e não é grande demais.
-// O que é do Premium (mais polaroides e o mini filme) só fica se o pedido for Premium.
-export function limparCarta(c, plano) {
+// O que é do Premium (mais polaroides e o mini filme) só fica se o pedido for Premium ou tiver o adicional.
+export function limparCarta(c, plano, extras = []) {
   if (!c || typeof c !== "object" || Array.isArray(c)) return null;
   if (!Array.isArray(c.v) || !c.v.length || typeof c.p !== "string" || !c.p.trim()) return null;
   const texto = JSON.stringify(c);
   if (texto.length > 20000) return "grande";
   const limpa = JSON.parse(texto);
-  delete limpa.pl; // quem diz se é Premium é o pedido, nunca a carta
-  const premium = planoDe(plano) === "premium";
-  if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, premium ? 6 : 3);
-  if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, premium ? 6 : 3);
-  if (premium && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, 7); else delete limpa.mf;
+  delete limpa.pl; delete limpa.ex; // quem diz o que está liberado é o pedido, nunca a carta
+  const premium = planoDe(plano) === "premium", ex = extrasDe(extras, plano);
+  const nfu = premium || ex.includes("fotos") ? 6 : 3;
+  if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, nfu);
+  if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, nfu);
+  if ((premium || ex.includes("filme")) && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, 7); else delete limpa.mf;
   return limpa;
 }
 
@@ -115,7 +129,7 @@ async function avisarDono(id, reg, tok) {
   const q = new URLSearchParams({ title: "Nova venda! 💌", tags: "moneybag", priority: "high", click: site + "/c/" + id });
   await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
     method: "POST",
-    body: `Carta ${premium ? "Premium" : "Padrão"} · R$ ${valor}\nToque para ver a carta.`,
+    body: `Carta ${premium ? "Premium" : "Padrão"}${!premium && extrasDe(reg.extras, reg.plano).length ? " + " + extrasDe(reg.extras, reg.plano).length + " adicional(is)" : ""} · R$ ${valor}\nToque para ver a carta.`,
   }), 5000);
 }
 
@@ -133,7 +147,7 @@ export async function mandarEmail(id, reg, { forcar = false } = {}) {
   if (!forcar && reg.emailOk) return true;
   try {
     const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
-    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano }), 9000);
+    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano === "padrao" && temRecurso(reg, "vit") ? "vitalicia" : reg.plano }), 9000);
     reg.emailOk = Date.now(); reg.emailEnvios = (reg.emailEnvios || 0) + 1;
   } catch (e) {
     console.error("E-mail da carta não foi", e.code || (e.message === "demorou" ? "demorou" : "erro"), e.responseCode || ""); // sem o endereço de ninguém

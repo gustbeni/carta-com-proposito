@@ -1,12 +1,12 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
-import { DESCRICAO, loja, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, guardarNoAcesso } from "../lib/comum.mjs";
+import { DESCRICAO, loja, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso } from "../lib/comum.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return resposta({ erro: "metodo" }, 405);
   let b; try { b = await req.json(); } catch { return resposta({ erro: "dados" }, 400); }
-  const plano = planoDe(b.plano), PRECO = valorDo(plano);
-  const carta = limparCarta(b.carta, plano);
+  const plano = planoDe(b.plano), extras = extrasDe(b.extras, plano), PRECO = valorDo(plano, extras);
+  const carta = limparCarta(b.carta, plano, extras);
   if (carta === "grande") return resposta({ erro: "grande" }, 413);
   if (!carta) return resposta({ erro: "carta" }, 400);
   const email = String(b.email || "").trim().slice(0, 120);
@@ -16,7 +16,7 @@ export default async (req) => {
   const id = randomBytes(9).toString("base64url");
   const chave = randomBytes(16).toString("hex");
   const site = enderecoSite(req);
-  const reg = { carta, chave, email, querEmail: b.enviarEmail === true, plano, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
+  const reg = { carta, chave, email, querEmail: b.enviarEmail === true, plano, extras, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
   await loja().setJSON("c/" + id, reg);
   await guardarNoAcesso(email, id).catch(e => console.error("acesso", e.message)); // para aparecer em /meuacesso
 
