@@ -8,7 +8,7 @@ export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // ca
 export const DIAS_PADRAO = 90; // a carta Padrão fica no ar por 3 meses depois do pagamento; a Premium é vitalícia
 export const planoDe = p => p === "premium" ? "premium" : "padrao";
 // adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
-export const EXTRAS = { vit: 1.99, filme: 2.99, cine: 1.99, fotos: 1.99 };
+export const EXTRAS = { vit: 1.99, filme: 2.99, cine: 1.99, fotos: 1.99, grandes: 1.99 };
 export const extrasDe = (lista, plano) => planoDe(plano) === "premium" || !Array.isArray(lista) ? [] : Object.keys(EXTRAS).filter(k => lista.includes(k));
 export const valorDo = (plano, extras = []) => planoDe(plano) === "premium" ? PRECO_PREMIUM
   : Math.round((PRECO + extrasDe(extras, plano).reduce((s, k) => s + EXTRAS[k], 0)) * 100) / 100;
@@ -69,7 +69,7 @@ export function limparCarta(c, plano, extras = []) {
   const nfu = premium || ex.includes("fotos") ? 6 : 3;
   if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, nfu);
   if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, nfu);
-  if ((premium || ex.includes("filme")) && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, 7); else delete limpa.mf;
+  if ((premium || ex.includes("filme")) && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, premium ? 7 : 3); else delete limpa.mf;
   return limpa;
 }
 

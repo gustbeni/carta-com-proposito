@@ -157,9 +157,10 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
    A Premium já vem com todos. */
 const EXTRAS = [
   { id: 'vit', preco: 1.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
-  { id: 'filme', preco: 2.99, t: 'Mini filme do casal', d: 'Até 7 fotos viram um filminho com transições, frases, música e tela final.' },
+  { id: 'filme', preco: 2.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
   { id: 'cine', preco: 1.99, t: 'Abertura gloriosa de cinema', d: 'A carta começa como um filme, com os nomes de vocês em ouro.' },
-  { id: 'fotos', preco: 1.99, t: 'Mais 3 fotos', d: 'Mais 3 polaroides penduradas, 6 no total.' }
+  { id: 'fotos', preco: 1.99, t: 'Mais 3 fotos', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
+  { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.' }
 ];
 const extrasValidos = (plano, ex) => plano === 'premium' || !Array.isArray(ex) ? [] : EXTRAS.map(e => e.id).filter(k => ex.includes(k));
 const temRec = (src, k) => src.plano === 'premium' || extrasValidos(src.plano, src.extras).includes(k);
@@ -378,7 +379,7 @@ const FAQ = [
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
   ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 polaroides em slides e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Na tela da carta pronta você pode adicionar à Padrão: carta vitalícia (+ R$ 1,99), mini filme do casal (+ R$ 2,99), abertura gloriosa de cinema (+ R$ 1,99) e mais 3 fotos (+ R$ 1,99).'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 1,99), mini filme do casal com mais 3 fotos (+ R$ 2,99), abertura gloriosa de cinema (+ R$ 1,99), mais 3 fotos (+ R$ 1,99) e fotos maiores (+ R$ 1,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -827,7 +828,8 @@ function resolveLetter(src) {
     music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src),
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
     premium: src.plano === 'premium', cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), vitalicia: temRec(src, 'vit'),
-    film: temRec(src, 'filme') ? filmeFotos(src.photos || []) : [],
+    grandes: src.plano !== 'premium' && temRec(src, 'grandes'),
+    film: src.plano === 'premium' ? filmeFotos(src.photos || []) : temRec(src, 'filme') ? filmePadrao(src) : [],
     initial: (src.from || '').trim() ? from.charAt(0).toUpperCase() : ''
   };
 }
@@ -835,6 +837,11 @@ function resolveLetter(src) {
 function filmeFotos(ph) {
   const proprias = ph.slice(7, 14).filter(Boolean);
   return proprias.length ? proprias : [0, 1, 2, 4, 5, 6, 3].map(i => ph[i]).filter(Boolean);
+}
+/* mini filme comprado como adicional da Padrão: as fotos da carta + até 3 fotos só do filme */
+function filmePadrao(src) {
+  const ph = src.photos || [];
+  return (temRec(src, 'fotos') ? [0, 1, 2, 4, 5, 6, 3] : [0, 1, 2, 3]).map(i => ph[i]).concat(ph.slice(7, 10)).filter(Boolean);
 }
 function mlDe(src) { if (src.music !== 'link') return ''; const inf = lerMusica(src.musicLink); return inf ? inf.tipo + ':' + inf.id : ''; }
 
@@ -850,7 +857,7 @@ function cartaParaServidor(fotos) {
   const pol = (temRec(S, 'fotos') ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).filter(i => S.photos[i] && fotos[i]);
   if (pol.length) { P.fu = pol.map(i => fotos[i]); if (pol.some(i => (S.captions[i] || '').trim())) P.fc = pol.map(i => (S.captions[i] || '').trim()); }
   if (S.photos[3] && fotos[3]) { P.ffu = fotos[3]; if ((S.captions[3] || '').trim()) P.ffc = S.captions[3].trim(); }
-  if (temRec(S, 'filme')) { const mf = [7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
+  if (temRec(S, 'filme')) { const mf = (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]).filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
   return P;
 }
 function cartaDoServidor(P) {
@@ -859,7 +866,7 @@ function cartaDoServidor(P) {
   const premium = P.pl === 'p'; // quem marca é o servidor, pelo pedido (pl = Premium, ex = adicionais da Padrão)
   const extras = premium ? [] : extrasValidos('padrao', P.ex), tem = k => premium || extras.includes(k);
   const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, tem('fotos') ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
-  const mf = tem('filme') && Array.isArray(P.mf) ? P.mf.slice(0, 7).map(nuvem).filter(Boolean) : [];
+  const mf = tem('filme') && Array.isArray(P.mf) ? P.mf.slice(0, premium ? 7 : 3).map(nuvem).filter(Boolean) : [];
   const base = {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
@@ -1282,7 +1289,7 @@ function letterHTML(L, mode, opt = {}) {
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
   if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3><p class="l-sub">Ela está tocando desde que você abriu a carta 🎶<br>Para pausar, use o botão “Nossa música” lá em cima.</p>`);
   if (pics.length || mini) {
-    const grade = `<div class="pols${pics.length > 3 ? ' pols6' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
+    const grade = `<div class="pols${pics.length > 3 && L.premium ? ' pols6' : ''}${L.grandes ? ' grandes' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
     h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
   }
   const n = L.reasons.length;
@@ -1777,6 +1784,8 @@ const STEPS = [
   { id: 'final', label: 'Cor e música', sec: 's-cover', ok: () => S.music !== 'link' || !!lerMusica(S.musicLink), summary: () => `${THEMES.find(t => t.id === curTheme()).label} · ${S.music === 'none' ? 'sem música' : S.music === 'link' ? 'música de vocês' : 'instrumental'}` },
   /* oferta do Premium (some numa carta já paga) e, se escolher o Premium, as fotos a mais */
   { id: 'premium', label: 'Versão Premium', sec: 's-cover', so: () => !editavel(), ok: () => true, summary: () => S.plano === 'premium' ? 'Premium ✨' : 'Padrão' },
+  /* quem fica na Padrão escolhe os adicionais aqui, antes de ir para a carta pronta e o pagamento */
+  { id: 'adicionais', label: 'Adicionais', sec: 's-cover', so: () => S.plano === 'padrao' && !editavel(), ok: () => true, summary: () => { const ex = extrasValidos(S.plano, S.extras); return ex.length ? EXTRAS.filter(e => ex.includes(e.id)).map(e => e.t).join(', ') : 'Nenhum'; } },
   { id: 'extras', label: 'Fotos a mais', sec: 's-photos', so: () => temRec(S, 'fotos') || temRec(S, 'filme'), optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
 ];
 /* nem toda etapa vale para toda carta (Premium, carta já paga) */
@@ -1820,7 +1829,8 @@ const VIEWS = {
   fotos() {
     return `<h1 class="h1" tabindex="-1">Fotos de <em>vocês</em></h1>
       <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta. Na versão Premium, que aparece mais para frente, dá para colocar mais fotos.</p>
-      <div class="photos">${[0, 1, 2, 3].map(photoSlot).join('')}</div>`;
+      <div class="photos">${[0, 1, 2, 3].map(photoSlot).join('')}</div>
+      ${S.plano === 'padrao' && temRec(S, 'fotos') ? `<p class="group-label">Mais 3 polaroides (adicional)</p><div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>` : ''}`;
   },
   versiculos() {
     const occ = curOcc(), ids = ui.moreVerses ? occ.verses : occ.verses.slice(0, 5), rest = occ.verses.length - 5;
@@ -1845,14 +1855,22 @@ const VIEWS = {
       <button class="link prem-ver" id="verPremium">${ICON.eye}Ver a minha carta na versão Premium</button>
       <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão · ${brl(PRICE)}</button></div>`;
   },
+  adicionais() {
+    return `<p class="eyebrow">Adicionais ✨</p>
+      <h1 class="h1" tabindex="-1">Deixe a sua carta ainda mais <em>especial</em></h1>
+      <p class="sub">Marque o que quiser colocar na sua carta Padrão. É opcional: se não quiser nada, é só continuar.</p>
+      ${bumpsHTML()}`;
+  },
   extras() {
     const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme');
     return `<p class="eyebrow">${prem ? 'Versão Premium ✨' : 'Adicionais ✨'}</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
-      <p class="sub">${f && fm ? 'Coloque mais 3 polaroides e as fotos do mini filme do casal.' : f ? 'Coloque mais 3 polaroides.' : 'Escolha as fotos do mini filme do casal.'}</p>
+      <p class="sub">${f && fm ? 'Coloque mais 3 polaroides e as fotos do mini filme do casal.' : f ? 'Coloque mais 3 polaroides. Elas aparecem junto com as outras, na parte das fotos.' : 'Escolha as fotos do mini filme do casal.'}</p>
       ${f ? `<p class="group-label">Mais 3 polaroides</p><p class="hint">${prem ? 'Elas entram nos slides de cinema junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
       <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>` : ''}
-      ${fm ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
-      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}`;
+      ${fm && prem ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
+      <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}
+      ${fm && !prem ? `<p class="group-label">Mais 3 fotos para o mini filme</p><p class="hint">O filme passa as fotos da carta e mais estas 3, com transições, frases românticas, música e uma tela final especial. Se deixar vazio, ele usa só as fotos da carta.</p>
+      <div class="photos film">${[7, 8, 9].map(photoSlot).join('')}</div>` : ''}`;
   },
   mensagem() {
     const opts = messageOptions(S.recipient, S.occasion);
@@ -2004,9 +2022,10 @@ const BIND = {
     el.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { S.prayer = +b.dataset.p; save(); rerender(); if (S.prayer === 3) setTimeout(() => { const t = $('#fPrayer'); if (t) t.focus(); }, 60); }));
     const ta = $('#fPrayer', el); if (ta) { autoGrow(ta, 160); ta.addEventListener('input', () => { S.prayerCustom = ta.value; autoGrow(ta, 160); changed(); }); }
   },
+  adicionais(el) { bindBumps(el); },
   premium(el) {
     $('#verPremium', el).addEventListener('click', () => { track('viu_premium'); openViewer(resolveLetter({ ...S, plano: 'premium' }), { mode: 'preview' }); });
-    $('#ficarPadrao', el).addEventListener('click', () => { S.plano = 'padrao'; save(); track('escolheu_padrao'); if (ui.editando) voltarParaPronta(); else verCartaFinal(); });
+    $('#ficarPadrao', el).addEventListener('click', () => { S.plano = 'padrao'; save(); track('escolheu_padrao'); go(idxPasso('adicionais'), 'fwd'); });
   },
   extras(el) { BIND.fotos(el); },
   final(el) {
@@ -2068,7 +2087,7 @@ function readyView() {
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
     ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 3 meses'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
-    ${pago || prem ? '' : bumpsHTML()}
+    ${pago || prem ? '' : `<div class="adic-res"><span><b>Adicionais</b><small>${extrasValidos(S.plano, S.extras).length ? EXTRAS.filter(e => S.extras.includes(e.id)).map(e => e.t).join(' · ') : 'Nenhum'}</small></span><button class="link" id="mudarAdic">${extrasValidos(S.plano, S.extras).length ? 'Mudar' : 'Adicionar'}</button></div>`}
     ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
@@ -2076,11 +2095,10 @@ function readyView() {
 /* order bump: adicionais avulsos para quem fica na Padrão */
 function bumpsHTML() {
   const ex = extrasValidos(S.plano, S.extras), soma = precoTotal('padrao', ex);
-  const faltaFoto = ex.includes('fotos') && ![4, 5, 6].some(i => S.photos[i]);
   return `<div class="bumps"><p class="bumps-t">${ICON.sparkle}Deixe a sua carta ainda mais especial</p>
     ${EXTRAS.map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
-    ${ex.includes('fotos') || ex.includes('filme') ? `<button class="link bump-fotos" id="bumpFotos">${ICON.image}${faltaFoto ? 'Escolher as 3 fotos a mais' : 'Ver ou trocar as fotos dos adicionais'}</button>` : ''}
+    ${ex.includes('fotos') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
     ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a <b>Premium</b> sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro. <button class="link" id="bumpPrem">Quero a Premium</button></p>` : ''}
   </div>`;
 }
@@ -2102,17 +2120,18 @@ function checkoutView() {
 }
 function bindReady(el) {
   const tp = $('#trocarPlano', el); if (tp) tp.addEventListener('click', () => go(idxPasso('premium'), 'back'));
+  const ma = $('#mudarAdic', el); if (ma) ma.addEventListener('click', () => { ui.editando = true; go(idxPasso('adicionais'), 'back'); });
+  $('#readyOpen', el).addEventListener('click', () => openPreview(true));
+  $('#readyDesk', el).addEventListener('click', () => openPreview(true));
+  $('#editBtn', el).addEventListener('click', openEditSheet);
+}
+function bindBumps(el) {
   el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
     const k = c.dataset.extra, ex = new Set(S.extras || []);
     if (c.checked) { ex.add(k); track('adicional_' + k); } else ex.delete(k);
     S.extras = EXTRAS.map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
-    if (c.checked && k === 'fotos' && ![4, 5, 6].some(i => S.photos[i])) toast('Agora escolha as 3 fotos a mais');
   }));
-  const bf = $('#bumpFotos', el); if (bf) bf.addEventListener('click', () => { ui.editando = true; go(idxPasso('extras'), 'back'); });
-  const bp = $('#bumpPrem', el); if (bp) bp.addEventListener('click', () => { S.plano = 'premium'; save(); track('escolheu_premium'); render(); refreshBar(); toast('Agora é Premium ✨'); });
-  $('#readyOpen', el).addEventListener('click', () => openPreview(true));
-  $('#readyDesk', el).addEventListener('click', () => openPreview(true));
-  $('#editBtn', el).addEventListener('click', openEditSheet);
+  const bp = $('#bumpPrem', el); if (bp) bp.addEventListener('click', () => { S.plano = 'premium'; save(); track('escolheu_premium'); toast('Agora é Premium ✨'); go(idxPasso('extras'), 'fwd'); });
 }
 function bindCheckout(el) {
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
@@ -2357,7 +2376,7 @@ async function api(caminho, corpo) {
 const fotosUp = (store.get('cp2:fotosUp') || []).concat(Array(NFOTOS).fill(null)).slice(0, NFOTOS);
 const fotoChave = d => d.length + ':' + d.slice(-48);
 async function subirFotos(msg) {
-  const usadas = [0, 1, 2, 3].concat(temRec(S, 'fotos') ? [4, 5, 6] : [], temRec(S, 'filme') ? [7, 8, 9, 10, 11, 12, 13] : []);
+  const usadas = [0, 1, 2, 3].concat(temRec(S, 'fotos') ? [4, 5, 6] : [], temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : []);
   const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
   for (const i of usadas) {
     const d = S.photos[i]; if (!d) continue;
@@ -2482,6 +2501,8 @@ function next() {
     if (!st.ok()) return;
     track('passo_' + st.id);
     if (st.id === 'premium') { S.plano = 'premium'; save(); track('escolheu_premium'); return go(idxPasso('extras'), 'fwd'); } // o botão de baixo é o "Quero a versão Premium"
+    if (st.id === 'adicionais' && (temRec(S, 'fotos') || temRec(S, 'filme'))) return go(idxPasso('extras'), 'fwd');
+    if (st.id === 'adicionais') { ui.editando = false; return verCartaFinal(); }
     if (ui.editando) return voltarParaPronta();
     const prox = passosValidos().find(i => i > S.step);
     if (prox != null) return go(prox, 'fwd');
@@ -2533,8 +2554,8 @@ function refreshBar() {
   if (S.view === 'step') {
     const st = STEPS[S.step], last = S.step === ultimoPasso();
     nx.disabled = !st.ok();
-    nx.innerHTML = st.id === 'premium' ? `Quero a Premium ${ICON.sparkle}` : ui.editando ? `Pronto ${ICON.check}` : last ? `Ver carta final ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
-    note.textContent = st.id === 'premium' ? `Premium: ${brl(PRICE_PREMIUM)} · vitalícia, com cinema e mini filme` : ui.editando ? 'Volta para a carta pronta' : editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
+    nx.innerHTML = st.id === 'premium' ? `Quero a Premium ${ICON.sparkle}` : st.id === 'adicionais' ? `Continuar · ${brl(precoTotal(S.plano, S.extras))} ${ICON.next}` : ui.editando ? `Pronto ${ICON.check}` : last ? `Ver carta final ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
+    note.textContent = st.id === 'premium' ? `Premium: ${brl(PRICE_PREMIUM)} · vitalícia, com cinema e mini filme` : st.id === 'adicionais' ? (extrasValidos(S.plano, S.extras).length ? `Padrão + ${extrasValidos(S.plano, S.extras).length} adicional(is)` : 'Carta Padrão · sem adicionais') : ui.editando ? 'Volta para a carta pronta' : editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
