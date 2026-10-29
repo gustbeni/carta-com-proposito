@@ -1199,6 +1199,9 @@ body.na-acesso .progress{visibility:hidden}
 .bar.com-prem{padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}
 body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion:reduce){.bar-prem{animation:none}}
+/* etapa de adicionais: a barra deixa de ficar presa no rodapé e vem logo abaixo do texto */
+.bar-junto .bar{position:static;padding:4px 0 calc(18px + env(safe-area-inset-bottom,0px));background:none}
+.bar-junto .builder,body.bar-junto:has(.bar.com-prem) .builder{padding-bottom:0}
 
 </style></head><body>
 <div class="app" id="app">
@@ -3739,6 +3742,7 @@ function querPremiumDosAdicionais() { S.plano = 'premium'; save(); track('escolh
 function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
   const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && extrasValidos(S.plano, S.extras).length === EXTRAS.length;
+  document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
   if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}QUERO A VERSÃO PREMIUM · ${brl(PRICE_PREMIUM)}`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);

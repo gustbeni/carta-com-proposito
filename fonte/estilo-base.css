@@ -1187,3 +1187,6 @@ body.na-acesso .progress{visibility:hidden}
 .bar.com-prem{padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}
 body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion:reduce){.bar-prem{animation:none}}
+/* etapa de adicionais: a barra deixa de ficar presa no rodapé e vem logo abaixo do texto */
+.bar-junto .bar{position:static;padding:4px 0 calc(18px + env(safe-area-inset-bottom,0px));background:none}
+.bar-junto .builder,body.bar-junto:has(.bar.com-prem) .builder{padding-bottom:0}
