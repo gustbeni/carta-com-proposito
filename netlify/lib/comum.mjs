@@ -176,7 +176,7 @@ export async function avisarMeta(id, reg) {
   if (!token || reg.metaOk) return;
   const pixel = process.env.META_PIXEL_ID || "1595171231774957";
   const n = reg.nav || {};
-  const user_data = { external_id: [sha(id)] };
+  const user_data = { external_id: [sha(id)], country: [sha("br")] };
   if (reg.email) user_data.em = [sha(reg.email)];
   if (n.ip) user_data.client_ip_address = n.ip;
   if (n.ua) user_data.client_user_agent = n.ua;

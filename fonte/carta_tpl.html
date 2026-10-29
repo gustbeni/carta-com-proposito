@@ -112,6 +112,10 @@ function copyText(text, ok) {
 /* Pixel da Meta: eventos padrão vão com fbq('track'), os outros como personalizados.
    Purchase leva eventID "compra_<id>", o mesmo que o servidor manda pela API de Conversões. */
 const PIXEL_STD = ['ViewContent', 'InitiateCheckout', 'Purchase'];
+/* correspondência avançada: o Pixel embaralha (sha256) e-mail e id antes de mandar ao Meta */
+function identificarPixel(email, id) {
+  try { if (!window.fbq || !email) return; const d = { em: String(email).trim().toLowerCase(), country: 'br' }; if (id) d.external_id = String(id); window.fbq('init', '1595171231774957', d); } catch (e) {}
+}
 function track(name, params, opt) {
   try { if (!window.fbq) return; if (PIXEL_STD.includes(name)) window.fbq('track', name, params || {}, opt || {}); else window.fbq('trackCustom', name, params || {}); } catch (e) {}
 }
@@ -2410,6 +2414,7 @@ async function pay() {
   try {
     const fotos = await subirFotos(msg);
     msg(metodo === 'pix' ? 'Gerando o seu Pix…' : 'Abrindo o Mercado Pago…');
+    identificarPixel(S.email);
     track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
     const querEmail = !!cfg.email && S.mailMe !== false;
@@ -2452,6 +2457,7 @@ function approve(j = {}) {
   clearTimeout(esperando); closeSheet();
   pedido.pago = true; if (j.email === 'enviado') pedido.emailOk = true;
   if (!pedido.pagoEm) pedido.pagoEm = Date.now();
+  if (!pedido.compraOk) identificarPixel(pedido.email || S.email, pedido.id);
   if (!pedido.compraOk) { track('Purchase', { currency: 'BRL', value: pedido.valor || precoDe(pedido.plano) }, { eventID: 'compra_' + pedido.id }); pedido.compraOk = true; }
   store.set(PED, pedido);
   S.code = pedido.id; S.view = 'done'; save();
