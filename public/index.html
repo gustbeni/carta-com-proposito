@@ -1202,6 +1202,11 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 /* etapa de adicionais: a barra deixa de ficar presa no rodapé e vem logo abaixo do texto */
 .bar-junto .bar{position:static;padding:4px 0 calc(18px + env(safe-area-inset-bottom,0px));background:none}
 .bar-junto .builder,body.bar-junto:has(.bar.com-prem) .builder{padding-bottom:0}
+/* com todos os adicionais marcados: cores invertidas (Premium em ouro, Continuar só com contorno) */
+.bar.com-prem #nextBtn{background:linear-gradient(180deg,rgba(243,213,138,.22),rgba(243,213,138,.08));color:#FBE7A6;text-shadow:none;border:1.5px solid #F3D58A;box-shadow:none}
+.bar.com-prem #nextBtn::after{display:none}
+.bar.com-prem .bar-prem{position:relative;overflow:hidden;isolation:isolate;background:var(--gold-btn);color:#3A0B2B;border-color:transparent;text-shadow:0 1px 0 rgba(255,246,220,.5);box-shadow:0 14px 30px -14px rgba(236,180,80,.75),inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(140,80,10,.25);animation:none}
+.bar.com-prem .bar-prem::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:btnShine 4.5s ease-in-out infinite;pointer-events:none;z-index:-1}
 
 </style></head><body>
 <div class="app" id="app">
