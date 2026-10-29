@@ -1362,16 +1362,25 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 /* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
    A Premium já vem com todos. */
 const EXTRAS = [
-  { id: 'vit', preco: 1.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
-  { id: 'filme', preco: 2.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
-  { id: 'cine', preco: 1.99, t: 'Abertura gloriosa de cinema', d: 'A carta começa como um filme, com os nomes de vocês em ouro.' },
-  { id: 'fotos', preco: 1.99, t: 'Mais 3 fotos', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
-  { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.' }
+  { id: 'vit', preco: 3.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
+  { id: 'filme', preco: 4.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
+  { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
+  { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).' },
+  { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.', oculto: true } // não é mais vendido; fica para as cartas que já compraram
 ];
-const extrasValidos = (plano, ex) => plano === 'premium' || !Array.isArray(ex) ? [] : EXTRAS.map(e => e.id).filter(k => ex.includes(k));
-const temRec = (src, k) => src.plano === 'premium' || extrasValidos(src.plano, src.extras).includes(k);
+/* a abertura de cinema já inclui as fotos a mais, então "fotos" não entra junto com "cine".
+   legado = carta já paga (aceita também os adicionais que não são mais vendidos) */
+const extrasValidos = (plano, ex, legado) => {
+  if (plano === 'premium' || !Array.isArray(ex)) return [];
+  const v = EXTRAS.filter(e => (legado || !e.oculto) && ex.includes(e.id)).map(e => e.id);
+  return v.includes('cine') ? v.filter(k => k !== 'fotos') : v;
+};
+const temRec = (src, k) => { if (src.plano === 'premium') return true; const v = extrasValidos(src.plano, src.extras, src.legado); return v.includes(k) || (k === 'fotos' && v.includes('cine')); };
+/* posições das polaroides no rascunho: 0-2 da carta, 4-6 do adicional (ou Premium), 14 a 4ª foto da abertura de cinema */
+const polIdx = src => src.plano === 'premium' ? [0, 1, 2, 4, 5, 6] : temRec(src, 'cine') ? [0, 1, 2, 4, 5, 6, 14] : temRec(src, 'fotos') ? [0, 1, 2, 4, 5, 6] : [0, 1, 2];
+const bumpsVisiveis = ex => EXTRAS.filter(e => !e.oculto && !(e.id === 'fotos' && ex.includes('cine')));
 const precoTotal = (plano, ex) => plano === 'premium' ? PRICE_PREMIUM : Math.round((PRICE + EXTRAS.filter(e => extrasValidos(plano, ex).includes(e.id)).reduce((t, e) => t + e.preco, 0)) * 100) / 100;
-const NFOTOS = 14; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium)
+const NFOTOS = 15; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium), 14 a 4ª polaroide da abertura de cinema
 const API = '/api';        // funções do Netlify (Mercado Pago, cartas)
 const CLOUD = { nome: 'kmd9kglx', preset: 'carta_com_proposito' }; // Cloudinary: guarda as fotos das cartas
 const SITE = 'https://carta-com-proposito.netlify.app';
@@ -2033,7 +2042,7 @@ function resolveLetter(src) {
     date: validDate(src.date) ? src.date : '', stats: validDate(src.date) ? calcStats(src.date) : null,
     music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src),
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
-    premium: src.plano === 'premium', cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), vitalicia: temRec(src, 'vit'),
+    premium: src.plano === 'premium', cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), pol: polIdx(src), vitalicia: temRec(src, 'vit'),
     grandes: src.plano !== 'premium' && temRec(src, 'grandes'),
     film: src.plano === 'premium' ? filmeFotos(src.photos || []) : temRec(src, 'filme') ? filmePadrao(src) : [],
     initial: (src.from || '').trim() ? from.charAt(0).toUpperCase() : ''
@@ -2047,7 +2056,7 @@ function filmeFotos(ph) {
 /* mini filme comprado como adicional da Padrão: as fotos da carta + até 3 fotos só do filme */
 function filmePadrao(src) {
   const ph = src.photos || [];
-  return (temRec(src, 'fotos') ? [0, 1, 2, 4, 5, 6, 3] : [0, 1, 2, 3]).map(i => ph[i]).concat(ph.slice(7, 10)).filter(Boolean);
+  return polIdx(src).concat(3).map(i => ph[i]).concat(ph.slice(7, 10)).filter(Boolean);
 }
 function mlDe(src) { if (src.music !== 'link') return ''; const inf = lerMusica(src.musicLink); return inf ? inf.tipo + ':' + inf.id : ''; }
 
@@ -2060,7 +2069,7 @@ function cartaParaServidor(fotos) {
   if (L.prayer) P.ora = L.prayer;
   if (L.date) P.dt = L.date;
   if (L.music === 'instrumental') P.mu = 1; else if (L.ml) P.ml = L.ml;
-  const pol = (temRec(S, 'fotos') ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).filter(i => S.photos[i] && fotos[i]);
+  const pol = polIdx(S).filter(i => S.photos[i] && fotos[i]);
   if (pol.length) { P.fu = pol.map(i => fotos[i]); if (pol.some(i => (S.captions[i] || '').trim())) P.fc = pol.map(i => (S.captions[i] || '').trim()); }
   if (S.photos[3] && fotos[3]) { P.ffu = fotos[3]; if ((S.captions[3] || '').trim()) P.ffc = S.captions[3].trim(); }
   if (temRec(S, 'filme')) { const mf = (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]).filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
@@ -2070,15 +2079,15 @@ function cartaDoServidor(P) {
   const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
   const nuvem = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null;
   const premium = P.pl === 'p'; // quem marca é o servidor, pelo pedido (pl = Premium, ex = adicionais da Padrão)
-  const extras = premium ? [] : extrasValidos('padrao', P.ex), tem = k => premium || extras.includes(k);
-  const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, tem('fotos') ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
+  const extras = premium ? [] : extrasValidos('padrao', P.ex, true), tem = k => premium || extras.includes(k) || (k === 'fotos' && extras.includes('cine'));
+  const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, !premium && tem('cine') ? 7 : tem('fotos') ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
   const mf = tem('filme') && Array.isArray(P.mf) ? P.mf.slice(0, premium ? 7 : 3).map(nuvem).filter(Boolean) : [];
   const base = {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
-    photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf),
-    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40))),
-    plano: premium ? 'premium' : 'padrao', extras,
+    photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf, Array(7).fill(null)).slice(0, 14).concat(fu[6] || null),
+    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)), Array(7).fill(''), txt(fc[6], 40)),
+    plano: premium ? 'premium' : 'padrao', extras, legado: true,
     music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', prayer: -1
   };
   let L;
@@ -2480,7 +2489,7 @@ function polHTML(p, i) {
    jar = ler todos os bilhetes, reveal = revelar a foto, ask = dizer sim, amen). A oração é a última. */
 function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
-  const pics = (L.maisFotos ? [0, 1, 2, 4, 5, 6] : [0, 1, 2]).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
+  const pics = (L.pol || (L.maisFotos ? [0, 1, 2, 4, 5, 6] : [0, 1, 2])).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
   const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
   const rapido = full && opt.mode === 'example';
   const SKIP = demo && !rapido ? `<button class="l-skip" data-skip>Pular esta parte${ICON.down}</button>` : ''; // nas prévias de exemplo a carta passa sozinha ao rolar
@@ -2992,7 +3001,7 @@ const STEPS = [
   { id: 'premium', label: 'Versão Premium', sec: 's-cover', so: () => !editavel(), ok: () => true, summary: () => S.plano === 'premium' ? 'Premium ✨' : 'Padrão' },
   /* quem fica na Padrão escolhe os adicionais aqui, antes de ir para a carta pronta e o pagamento */
   { id: 'adicionais', label: 'Adicionais', sec: 's-cover', so: () => S.plano === 'padrao' && !editavel(), ok: () => true, summary: () => { const ex = extrasValidos(S.plano, S.extras); return ex.length ? EXTRAS.filter(e => ex.includes(e.id)).map(e => e.t).join(', ') : 'Nenhum'; } },
-  { id: 'extras', label: 'Fotos a mais', sec: 's-photos', so: () => temRec(S, 'fotos') || temRec(S, 'filme'), optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
+  { id: 'extras', label: 'Fotos a mais', sec: 's-photos', so: () => temRec(S, 'fotos') || temRec(S, 'filme'), optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
 ];
 /* nem toda etapa vale para toda carta (Premium, carta já paga) */
 const passoValido = i => !!STEPS[i] && (!STEPS[i].so || STEPS[i].so());
@@ -3036,7 +3045,7 @@ const VIEWS = {
     return `<h1 class="h1" tabindex="-1">Fotos de <em>vocês</em></h1>
       <p class="sub">Até 4. As três primeiras viram polaroides, e a última sai de uma câmera antiga, perto do fim da carta. Na versão Premium, que aparece mais para frente, dá para colocar mais fotos.</p>
       <div class="photos">${[0, 1, 2, 3].map(photoSlot).join('')}</div>
-      ${S.plano === 'padrao' && temRec(S, 'fotos') ? `<p class="group-label">Mais 3 polaroides (adicional)</p><div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>` : ''}`;
+      ${S.plano === 'padrao' && temRec(S, 'fotos') ? `<p class="group-label">Mais ${temRec(S, 'cine') ? 4 : 3} polaroides (adicional)</p><div class="photos">${polIdx(S).slice(3).map(photoSlot).join('')}</div>` : ''}`;
   },
   versiculos() {
     const occ = curOcc(), ids = ui.moreVerses ? occ.verses : occ.verses.slice(0, 5), rest = occ.verses.length - 5;
@@ -3068,11 +3077,11 @@ const VIEWS = {
       ${bumpsHTML()}`;
   },
   extras() {
-    const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme');
+    const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme'), nf = prem ? 3 : polIdx(S).length - 3;
     return `<p class="eyebrow">${prem ? 'Versão Premium ✨' : 'Adicionais ✨'}</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
-      <p class="sub">${f && fm ? 'Coloque mais 3 polaroides e as fotos do mini filme do casal.' : f ? 'Coloque mais 3 polaroides. Elas aparecem junto com as outras, na parte das fotos.' : 'Escolha as fotos do mini filme do casal.'}</p>
-      ${f ? `<p class="group-label">Mais 3 polaroides</p><p class="hint">${prem ? 'Elas entram nos slides de cinema junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
-      <div class="photos">${[4, 5, 6].map(photoSlot).join('')}</div>` : ''}
+      <p class="sub">${f && fm ? `Coloque mais ${nf} polaroides e as fotos do mini filme do casal.` : f ? `Coloque mais ${nf} polaroides. Elas aparecem junto com as outras, na parte das fotos.` : 'Escolha as fotos do mini filme do casal.'}</p>
+      ${f ? `<p class="group-label">Mais ${nf} polaroides</p><p class="hint">${prem ? 'Elas entram nos slides de cinema junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
+      <div class="photos">${(prem ? [4, 5, 6] : polIdx(S).slice(3)).map(photoSlot).join('')}</div>` : ''}
       ${fm && prem ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
       <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}
       ${fm && !prem ? `<p class="group-label">Mais 3 fotos para o mini filme</p><p class="hint">O filme passa as fotos da carta e mais estas 3, com transições, frases românticas, música e uma tela final especial. Se deixar vazio, ele usa só as fotos da carta.</p>
@@ -3139,8 +3148,9 @@ function countCard() {
 }
 function photoSlot(i) {
   const tag = i === 3 ? `<span class="ph-tag">${ICON.sparkle}Foto final</span>` : '';
-  const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : i < 7 ? `Polaroide ${i < 3 ? i + 1 : i}<small>toque para escolher</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
-  const cap = i < 7 ? `<input class="cap" data-cap="${i}" maxlength="40" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}">` : '';
+  const pl = i < 7 || i === 14; // 14 = a 4ª polaroide da abertura de cinema
+  const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : pl ? `Polaroide ${i < 3 ? i + 1 : i === 14 ? 7 : i}<small>toque para escolher</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
+  const cap = pl ? `<input class="cap" data-cap="${i}" maxlength="40" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}">` : '';
   if (S.photos[i]) return `<figure class="ph"><img src="${S.photos[i]}" alt="Foto ${i + 1}">${tag}${cap}<button class="x" data-rm="${i}" aria-label="Remover foto ${i + 1}">${ICON.x}</button></figure>`;
   return `<button class="ph" data-add="${i}"><span class="ph-drop">${ICON.plus}${nome}</span></button>`;
 }
@@ -3293,7 +3303,7 @@ function readyView() {
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
     ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 3 meses'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
-    ${pago || prem ? '' : `<div class="adic-res"><span><b>Adicionais</b><small>${extrasValidos(S.plano, S.extras).length ? EXTRAS.filter(e => S.extras.includes(e.id)).map(e => e.t).join(' · ') : 'Nenhum'}</small></span><button class="link" id="mudarAdic">${extrasValidos(S.plano, S.extras).length ? 'Mudar' : 'Adicionar'}</button></div>`}
+    ${pago || prem ? '' : `<div class="adic-res"><span><b>Adicionais</b><small>${extrasValidos(S.plano, S.extras).length ? EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t).join(' · ') : 'Nenhum'}</small></span><button class="link" id="mudarAdic">${extrasValidos(S.plano, S.extras).length ? 'Mudar' : 'Adicionar'}</button></div>`}
     ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
@@ -3302,9 +3312,9 @@ function readyView() {
 function bumpsHTML() {
   const ex = extrasValidos(S.plano, S.extras), soma = precoTotal('padrao', ex);
   return `<div class="bumps"><p class="bumps-t">${ICON.sparkle}Deixe a sua carta ainda mais especial</p>
-    ${EXTRAS.map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
+    ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
-    ${ex.includes('fotos') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
+    ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
     ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro.</p>` : ''}
   </div>`;
 }
@@ -3312,7 +3322,7 @@ function checkoutView() {
   const L = resolveLetter(S);
   return `<p class="eyebrow">Pagamento</p>
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
-    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => S.extras.includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
+    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
     <div class="form"><div class="field"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"><p class="hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
       <label class="check" id="mailRow"${cfg.email ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label></div></div>
     <p class="group-label">Forma de pagamento</p>
@@ -3334,8 +3344,8 @@ function bindReady(el) {
 function bindBumps(el) {
   el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
     const k = c.dataset.extra, ex = new Set(S.extras || []);
-    if (c.checked) { ex.add(k); track('adicional_' + k); } else ex.delete(k);
-    S.extras = EXTRAS.map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
+    if (c.checked) { ex.add(k); track('adicional_' + k); if (k === 'cine') ex.delete('fotos'); } else ex.delete(k);
+    S.extras = EXTRAS.filter(e => !e.oculto).map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
   }));
 }
 function bindCheckout(el) {
@@ -3502,7 +3512,7 @@ function rascunhoDoServidor(P, plano, extras) {
   const r = REC[P.r] ? P.r : 'amor', ok = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? u : null;
   const fu = Array.isArray(P.fu) ? P.fu : [], fc = Array.isArray(P.fc) ? P.fc : [], mf = Array.isArray(P.mf) ? P.mf : [];
   const caminhos = Array(NFOTOS).fill(null);
-  [0, 1, 2, 4, 5, 6].forEach((i, j) => { caminhos[i] = ok(fu[j]); });
+  [0, 1, 2, 4, 5, 6, 14].forEach((i, j) => { caminhos[i] = ok(fu[j]); });
   caminhos[3] = ok(P.ffu);
   mf.slice(0, 7).forEach((u, j) => { caminhos[7 + j] = ok(u); });
   const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
@@ -3514,10 +3524,10 @@ function rascunhoDoServidor(P, plano, extras) {
     recipient: r, occasion: OCC[P.oc] ? P.oc : OCCASIONS[r][0].id, to: names.to, from: names.from, date: txt(P.dt, 10),
     verses: (Array.isArray(P.v) ? P.v : []).filter(id => VERSES[id]), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
-    prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao', extras: extrasValidos(plano === 'premium' ? 'premium' : 'padrao', extras || P.ex),
+    prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao', extras: extrasValidos(plano === 'premium' ? 'premium' : 'padrao', extras || P.ex, true),
     music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '',
     theme: THEMES.some(t => t.id === P.th) ? P.th : null,
-    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)))
+    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)), Array(7).fill(''), txt(fc[6], 40))
   };
   return { campos, caminhos, fotos: caminhos.map(u => u ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null) };
 }
@@ -3581,7 +3591,7 @@ async function api(caminho, corpo) {
 const fotosUp = (store.get('cp2:fotosUp') || []).concat(Array(NFOTOS).fill(null)).slice(0, NFOTOS);
 const fotoChave = d => d.length + ':' + d.slice(-48);
 async function subirFotos(msg) {
-  const usadas = [0, 1, 2, 3].concat(temRec(S, 'fotos') ? [4, 5, 6] : [], temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : []);
+  const usadas = polIdx(S).concat(3, temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : []);
   const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
   for (const i of usadas) {
     const d = S.photos[i]; if (!d) continue;
@@ -3756,7 +3766,7 @@ function updateChrome() {
 function querPremiumDosAdicionais() { S.plano = 'premium'; save(); track('escolheu_premium'); toast('Agora é Premium ✨'); go(idxPasso('extras'), 'fwd'); }
 function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
-  const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && extrasValidos(S.plano, S.extras).length === EXTRAS.length;
+  const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => bumpsVisiveis(ex).every(e => ex.includes(e.id)))(extrasValidos(S.plano, S.extras));
   document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
   if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}QUERO A VERSÃO PREMIUM · ${brl(PRICE_PREMIUM)}`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);

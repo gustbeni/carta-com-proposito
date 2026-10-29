@@ -8,8 +8,14 @@ export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // ca
 export const DIAS_PADRAO = 90; // a carta Padrão fica no ar por 3 meses depois do pagamento; a Premium é vitalícia
 export const planoDe = p => p === "premium" ? "premium" : "padrao";
 // adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
-export const EXTRAS = { vit: 1.99, filme: 2.99, cine: 1.99, fotos: 1.99, grandes: 1.99 };
-export const extrasDe = (lista, plano) => planoDe(plano) === "premium" || !Array.isArray(lista) ? [] : Object.keys(EXTRAS).filter(k => lista.includes(k));
+// "grandes" (fotos maiores) não é mais oferecido no site, mas continua valendo para os pedidos antigos.
+// A abertura de cinema já inclui as fotos a mais (4 polaroides), então "fotos" não é cobrado junto com "cine".
+export const EXTRAS = { vit: 3.99, filme: 4.99, cine: 4.99, fotos: 3.99, grandes: 1.99 };
+export const extrasDe = (lista, plano) => {
+  if (planoDe(plano) === "premium" || !Array.isArray(lista)) return [];
+  const v = Object.keys(EXTRAS).filter(k => lista.includes(k));
+  return v.includes("cine") ? v.filter(k => k !== "fotos") : v;
+};
 export const valorDo = (plano, extras = []) => planoDe(plano) === "premium" ? PRECO_PREMIUM
   : Math.round((PRECO + extrasDe(extras, plano).reduce((s, k) => s + EXTRAS[k], 0)) * 100) / 100;
 // o pedido tem este recurso? (Premium tem tudo; Padrão só os adicionais que comprou)
@@ -66,7 +72,7 @@ export function limparCarta(c, plano, extras = []) {
   const limpa = JSON.parse(texto);
   delete limpa.pl; delete limpa.ex; // quem diz o que está liberado é o pedido, nunca a carta
   const premium = planoDe(plano) === "premium", ex = extrasDe(extras, plano);
-  const nfu = premium || ex.includes("fotos") ? 6 : 3;
+  const nfu = premium ? 6 : ex.includes("cine") ? 7 : ex.includes("fotos") ? 6 : 3;
   if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, nfu);
   if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, nfu);
   if ((premium || ex.includes("filme")) && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, premium ? 7 : 3); else delete limpa.mf;
