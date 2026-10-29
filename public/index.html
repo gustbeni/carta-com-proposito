@@ -1190,6 +1190,15 @@ body.na-acesso .progress{visibility:hidden}
 .adic-res span{min-width:0}.adic-res b{display:block;font:600 14px/1.3 var(--f-ui);color:var(--ink)}.adic-res small{display:block;font:400 12.5px/1.35 var(--f-ui);color:var(--ink-3)}
 .pols.grandes .pol{width:min(94cqw,440px)}
 .pols.grandes .pol img{aspect-ratio:4/5}
+/* adicionais: texto de baixo mais apagado; com todos marcados, botão da Premium em destaque e a barra mais alta */
+.bumps .bump-fotos,.bumps .bump-prem{opacity:.55;font-size:12px}
+.bar-prem{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:480px;margin:10px auto 0;padding:15px 16px;border-radius:999px;border:1.5px solid #F3D58A;background:linear-gradient(180deg,rgba(243,213,138,.22),rgba(243,213,138,.08));color:#FBE7A6;font:800 15px/1.1 var(--f-ui);letter-spacing:.06em;cursor:pointer;box-shadow:0 0 0 0 rgba(243,213,138,.5);animation:premPulse 2s ease-in-out infinite}
+.bar-prem svg{width:18px;height:18px}
+.bar-prem[hidden]{display:none}
+@keyframes premPulse{0%,100%{box-shadow:0 0 0 0 rgba(243,213,138,.45)}50%{box-shadow:0 0 0 8px rgba(243,213,138,0)}}
+.bar.com-prem{padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}
+body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){.bar-prem{animation:none}}
 
 </style></head><body>
 <div class="app" id="app">
@@ -1214,6 +1223,7 @@ body.na-acesso .progress{visibility:hidden}
           <button class="circle eye" id="eyeBtn" aria-label="Ver a prévia da carta"></button>
         </div>
         <p class="bar-note" id="barNote">Salvo neste aparelho</p>
+        <button class="bar-prem" id="barPrem" hidden>QUERO A VERSÃO PREMIUM</button>
       </nav>
     </main>
     <aside class="live" aria-label="Prévia ao vivo">
@@ -3279,7 +3289,7 @@ function bumpsHTML() {
     ${EXTRAS.map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a <b>Premium</b> sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro. <button class="link" id="bumpPrem">Quero a Premium</button></p>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro.</p>` : ''}
   </div>`;
 }
 function checkoutView() {
@@ -3311,7 +3321,6 @@ function bindBumps(el) {
     if (c.checked) { ex.add(k); track('adicional_' + k); } else ex.delete(k);
     S.extras = EXTRAS.map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
   }));
-  const bp = $('#bumpPrem', el); if (bp) bp.addEventListener('click', () => { S.plano = 'premium'; save(); track('escolheu_premium'); toast('Agora é Premium ✨'); go(idxPasso('extras'), 'fwd'); });
 }
 function bindCheckout(el) {
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
@@ -3725,8 +3734,12 @@ function updateChrome() {
   $('#progress').style.setProperty('--p', `${S.view === 'step' ? (vs.indexOf(S.step) + 1) / n * 100 : 100}%`);
   refreshBar();
 }
+/* na etapa de adicionais, com todos marcados, aparece em destaque o botão para trocar pela Premium */
+function querPremiumDosAdicionais() { S.plano = 'premium'; save(); track('escolheu_premium'); toast('Agora é Premium ✨'); go(idxPasso('extras'), 'fwd'); }
 function refreshBar() {
-  const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn');
+  const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
+  const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && extrasValidos(S.plano, S.extras).length === EXTRAS.length;
+  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}QUERO A VERSÃO PREMIUM · ${brl(PRICE_PREMIUM)}`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);
   if (hide) return;
@@ -3842,6 +3855,7 @@ function iniciarCriador() {
   $('#backBtn').innerHTML = ICON.back;
   $('#eyeBtn').innerHTML = ICON.eye;
   $('#nextBtn').addEventListener('click', next);
+  $('#barPrem').addEventListener('click', querPremiumDosAdicionais);
   $('#backBtn').addEventListener('click', back);
   $('#eyeBtn').addEventListener('click', () => openPreview(S.view === 'ready' || S.step === ultimoPasso()));
   $('#brandBtn').addEventListener('click', () => { if (S.view === 'done') return; if (ui.acesso) { sairAcesso(); render('back'); return; } ui.editando = false; go(0, 'back'); });

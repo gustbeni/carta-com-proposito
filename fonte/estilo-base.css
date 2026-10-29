@@ -1178,3 +1178,12 @@ body.na-acesso .progress{visibility:hidden}
 .adic-res span{min-width:0}.adic-res b{display:block;font:600 14px/1.3 var(--f-ui);color:var(--ink)}.adic-res small{display:block;font:400 12.5px/1.35 var(--f-ui);color:var(--ink-3)}
 .pols.grandes .pol{width:min(94cqw,440px)}
 .pols.grandes .pol img{aspect-ratio:4/5}
+/* adicionais: texto de baixo mais apagado; com todos marcados, botão da Premium em destaque e a barra mais alta */
+.bumps .bump-fotos,.bumps .bump-prem{opacity:.55;font-size:12px}
+.bar-prem{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:480px;margin:10px auto 0;padding:15px 16px;border-radius:999px;border:1.5px solid #F3D58A;background:linear-gradient(180deg,rgba(243,213,138,.22),rgba(243,213,138,.08));color:#FBE7A6;font:800 15px/1.1 var(--f-ui);letter-spacing:.06em;cursor:pointer;box-shadow:0 0 0 0 rgba(243,213,138,.5);animation:premPulse 2s ease-in-out infinite}
+.bar-prem svg{width:18px;height:18px}
+.bar-prem[hidden]{display:none}
+@keyframes premPulse{0%,100%{box-shadow:0 0 0 0 rgba(243,213,138,.45)}50%{box-shadow:0 0 0 8px rgba(243,213,138,0)}}
+.bar.com-prem{padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}
+body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){.bar-prem{animation:none}}
