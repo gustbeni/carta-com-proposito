@@ -1362,10 +1362,10 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 /* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
    A Premium já vem com todos. */
 const EXTRAS = [
-  { id: 'vit', preco: 3.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
-  { id: 'filme', preco: 4.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
+  { id: 'vit', preco: 2.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
+  { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
-  { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).' },
+  { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).' },
   { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.', oculto: true } // não é mais vendido; fica para as cartas que já compraram
 ];
 /* a abertura de cinema já inclui as fotos a mais, então "fotos" não entra junto com "cine".

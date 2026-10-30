@@ -10,7 +10,7 @@ export const planoDe = p => p === "premium" ? "premium" : "padrao";
 // adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
 // "grandes" (fotos maiores) não é mais oferecido no site, mas continua valendo para os pedidos antigos.
 // A abertura de cinema já inclui as fotos a mais (4 polaroides), então "fotos" não é cobrado junto com "cine".
-export const EXTRAS = { vit: 3.99, filme: 4.99, cine: 4.99, fotos: 3.99, grandes: 1.99 };
+export const EXTRAS = { vit: 2.99, filme: 3.99, cine: 4.99, fotos: 3.99, grandes: 1.99 };
 export const extrasDe = (lista, plano) => {
   if (planoDe(plano) === "premium" || !Array.isArray(lista)) return [];
   const v = Object.keys(EXTRAS).filter(k => lista.includes(k));
