@@ -1294,9 +1294,13 @@ function musicaCard(L) {
   const inf = infoMusica(L.ml); if (!inf) return '';
   const nome = nomeMusicaLimpo(L.mt) || 'A música de vocês';
   const capa = inf.tipo === 'y' ? `<img src="https://i.ytimg.com/vi/${inf.id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">` : '';
-  return `<div class="mcard" role="button" tabindex="0" aria-label="Pausar ou tocar a música">
-    <div class="mcard-img">${capa}<span class="mcard-nota">${ICON.music}</span><span class="mcard-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
-    <div class="mcard-info"><small><span class="mc-on">♪ Tocando agora</span><span class="mc-off">♪ Toque para ouvir</span></small><b>${esc(nome)}</b></div>
+  return `<div class="mplayer">
+    <div class="mp-video"><div class="mp-capa">${capa}<span class="mcard-nota">${ICON.music}</span></div><div class="mp-alvo"></div></div>
+    <div class="mp-info" role="button" tabindex="0" aria-label="Pausar ou tocar a música">
+      <span class="mcard-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="mp-txt"><small><span class="mc-on">Tocando agora</span><span class="mc-off">Toque para ouvir</span></small><b>${esc(nome)}</b></span>
+      <span class="mp-btn" aria-hidden="true"><span class="mc-on">${ICON.pause}</span><span class="mc-off">${ICON.play}</span></span>
+    </div>
   </div>`;
 }
 function letterHTML(L, mode, opt = {}) {
@@ -1314,11 +1318,12 @@ function letterHTML(L, mode, opt = {}) {
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
-  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3>${musicaCard(L)}<p class="l-sub">Ela está tocando desde que você abriu a carta 🎶<br>Toque no card para pausar ou voltar a tocar.</p>`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 && L.premium ? ' pols6' : ''}${L.grandes ? ' grandes' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
     h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
   }
+  /* mini player com o vídeo da música escolhida, logo depois das fotos (o player é criado no toque do selo, já dentro dele) */
+  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3>${musicaCard(L)}<p class="l-sub">Ela está tocando desde que você abriu a carta 🎶</p>`);
   const n = L.reasons.length;
   h += sec('s-jar', '', 'jar', `<p class="l-label">O pote dos motivos</p><h3 class="l-h gold-t">${esc(C.jarH)}</h3><p class="l-sub">Toque no pote e tire um bilhete.</p>
     <div class="jar-wrap"><button class="jar" aria-label="Tirar um bilhete do pote">${jarSVG(n)}</button>
@@ -1716,8 +1721,9 @@ function openViewer(L, opt = {}) {
   function iniciarMusica() {
     if (musicaIniciada) return; musicaIniciada = true;
     if (L.ml) {
-      const dock = document.createElement('div'); dock.className = 'mdock'; dock.setAttribute('aria-hidden', 'true');
-      const box = document.createElement('div'); dock.appendChild(box); v.appendChild(dock);
+      const alvo = v.querySelector('.mplayer .mp-alvo'); let box = null;
+      if (alvo) { box = document.createElement('div'); alvo.appendChild(box); alvo.closest('.mplayer').classList.add('ligado'); }
+      else { const dock = document.createElement('div'); dock.className = 'mdock'; dock.setAttribute('aria-hidden', 'true'); box = document.createElement('div'); dock.appendChild(box); v.appendChild(dock); }
       const av = document.createElement('button'); av.className = 'l-btn ghost som-btn som-flut'; av.hidden = true; av.innerHTML = `${ICON.music}Toque para ouvir com som`; v.appendChild(av);
       Som.criar(L.ml, box, av);
     } else if (L.music === 'instrumental') Music.start();
@@ -1729,9 +1735,10 @@ function openViewer(L, opt = {}) {
     mBtn.addEventListener('click', () => player.toggle());
   }
   /* o card da música também pausa e volta a tocar */
-  v.querySelectorAll('.mcard').forEach(c => {
+  v.querySelectorAll('.mplayer').forEach(c => {
     const vai = () => { if (!musicaIniciada) iniciarMusica(); else player.toggle(); };
-    c.addEventListener('click', vai); c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } });
+    const info = c.querySelector('.mp-info');
+    info.addEventListener('click', vai); info.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } });
     const off = player.onChange(on => c.classList.toggle('on', on)); const ant = musicOff; musicOff = () => { off(); if (ant) ant(); };
   });
   bindCover(cover, 'full', {

@@ -1200,21 +1200,34 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .prem-ver.prem-ver-dest svg{width:18px;height:18px;flex:none}
 @media (prefers-reduced-motion:reduce){.prem-ver.prem-ver-dest{animation:none}}
 
-/* card da música escolhida, na parte "Nossa música" da carta */
-.mcard{display:block;width:100%;max-width:340px;margin:22px auto 6px;border-radius:20px;overflow:hidden;background:#140611;border:1px solid rgba(243,213,138,.45);box-shadow:0 20px 44px -18px rgba(0,0,0,.75),0 0 0 6px rgba(243,213,138,.06);cursor:pointer;text-align:left;-webkit-tap-highlight-color:transparent;transition:transform .2s}
-.mcard:active{transform:scale(.98)}
-.mcard-img{position:relative;aspect-ratio:16/9;background:radial-gradient(120% 90% at 30% 20%,#5a1640,#1d0618 70%);overflow:hidden}
-.mcard-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
-.mcard-img::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(20,6,17,.85),rgba(20,6,17,0) 55%)}
+/* mini player da música escolhida, logo depois das fotos.
+   Enquanto a parte ainda não apareceu, ela fica minúscula e quase invisível no canto (como a antiga .mdock),
+   para o vídeo já tocar desde o selo sem recarregar quando a parte aparece. */
+.lt[data-mode="full"] .lsec.l-music.wait{display:block;position:fixed;left:0;bottom:0;width:220px;height:124px;margin:0;padding:0;opacity:.01;transform:none;pointer-events:none;overflow:hidden;z-index:0}
+.lt[data-mode="full"] .lsec.l-music.wait > :not(.mplayer),.lt[data-mode="full"] .lsec.l-music.wait .mp-info,.lt[data-mode="full"] .lsec.l-music.wait .mp-capa{display:none}
+.lt[data-mode="full"] .lsec.l-music.wait .mplayer{margin:0;width:220px;border:0;border-radius:0;box-shadow:none}
+.mplayer{width:100%;max-width:380px;margin:22px auto 8px;border-radius:20px;overflow:hidden;background:#140611;border:1px solid rgba(243,213,138,.45);box-shadow:0 20px 44px -18px rgba(0,0,0,.75),0 0 0 6px rgba(243,213,138,.06);text-align:left}
+.mp-video{position:relative;aspect-ratio:16/9;background:radial-gradient(120% 90% at 30% 20%,#5a1640,#1d0618 70%)}
+.mp-capa{position:absolute;inset:0}
+.mp-capa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mplayer.ligado .mp-capa{display:none}
+.mp-alvo{position:absolute;inset:0}
+.mplayer .mbox{margin:0;max-width:none;width:100%;height:100%;border:0;border-radius:0;box-shadow:none;background:#000}
+.mplayer .mbox.sp{height:auto;min-height:152px}
+.mplayer:has(.mbox.sp) .mp-video{aspect-ratio:auto;min-height:152px}
 .mcard-nota{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#F3D58A;opacity:.6}
 .mcard-nota svg{width:44px;height:44px}
-.mcard-eq{position:absolute;right:14px;bottom:12px;z-index:3;display:flex;align-items:flex-end;gap:3px;height:18px}
-.mcard-eq i{width:4px;height:30%;border-radius:2px;background:#F3D58A;transition:height .3s}
-.mcard.on .mcard-eq i{animation:mcEq 1s ease-in-out infinite}
-.mcard.on .mcard-eq i:nth-child(2){animation-delay:.2s}.mcard.on .mcard-eq i:nth-child(3){animation-delay:.45s}.mcard.on .mcard-eq i:nth-child(4){animation-delay:.1s}
+.mp-info{display:flex;align-items:center;gap:12px;padding:12px 14px 13px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mp-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mp-txt small{font:700 10.5px/1 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:#F3D58A}
+.mp-txt b{font:600 15px/1.3 var(--f-ui);color:#FBEFE3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-btn{flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gold-btn,#F3D58A);color:#3A0B2B}
+.mp-btn svg{width:18px;height:18px}
+.mcard-eq{flex:none;display:flex;align-items:flex-end;gap:3px;height:20px;width:22px}
+.mcard-eq i{width:4px;height:30%;border-radius:2px;background:#F3D58A}
+.mplayer.on .mcard-eq i{animation:mcEq 1s ease-in-out infinite}
+.mplayer.on .mcard-eq i:nth-child(2){animation-delay:.2s}.mplayer.on .mcard-eq i:nth-child(3){animation-delay:.45s}.mplayer.on .mcard-eq i:nth-child(4){animation-delay:.1s}
 @keyframes mcEq{0%,100%{height:25%}50%{height:100%}}
-.mcard-info{padding:12px 16px 15px;display:flex;flex-direction:column;gap:4px}
-.mcard-info small{font:700 11px/1 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:#F3D58A}
-.mcard-info b{font:600 16px/1.3 var(--f-ui);color:#FBEFE3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.mcard .mc-off,.mcard.on .mc-on{display:inline}.mcard .mc-on,.mcard.on .mc-off{display:none}
-@media (prefers-reduced-motion:reduce){.mcard.on .mcard-eq i{animation:none;height:70%}}
+.mplayer .mc-off,.mplayer.on .mc-on{display:inline-flex}
+.mplayer .mc-on,.mplayer.on .mc-off{display:none}
+@media (prefers-reduced-motion:reduce){.mplayer.on .mcard-eq i{animation:none;height:70%}}
