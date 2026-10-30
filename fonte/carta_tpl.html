@@ -839,7 +839,7 @@ function resolveLetter(src) {
     reasons, prayer,
     photos: src.photos || [], captions: src.captions || [],
     date: validDate(src.date) ? src.date : '', stats: validDate(src.date) ? calcStats(src.date) : null,
-    music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src),
+    music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src), mt: src.music === 'link' ? (src.musicNome || '').trim().slice(0, 120) : '',
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
     premium: src.plano === 'premium', cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), pol: polIdx(src), vitalicia: temRec(src, 'vit'),
     grandes: src.plano !== 'premium' && temRec(src, 'grandes'),
@@ -867,7 +867,7 @@ function cartaParaServidor(fotos) {
   const P = { x: 2, r: L.r, oc: L.occ.id, p: L.to, d: L.from, v: L.verses.map(v => v.id), m: L.message, mot: L.reasons, th: L.theme };
   if (L.prayer) P.ora = L.prayer;
   if (L.date) P.dt = L.date;
-  if (L.music === 'instrumental') P.mu = 1; else if (L.ml) P.ml = L.ml;
+  if (L.music === 'instrumental') P.mu = 1; else if (L.ml) { P.ml = L.ml; if (L.mt) P.mt = L.mt; }
   const pol = polIdx(S).filter(i => S.photos[i] && fotos[i]);
   if (pol.length) { P.fu = pol.map(i => fotos[i]); if (pol.some(i => (S.captions[i] || '').trim())) P.fc = pol.map(i => (S.captions[i] || '').trim()); }
   if (S.photos[3] && fotos[3]) { P.ffu = fotos[3]; if ((S.captions[3] || '').trim()) P.ffc = S.captions[3].trim(); }
@@ -887,7 +887,7 @@ function cartaDoServidor(P) {
     photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf, Array(7).fill(null)).slice(0, 14).concat(fu[6] || null),
     captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)), Array(7).fill(''), txt(fc[6], 40)),
     plano: premium ? 'premium' : 'padrao', extras, legado: true,
-    music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', prayer: -1
+    music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', musicNome: txt(P.mt, 120), prayer: -1
   };
   let L;
   if (P.x === 2) {
@@ -1286,6 +1286,19 @@ function polHTML(p, i) {
 /* A carta inteira. Na carta aberta (mode "full") as partes aparecem uma de cada vez:
    data-step diz o que libera a próxima (next = botão Continuar, spin = girar a roleta,
    jar = ler todos os bilhetes, reveal = revelar a foto, ask = dizer sim, amen). A oração é a última. */
+/* card da música escolhida (só com música do YouTube ou Spotify): capa do vídeo, nome e o "tocando agora" */
+function nomeMusicaLimpo(t) {
+  return (t || '').replace(/\s*[\(\[][^\)\]]*(official|oficial|v[íi]deo|clipe|lyric|letra|audio|áudio|visualizer|hd|4k)[^\)\]]*[\)\]]/gi, '').replace(/\s*\|.*$/, '').replace(/\s{2,}/g, ' ').trim();
+}
+function musicaCard(L) {
+  const inf = infoMusica(L.ml); if (!inf) return '';
+  const nome = nomeMusicaLimpo(L.mt) || 'A música de vocês';
+  const capa = inf.tipo === 'y' ? `<img src="https://i.ytimg.com/vi/${inf.id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">` : '';
+  return `<div class="mcard" role="button" tabindex="0" aria-label="Pausar ou tocar a música">
+    <div class="mcard-img">${capa}<span class="mcard-nota">${ICON.music}</span><span class="mcard-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+    <div class="mcard-info"><small><span class="mc-on">♪ Tocando agora</span><span class="mc-off">♪ Toque para ouvir</span></small><b>${esc(nome)}</b></div>
+  </div>`;
+}
 function letterHTML(L, mode, opt = {}) {
   const mini = mode === 'mini', full = mode === 'full', C = L.C, demo = full && opt.mode !== 'recipient';
   const pics = (L.pol || (L.maisFotos ? [0, 1, 2, 4, 5, 6] : [0, 1, 2])).map(i => ({ src: L.photos[i], cap: L.captions[i] })).filter(p => p.src);
@@ -1301,7 +1314,7 @@ function letterHTML(L, mode, opt = {}) {
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
-  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3><p class="l-sub">Ela está tocando desde que você abriu a carta 🎶<br>Para pausar, use o botão “Nossa música” lá em cima.</p>`);
+  if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3>${musicaCard(L)}<p class="l-sub">Ela está tocando desde que você abriu a carta 🎶<br>Toque no card para pausar ou voltar a tocar.</p>`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 && L.premium ? ' pols6' : ''}${L.grandes ? ' grandes' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
     h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
@@ -1715,6 +1728,12 @@ function openViewer(L, opt = {}) {
     musicOff = player.onChange(on => mBtn.setAttribute('aria-pressed', on ? 'true' : 'false'));
     mBtn.addEventListener('click', () => player.toggle());
   }
+  /* o card da música também pausa e volta a tocar */
+  v.querySelectorAll('.mcard').forEach(c => {
+    const vai = () => { if (!musicaIniciada) iniciarMusica(); else player.toggle(); };
+    c.addEventListener('click', vai); c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } });
+    const off = player.onChange(on => c.classList.toggle('on', on)); const ant = musicOff; musicOff = () => { off(); if (ant) ant(); };
+  });
   bindCover(cover, 'full', {
     onSeal() { letter.prime(); iniciarMusica(); },
     onOpen() {
@@ -1936,7 +1955,7 @@ function linkHint() {
   const inf = lerMusica(S.musicLink);
   if (!S.musicLink.trim()) return 'No YouTube ou no Spotify, toque em Compartilhar e depois em Copiar link.';
   if (!inf) return 'Esse link não funciona. Cole um link do YouTube ou do Spotify.';
-  if (inf.tipo === 'y' && S.musicNome) return `♪ ${S.musicNome} ✓ A música começa quando o selo for quebrado.`;
+  if (S.musicNome) return `♪ ${S.musicNome} ✓ A música começa quando o selo for quebrado.`;
   return inf.tipo === 'y' ? 'Link do YouTube ✓ A música começa quando o selo for quebrado.' : 'Link do Spotify ✓ Na carta, tocamos a mesma música pelo YouTube, que toca completa.';
 }
 function autoGrow(ta, min) { ta.style.height = 'auto'; ta.style.height = Math.max(min, ta.scrollHeight + 2) + 'px'; }
@@ -2048,7 +2067,7 @@ const BIND = {
     el.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { S.music = b.dataset.m; if (S.music !== 'instrumental') Music.stop(); save(); rerender(); if (S.music === 'link') setTimeout(() => { const l = $('#fLink'); if (l) l.focus(); }, 60); }));
     const play = $('#mPlay', el);
     if (play) play.addEventListener('click', () => { Music.toggle(); play.classList.toggle('on', Music.playing); play.innerHTML = Music.playing ? ICON.pause : ICON.play; });
-    const link = $('#fLink', el); if (link) link.addEventListener('input', () => { S.musicLink = link.value.trim(); S.musicNome = ''; $('#linkHint', el).textContent = linkHint(); pintarSugestoes(el); changed(); });
+    const link = $('#fLink', el); if (link) link.addEventListener('input', () => { S.musicLink = link.value.trim(); S.musicNome = ''; $('#linkHint', el).textContent = linkHint(); pintarSugestoes(el); changed(); clearTimeout(nomeDoLink.t); nomeDoLink.t = setTimeout(() => nomeDoLink(el), 700); });
     const busca = $('#fBusca', el);
     if (busca) {
       busca.addEventListener('input', () => { buscaMusica.q = busca.value; clearTimeout(buscaMusica.timer); buscaMusica.timer = setTimeout(() => buscarMusica(el), 650); });
@@ -2075,6 +2094,17 @@ async function buscarMusica(el) {
   }
   buscaMusica.itens = j && j.itens ? j.itens : null;
   pintarSugestoes(el);
+}
+/* link colado: busca o nome da música para mostrar na carta */
+async function nomeDoLink(el) {
+  const inf = lerMusica(S.musicLink); if (!inf || S.musicNome) return;
+  const q = inf.tipo === 'y' ? 'y=' + inf.id : /^track\//.test(inf.id) ? 's=' + inf.id : ''; if (!q) return;
+  const antes = S.musicLink;
+  try {
+    const j = await api('/musica?' + q); if (S.musicLink !== antes || !j) return;
+    const nome = j.musica ? (j.musica + (j.artista ? ' · ' + j.artista : '')) : j.t; if (!nome) return;
+    S.musicNome = nome; save(); const h = $('#linkHint', el); if (h) h.textContent = linkHint();
+  } catch (e) {}
 }
 function pintarSugestoes(el) {
   const box = $('#sugsYt', el); if (!box) return;
@@ -2324,7 +2354,7 @@ function rascunhoDoServidor(P, plano, extras) {
     verses: (Array.isArray(P.v) ? P.v : []).filter(id => VERSES[id]), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
     prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao', extras: extrasValidos(plano === 'premium' ? 'premium' : 'padrao', extras || P.ex, true),
-    music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '',
+    music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '', musicNome: txt(P.mt, 120),
     theme: THEMES.some(t => t.id === P.th) ? P.th : null,
     captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)), Array(7).fill(''), txt(fc[6], 40))
   };

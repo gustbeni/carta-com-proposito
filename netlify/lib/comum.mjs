@@ -251,6 +251,15 @@ export async function sugestoesYouTube(q, n = 6) {
     img: (((x.snippet.thumbnails || {}).default || {}).url || "").replace(/^http:/, "https:"),
   }));
 }
+// nome do vídeo do YouTube (para mostrar a música na carta), sem precisar da chave da API
+export async function tituloYouTube(id) {
+  if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return "";
+  try {
+    const r = await fetch("https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent("https://www.youtube.com/watch?v=" + id));
+    if (!r.ok) return "";
+    const j = await r.json(); return desfazer(j.title || "").slice(0, 120);
+  } catch (e) { return ""; }
+}
 export async function spotifyParaYouTube(tipoId) {
   const n = await nomeSpotify(tipoId); if (!n || !n.musica) return null;
   const achou = await buscarYouTube((n.musica + " " + (n.artista || "")).trim());
