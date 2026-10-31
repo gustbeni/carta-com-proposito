@@ -1244,6 +1244,13 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .mplayer .mc-on,.mplayer.on .mc-off{display:none}
 @media (prefers-reduced-motion:reduce){.mplayer.on .mcard-eq i{animation:none;height:70%}}
 
+/* pagamento sem e-mail */
+.field.sem-email #fEmail{opacity:.4}
+.field.sem-email .em-hint{display:none}
+.sem-email-row{margin-top:10px;padding:11px 14px;background:transparent;font-size:14px;color:var(--ink-2)}
+.sem-email-nota{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(243,213,138,.08);border:1px solid rgba(243,213,138,.3);color:var(--ink)}
+.mail-note.sem{border-color:rgba(243,213,138,.4)}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -3012,7 +3019,7 @@ document.addEventListener('keydown', e => {
 /* ===== Funil passo a passo ===== */
 const KEY = 'cp2:draft';
 const PKEY = i => 'cp2:photo:' + i;
-const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', extras: [], verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', mailMe: true, pay: 'pix', code: null };
+const BLANK = { step: 0, view: 'step', recipient: null, occasion: null, to: '', from: '', date: '', captions: ['', '', '', '', '', '', ''], plano: 'padrao', extras: [], verses: [], message: '', reasons: [], prayer: 0, prayerCustom: '', music: 'instrumental', musicLink: '', musicNome: '', theme: null, email: '', semEmail: false, mailMe: true, pay: 'pix', code: null };
 const S = loadDraft();
 const ui = { moreVerses: false, acesso: false, editando: false };
 const desk = window.matchMedia('(min-width: 1040px)');
@@ -3392,8 +3399,10 @@ function checkoutView() {
   return `<p class="eyebrow">Pagamento</p>
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
     <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
-    <div class="form"><div class="field"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"><p class="hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
-      <label class="check" id="mailRow"${cfg.email ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label></div></div>
+    <div class="form"><div class="field${S.semEmail ? ' sem-email' : ''}" id="emailField"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"${S.semEmail ? ' disabled' : ''}><p class="hint em-hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
+      <label class="check" id="mailRow"${cfg.email && !S.semEmail ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label>
+      <label class="check sem-email-row"><input type="checkbox" id="fSemEmail"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
+      <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problema, dá para pagar assim. Depois do pagamento, <b>copie o link da carta ou baixe o QR code e guarde</b>: sem e-mail, a carta fica salva só neste aparelho e não dá para recuperar em outro.</p></div></div>
     <p class="group-label">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-pay="pix" aria-pressed="${S.pay === 'pix'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
@@ -3421,7 +3430,15 @@ function bindCheckout(el) {
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
   em.addEventListener('input', () => { S.email = em.value.trim(); err.hidden = true; em.classList.remove('bad'); save(); });
   mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
-  carregarConfig().then(() => { const r = $('#mailRow', el); if (r) r.hidden = !cfg.email; });
+  const se = $('#fSemEmail', el);
+  se.addEventListener('change', () => {
+    S.semEmail = se.checked; save(); track(se.checked ? 'sem_email' : 'com_email');
+    em.disabled = se.checked; err.hidden = true; em.classList.remove('bad');
+    $('#emailField', el).classList.toggle('sem-email', se.checked);
+    $('#semEmailNota', el).hidden = !se.checked;
+    const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || se.checked;
+  });
+  carregarConfig().then(() => { const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || S.semEmail; });
   el.querySelectorAll('[data-pay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.pay; el.querySelectorAll('[data-pay]').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); refreshBar(); }));
 }
 /* ===== Meu acesso (/meuacesso): com o e-mail da compra, a pessoa vê todas as cartas pagas,
@@ -3463,7 +3480,8 @@ const podeEditar = c => Date.now() < c.editarAte && (c.local || !!(c.carta && c.
 const dataCurta = t => new Date(t).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 function acessoView() {
   const itens = itensAcesso(), novo = acesso.novo && itens.find(c => c.id === acesso.novo);
-  const temLista = isEmail(acesso.email) && (acesso.cartas || itens.length) && !acesso.trocar;
+  const soLocal = !!novo && !isEmail(acesso.email) && !acesso.trocar; /* pagou sem e-mail: mostra a carta deste aparelho */
+  const temLista = soLocal || (isEmail(acesso.email) && (acesso.cartas || itens.length) && !acesso.trocar);
   let h = novo
     ? `<div class="done-head"><div class="stamp"><span class="seal"><span>${sealInner(novo.L)}</span></span></div>
       <p class="eyebrow">Pagamento aprovado</p>
@@ -3475,7 +3493,7 @@ function acessoView() {
   if (!temLista) {
     h += `<form class="ace-form" id="aceForm" novalidate><div class="field"><label for="aceEmail">E-mail da compra</label><input class="input" id="aceEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(acesso.email)}"><p class="err" id="aceErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
       <button class="btn btn-primary w" type="submit">Ver minhas cartas</button></form>`;
-  } else {
+  } else if (!soLocal) {
     h += `<p class="ace-quem">Cartas de <b>${esc(acesso.email)}</b> · <button class="link" id="aceTrocar">Trocar e-mail</button></p>`;
   }
   if (acesso.carregando && !itens.length) h += `<div class="waiting"><span class="spin"></span>Buscando suas cartas…</div>`;
@@ -3608,6 +3626,7 @@ function criarOutra() {
 /* e-mail com o link e o QR code: avisa que foi (ou está indo) ou oferece mandar */
 function pintarEmail(el, conferir) {
   const box = $('#mailArea', el); if (!box) return;
+  if (pedido && pedido.semEmail) { box.innerHTML = `<p class="mail-note sem">${ICON.lock}<span>Você pagou sem e-mail: <b>copie o link ou baixe o QR code e guarde</b>. A carta fica salva só neste aparelho.</span></p>`; return; }
   if (!cfg.email || !editavel()) { box.innerHTML = ''; return; }
   const foi = pedido.emailOk, pediu = pedido.querEmail;
   box.innerHTML = foi || pediu
@@ -3684,7 +3703,7 @@ function erroTexto(e, salvar) {
 }
 async function pay() {
   const em = $('#fEmail');
-  if (!isEmail(S.email)) { $('#emailErr').hidden = false; em.classList.add('bad'); em.focus(); em.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+  if (!S.semEmail && !isEmail(S.email)) { $('#emailErr').hidden = false; em.classList.add('bad'); em.focus(); em.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   if (ocupado) return;
   ocupado = true; $('#nextBtn').disabled = true;
   const metodo = S.pay === 'card' ? 'cartao' : 'pix';
@@ -3694,12 +3713,12 @@ async function pay() {
   try {
     const fotos = await subirFotos(msg);
     msg(metodo === 'pix' ? 'Gerando o seu Pix…' : 'Abrindo o Mercado Pago…');
-    identificarPixel(S.email);
+    if (!S.semEmail) identificarPixel(S.email);
     track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
-    const querEmail = !!cfg.email && S.mailMe !== false;
-    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.email.trim(), enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
-    pedido = { id: j.id, chave: j.chave, pago: false, querEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
+    const querEmail = !!cfg.email && S.mailMe !== false && !S.semEmail;
+    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
+    pedido = { id: j.id, chave: j.chave, pago: false, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     openPix(j.pix || {});
     esperarPagamento(0);
@@ -3737,11 +3756,11 @@ function approve(j = {}) {
   clearTimeout(esperando); closeSheet();
   pedido.pago = true; if (j.email === 'enviado') pedido.emailOk = true;
   if (!pedido.pagoEm) pedido.pagoEm = Date.now();
-  if (!pedido.compraOk) identificarPixel(pedido.email || S.email, pedido.id);
+  if (!pedido.compraOk && !pedido.semEmail && isEmail(S.email)) identificarPixel(S.email, pedido.id);
   if (!pedido.compraOk) { track('Purchase', { currency: 'BRL', value: pedido.valor || precoDe(pedido.plano) }, { eventID: 'compra_' + pedido.id }); pedido.compraOk = true; }
   store.set(PED, pedido);
   S.code = pedido.id; S.view = 'done'; save();
-  if (isEmail(S.email)) acesso.email = S.email.trim().toLowerCase();
+  if (!pedido.semEmail && isEmail(S.email)) acesso.email = S.email.trim().toLowerCase();
   irAcesso(pedido.id, true);
   toast('Pagamento confirmado!');
 }

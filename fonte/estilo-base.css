@@ -1231,3 +1231,10 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .mplayer .mc-off,.mplayer.on .mc-on{display:inline-flex}
 .mplayer .mc-on,.mplayer.on .mc-off{display:none}
 @media (prefers-reduced-motion:reduce){.mplayer.on .mcard-eq i{animation:none;height:70%}}
+
+/* pagamento sem e-mail */
+.field.sem-email #fEmail{opacity:.4}
+.field.sem-email .em-hint{display:none}
+.sem-email-row{margin-top:10px;padding:11px 14px;background:transparent;font-size:14px;color:var(--ink-2)}
+.sem-email-nota{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(243,213,138,.08);border:1px solid rgba(243,213,138,.3);color:var(--ink)}
+.mail-note.sem{border-color:rgba(243,213,138,.4)}

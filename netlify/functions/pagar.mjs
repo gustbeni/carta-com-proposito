@@ -9,16 +9,20 @@ export default async (req) => {
   const carta = limparCarta(b.carta, plano, extras);
   if (carta === "grande") return resposta({ erro: "grande" }, 413);
   if (!carta) return resposta({ erro: "carta" }, 400);
-  const email = String(b.email || "").trim().slice(0, 120);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return resposta({ erro: "email" }, 400);
+  // "Não tenho e-mail": a carta é criada sem e-mail (não aparece no Meu acesso nem recebe o e-mail);
+  // o Mercado Pago exige um e-mail do pagador, então vai um endereço genérico só para ele.
+  const semEmail = b.semEmail === true;
+  const email = semEmail ? "" : String(b.email || "").trim().slice(0, 120);
+  if (!semEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return resposta({ erro: "email" }, 400);
   const metodo = b.metodo === "cartao" ? "cartao" : "pix";
 
   const id = randomBytes(9).toString("base64url");
   const chave = randomBytes(16).toString("hex");
   const site = enderecoSite(req);
-  const reg = { carta, chave, email, querEmail: b.enviarEmail === true, plano, extras, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
+  const reg = { carta, chave, email, semEmail, querEmail: !semEmail && b.enviarEmail === true, plano, extras, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
   await loja().setJSON("c/" + id, reg);
-  await guardarNoAcesso(email, id).catch(e => console.error("acesso", e.message)); // para aparecer em /meuacesso
+  if (email) await guardarNoAcesso(email, id).catch(e => console.error("acesso", e.message)); // para aparecer em /meuacesso
+  const emailMP = email || "cliente." + id.toLowerCase().replace(/[^a-z0-9]/g, "") + "@cartacomproposito.com.br";
 
   try {
     if (metodo === "pix") {
@@ -26,7 +30,7 @@ export default async (req) => {
       const pedidoMP = {
         type: "online", processing_mode: "automatic", total_amount: valor, external_reference: id,
         description: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO,
-        payer: { email },
+        payer: { email: emailMP },
         items: [{ title: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO, unit_price: valor, quantity: 1, description: "Carta on-line com QR code" }],
         transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT2H" }] },
       };
@@ -45,7 +49,7 @@ export default async (req) => {
       metodo: "POST", idem: id,
       corpo: {
         items: [{ id: plano === "premium" ? "carta-premium" : "carta", title: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO, quantity: 1, unit_price: PRECO, currency_id: "BRL" }],
-        payer: { email }, external_reference: id,
+        payer: { email: emailMP }, external_reference: id,
         back_urls: { success: site + "/?pedido=" + id, pending: site + "/?pedido=" + id, failure: site + "/?pedido=" + id },
         auto_return: "approved", statement_descriptor: "CARTA PROPOSITO",
         notification_url: site.startsWith("https://") ? site + "/api/aviso" : undefined,

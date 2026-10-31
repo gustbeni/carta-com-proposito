@@ -32,6 +32,8 @@ Site que vende uma **carta cristã digital personalizada** em dois pacotes, **Pa
 
 As cartas ficam no **Netlify Blobs**, store `cartas`, chave `c/<id>`. O registro guarda `{ carta, chave, email, querEmail, plano, pago, pagoEm, mpOrder, mpId, valor, nav, metaOk, musicaYT, emailOk, emailEnvios, emailErros }`.
 
+**Sem e-mail:** no pagamento há "Não tenho e-mail" (`S.semEmail`). A carta é criada com `reg.email` vazio e `reg.semEmail: true` (não entra no Meu acesso nem recebe e-mail), e o Mercado Pago recebe um e-mail genérico `cliente.<id>@cartacomproposito.com.br` (`emailMP` no `pagar.mjs`). Depois de pago, a tela mostra só a carta deste aparelho e o aviso para guardar o link ou o QR code.
+
 **E-mail da carta:** na hora de pagar aparece "Quero receber a carta (link e QR code) neste e-mail" (marcado). Quando o pagamento é confirmado (`confirmarPagamento`, chamado pelo `status`, pelo `aviso` e pela `carta`), `mandarEmail` manda uma vez só e desiste depois de 3 erros. Na carta paga aparece "Enviamos..." ou o botão para receber. Só funciona com `EMAIL_USUARIO` e `EMAIL_SENHA_APP` no Netlify; sem elas, a opção nem aparece.
 
 **Meu acesso (/meuacesso):** depois do pagamento a pessoa cai nessa página (no lugar da antiga "página de obrigado"). Ela lista as cartas do e-mail com copiar o link, enviar, baixar o QR code, abrir e editar (7 dias). O e-mail fica lembrado no aparelho (`cp2:acesso`). Editar uma carta de outro aparelho traz a carta do servidor para o criador (`rascunhoDoServidor`) e salva pelo `/api/atualizar`, sem mandar as fotos de novo. O e-mail da carta também leva o link do Meu acesso, e o começo do site tem "Já comprou? Entrar no Meu acesso".
