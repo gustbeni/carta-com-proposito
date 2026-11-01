@@ -37,6 +37,8 @@ export const DIAS_PARA_EDITAR = 7;
 const MP = "https://api.mercadopago.com";
 
 export const loja = () => getStore({ name: "cartas", consistency: "strong" });
+// Pix gerados e ainda não pagos (chave p/<id>), para o lembrete automático por e-mail (functions/lembrete.mjs)
+export const pendentes = () => getStore({ name: "pendentes", consistency: "strong" });
 
 // Página /meuacesso: guarda quais cartas cada e-mail comprou (store "acessos", chave e/<hash do e-mail>).
 // O e-mail não fica escrito aqui, só o hash dele.

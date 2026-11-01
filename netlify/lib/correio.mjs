@@ -70,3 +70,52 @@ export async function enviarCartaPorEmail({ link, emailDestino, para, plano, tra
     attachments: [{ filename: "qrcode-da-carta.png", content: qr, contentType: "image/png", cid: "qrcarta" }],
   });
 }
+
+// Lembrete (uma vez só) para quem gerou o Pix e não pagou: a carta continua salva no aparelho de quem montou.
+export function textoLembrete(site, para) {
+  const nome = String(para || "").trim();
+  const assunto = "Sua carta está quase pronta 💌";
+  const texto = [
+    "Olá! Tudo bem?",
+    "",
+    `Vimos que você montou uma carta${nome ? " para " + nome : ""} no nosso site, mas o Pix não foi concluído.`,
+    "",
+    "Se quiser finalizar, é só abrir o site no mesmo celular em que você montou a carta: ela continua salva lá. Como o Pix anterior venceu, toque em pagar de novo e um código novo é gerado na hora.",
+    "",
+    site,
+    "",
+    "Assim que o pagamento cair, a carta é liberada na hora, com o link e o QR code para enviar.",
+    "",
+    "Se teve alguma dificuldade no pagamento, é só responder este e-mail.",
+    "",
+    "Com carinho,",
+    "Carta com Propósito",
+  ].join("\n");
+  const html = `<!doctype html><html lang="pt-BR"><body style="margin:0;padding:0;background:#F6EFE6">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F6EFE6;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#3A1331;border-radius:20px;overflow:hidden;font-family:Georgia,'Times New Roman',serif">
+  <tr><td style="padding:34px 28px 10px;text-align:center">
+    <p style="margin:0;font:600 11px/1.4 Arial,sans-serif;letter-spacing:3px;text-transform:uppercase;color:#ECC16B">Carta com Propósito</p>
+    <h1 style="margin:14px 0 0;font:italic 600 28px/1.2 Georgia,serif;color:#F7D995">Sua carta${nome ? " para " + esc(nome) : ""} está quase pronta</h1>
+  </td></tr>
+  <tr><td style="padding:14px 28px 6px;text-align:center;font:400 16px/1.55 Arial,sans-serif;color:#F2DCCB">
+    O Pix não foi concluído, mas a sua carta continua salva no celular em que você montou. Abra o site nesse mesmo celular e toque em pagar de novo: um código novo é gerado na hora.
+  </td></tr>
+  <tr><td style="padding:16px 28px;text-align:center">
+    <a href="${esc(site)}" style="display:inline-block;padding:15px 30px;border-radius:999px;background:#ECC16B;color:#3A0B2B;font:700 16px/1 Arial,sans-serif;text-decoration:none">Finalizar a minha carta</a>
+  </td></tr>
+  <tr><td style="padding:10px 28px 30px;text-align:center;font:400 13px/1.55 Arial,sans-serif;color:#B8919F">
+    Assim que o pagamento cair, a carta é liberada na hora, com o link e o QR code para enviar.<br>Se teve alguma dificuldade, é só responder este e-mail.
+  </td></tr>
+</table>
+</td></tr></table></body></html>`;
+  return { assunto, texto, html };
+}
+export async function enviarLembrete({ site, emailDestino, para, transporte }) {
+  const t = transporte || nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: process.env.EMAIL_USUARIO, pass: String(process.env.EMAIL_SENHA_APP || "").replace(/\s+/g, "") },
+  });
+  const { assunto, texto, html } = textoLembrete(site, para);
+  return t.sendMail({ from: { name: "Carta com Propósito", address: process.env.EMAIL_USUARIO || "carta@exemplo.com" }, to: emailDestino, subject: assunto, text: texto, html });
+}

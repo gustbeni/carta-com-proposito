@@ -1,6 +1,6 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
-import { DESCRICAO, loja, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso } from "../lib/comum.mjs";
+import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso } from "../lib/comum.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return resposta({ erro: "metodo" }, 405);
@@ -42,6 +42,7 @@ export default async (req) => {
       }
       reg.mpOrder = o.id;
       await loja().setJSON("c/" + id, reg);
+      if (email) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message)); // para o lembrete se o Pix vencer
       const pm = (((o.transactions || {}).payments || [])[0] || {}).payment_method || {};
       return resposta({ id, chave, pix: { qr: pm.qr_code_base64, copia: pm.qr_code } });
     }
