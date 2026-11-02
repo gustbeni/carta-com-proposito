@@ -122,6 +122,13 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
   return true;
 }
 
+// cartão: o pagamento mais recente deste pedido foi recusado pelo Mercado Pago (antifraude, saldo etc.)?
+export async function cartaoRecusado(id) {
+  const j = await mp("/v1/payments/search?sort=date_created&criteria=desc&external_reference=" + encodeURIComponent(id));
+  const p = (j.results || []).find(x => x.external_reference === id);
+  return !!p && p.status === "rejected";
+}
+
 // Toque no celular do dono a cada venda, pelo app ntfy (variável NTFY_TOPICO no Netlify).
 // Se o status e o webhook confirmarem ao mesmo tempo, só quem gravou por último avisa (avisoTok).
 // Não manda nome nem e-mail de quem comprou.

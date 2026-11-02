@@ -2478,7 +2478,7 @@ async function pay() {
     await carregarConfig();
     const querEmail = !!cfg.email && S.mailMe !== false && !S.semEmail;
     const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
-    pedido = { id: j.id, chave: j.chave, pago: false, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
+    pedido = { id: j.id, chave: j.chave, pago: false, metodo, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     openPix(j.pix || {});
     esperarPagamento(0);
@@ -2503,11 +2503,27 @@ function openPix(pix) {
     if (!left) { clearInterval(timer); const w = t.closest('.waiting'); if (w) w.innerHTML = 'Este Pix expirou. Feche e toque em pagar de novo para gerar outro.'; }
   }, 1000);
 }
+/* o Mercado Pago recusou o cartão (antifraude, limite etc.): oferece o Pix, que é aprovado na hora */
+function cartaoRecusadoSheet() {
+  clearTimeout(esperando); esperando = null; track('cartao_recusado');
+  const valor = brl(precoTotal(S.plano, S.extras));
+  openSheet(`<p class="eyebrow">Cartão de crédito</p><h2 class="h2">Seu cartão não foi aprovado</h2>
+    <p class="sub">O Mercado Pago não aprovou o pagamento com este cartão. Isso acontece por segurança e não é cobrado nada. Pague pelo <b>Pix</b>, que é aprovado na hora e libera a carta na mesma hora.</p>
+    <button class="btn btn-primary w" id="recusaPix" style="margin-top:20px">${ICON.lock}Pagar ${valor} com Pix</button>
+    <button class="btn btn-ghost w" id="recusaCartao" style="margin-top:10px">Tentar com outro cartão</button>`);
+  const ir = metodo => { closeSheet(); S.pay = metodo; save(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => pay(), 250); };
+  const bp = $('#recusaPix'), bc = $('#recusaCartao');
+  if (bp) bp.addEventListener('click', () => { track('recusa_pix'); ir('pix'); });
+  if (bc) bc.addEventListener('click', () => ir('card'));
+}
 /* pergunta ao servidor se o pagamento caiu (o webhook /api/aviso também confirma do lado do servidor) */
 async function esperarPagamento(n) {
   clearTimeout(esperando); esperando = null;
   if (!pedido || pedido.pago) return;
-  try { const j = await api('/status?id=' + encodeURIComponent(pedido.id)); if (j.pago) return approve(j); } catch (e) {}
+  try {
+    const j = await api('/status?id=' + encodeURIComponent(pedido.id)); if (j.pago) return approve(j);
+    if (j.recusado && pedido.metodo !== 'pix' && !pedido.recusaVista) { pedido.recusaVista = true; store.set(PED, pedido); return cartaoRecusadoSheet(); }
+  } catch (e) {}
   /* 10 minutos de 4 em 4 segundos, depois de 8 em 8 até completar as 2 horas do Pix */
   if (n < 150 + (PIX_MS - 600e3) / 8000) esperando = setTimeout(() => esperarPagamento(n + 1), n < 150 ? 4000 : 8000);
 }
@@ -2754,10 +2770,11 @@ function iniciarCriador() {
     fs.forEach((f, i) => { if (typeof f === 'string' && f.length > 900000) fetch(f).then(r => r.blob()).then(processImage).then(d => { if (S.photos[i] === f) { S.photos[i] = d; savePhoto(i); } }).catch(() => {}); });
   });
   /* volta do cartão (Mercado Pago manda para /?pedido=<id>) ou Pix ainda esperando */
-  let q = null; try { q = new URLSearchParams(location.search).get('pedido'); } catch (e) {}
+  let q = null, volta = ''; try { const u = new URLSearchParams(location.search); q = u.get('pedido'); volta = u.get('collection_status') || u.get('status') || ''; } catch (e) {}
   if (q) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
   if (q && !(pedido && pedido.id === q)) { const ant = store.get('cd_pedido'); if (ant && ant.id === q && ant.chave) { pedido = { id: ant.id, chave: ant.chave, pago: false }; store.set(PED, pedido); } } // compra começada no site antigo
-  if (pedido && !pedido.pago) {
+  if (pedido && !pedido.pago && q === pedido.id && volta === 'rejected') { pedido.recusaVista = true; store.set(PED, pedido); cartaoRecusadoSheet(); esperarPagamento(0); }
+  else if (pedido && !pedido.pago) {
     if (q === pedido.id) openSheet(`<p class="eyebrow">Cartão de crédito</p><h2 class="h2">Conferindo o seu pagamento</h2><div class="waiting"><span class="spin"></span>Aguardando a confirmação do Mercado Pago</div><p class="hint pix-note">Se o pagamento não foi aprovado, feche este aviso e tente de novo.</p>`);
     esperarPagamento(0);
   }

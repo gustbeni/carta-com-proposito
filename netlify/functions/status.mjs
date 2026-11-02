@@ -1,5 +1,5 @@
 // O site pergunta aqui, a cada poucos segundos, se o pagamento já caiu
-import { loja, resposta, idValido, confirmarPagamento } from "../lib/comum.mjs";
+import { loja, resposta, idValido, confirmarPagamento, cartaoRecusado } from "../lib/comum.mjs";
 
 export default async (req) => {
   const id = new URL(req.url).searchParams.get("id");
@@ -8,7 +8,9 @@ export default async (req) => {
   if (!reg) return resposta({ erro: "nao-encontrada" }, 404);
   try {
     const pago = await confirmarPagamento(id, reg);
-    return resposta({ pago, email: pago && reg.emailOk ? "enviado" : undefined });
+    // pedido de cartão (sem Pix) que o Mercado Pago recusou: o site oferece pagar pelo Pix
+    const recusado = !pago && !reg.mpOrder ? await cartaoRecusado(id).catch(() => false) : false;
+    return resposta({ pago, recusado: recusado || undefined, email: pago && reg.emailOk ? "enviado" : undefined });
   }
   catch { return resposta({ pago: false }); }
 };
