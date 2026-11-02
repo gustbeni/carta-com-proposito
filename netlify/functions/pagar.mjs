@@ -42,7 +42,8 @@ export default async (req) => {
       }
       reg.mpOrder = o.id;
       await loja().setJSON("c/" + id, reg);
-      if (email) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message)); // para o lembrete se o Pix vencer
+      // lembrete automático (desligado, por decisão do dono): para ligar, volte netlify/desligado/lembrete.mjs para netlify/functions e descomente a linha abaixo
+      // if (email) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message));
       const pm = (((o.transactions || {}).payments || [])[0] || {}).payment_method || {};
       return resposta({ id, chave, pix: { qr: pm.qr_code_base64, copia: pm.qr_code } });
     }
