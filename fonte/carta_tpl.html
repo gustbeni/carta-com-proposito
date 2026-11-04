@@ -2151,8 +2151,19 @@ function bumpsHTML() {
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro.</p>` : ''}
+    ${conviteHTML(ex, soma)}
   </div>`;
+}
+/* convite para a Premium quando os adicionais já chegam perto do preço dela (com todos marcados, o botão fica na barra) */
+function conviteHTML(ex, soma) {
+  const todos = bumpsVisiveis(ex).every(e => ex.includes(e.id));
+  if (todos) return soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro.</p>` : '';
+  if (soma < PRICE_PREMIUM - 4.01) return '';
+  const dif = Math.round((PRICE_PREMIUM - soma) * 100) / 100;
+  const tit = dif > 0.009 ? `Por só ${brl(dif)} a mais, leve a <em>Premium</em> completa` : dif < -0.009 ? `A <em>Premium</em> completa sai ${brl(-dif)} mais barata` : `Pelo mesmo valor, leve a <em>Premium</em> completa`;
+  return `<div class="prem-convite"><p class="pc-t">${ICON.sparkle}<span>${tit}</span></p>
+    <p class="pc-d">Vitalícia, abertura de cinema, mini filme do casal, 6 fotos em slides de cinema e câmera com raios de ouro. Tudo por ${brl(PRICE_PREMIUM)}.</p>
+    <button class="pc-btn" id="conviteBtn" type="button">Quero a Premium · ${brl(PRICE_PREMIUM)}</button></div>`;
 }
 function checkoutView() {
   const L = resolveLetter(S);
@@ -2185,6 +2196,7 @@ function bindBumps(el) {
     if (c.checked) { ex.add(k); track('adicional_' + k); if (k === 'cine') ex.delete('fotos'); } else ex.delete(k);
     S.extras = EXTRAS.filter(e => !e.oculto).map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
   }));
+  const cv = $('#conviteBtn', el); if (cv) cv.addEventListener('click', () => { track('convite_premium'); querPremiumDosAdicionais(); });
 }
 function bindCheckout(el) {
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
