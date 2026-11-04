@@ -1238,11 +1238,3 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .sem-email-row{margin-top:10px;padding:11px 14px;background:transparent;font-size:14px;color:var(--ink-2)}
 .sem-email-nota{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(243,213,138,.08);border:1px solid rgba(243,213,138,.3);color:var(--ink)}
 .mail-note.sem{border-color:rgba(243,213,138,.4)}
-
-/* convite para a Premium dentro dos adicionais, quando a soma chega perto do preço dela */
-.prem-convite{margin:16px 0 2px;padding:16px 16px 14px;border-radius:16px;border:1.5px solid #F3D58A;background:linear-gradient(180deg,rgba(243,213,138,.16),rgba(243,213,138,.05));box-shadow:0 0 0 4px rgba(243,213,138,.06)}
-.prem-convite .pc-t{display:flex;align-items:flex-start;gap:8px;margin:0;font:700 15.5px/1.3 var(--f-ui);color:#FBE7A6}
-.prem-convite .pc-t em{font-style:normal;color:#F3D58A}
-.prem-convite .pc-t svg{width:18px;height:18px;flex:none;margin-top:2px}
-.prem-convite .pc-d{margin:8px 0 12px;font:400 13px/1.45 var(--f-ui);color:var(--ink)}
-.pc-btn{display:flex;align-items:center;justify-content:center;width:100%;padding:13px 16px;border:0;border-radius:999px;background:var(--gold-btn);color:#3A0B2B;font:800 14.5px/1 var(--f-ui);letter-spacing:.03em;cursor:pointer;box-shadow:0 10px 24px -12px rgba(236,180,80,.7)}
