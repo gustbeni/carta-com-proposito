@@ -92,6 +92,36 @@ export async function mp(caminho, { metodo = "GET", corpo, idem } = {}) {
   return j;
 }
 
+// ===== Plano B: PagBank (só Pix), para usar se o Mercado Pago der problema =====
+// Liga com as variáveis PAGAMENTO=pagbank e PAGBANK_TOKEN no Netlify (PAGBANK_SANDBOX=1 para testar).
+// Sem elas, tudo continua no Mercado Pago. O PagBank exige o CPF de quem paga; o CPF vai só para o PagBank
+// e não fica guardado na carta. O cartão fica escondido enquanto o plano B estiver ligado.
+export const usaReserva = () => process.env.PAGAMENTO === "pagbank" && !!process.env.PAGBANK_TOKEN;
+const PB = () => process.env.PAGBANK_SANDBOX ? "https://sandbox.api.pagseguro.com" : "https://api.pagseguro.com";
+export async function pagbank(caminho, { metodo = "GET", corpo, idem } = {}) {
+  const token = process.env.PAGBANK_TOKEN;
+  if (!token) throw new Error("Falta a variável PAGBANK_TOKEN no Netlify");
+  const headers = { Authorization: "Bearer " + token, "Content-Type": "application/json", Accept: "application/json" };
+  if (idem) headers["x-idempotency-key"] = idem;
+  const r = await fetch(PB() + caminho, { method: metodo, headers, body: corpo ? JSON.stringify(corpo) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { console.error("PagBank", r.status, JSON.stringify(j).slice(0, 500)); throw new Error("pagbank " + r.status); }
+  return j;
+}
+export function cpfValido(v) {
+  const c = String(v || "").replace(/\D/g, "");
+  if (c.length !== 11 || /^(\d)\1{10}$/.test(c)) return "";
+  const dv = n => { let s = 0; for (let i = 0; i < n; i++) s += Number(c[i]) * (n + 1 - i); const r = (s * 10) % 11; return r === 10 ? 0 : r; };
+  return dv(9) === Number(c[9]) && dv(10) === Number(c[10]) ? c : "";
+}
+// pedido do PagBank pago: alguma cobrança com status PAID e o valor certo
+async function pagoNoPagBank(id, reg, valorPedido) {
+  const o = await pagbank("/orders/" + encodeURIComponent(reg.pbOrder));
+  if (o.reference_id !== id) return null;
+  const c = (o.charges || []).find(x => x.status === "PAID" && Number((x.amount || {}).value) >= Math.round(valorPedido * 100) - 1);
+  return c ? (c.id || o.id) : null;
+}
+
 // procura no Mercado Pago um pagamento aprovado para esta carta
 // Pix: API de Orders (reg.mpOrder). Cartão: Checkout Pro (busca de pagamentos por external_reference).
 // Depois de pago, manda o e-mail com o link e o QR code (se a pessoa pediu e se ainda não foi).
@@ -99,7 +129,11 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
   if (reg.pago) { if (email) await mandarEmail(id, reg); return true; }
   const valorPedido = Number(reg.valor) || 17.99; // pedidos antigos foram criados a 17,99
   let aprovado = null;
-  if (reg.mpOrder) {
+  if (reg.pbOrder) { // pedido feito pelo plano B (PagBank)
+    try { aprovado = await pagoNoPagBank(id, reg, valorPedido); } catch (e) {}
+    if (!aprovado) return false;
+  }
+  if (!aprovado && reg.mpOrder) {
     try {
       const o = await mp("/v1/orders/" + encodeURIComponent(reg.mpOrder));
       if (o.external_reference === id && o.status === "processed" && Number(o.total_amount) >= valorPedido - 0.01) aprovado = o.id;
@@ -114,7 +148,7 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
   }
   if (!aprovado) return false;
   const tok = Math.random().toString(36).slice(2);
-  reg.pago = true; reg.pagoEm = Date.now(); reg.mpId = aprovado; reg.avisoTok = tok;
+  reg.pago = true; reg.pagoEm = Date.now(); reg[reg.pbOrder ? "pbId" : "mpId"] = aprovado; reg.avisoTok = tok;
   await loja().setJSON("c/" + id, reg);
   try { await avisarMeta(id, reg); } catch (e) { console.error("Meta CAPI", e.message); }
   try { await avisarDono(id, reg, tok); } catch (e) { console.error("Aviso de venda", e.message); }

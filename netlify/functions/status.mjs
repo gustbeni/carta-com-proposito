@@ -9,7 +9,7 @@ export default async (req) => {
   try {
     const pago = await confirmarPagamento(id, reg);
     // pedido de cartão (sem Pix) que o Mercado Pago recusou: o site oferece pagar pelo Pix
-    const recusado = !pago && !reg.mpOrder ? await cartaoRecusado(id).catch(() => false) : false;
+    const recusado = !pago && !reg.mpOrder && !reg.pbOrder ? await cartaoRecusado(id).catch(() => false) : false;
     return resposta({ pago, recusado: recusado || undefined, email: pago && reg.emailOk ? "enviado" : undefined });
   }
   catch { return resposta({ pago: false }); }

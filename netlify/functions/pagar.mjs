@@ -1,6 +1,7 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
-import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso } from "../lib/comum.mjs";
+import QRCode from "qrcode";
+import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido } from "../lib/comum.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return resposta({ erro: "metodo" }, 405);
@@ -14,7 +15,10 @@ export default async (req) => {
   const semEmail = b.semEmail === true;
   const email = semEmail ? "" : String(b.email || "").trim().slice(0, 120);
   if (!semEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return resposta({ erro: "email" }, 400);
-  const metodo = b.metodo === "cartao" ? "cartao" : "pix";
+  const reserva = usaReserva(); // plano B (PagBank): só Pix, com CPF
+  const metodo = !reserva && b.metodo === "cartao" ? "cartao" : "pix";
+  const cpf = reserva ? cpfValido(b.cpf) : "";
+  if (reserva && !cpf) return resposta({ erro: "cpf" }, 400);
 
   const id = randomBytes(9).toString("base64url");
   const chave = randomBytes(16).toString("hex");
@@ -25,6 +29,30 @@ export default async (req) => {
   const emailMP = email || "cliente." + id.toLowerCase().replace(/[^a-z0-9]/g, "") + "@cartacomproposito.com.br";
 
   try {
+    if (reserva) {
+      const nome = plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO;
+      const centavos = Math.round(PRECO * 100);
+      const vence = new Date(Date.now() + 2 * 36e5).toISOString().replace(/\.\d{3}Z$/, "Z"); // 2 horas, como no Mercado Pago
+      const base = {
+        reference_id: id,
+        customer: { name: "Cliente Carta com Proposito", email: emailMP, tax_id: cpf },
+        items: [{ reference_id: plano, name: nome, quantity: 1, unit_amount: centavos }],
+        notification_urls: site.startsWith("https://") ? [site + "/api/aviso-pagbank"] : undefined,
+      };
+      let o;
+      try { // formato novo (cobrança Pix); se o PagBank recusar, tenta o formato antigo (qr_codes)
+        o = await pagbank("/orders", { metodo: "POST", idem: id, corpo: { ...base, charges: [{ reference_id: id, description: nome, amount: { value: centavos, currency: "BRL" }, payment_method: { type: "PIX", pix: { expiration_date: vence } } }] } });
+      } catch (e) {
+        o = await pagbank("/orders", { metodo: "POST", idem: id + "q", corpo: { ...base, qr_codes: [{ amount: { value: centavos }, expiration_date: vence }] } });
+      }
+      const ch = (o.charges || [])[0] || {};
+      const copia = (ch.qr_code && ch.qr_code.text) || ((o.qr_codes || [])[0] || {}).text || "";
+      if (!copia) throw new Error("PagBank sem código Pix");
+      reg.pbOrder = o.id; reg.gateway = "pagbank";
+      await loja().setJSON("c/" + id, reg);
+      const qr = (await QRCode.toDataURL(copia, { margin: 1, width: 360 })).split(",")[1];
+      return resposta({ id, chave, pix: { qr, copia } });
+    }
     if (metodo === "pix") {
       const valor = PRECO.toFixed(2);
       const pedidoMP = {

@@ -2159,16 +2159,17 @@ function checkoutView() {
   return `<p class="eyebrow">Pagamento</p>
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
     <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
-    <div class="form"><div class="field${S.semEmail ? ' sem-email' : ''}" id="emailField"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"${S.semEmail ? ' disabled' : ''}><p class="hint em-hint">O Mercado Pago manda o comprovante para este e-mail.</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
+    <div class="form"><div class="field${S.semEmail ? ' sem-email' : ''}" id="emailField"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"${S.semEmail ? ' disabled' : ''}><p class="hint em-hint">${cfg.reserva ? 'Usamos para mandar a carta, se você pedir.' : 'O Mercado Pago manda o comprovante para este e-mail.'}</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
       <label class="check" id="mailRow"${cfg.email && !S.semEmail ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label>
       <label class="check sem-email-row"><input type="checkbox" id="fSemEmail"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
-      <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problemas, depois de efetuar o pagamento a sua carta é gerada automaticamente.</p></div></div>
+      <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problemas, depois de efetuar o pagamento a sua carta é gerada automaticamente.</p></div>
+      <div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
     <p class="group-label">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-pay="pix" aria-pressed="${S.pay === 'pix'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
-      <button class="payopt" data-pay="card" aria-pressed="${S.pay === 'card'}"><span class="radio"></span><span><b>Cartão de crédito</b><small>À vista, pelo Mercado Pago</small></span>${ICON.card}</button>
+      <button class="payopt" data-pay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>À vista, pelo Mercado Pago</small></span>${ICON.card}</button>
     </div>
-    <p class="trust">${ICON.lock}Pagamento seguro pelo Mercado Pago · 7 dias de garantia</p>
+    <p class="trust" id="trustTxt">${ICON.lock}Pagamento seguro pelo ${cfg.reserva ? 'PagBank' : 'Mercado Pago'} · 7 dias de garantia</p>
     <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div>
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }
@@ -2198,7 +2199,18 @@ function bindCheckout(el) {
     $('#semEmailNota', el).hidden = !se.checked;
     const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || se.checked;
   });
-  carregarConfig().then(() => { const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || S.semEmail; });
+  carregarConfig().then(() => {
+    const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || S.semEmail;
+    if (cfg.reserva) { // plano B: só Pix, pede o CPF
+      const cf = $('#cpfField', el), cb = el.querySelector('[data-pay="card"]'), tr = $('#trustTxt', el), eh = el.querySelector('.em-hint');
+      if (cf) cf.hidden = false; if (cb) cb.hidden = true;
+      if (tr) tr.innerHTML = ICON.lock + 'Pagamento seguro pelo PagBank · 7 dias de garantia';
+      if (eh) eh.textContent = 'Usamos para mandar a carta, se você pedir.';
+      if (S.pay === 'card') { S.pay = 'pix'; save(); el.querySelectorAll('[data-pay]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pay === 'pix')); refreshBar(); }
+    }
+  });
+  const fc = $('#fCpf', el);
+  if (fc) fc.addEventListener('input', () => { fc.value = mascaraCpf(fc.value); cpfDigitado = soDigitos(fc.value); $('#cpfErr', el).hidden = true; fc.classList.remove('bad'); });
   el.querySelectorAll('[data-pay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.pay; el.querySelectorAll('[data-pay]').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); refreshBar(); }));
 }
 /* ===== Meu acesso (/meuacesso): com o e-mail da compra, a pessoa vê todas as cartas pagas,
@@ -2427,7 +2439,16 @@ let esperando = null, ocupado = false;
 /* o servidor diz se o envio por e-mail está ligado (só perguntamos no pagamento e na carta paga) */
 const cfg = {};
 let cfgPromessa = null;
-const carregarConfig = () => cfgPromessa || (cfgPromessa = api('/config').then(j => { cfg.email = !!j.email; }).catch(() => { cfg.email = false; }));
+const carregarConfig = () => cfgPromessa || (cfgPromessa = api('/config').then(j => { cfg.email = !!j.email; cfg.reserva = !!j.reserva; }).catch(() => { cfg.email = false; }));
+/* plano B (PagBank): o CPF fica só na memória desta página, não é salvo no aparelho */
+let cpfDigitado = '';
+const soDigitos = v => String(v || '').replace(/\D/g, '');
+function cpfOk(v) {
+  const c = soDigitos(v); if (c.length !== 11 || /^(\d)\1{10}$/.test(c)) return false;
+  const dv = n => { let t = 0; for (let i = 0; i < n; i++) t += +c[i] * (n + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; };
+  return dv(9) === +c[9] && dv(10) === +c[10];
+}
+const mascaraCpf = v => soDigitos(v).slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 const editavel = () => !!(S.code && pedido && pedido.id === S.code && pedido.chave);
 async function api(caminho, corpo) {
   const r = await fetch(API + caminho, corpo ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) } : { cache: 'no-store' });
@@ -2458,6 +2479,7 @@ async function subirFotos(msg) {
 function erroTexto(e, salvar) {
   if (e.status === 413) return 'A carta ficou grande demais. Encurte a mensagem ou a oração.';
   if (e.tipo === 'upload') return 'Não foi possível guardar as fotos agora. Confira sua internet e tente de novo.';
+  if (e.dados && e.dados.erro === 'cpf') return 'Confira o CPF: o PagBank não aceitou o número.';
   if (e.dados && e.dados.erro === 'prazo') return 'O prazo de 7 dias para mudar esta carta acabou. O link abre a última versão salva.';
   return salvar ? 'Não foi possível salvar agora. Confira sua internet e tente de novo.' : 'Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo.';
 }
@@ -2465,8 +2487,11 @@ async function pay() {
   const em = $('#fEmail');
   if (!S.semEmail && !isEmail(S.email)) { $('#emailErr').hidden = false; em.classList.add('bad'); em.focus(); em.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   if (ocupado) return;
+  await carregarConfig();
+  if (cfg.reserva && !cpfOk(cpfDigitado)) { const fc = $('#fCpf'), ce = $('#cpfErr'); if (ce) ce.hidden = false; if (fc) { fc.classList.add('bad'); fc.focus(); fc.scrollIntoView({ block: 'center', behavior: 'smooth' }); } return; }
+  if (ocupado) return;
   ocupado = true; $('#nextBtn').disabled = true;
-  const metodo = S.pay === 'card' ? 'cartao' : 'pix';
+  const metodo = S.pay === 'card' && !cfg.reserva ? 'cartao' : 'pix';
   const valor = precoTotal(S.plano, S.extras);
   openSheet(`<p class="eyebrow">${metodo === 'pix' ? 'Pix' : 'Cartão de crédito'} · ${brl(valor)}</p><h2 class="h2">Preparando o pagamento</h2><div class="waiting"><span class="spin"></span><span id="payMsg">Salvando a sua carta…</span></div>`);
   const msg = t => { const m = $('#payMsg'); if (m) m.textContent = t; };
@@ -2477,7 +2502,7 @@ async function pay() {
     track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
     const querEmail = !!cfg.email && S.mailMe !== false && !S.semEmail;
-    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, carta: cartaParaServidor(fotos) });
+    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, cpf: cfg.reserva ? cpfDigitado : undefined, carta: cartaParaServidor(fotos) });
     pedido = { id: j.id, chave: j.chave, pago: false, metodo, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     openPix(j.pix || {});
