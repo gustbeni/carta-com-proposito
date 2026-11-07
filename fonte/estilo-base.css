@@ -341,6 +341,7 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,236,214,.18);border-top-color:var(--rubric);animation:spin .9s linear infinite;flex:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .pix-note{text-align:center;margin-top:12px}
+.pix-ig{padding:10px 12px;border-radius:12px;border:1px solid var(--line-2);background:var(--rubric-tint);color:var(--ink)}
 .demo{margin-top:16px;padding:14px 16px;border-radius:14px;border:1px dashed var(--line-2);font-size:13px;line-height:1.45;color:var(--ink-3);text-align:center}
 .demo .link{display:inline-flex;margin-top:4px}
 .edit-list{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--line)}

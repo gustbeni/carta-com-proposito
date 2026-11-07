@@ -2505,23 +2505,24 @@ async function pay() {
     const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, cpf: cfg.reserva ? cpfDigitado : undefined, carta: cartaParaServidor(fotos) });
     pedido = { id: j.id, chave: j.chave, pago: false, metodo, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
-    openPix(j.pix || {});
+    pedido.pix = { qr: (j.pix || {}).qr || '', copia: (j.pix || {}).copia || '', ate: Date.now() + PIX_MS }; store.set(PED, pedido);
+    openPix(j.pix || {}, pedido.pix.ate);
     esperarPagamento(0);
   } catch (e) { closeSheet(); toast(erroTexto(e)); }
   ocupado = false; refreshBar();
 }
 const PIX_MS = 2 * 36e5;
-function openPix(pix) {
+function openPix(pix, ate) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
   openSheet(`<p class="eyebrow">Pix · ${brl(precoTotal(S.plano, S.extras))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
     <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
     <button class="btn btn-ghost w" id="copyPix">${ICON.copy}Copiar código Pix</button>
     <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta é liberada aqui mesmo, na hora.</li></ol>
     <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por <b id="pixTimer">2:00:00</b></div>
-    <p class="hint pix-note">Pode sair do site para pagar. Quando você voltar, a carta é liberada aqui.</p>`, () => clearInterval(timer));
+    <p class="hint pix-note">Pode sair do site para pagar. Quando você voltar, a carta é liberada aqui.</p>${/Instagram|FBAN|FBAV|FB_IAB/i.test(navigator.userAgent) ? `<p class="hint pix-note pix-ig">Se, ao voltar do banco, o Instagram fechar esta página, é só tocar de novo no anúncio ou no link do perfil @carta.comproposito: este Pix e a sua carta abrem sozinhos aqui.${pedido && pedido.querEmail ? ' A carta também chega no seu e-mail.' : ''}</p>` : ''}`, () => clearInterval(timer));
   $('#copyPix').addEventListener('click', () => copyText(copia, 'Código Pix copiado'));
   /* o Pix vale por 2 horas (PT2H no pagar.mjs); depois disso o Mercado Pago cancela e é preciso gerar outro */
-  const end = Date.now() + PIX_MS;
+  const end = ate || Date.now() + PIX_MS;
   const timer = setInterval(() => {
     const left = Math.max(0, end - Date.now()), t = $('#pixTimer'); if (!t) return clearInterval(timer);
     t.textContent = `${Math.floor(left / 36e5)}:${pad(Math.floor(left / 6e4) % 60)}:${pad(Math.floor(left / 1e3) % 60)}`;
@@ -2800,7 +2801,8 @@ function iniciarCriador() {
   if (q && !(pedido && pedido.id === q)) { const ant = store.get('cd_pedido'); if (ant && ant.id === q && ant.chave) { pedido = { id: ant.id, chave: ant.chave, pago: false }; store.set(PED, pedido); } } // compra começada no site antigo
   if (pedido && !pedido.pago && q === pedido.id && volta === 'rejected') { pedido.recusaVista = true; store.set(PED, pedido); cartaoRecusadoSheet(); esperarPagamento(0); }
   else if (pedido && !pedido.pago) {
-    if (q === pedido.id) openSheet(`<p class="eyebrow">Cartão de crédito</p><h2 class="h2">Conferindo o seu pagamento</h2><div class="waiting"><span class="spin"></span>Aguardando a confirmação do Mercado Pago</div><p class="hint pix-note">Se o pagamento não foi aprovado, feche este aviso e tente de novo.</p>`);
+    if (!q && pedido.metodo === 'pix' && pedido.pix && pedido.pix.copia && pedido.pix.ate > Date.now() + 30e3) { setTimeout(() => openPix(pedido.pix, pedido.pix.ate), 400); }
+    else if (q === pedido.id) openSheet(`<p class="eyebrow">Cartão de crédito</p><h2 class="h2">Conferindo o seu pagamento</h2><div class="waiting"><span class="spin"></span>Aguardando a confirmação do Mercado Pago</div><p class="hint pix-note">Se o pagamento não foi aprovado, feche este aviso e tente de novo.</p>`);
     esperarPagamento(0);
   }
 }
