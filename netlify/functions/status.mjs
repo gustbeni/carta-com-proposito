@@ -1,7 +1,9 @@
 // O site pergunta aqui, a cada poucos segundos, se o pagamento já caiu
-import { loja, resposta, idValido, confirmarPagamento, cartaoRecusado } from "../lib/comum.mjs";
+import { loja, resposta, idValido, confirmarPagamento, cartaoRecusado, verPendentesZap } from "../lib/comum.mjs";
 
-export default async (req) => {
+export default async (req, context) => {
+  const verZap = verPendentesZap().catch(() => {});
+  if (context && context.waitUntil) context.waitUntil(verZap);
   const id = new URL(req.url).searchParams.get("id");
   if (!idValido(id)) return resposta({ erro: "id" }, 400);
   const reg = await loja().get("c/" + id, { type: "json" });

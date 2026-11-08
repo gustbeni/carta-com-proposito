@@ -182,6 +182,55 @@ async function avisarDono(id, reg, tok) {
   }), 5000);
 }
 
+// ===== Aviso de Pix não pago pelo WhatsApp (o dono manda na mão) =====
+// No pagamento, a pessoa pode deixar o WhatsApp (opcional). Se o Pix ficar 1 hora sem pagar,
+// o dono recebe no ntfy um botão "Mandar WhatsApp", que abre /api/zap (com uma chave do pedido)
+// e de lá o WhatsApp da pessoa com a mensagem pronta. O número nunca vai para o ntfy.
+// Não usa função agendada: a verificação pega carona nas chamadas do site (pagar e status), no máximo a cada 5 minutos.
+export function zapValido(v) {
+  let d = String(v || "").replace(/\D/g, "").replace(/^0+/, "");
+  if (d.length === 10 || d.length === 11) d = "55" + d;
+  return /^55\d{10,11}$/.test(d) ? d : "";
+}
+const ZAP_ESPERA = 60 * 60e3, ZAP_LIMITE = 24 * 3600e3, ZAP_INTERVALO = 5 * 60e3;
+export async function verPendentesZap() {
+  const topico = (process.env.NTFY_TOPICO || "").trim();
+  if (!topico) return;
+  const st = pendentes();
+  const ult = await st.get("ultimo", { type: "json" }).catch(() => null);
+  if (ult && Date.now() - (ult.t || 0) < ZAP_INTERVALO) return;
+  await st.setJSON("ultimo", { t: Date.now() });
+  const { blobs } = await st.list({ prefix: "p/" });
+  for (const b of blobs) {
+    const id = b.key.slice(2), fora = () => st.delete(b.key).catch(() => {});
+    try {
+      const reg = await loja().get("c/" + id, { type: "json" });
+      if (!reg || reg.pago || !reg.whats || reg.zapEm) { await fora(); continue; }
+      const idade = Date.now() - (reg.criado || 0);
+      if (idade < ZAP_ESPERA) continue;
+      if (idade > ZAP_LIMITE) { await fora(); continue; }
+      if (await confirmarPagamento(id, reg).catch(() => false)) { await fora(); continue; }
+      reg.zapEm = Date.now(); // marca antes, para nunca avisar duas vezes
+      await loja().setJSON("c/" + id, reg);
+      await fora();
+      await avisarZap(id, reg, topico);
+    } catch (e) { console.error("zap", id, e.message); }
+  }
+}
+async function avisarZap(id, reg, topico) {
+  const premium = planoDe(reg.plano) === "premium";
+  const valor = (Number(reg.valor) || PRECO).toFixed(2).replace(".", ",");
+  const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+  const link = site + "/api/zap?id=" + encodeURIComponent(id) + "&k=" + encodeURIComponent(reg.zapTok || "");
+  const hora = new Date(reg.criado || Date.now()).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
+  const q = new URLSearchParams({ title: "Pix não pago ⏳", tags: "hourglass", click: link });
+  await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
+    method: "POST",
+    headers: { Actions: "view, Mandar WhatsApp, " + link },
+    body: `Carta ${premium ? "Premium" : "Padrão"} · R$ ${valor} · Pix gerado às ${hora} (Brasília) e não pago.\nToque em "Mandar WhatsApp" para lembrar a pessoa.`,
+  }), 5000);
+}
+
 // E-mail com o link e o QR code para quem comprou. Só manda uma vez (e desiste depois de 3 erros);
 // "forcar" é o botão "Receber no meu e-mail" da tela da carta paga.
 function prazo(p, ms) {

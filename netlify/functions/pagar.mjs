@@ -1,9 +1,12 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
 import QRCode from "qrcode";
-import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido } from "../lib/comum.mjs";
+import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido, zapValido, verPendentesZap } from "../lib/comum.mjs";
 
-export default async (req) => {
+export default async (req, context) => {
+  // aproveita a chamada para ver se algum Pix ficou 1 hora sem pagar (aviso de WhatsApp para o dono)
+  const verZap = verPendentesZap().catch(e => console.error("zap", e.message));
+  if (context && context.waitUntil) context.waitUntil(verZap);
   if (req.method !== "POST") return resposta({ erro: "metodo" }, 405);
   let b; try { b = await req.json(); } catch { return resposta({ erro: "dados" }, 400); }
   const plano = planoDe(b.plano), extras = extrasDe(b.extras, plano), PRECO = valorDo(plano, extras);
@@ -23,7 +26,8 @@ export default async (req) => {
   const id = randomBytes(9).toString("base64url");
   const chave = randomBytes(16).toString("hex");
   const site = enderecoSite(req);
-  const reg = { carta, chave, email, semEmail, querEmail: !semEmail && b.enviarEmail === true, plano, extras, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
+  const whats = zapValido(b.whats);
+  const reg = { carta, chave, email, semEmail, whats: whats || undefined, zapTok: whats ? randomBytes(12).toString("hex") : undefined, querEmail: !semEmail && b.enviarEmail === true, plano, extras, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
   await loja().setJSON("c/" + id, reg);
   if (email) await guardarNoAcesso(email, id).catch(e => console.error("acesso", e.message)); // para aparecer em /meuacesso
   const emailMP = email || "cliente." + id.toLowerCase().replace(/[^a-z0-9]/g, "") + "@cartacomproposito.com.br";
@@ -50,6 +54,7 @@ export default async (req) => {
       if (!copia) throw new Error("PagBank sem código Pix");
       reg.pbOrder = o.id; reg.gateway = "pagbank";
       await loja().setJSON("c/" + id, reg);
+      if (whats) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message));
       const qr = (await QRCode.toDataURL(copia, { margin: 1, width: 360 })).split(",")[1];
       return resposta({ id, chave, pix: { qr, copia } });
     }
@@ -70,8 +75,8 @@ export default async (req) => {
       }
       reg.mpOrder = o.id;
       await loja().setJSON("c/" + id, reg);
-      // lembrete automático (desligado, por decisão do dono): para ligar, volte netlify/desligado/lembrete.mjs para netlify/functions e descomente a linha abaixo
-      // if (email) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message));
+      // aviso de WhatsApp para o dono (verPendentesZap). O lembrete por e-mail (netlify/desligado/lembrete.mjs) continua desligado.
+      if (whats) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message));
       const pm = (((o.transactions || {}).payments || [])[0] || {}).payment_method || {};
       return resposta({ id, chave, pix: { qr: pm.qr_code_base64, copia: pm.qr_code } });
     }

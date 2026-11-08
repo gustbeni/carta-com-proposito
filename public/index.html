@@ -3404,6 +3404,7 @@ function checkoutView() {
       <label class="check" id="mailRow"${cfg.email && !S.semEmail ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label>
       <label class="check sem-email-row"><input type="checkbox" id="fSemEmail"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
       <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problemas, depois de efetuar o pagamento a sua carta é gerada automaticamente.</p></div>
+      <div class="field"><label for="fZap">Seu WhatsApp <span class="opt">(opcional)</span></label><input class="input" id="fZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap))}"><p class="hint">Só para te ajudar se o pagamento não for concluído.</p></div>
       <div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
     <p class="group-label">Forma de pagamento</p>
     <div class="pay">
@@ -3432,6 +3433,7 @@ function bindCheckout(el) {
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
   em.addEventListener('input', () => { S.email = em.value.trim(); err.hidden = true; em.classList.remove('bad'); save(); });
   mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
+  const fz = $('#fZap', el); if (fz) fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
   const se = $('#fSemEmail', el);
   se.addEventListener('change', () => {
     S.semEmail = se.checked; save(); track(se.checked ? 'sem_email' : 'com_email');
@@ -3689,6 +3691,7 @@ function cpfOk(v) {
   const dv = n => { let t = 0; for (let i = 0; i < n; i++) t += +c[i] * (n + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; };
   return dv(9) === +c[9] && dv(10) === +c[10];
 }
+const mascaraZap = v => { const d = String(v || '').replace(/\D/g, '').slice(0, 11); return d.length < 3 ? d : d.length < 7 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`; };
 const mascaraCpf = v => soDigitos(v).slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 const editavel = () => !!(S.code && pedido && pedido.id === S.code && pedido.chave);
 async function api(caminho, corpo) {
@@ -3743,7 +3746,7 @@ async function pay() {
     track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
     const querEmail = !!cfg.email && S.mailMe !== false && !S.semEmail;
-    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, cpf: cfg.reserva ? cpfDigitado : undefined, carta: cartaParaServidor(fotos) });
+    const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, whats: metodo === 'pix' && S.zap ? S.zap : undefined, cpf: cfg.reserva ? cpfDigitado : undefined, carta: cartaParaServidor(fotos) });
     pedido = { id: j.id, chave: j.chave, pago: false, metodo, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     pedido.pix = { qr: (j.pix || {}).qr || '', copia: (j.pix || {}).copia || '', ate: Date.now() + PIX_MS }; store.set(PED, pedido);
