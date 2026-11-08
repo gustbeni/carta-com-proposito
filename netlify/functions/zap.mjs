@@ -12,7 +12,7 @@ export default async (req) => {
   if (reg.pago) return pagina("Boa notícia: esta carta já foi paga. Não precisa mandar mensagem. 💌");
   const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
   const para = String((reg.carta || {}).p || "").trim().slice(0, 40);
-  const msg = `Oi! Tudo bem? Aqui é da Carta com Propósito 💌\n\nVi que você montou uma carta${para ? " para " + para : ""} no nosso site, mas o Pix não foi concluído. Ela continua salva no seu celular: é só abrir o site de novo e tocar em pagar. Se o código tiver vencido, um novo é gerado na hora 👉 ${site}\n\nSe teve alguma dificuldade, me chama aqui que eu te ajudo!`;
+  const msg = `Oi! Tudo bem? Eu sou Gustavo Benites, dono do site Carta com Propósito 💌\n\nVi que você montou uma carta${para ? " para " + para : ""} no nosso site, mas o Pix não foi concluído. Ela continua salva no seu celular: é só abrir o site de novo e tocar em pagar. Se o código tiver vencido, um novo é gerado na hora 👉 ${site}\n\nSe teve alguma dificuldade, me chama aqui que eu te ajudo!`;
   return new Response(null, { status: 302, headers: { location: "https://wa.me/" + reg.whats + "?text=" + encodeURIComponent(msg), "cache-control": "no-store" } });
 };
 export const config = { path: "/api/zap" };

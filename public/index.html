@@ -4050,6 +4050,8 @@ function iniciarCriador() {
     esperarPagamento(0);
   }
 }
+/* confere os Pix pendentes (aviso de WhatsApp para o dono), no máximo a cada 5 minutos por aparelho */
+try { const t = +(localStorage.getItem('cp2:ping') || 0); if (Date.now() - t > 5 * 60e3) { localStorage.setItem('cp2:ping', String(Date.now())); setTimeout(() => fetch('/api/ping', { keepalive: true }).catch(() => {}), 3000); } } catch (e) {}
 const rotaCarta = location.pathname.match(/\/c\/([A-Za-z0-9_-]{8,40})\/?$/);
 if (rotaCarta) abrirCartaRecebida(rotaCarta[1]); else iniciarCriador();
 </script>
