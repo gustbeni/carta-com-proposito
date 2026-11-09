@@ -2511,7 +2511,7 @@ async function pay() {
     pedido.pix = { qr: (j.pix || {}).qr || '', copia: (j.pix || {}).copia || '', ate: Date.now() + PIX_MS }; store.set(PED, pedido);
     openPix(j.pix || {}, pedido.pix.ate);
     esperarPagamento(0);
-  } catch (e) { closeSheet(); toast(erroTexto(e)); }
+  } catch (e) { closeSheet(); if (e.dados && e.dados.erro === 'pix_recusado') pixRecusadoSheet(); else toast(erroTexto(e)); }
   ocupado = false; refreshBar();
 }
 const PIX_MS = 2 * 36e5;
@@ -2533,6 +2533,19 @@ function openPix(pix, ate) {
   }, 1000);
 }
 /* o Mercado Pago recusou o cartão (antifraude, limite etc.): oferece o Pix, que é aprovado na hora */
+/* o Mercado Pago (antifraude) não gerou o Pix: avisa e oferece tentar de novo ou pagar com cartão */
+function pixRecusadoSheet() {
+  track('pix_recusado');
+  const valor = brl(precoTotal(S.plano, S.extras));
+  openSheet(`<p class="eyebrow">Pix</p><h2 class="h2">Não conseguimos gerar o seu Pix</h2>
+    <p class="sub">O Mercado Pago não liberou o Pix desta vez. Isso acontece por segurança e nada foi cobrado. Confira se o seu e-mail está certinho e tente de novo${cfg.reserva ? '' : ', ou pague com <b>cartão</b>'}.</p>
+    <button class="btn btn-primary w" id="pixDeNovo" style="margin-top:20px">${ICON.lock}Tentar de novo com Pix</button>
+    ${cfg.reserva ? '' : `<button class="btn btn-ghost w" id="pixCartao" style="margin-top:10px">Pagar ${valor} com cartão</button>`}`);
+  const ir = metodo => { closeSheet(); S.pay = metodo; save(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => pay(), 250); };
+  const bp = $('#pixDeNovo'), bc = $('#pixCartao');
+  if (bp) bp.addEventListener('click', () => { closeSheet(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } const f = $('#fEmail'); if (f && !S.semEmail) { f.focus(); toast('Confira o e-mail e toque em pagar de novo.'); } else setTimeout(() => pay(), 250); });
+  if (bc) bc.addEventListener('click', () => ir('card'));
+}
 function cartaoRecusadoSheet() {
   clearTimeout(esperando); esperando = null; track('cartao_recusado');
   const valor = brl(precoTotal(S.plano, S.extras));

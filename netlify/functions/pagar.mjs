@@ -67,13 +67,21 @@ export default async (req, context) => {
         items: [{ title: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO, unit_price: valor, quantity: 1, description: "Carta on-line com QR code" }],
         transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT2H" }] },
       };
-      let o;
-      try { o = await mp("/v1/orders", { metodo: "POST", idem: id, corpo: pedidoMP }); }
-      catch (e) { // se o Mercado Pago recusar o nome do produto, cria sem ele para não perder a venda
-        delete pedidoMP.items; delete pedidoMP.description;
-        o = await mp("/v1/orders", { metodo: "POST", idem: id + "b", corpo: pedidoMP });
+      // O antifraude do Mercado Pago às vezes recusa o Pix (status "failed", sem QR code).
+      // Tentativas: normal; sem o nome do produto; e com o e-mail genérico da loja (como no "Não tenho e-mail").
+      const qrDe = o => ((((o || {}).transactions || {}).payments || [])[0] || {}).payment_method || {};
+      const tentar = async (corpo, idem) => { try { return await mp("/v1/orders", { metodo: "POST", idem, corpo }); } catch (e) { console.error("pix", idem, e.message); return null; } };
+      let o = await tentar(pedidoMP, id);
+      if (!qrDe(o).qr_code) { delete pedidoMP.items; delete pedidoMP.description; o = await tentar(pedidoMP, id + "b") || o; }
+      const generico = "cliente." + id.toLowerCase().replace(/[^a-z0-9]/g, "") + "@cartacomproposito.com.br";
+      if (!qrDe(o).qr_code && emailMP !== generico) { o = await tentar({ ...pedidoMP, payer: { email: generico } }, id + "c") || o; }
+      if (o && o.id) reg.mpOrder = o.id;
+      if (!qrDe(o).qr_code) {
+        reg.pixRecusado = Date.now();
+        await loja().setJSON("c/" + id, reg);
+        console.error("pix recusado", id, o && o.status);
+        return resposta({ erro: "pix_recusado" }, 402);
       }
-      reg.mpOrder = o.id;
       await loja().setJSON("c/" + id, reg);
       // aviso de WhatsApp para o dono (verPendentesZap). O lembrete por e-mail (netlify/desligado/lembrete.mjs) continua desligado.
       if (whats) await pendentes().setJSON("p/" + id, { criado: reg.criado }).catch(e => console.error("pendentes", e.message));
