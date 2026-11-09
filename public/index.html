@@ -3409,7 +3409,7 @@ function checkoutView() {
     <p class="group-label">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-pay="pix" aria-pressed="${S.pay === 'pix'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
-      <button class="payopt" data-pay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>À vista, pelo Mercado Pago</small></span>${ICON.card}</button>
+      <button class="payopt" data-pay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
     </div>
     <p class="trust" id="trustTxt">${ICON.lock}Pagamento seguro pelo ${cfg.reserva ? 'PagBank' : 'Mercado Pago'} · 7 dias de garantia</p>
     <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div>
