@@ -165,3 +165,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 10/11, 15h07: publicado versículos escolhidos bem maiores (`.l-verse p` até 46px; às 15h40 reduzido para até 38px e letra fina, peso 400, a pedido do dono) e pergaminho com bem mais espaço em cima e embaixo do texto (`.scroll.royal .parch-in` padding 124px 38px 112px).
 - 10/11, 15h15: Padrão passou de 3 meses para 1 mês nas compras novas (textos do site, e-mail e privacidade atualizados; quem comprou antes segue com 3 meses) e "A carta funciona para sempre" em dourado no adicional da vitalícia. Publicado às 15h16.
 - 10/11, 15h26: publicado começo do site com o envelope no centro, sem "Uma carta de amor com a Palavra de Deus" e sem "Leva uns 3 minutos".
+- 10/11, 15h41: publicado versículos menores (até 38px) e com letra fina (peso 400).
