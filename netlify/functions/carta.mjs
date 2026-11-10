@@ -10,7 +10,7 @@ export default async (req) => {
   if (!pago) { try { pago = await confirmarPagamento(id, reg); } catch {} }
   if (!pago) return resposta({ erro: "nao-paga" }, 404);
   const c = reg.carta || {};
-  // carta Padrão: fica no ar por 3 meses depois do pagamento
+  // carta Padrão: fica no ar por 1 mês depois do pagamento (3 meses nos pedidos antes de 10/11)
   if (expirou(reg)) return resposta({ expirada: true, p: c.p, d: c.d });
   const abre = typeof c.ab === "string" ? Date.parse(c.ab) : NaN;
   if (abre && abre > Date.now()) {

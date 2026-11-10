@@ -1523,7 +1523,7 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
    A Premium já vem com todos. */
 const EXTRAS = [
   { id: 'album', preco: 3.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
-  { id: 'vit', preco: 2.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
+  { id: 'vit', preco: 2.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 1 mês).' },
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
   { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
@@ -1753,8 +1753,8 @@ const FAQ = [
   ['Precisa baixar alguma coisa?', 'Não. A carta abre direto no navegador do celular, sem aplicativo e sem cadastro.'],
   ['Posso ver antes de pagar?', 'Pode. Você monta a carta inteira e vê a prévia exatamente como a pessoa vai receber. Só paga se gostar.'],
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
-  ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
-  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
+  ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 1 mês depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
+  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 1 mês.'],
   ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99) e álbum de ouro (+ R$ 3,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
@@ -3289,7 +3289,7 @@ const VIEWS = {
         ${item('Mais 3 fotos, num álbum de ouro', 'As 6 fotos aparecem grandes num álbum de ouro que abre e vira as páginas com luz e faíscas.')}
         ${item('Mini filme do casal', 'Mais 7 fotos viram um filminho com transições, frases românticas, música e uma tela final especial.')}
         ${item('Câmera com raios de ouro', 'A última foto se revela com mais brilho.')}
-        ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 3 meses.')}
+        ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 1 mês.')}
       </ul>
       <button class="prem-ver prem-ver-dest" id="verPremium">${ICON.eye}VER COMO FICARIA NA VERSÃO PREMIUM</button>
       <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão · ${brl(PRICE)}</button></div>`;
@@ -3537,7 +3537,7 @@ function readyView() {
     <h1 class="h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> ficou linda</h1>
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
-    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 3 meses'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
+    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 1 mês'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
     ${pago || prem ? '' : `<div class="adic-res"><span><b>Adicionais</b><small>${extrasValidos(S.plano, S.extras).length ? EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t).join(' · ') : 'Nenhum'}</small></span><button class="link" id="mudarAdic">${extrasValidos(S.plano, S.extras).length ? 'Mudar' : 'Adicionar'}</button></div>`}
     ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
@@ -3679,7 +3679,7 @@ function acessoView() {
 }
 function cartaAcessoHTML(c, ehNovo) {
   const L = c.L, url = cartaUrl(c.id), link = url.replace(/^https?:\/\//, '');
-  const meta = c.expirada ? `<p class="ace-meta fim">Carta Padrão · o prazo de 3 meses acabou em ${esc(dataCurta(c.expira))}</p>`
+  const meta = c.expirada ? `<p class="ace-meta fim">Carta Padrão · o prazo acabou em ${esc(dataCurta(c.expira))}</p>`
     : c.plano === 'premium' ? `<p class="ace-meta">✨ Premium · vitalícia, o link funciona para sempre</p>`
     : c.plano === 'padrao' && !c.expira ? `<p class="ace-meta">Padrão · vitalícia, o link funciona para sempre</p>`
     : c.plano === 'padrao' ? `<p class="ace-meta">Padrão · fica no ar até ${esc(dataCurta(c.expira))}</p>` : '';
@@ -4173,7 +4173,7 @@ async function abrirCartaRecebida(id) {
   }
   if (j && j.bloqueada) return telaEspera(j);
   if (j && j.expirada) {
-    v.innerHTML = `<div class="msg-page"><span class="seal"><span>${ICON.heartFill}</span></span><h1 class="h1">${j.p ? 'Uma carta para ' + esc(String(j.p).slice(0, 40)) : 'Esta carta'}</h1><p class="sub">Esta carta foi feita na versão Padrão, que fica no ar por 3 meses, e esse prazo acabou.</p><a class="btn btn-primary" href="/">Fazer uma carta</a></div>`;
+    v.innerHTML = `<div class="msg-page"><span class="seal"><span>${ICON.heartFill}</span></span><h1 class="h1">${j.p ? 'Uma carta para ' + esc(String(j.p).slice(0, 40)) : 'Esta carta'}</h1><p class="sub">Esta carta foi feita na versão Padrão, que fica no ar por um tempo limitado, e esse prazo acabou.</p><a class="btn btn-primary" href="/">Fazer uma carta</a></div>`;
     return;
   }
   if (!j || !j.carta) {

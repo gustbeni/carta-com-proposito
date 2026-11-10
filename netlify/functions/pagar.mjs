@@ -1,7 +1,7 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
 import QRCode from "qrcode";
-import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido, zapValido, verPendentesZap } from "../lib/comum.mjs";
+import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido, zapValido, verPendentesZap, DIAS_PADRAO } from "../lib/comum.mjs";
 
 export default async (req, context) => {
   // aproveita a chamada para ver se algum Pix ficou 1 hora sem pagar (aviso de WhatsApp para o dono)
@@ -27,7 +27,7 @@ export default async (req, context) => {
   const chave = randomBytes(16).toString("hex");
   const site = enderecoSite(req);
   const whats = zapValido(b.whats);
-  const reg = { carta, chave, email, semEmail, whats: whats || undefined, zapTok: whats ? randomBytes(12).toString("hex") : undefined, querEmail: !semEmail && b.enviarEmail === true, plano, extras, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
+  const reg = { carta, chave, email, semEmail, whats: whats || undefined, zapTok: whats ? randomBytes(12).toString("hex") : undefined, querEmail: !semEmail && b.enviarEmail === true, plano, extras, diasPadrao: DIAS_PADRAO, pago: false, criado: Date.now(), nav: dadosNavegador(req), valor: PRECO };
   await loja().setJSON("c/" + id, reg);
   if (email) await guardarNoAcesso(email, id).catch(e => console.error("acesso", e.message)); // para aparecer em /meuacesso
   const emailMP = email || "cliente." + id.toLowerCase().replace(/[^a-z0-9]/g, "") + "@cartacomproposito.com.br";

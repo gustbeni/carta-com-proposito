@@ -5,7 +5,8 @@ import { emailLigado, enviarCartaPorEmail } from "./correio.mjs";
 
 export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade (carta Padrão)
 export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // carta Premium
-export const DIAS_PADRAO = 90; // a carta Padrão fica no ar por 3 meses depois do pagamento; a Premium é vitalícia
+export const DIAS_PADRAO = 30; // a carta Padrão fica no ar por 1 mês depois do pagamento (pedidos desde 10/11; os anteriores guardam 90 dias); a Premium é vitalícia
+export const diasDe = reg => (reg && reg.diasPadrao) || 90; // pedido sem diasPadrao é de antes de 10/11: 3 meses, como foi vendido
 export const planoDe = p => p === "premium" ? "premium" : "padrao";
 // adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
 // "grandes" (fotos maiores) não é mais oferecido no site, mas continua valendo para os pedidos antigos.
@@ -26,11 +27,11 @@ export function cartaEntregue(reg, carta = reg.carta) {
   const ex = extrasDe(reg.extras, reg.plano);
   return ex.length ? { ...carta, ex } : carta;
 }
-// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 3 meses depois do pagamento,
+// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 1 mês (ou 3, nos pedidos antigos) depois do pagamento,
 // a não ser que tenha comprado o adicional "carta vitalícia"
 export function expirou(reg) {
   if (!reg || reg.plano !== "padrao" || temRecurso(reg, "vit")) return false;
-  return Date.now() > (reg.pagoEm || reg.criado || 0) + DIAS_PADRAO * 864e5;
+  return Date.now() > (reg.pagoEm || reg.criado || 0) + diasDe(reg) * 864e5;
 }
 export const DESCRICAO = "Carta com Propósito";
 export const DIAS_PARA_EDITAR = 7;

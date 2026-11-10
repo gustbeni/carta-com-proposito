@@ -1,5 +1,5 @@
 // Página /meuacesso: a pessoa digita o e-mail da compra e vê as cartas pagas (link, QR code e edição por 7 dias)
-import { loja, acessos, resposta, chaveEmail, sha, confirmarPagamento, expirou, temRecurso, cartaEntregue, dadosNavegador, DIAS_PADRAO, DIAS_PARA_EDITAR } from "../lib/comum.mjs";
+import { loja, acessos, resposta, chaveEmail, sha, confirmarPagamento, expirou, temRecurso, cartaEntregue, dadosNavegador, diasDe, DIAS_PARA_EDITAR } from "../lib/comum.mjs";
 
 const LIMITE_POR_HORA = 40; // consultas por aparelho (IP) por hora
 
@@ -22,7 +22,7 @@ export default async (req) => {
     const pagoEm = reg.pagoEm || reg.criado || 0;
     cartas.push({
       id, chave: reg.chave, plano: reg.plano || null, extras: reg.plano === "padrao" && Array.isArray(reg.extras) ? reg.extras : [], pagoEm,
-      expira: reg.plano === "padrao" && !temRecurso(reg, "vit") ? pagoEm + DIAS_PADRAO * 864e5 : null, expirada: expirou(reg),
+      expira: reg.plano === "padrao" && !temRecurso(reg, "vit") ? pagoEm + diasDe(reg) * 864e5 : null, expirada: expirou(reg),
       editarAte: pagoEm + DIAS_PARA_EDITAR * 864e5, emailOk: !!reg.emailOk,
       carta: cartaEntregue(reg),
     });
