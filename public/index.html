@@ -3558,7 +3558,6 @@ function checkoutView() {
     <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
     <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
     <div class="form"><div class="field${S.semEmail ? ' sem-email' : ''}" id="emailField"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"${S.semEmail ? ' disabled' : ''}><p class="hint em-hint">${cfg.reserva ? 'Usamos para mandar a carta, se você pedir.' : 'O Mercado Pago manda o comprovante para este e-mail.'}</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
-      <label class="check" id="mailRow"${cfg.email && !S.semEmail ? '' : ' hidden'}><input type="checkbox" id="fMailMe"${S.mailMe !== false ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Quero receber a carta (link e QR code) neste e-mail</span></label>
       <label class="check sem-email-row"><input type="checkbox" id="fSemEmail"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
       <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problemas, depois de efetuar o pagamento a sua carta é gerada automaticamente.</p></div>
       <div class="field"><label for="fZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="fZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>
@@ -3590,7 +3589,7 @@ function bindBumps(el) {
 function bindCheckout(el) {
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
   em.addEventListener('input', () => { S.email = em.value.trim(); err.hidden = true; em.classList.remove('bad'); save(); });
-  mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
+  if (mm) mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
   const fz = $('#fZap', el); if (fz) fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
   const se = $('#fSemEmail', el);
   se.addEventListener('change', () => {
@@ -3904,7 +3903,7 @@ async function pay() {
     if (!S.semEmail) identificarPixel(S.email);
     track('InitiateCheckout', { currency: 'BRL', value: valor });
     await carregarConfig();
-    const querEmail = !!cfg.email && S.mailMe !== false && !S.semEmail;
+    const querEmail = !!cfg.email && !S.semEmail; /* a carta vai sempre para o e-mail da compra (a caixinha saiu em 10/11) */
     const j = await api('/pagar', { metodo, plano: S.plano, extras: extrasValidos(S.plano, S.extras), email: S.semEmail ? '' : S.email.trim(), semEmail: !!S.semEmail, enviarEmail: querEmail, whats: metodo === 'pix' && S.zap ? S.zap : undefined, cpf: cfg.reserva ? cpfDigitado : undefined, carta: cartaParaServidor(fotos) });
     pedido = { id: j.id, chave: j.chave, pago: false, metodo, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
