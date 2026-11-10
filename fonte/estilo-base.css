@@ -1360,3 +1360,4 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ab-previa .cine-slides{margin:0}
 @media (prefers-reduced-motion:reduce){.bump-novo{animation:none}}
 .bump-ouro{color:#F3D58A;font-weight:600}
+.cap-cont{display:block;min-height:0;margin-top:3px;font:500 11px/1.2 var(--f-ui);color:var(--gold,#E2B04A);text-align:center}.cap-cont:empty{display:none}

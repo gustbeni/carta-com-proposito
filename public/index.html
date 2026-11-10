@@ -1372,6 +1372,7 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ab-previa .cine-slides{margin:0}
 @media (prefers-reduced-motion:reduce){.bump-novo{animation:none}}
 .bump-ouro{color:#F3D58A;font-weight:600}
+.cap-cont{display:block;min-height:0;margin-top:3px;font:500 11px/1.2 var(--f-ui);color:var(--gold,#E2B04A);text-align:center}.cap-cont:empty{display:none}
 
 </style></head><body>
 <div class="app" id="app">
@@ -3373,7 +3374,7 @@ function photoSlot(i) {
   const tag = i === 3 ? `<span class="ph-tag">${ICON.sparkle}Foto final</span>` : '';
   const pl = i < 7 || i === 14; // 14 = a 4ª polaroide da abertura de cinema
   const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : pl ? `Polaroide ${i < 3 ? i + 1 : i === 14 ? 7 : i}<small>toque para escolher</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
-  const cap = pl ? `<input class="cap" data-cap="${i}" maxlength="40" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}">` : '';
+  const cap = pl ? `<input class="cap" data-cap="${i}" maxlength="70" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}"><small class="cap-cont" data-cc="${i}" aria-live="polite"></small>` : '';
   if (S.photos[i]) return `<figure class="ph"><img src="${S.photos[i]}" alt="Foto ${i + 1}">${tag}${cap}<button class="x" data-rm="${i}" aria-label="Remover foto ${i + 1}">${ICON.x}</button></figure>`;
   return `<button class="ph" data-add="${i}"><span class="ph-drop">${ICON.plus}${nome}</span></button>`;
 }
@@ -3425,7 +3426,7 @@ const BIND = {
     const file = $('#fileIn');
     el.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => abrirGaleria(+b.dataset.add)));
     el.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.rm; S.photos[i] = null; S.captions[i] = ''; savePhoto(i); save(); rerender(); }));
-    el.querySelectorAll('[data-cap]').forEach(inp => inp.addEventListener('input', () => { S.captions[+inp.dataset.cap] = inp.value; changed(); }));
+    el.querySelectorAll('[data-cap]').forEach(inp => inp.addEventListener('input', () => { S.captions[+inp.dataset.cap] = inp.value; const cc = el.querySelector(`[data-cc="${inp.dataset.cap}"]`); if (cc) cc.textContent = inp.value.length >= 55 ? `${inp.value.length} de 70 letras` : ''; changed(); }));
   },
   versiculos(el) {
     el.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => {

@@ -167,3 +167,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 10/11, 15h26: publicado começo do site com o envelope no centro, sem "Uma carta de amor com a Palavra de Deus" e sem "Leva uns 3 minutos".
 - 10/11, 15h41: publicado versículos menores (até 38px) e com letra fina (peso 400).
 - 10/11, 17h11: publicado o pagamento sem a caixinha "Quero receber a carta neste e-mail" (a carta continua indo para o e-mail da compra). Tarde fraca: nenhuma venda nem Pix gerado entre 15h11 e 17h; o funil mostra a 1ª tela melhor (≈ 6 em 10 passam) e a perda entre carta pronta e pagamento. Original no 2º dia sem venda (pausar); se a Padrão de 1 mês derrubar o pagamento, voltar para 3 meses.
+- 10/11, 17h35: legenda das fotos passou de 40 para 70 letras (`maxlength` no criador), com o aviso "x de 70 letras" a partir de 55 (`.cap-cont`). Antes o campo parava em 40 sem avisar e cortava a legenda no meio. Guardado sem publicar.
