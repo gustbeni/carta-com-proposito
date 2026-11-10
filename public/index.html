@@ -1305,6 +1305,63 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .pols.pols6 .pol::before{top:-20px;width:11px;height:30px}
 .pols.pols6 .pol figcaption{font-size:16px}
 
+/* Premium: álbum de ouro das fotos (10/11). Capa de ouro que abre, páginas de marfim com filete dourado que viram com luz e faíscas */
+.cine-slides{margin:6px -14px 0}
+.ab-cena{position:relative;width:100%;aspect-ratio:1/1.3;perspective:1800px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;container-type:inline-size}
+.ab-aura{position:absolute;inset:-14% -20%;background:radial-gradient(50% 45% at 50% 48%,rgba(255,214,130,.38),rgba(226,176,74,.12) 45%,transparent 70%);animation:abAura 5s ease-in-out infinite;pointer-events:none}
+@keyframes abAura{50%{opacity:.6;transform:scale(1.05)}}
+.ab-raios{position:absolute;inset:-30% -40%;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,226,150,.10) 0 6deg,transparent 6deg 22deg);-webkit-mask:radial-gradient(closest-side,#000 20%,transparent 75%);mask:radial-gradient(closest-side,#000 20%,transparent 75%);animation:abGira 60s linear infinite;pointer-events:none}
+@keyframes abGira{to{transform:rotate(360deg)}}
+.ab-motes{position:absolute;inset:-10% -6%;overflow:hidden;pointer-events:none;--mote:#F7DE9A}
+.ab-motes i{position:absolute;bottom:-12px;left:var(--x);width:var(--z);height:var(--z);border-radius:50%;background:var(--mote);box-shadow:0 0 8px 1px var(--mote);opacity:0;animation:mote var(--d) linear var(--dl) infinite}
+.ab-livro{position:absolute;inset:2% 2.5% 3% 3%;transform-style:preserve-3d}
+.ab-miolo{position:absolute;inset:0;border-radius:3px 8px 8px 3px;background:#FBF3DF;box-shadow:1px 0 0 #E9C56F,2px 1px 0 #FFF0C2,3px 2px 0 #C99A45,4px 3px 0 #F3D58A,5px 4px 0 #A8731F,0 30px 50px -20px rgba(0,0,0,.9),0 0 40px rgba(226,176,74,.25)}
+.ab-pg{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.6s cubic-bezier(.65,0,.3,1),opacity .5s ease 1.25s}
+.ab-pg.virou{transform:rotateY(-172deg);opacity:0;pointer-events:none}
+.ab-face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:3px 8px 8px 3px;overflow:hidden}
+.ab-verso{transform:rotateY(180deg);border-radius:8px 3px 3px 8px;background:radial-gradient(circle at 50% 50%,rgba(226,176,74,.25) 0 2px,transparent 3px) 0 0/18px 18px,linear-gradient(135deg,#5a1a30,#3a0f22);box-shadow:inset 0 0 0 6px #C99A45,inset 0 0 0 7px #FFF0C2}
+.ab-face::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(60,30,5,.35),transparent 30%,transparent 70%,rgba(255,250,230,.4));opacity:0;pointer-events:none}
+.ab-pg.virando .ab-face::after{animation:abCurva 1.6s cubic-bezier(.65,0,.3,1)}
+@keyframes abCurva{40%{opacity:1}100%{opacity:0}}
+.ab-capa .ab-frente{background:radial-gradient(120% 90% at 30% 18%,#FFF6D6,#F1D58F 30%,#D9A848 58%,#A8731F 85%,#7a4f15);box-shadow:inset 0 0 0 1px rgba(255,245,210,.9),inset 0 0 30px rgba(110,70,15,.45);display:grid;place-items:center}
+.ab-capa .ab-frente::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,240,.75) 50%,transparent 65%) no-repeat;background-size:300% 100%;animation:abBrilho 5s ease-in-out infinite}
+@keyframes abBrilho{0%,35%{background-position:150% 0}75%,100%{background-position:-50% 0}}
+.ab-moldura{position:absolute;inset:14px;border:2px solid #8E5E1A;border-radius:4px;box-shadow:inset 0 0 0 1px #FFF0C2,0 0 0 1px #FFF0C2}
+.ab-moldura::before{content:"";position:absolute;inset:7px;border:1px solid rgba(142,94,26,.8);border-radius:2px}
+.ab-moldura i{position:absolute;width:30px;height:30px;border:2px solid #8E5E1A;border-radius:50%;background:radial-gradient(circle,#FFF0C2 0 3px,transparent 4px)}
+.ab-moldura i:nth-child(1){left:-9px;top:-9px}.ab-moldura i:nth-child(2){right:-9px;top:-9px}.ab-moldura i:nth-child(3){left:-9px;bottom:-9px}.ab-moldura i:nth-child(4){right:-9px;bottom:-9px}
+.ab-medalha{position:relative;display:grid;justify-items:center;gap:8px;padding:0 30px;text-align:center;color:#4a2a0c;text-shadow:0 1px 0 rgba(255,245,210,.7)}
+.ab-medalha small{font:600 10.5px/1 var(--f-ui);letter-spacing:.3em;text-transform:uppercase}
+.ab-medalha b{font:400 clamp(30px,12cqw,48px)/1.1 var(--f-script);color:#5a330b}
+.ab-medalha em{font:italic 400 14px/1 var(--f-display);letter-spacing:.04em}
+.ab-filete{width:120px;height:1px;background:linear-gradient(90deg,transparent,#6b4310,transparent)}
+.ab-fol{background:radial-gradient(130% 90% at 40% 30%,#FFFBF0,#F6EAD0 70%,#EBD8B0);display:grid;align-content:center;justify-items:center;padding:12px 8px}
+.ab-fol::before{content:"";position:absolute;inset:6px;border:1px solid rgba(201,154,69,.75);border-radius:2px;box-shadow:inset 0 0 0 3px #FBF3DF,inset 0 0 0 4px rgba(201,154,69,.45);pointer-events:none}
+.ab-lomb{position:absolute;left:0;top:0;bottom:0;width:22px;background:linear-gradient(90deg,rgba(90,50,10,.28),transparent)}
+.ab-foto{position:relative;width:94%;padding:6px;background:linear-gradient(135deg,#FFF0C2,#D9A848 40%,#F7DE9A 60%,#A8731F);box-shadow:0 10px 20px -8px rgba(60,30,5,.55);rotate:-1.5deg}
+.ab-pg:nth-child(odd) .ab-foto{rotate:1.5deg}
+.ab-im{position:relative;overflow:hidden;aspect-ratio:1;background:#EDE0CC}
+.ab-im img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.02)}
+.ab-pg.atual .ab-im img{animation:abKb 8s ease-out both}
+@keyframes abKb{to{transform:scale(1.12)}}
+.ab-raio{position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,244,205,.85) 48%,rgba(255,214,130,.4) 55%,transparent 70%) no-repeat;background-size:300% 100%;background-position:150% 0;mix-blend-mode:screen}
+.ab-pg.atual .ab-raio{animation:abPassa 1.8s ease-in-out .9s both}
+@keyframes abPassa{to{background-position:-50% 0}}
+.ab-cn{position:absolute;width:20px;height:20px;background:linear-gradient(135deg,#FFF0C2,#D9A848 55%,#8E5E1A);box-shadow:0 1px 2px rgba(0,0,0,.35);z-index:2}
+.ab-cn.a{top:-4px;left:-4px;clip-path:polygon(0 0,100% 0,0 100%)}.ab-cn.b{top:-4px;right:-4px;clip-path:polygon(0 0,100% 0,100% 100%)}
+.ab-cn.c{bottom:-4px;left:-4px;clip-path:polygon(0 0,0 100%,100% 100%)}.ab-cn.d{bottom:-4px;right:-4px;clip-path:polygon(100% 0,100% 100%,0 100%)}
+.ab-leg{margin:12px 14px 0;text-align:center;font:500 clamp(18px,6cqw,24px)/1.15 var(--f-ink);color:#3B230C;opacity:0;transform:translateY(6px);transition:opacity .9s ease 1.3s,transform .9s ease 1.3s}
+.ab-pg.atual .ab-leg{opacity:1;transform:none}
+.ab-orn{display:block;margin-top:8px;width:90px;height:12px;background:linear-gradient(90deg,transparent,#C99A45 30%,#C99A45 70%,transparent) center/100% 1px no-repeat}
+.ab-orn::after{content:"";display:block;width:8px;height:8px;margin:2px auto 0;rotate:45deg;background:linear-gradient(135deg,#FFF0C2,#C99A45)}
+.ab-num{position:absolute;bottom:10px;right:14px;font:italic 400 12px var(--f-display);color:#A8731F}
+.ab-fa{position:absolute;width:4px;height:4px;border-radius:50%;background:#FFF3C4;box-shadow:0 0 8px 3px rgba(245,205,110,.9);pointer-events:none;opacity:0;animation:abFa 1.4s ease-out forwards;z-index:60}
+@keyframes abFa{0%{opacity:0;transform:translate(0,0) scale(.3)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1)}}
+.ab-flash{position:absolute;inset:0;background:radial-gradient(closest-side,rgba(255,240,200,.9),transparent);opacity:0;pointer-events:none;z-index:60}
+.ab-flash.on{animation:abFl 1.2s ease-out}
+@keyframes abFl{20%{opacity:.8}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.ab-aura,.ab-raios,.ab-motes,.ab-capa .ab-frente::before{animation:none}.ab-motes{display:none}.ab-pg{transition-duration:.4s,.2s;transition-delay:0s,.2s}}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -1686,8 +1743,8 @@ const FAQ = [
   ['Posso ver antes de pagar?', 'Pode. Você monta a carta inteira e vê a prévia exatamente como a pessoa vai receber. Só paga se gostar.'],
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
-  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 polaroides em slides e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 1,99), mini filme do casal com mais 3 fotos (+ R$ 2,99), abertura gloriosa de cinema (+ R$ 1,99), mais 3 fotos (+ R$ 1,99) e fotos maiores (+ R$ 1,99).'],
+  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99) e abertura gloriosa de cinema com mais 4 fotos (+ R$ 4,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -2485,13 +2542,16 @@ function cameraHTML(L, mini) {
   </div>`;
 }
 
-/* ===== Premium: as polaroides passam como slides de cinema, e a foto salta da polaroide ===== */
-function slidesHTML(pics) {
-  return `<div class="cine-slides" aria-label="Apresentação das fotos">
-    <div class="cs-stage">${pics.map((p, i) => `<figure class="cs-slide" data-k="${i}"><div class="cs-pol"><div class="cs-img"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"></div><figcaption>${esc(p.cap || '')}</figcaption></div></figure>`).join('')}
-      <i class="cs-leak" aria-hidden="true"></i></div>
-    <div class="cs-dots" aria-hidden="true">${pics.map(() => '<i></i>').join('')}</div>
-    <p class="cs-hint">Toque na foto para passar</p>
+/* ===== Premium: as fotos aparecem num álbum de ouro (capa que abre e páginas que viram com luz) ===== */
+function slidesHTML(pics, L) {
+  const pg = pics.map((p, i) => `<div class="ab-pg" style="z-index:${40 - i - 1}"><div class="ab-face ab-fol"><i class="ab-lomb"></i><div class="ab-foto"><i class="ab-cn a"></i><i class="ab-cn b"></i><i class="ab-cn c"></i><i class="ab-cn d"></i><div class="ab-im"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><i class="ab-raio"></i></div></div>${p.cap ? `<p class="ab-leg">${esc(p.cap)}</p>` : ''}<i class="ab-orn"></i><span class="ab-num">${i + 1} de ${pics.length}</span></div><div class="ab-face ab-verso"></div></div>`).join('');
+  const nomes = L && L.to ? `${esc(L.to)}${L.from ? ' &amp; ' + esc(L.from) : ''}` : 'Nós dois';
+  return `<div class="cine-slides" aria-label="Álbum das fotos">
+    <div class="ab-cena"><div class="ab-raios" aria-hidden="true"></div><div class="ab-aura" aria-hidden="true"></div><div class="ab-motes" aria-hidden="true">${motes(14)}</div>
+      <div class="ab-livro"><div class="ab-miolo"></div>${pg}
+        <div class="ab-pg ab-capa" style="z-index:50"><div class="ab-face ab-frente"><div class="ab-moldura"><i></i><i></i><i></i><i></i></div><div class="ab-medalha"><small>Álbum de</small><b>${nomes}</b><i class="ab-filete"></i><em>nossos momentos</em></div></div><div class="ab-face ab-verso"></div></div>
+      </div><i class="ab-flash" aria-hidden="true"></i></div>
+    <p class="cs-hint">Toque no álbum para virar a página</p>
   </div>`;
 }
 /* ===== Premium: mini filme do casal ===== */
@@ -2614,7 +2674,7 @@ function letterHTML(L, mode, opt = {}) {
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 && L.premium ? ' pols6' : ''}${L.grandes ? ' grandes' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
-    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
+    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics, L) + grade + SKIP : grade}`);
   }
   /* mini player com o vídeo da música escolhida, logo depois das fotos (o player é criado no toque do selo, já dentro dele) */
   if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3>${musicaCard(L)}<p class="l-sub">Ela está tocando desde que você abriu a carta 🎶</p>`);
@@ -2840,25 +2900,39 @@ function bindLetter(root, L, mode, hooks = {}) {
     later(passo, 4100);
   }
 
-  /* Premium: slides de cinema; cada foto salta da polaroide. No fim aparecem todas juntas */
+  /* Premium: álbum de ouro; a capa abre, as páginas viram sozinhas (ou no toque). No fim aparecem todas juntas */
   function slides(s) {
-    const box = s.querySelector('.cine-slides'), ss = [...box.querySelectorAll('.cs-slide')], dots = [...box.querySelectorAll('.cs-dots i')];
-    let k = -1, t = null;
-    const ir = () => {
-      clearTimeout(t);
-      if (k >= 0) { ss[k].classList.remove('on'); ss[k].classList.add('sai'); }
-      k++;
-      if (k >= ss.length) {
-        s.classList.add('cs-fim');
-        later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
-        return;
+    const box = s.querySelector('.cine-slides'), cena = box.querySelector('.ab-cena');
+    const pgs = [box.querySelector('.ab-capa'), ...box.querySelectorAll('.ab-pg:not(.ab-capa)')];
+    let k = 0, t = null, fim = false;
+    const faiscas = () => {
+      if (reduced()) return;
+      for (let j = 0; j < 20; j++) {
+        const f = document.createElement('i'); f.className = 'ab-fa';
+        const a = Math.random() * Math.PI - Math.PI / 2, d = 60 + Math.random() * 130;
+        f.style.left = (8 + Math.random() * 6) + '%'; f.style.top = (10 + Math.random() * 80) + '%';
+        f.style.setProperty('--dx', Math.cos(a) * d + 'px'); f.style.setProperty('--dy', Math.sin(a) * d - 30 + 'px');
+        f.style.animationDelay = (.2 + Math.random() * .7) + 's';
+        cena.appendChild(f); setTimeout(() => f.remove(), 2600);
       }
-      const leak = box.querySelector('.cs-leak'); leak.classList.remove('on'); void leak.offsetWidth; leak.classList.add('on');
-      ss[k].classList.add('on'); dots.forEach((d, j) => d.classList.toggle('on', j <= k));
-      t = setTimeout(ir, reduced() ? 1200 : 3600); timers.push(t);
     };
-    box.querySelector('.cs-stage').addEventListener('click', () => { if (k < ss.length) ir(); });
-    later(ir, reduced() ? 0 : 700);
+    const terminar = () => {
+      if (fim) return; fim = true; clearTimeout(t);
+      s.classList.add('cs-fim');
+      later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
+    };
+    const virar = () => {
+      clearTimeout(t);
+      if (fim) return;
+      if (k >= pgs.length - 1) { terminar(); return; }
+      const p = pgs[k]; p.classList.add('virando', 'virou'); setTimeout(() => p.classList.remove('virando'), 1700);
+      pgs[k + 1].classList.add('atual'); faiscas();
+      if (k === 0) { const fl = box.querySelector('.ab-flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
+      k++;
+      t = setTimeout(virar, reduced() ? 1800 : 4600); timers.push(t);
+    };
+    cena.addEventListener('click', virar);
+    t = setTimeout(virar, reduced() ? 300 : 2200); timers.push(t);
   }
 
   /* Premium: mini filme do casal; depois de assistir (ou pular até o fim), a carta continua */
@@ -3181,7 +3255,7 @@ const VIEWS = {
       <p class="sub">Tudo o que já tem na sua carta, e mais:</p>
       <ul class="prem-lista">
         ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
-        ${item('Mais 3 polaroides, em slides de cinema', '6 fotos que saltam da polaroide, 50% maiores.')}
+        ${item('Mais 3 fotos, num álbum de ouro', 'As 6 fotos aparecem grandes num álbum de ouro que abre e vira as páginas com luz e faíscas.')}
         ${item('Mini filme do casal', 'Mais 7 fotos viram um filminho com transições, frases românticas, música e uma tela final especial.')}
         ${item('Câmera com raios de ouro', 'A última foto se revela com mais brilho.')}
         ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 3 meses.')}
@@ -3199,7 +3273,7 @@ const VIEWS = {
     const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme'), nf = prem ? 3 : polIdx(S).length - 3;
     return `<p class="eyebrow">${prem ? 'Versão Premium ✨' : 'Adicionais ✨'}</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
       <p class="sub">${f && fm ? `Coloque mais ${nf} polaroides e as fotos do mini filme do casal.` : f ? `Coloque mais ${nf} polaroides. Elas aparecem junto com as outras, na parte das fotos.` : 'Escolha as fotos do mini filme do casal.'}</p>
-      ${f ? `<p class="group-label">Mais ${nf} polaroides</p><p class="hint">${prem ? 'Elas entram nos slides de cinema junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
+      ${f ? `<p class="group-label">Mais ${nf} polaroides</p><p class="hint">${prem ? 'Elas entram no álbum de ouro junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
       <div class="photos">${(prem ? [4, 5, 6] : polIdx(S).slice(3)).map(photoSlot).join('')}</div>` : ''}
       ${fm && prem ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
       <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}
@@ -3445,7 +3519,7 @@ function bumpsHTML() {
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro.</p>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a câmera com raios de ouro.</p>` : ''}
   </div>`;
 }
 function checkoutView() {

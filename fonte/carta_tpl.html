@@ -392,8 +392,8 @@ const FAQ = [
   ['Posso ver antes de pagar?', 'Pode. Você monta a carta inteira e vê a prévia exatamente como a pessoa vai receber. Só paga se gostar.'],
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
-  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 polaroides em slides e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 1,99), mini filme do casal com mais 3 fotos (+ R$ 2,99), abertura gloriosa de cinema (+ R$ 1,99), mais 3 fotos (+ R$ 1,99) e fotos maiores (+ R$ 1,99).'],
+  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99) e abertura gloriosa de cinema com mais 4 fotos (+ R$ 4,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -1191,13 +1191,16 @@ function cameraHTML(L, mini) {
   </div>`;
 }
 
-/* ===== Premium: as polaroides passam como slides de cinema, e a foto salta da polaroide ===== */
-function slidesHTML(pics) {
-  return `<div class="cine-slides" aria-label="Apresentação das fotos">
-    <div class="cs-stage">${pics.map((p, i) => `<figure class="cs-slide" data-k="${i}"><div class="cs-pol"><div class="cs-img"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"></div><figcaption>${esc(p.cap || '')}</figcaption></div></figure>`).join('')}
-      <i class="cs-leak" aria-hidden="true"></i></div>
-    <div class="cs-dots" aria-hidden="true">${pics.map(() => '<i></i>').join('')}</div>
-    <p class="cs-hint">Toque na foto para passar</p>
+/* ===== Premium: as fotos aparecem num álbum de ouro (capa que abre e páginas que viram com luz) ===== */
+function slidesHTML(pics, L) {
+  const pg = pics.map((p, i) => `<div class="ab-pg" style="z-index:${40 - i - 1}"><div class="ab-face ab-fol"><i class="ab-lomb"></i><div class="ab-foto"><i class="ab-cn a"></i><i class="ab-cn b"></i><i class="ab-cn c"></i><i class="ab-cn d"></i><div class="ab-im"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><i class="ab-raio"></i></div></div>${p.cap ? `<p class="ab-leg">${esc(p.cap)}</p>` : ''}<i class="ab-orn"></i><span class="ab-num">${i + 1} de ${pics.length}</span></div><div class="ab-face ab-verso"></div></div>`).join('');
+  const nomes = L && L.to ? `${esc(L.to)}${L.from ? ' &amp; ' + esc(L.from) : ''}` : 'Nós dois';
+  return `<div class="cine-slides" aria-label="Álbum das fotos">
+    <div class="ab-cena"><div class="ab-raios" aria-hidden="true"></div><div class="ab-aura" aria-hidden="true"></div><div class="ab-motes" aria-hidden="true">${motes(14)}</div>
+      <div class="ab-livro"><div class="ab-miolo"></div>${pg}
+        <div class="ab-pg ab-capa" style="z-index:50"><div class="ab-face ab-frente"><div class="ab-moldura"><i></i><i></i><i></i><i></i></div><div class="ab-medalha"><small>Álbum de</small><b>${nomes}</b><i class="ab-filete"></i><em>nossos momentos</em></div></div><div class="ab-face ab-verso"></div></div>
+      </div><i class="ab-flash" aria-hidden="true"></i></div>
+    <p class="cs-hint">Toque no álbum para virar a página</p>
   </div>`;
 }
 /* ===== Premium: mini filme do casal ===== */
@@ -1320,7 +1323,7 @@ function letterHTML(L, mode, opt = {}) {
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 && L.premium ? ' pols6' : ''}${L.grandes ? ' grandes' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
-    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics) + grade + SKIP : grade}`);
+    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics, L) + grade + SKIP : grade}`);
   }
   /* mini player com o vídeo da música escolhida, logo depois das fotos (o player é criado no toque do selo, já dentro dele) */
   if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3>${musicaCard(L)}<p class="l-sub">Ela está tocando desde que você abriu a carta 🎶</p>`);
@@ -1546,25 +1549,39 @@ function bindLetter(root, L, mode, hooks = {}) {
     later(passo, 4100);
   }
 
-  /* Premium: slides de cinema; cada foto salta da polaroide. No fim aparecem todas juntas */
+  /* Premium: álbum de ouro; a capa abre, as páginas viram sozinhas (ou no toque). No fim aparecem todas juntas */
   function slides(s) {
-    const box = s.querySelector('.cine-slides'), ss = [...box.querySelectorAll('.cs-slide')], dots = [...box.querySelectorAll('.cs-dots i')];
-    let k = -1, t = null;
-    const ir = () => {
-      clearTimeout(t);
-      if (k >= 0) { ss[k].classList.remove('on'); ss[k].classList.add('sai'); }
-      k++;
-      if (k >= ss.length) {
-        s.classList.add('cs-fim');
-        later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
-        return;
+    const box = s.querySelector('.cine-slides'), cena = box.querySelector('.ab-cena');
+    const pgs = [box.querySelector('.ab-capa'), ...box.querySelectorAll('.ab-pg:not(.ab-capa)')];
+    let k = 0, t = null, fim = false;
+    const faiscas = () => {
+      if (reduced()) return;
+      for (let j = 0; j < 20; j++) {
+        const f = document.createElement('i'); f.className = 'ab-fa';
+        const a = Math.random() * Math.PI - Math.PI / 2, d = 60 + Math.random() * 130;
+        f.style.left = (8 + Math.random() * 6) + '%'; f.style.top = (10 + Math.random() * 80) + '%';
+        f.style.setProperty('--dx', Math.cos(a) * d + 'px'); f.style.setProperty('--dy', Math.sin(a) * d - 30 + 'px');
+        f.style.animationDelay = (.2 + Math.random() * .7) + 's';
+        cena.appendChild(f); setTimeout(() => f.remove(), 2600);
       }
-      const leak = box.querySelector('.cs-leak'); leak.classList.remove('on'); void leak.offsetWidth; leak.classList.add('on');
-      ss[k].classList.add('on'); dots.forEach((d, j) => d.classList.toggle('on', j <= k));
-      t = setTimeout(ir, reduced() ? 1200 : 3600); timers.push(t);
     };
-    box.querySelector('.cs-stage').addEventListener('click', () => { if (k < ss.length) ir(); });
-    later(ir, reduced() ? 0 : 700);
+    const terminar = () => {
+      if (fim) return; fim = true; clearTimeout(t);
+      s.classList.add('cs-fim');
+      later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
+    };
+    const virar = () => {
+      clearTimeout(t);
+      if (fim) return;
+      if (k >= pgs.length - 1) { terminar(); return; }
+      const p = pgs[k]; p.classList.add('virando', 'virou'); setTimeout(() => p.classList.remove('virando'), 1700);
+      pgs[k + 1].classList.add('atual'); faiscas();
+      if (k === 0) { const fl = box.querySelector('.ab-flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
+      k++;
+      t = setTimeout(virar, reduced() ? 1800 : 4600); timers.push(t);
+    };
+    cena.addEventListener('click', virar);
+    t = setTimeout(virar, reduced() ? 300 : 2200); timers.push(t);
   }
 
   /* Premium: mini filme do casal; depois de assistir (ou pular até o fim), a carta continua */
@@ -1887,7 +1904,7 @@ const VIEWS = {
       <p class="sub">Tudo o que já tem na sua carta, e mais:</p>
       <ul class="prem-lista">
         ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
-        ${item('Mais 3 polaroides, em slides de cinema', '6 fotos que saltam da polaroide, 50% maiores.')}
+        ${item('Mais 3 fotos, num álbum de ouro', 'As 6 fotos aparecem grandes num álbum de ouro que abre e vira as páginas com luz e faíscas.')}
         ${item('Mini filme do casal', 'Mais 7 fotos viram um filminho com transições, frases românticas, música e uma tela final especial.')}
         ${item('Câmera com raios de ouro', 'A última foto se revela com mais brilho.')}
         ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 3 meses.')}
@@ -1905,7 +1922,7 @@ const VIEWS = {
     const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme'), nf = prem ? 3 : polIdx(S).length - 3;
     return `<p class="eyebrow">${prem ? 'Versão Premium ✨' : 'Adicionais ✨'}</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
       <p class="sub">${f && fm ? `Coloque mais ${nf} polaroides e as fotos do mini filme do casal.` : f ? `Coloque mais ${nf} polaroides. Elas aparecem junto com as outras, na parte das fotos.` : 'Escolha as fotos do mini filme do casal.'}</p>
-      ${f ? `<p class="group-label">Mais ${nf} polaroides</p><p class="hint">${prem ? 'Elas entram nos slides de cinema junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
+      ${f ? `<p class="group-label">Mais ${nf} polaroides</p><p class="hint">${prem ? 'Elas entram no álbum de ouro junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
       <div class="photos">${(prem ? [4, 5, 6] : polIdx(S).slice(3)).map(photoSlot).join('')}</div>` : ''}
       ${fm && prem ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
       <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}
@@ -2151,7 +2168,7 @@ function bumpsHTML() {
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, slides de cinema e câmera com raios de ouro.</p>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a câmera com raios de ouro.</p>` : ''}
   </div>`;
 }
 function checkoutView() {
