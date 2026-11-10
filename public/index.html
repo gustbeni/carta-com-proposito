@@ -3728,6 +3728,7 @@ function erroTexto(e, salvar) {
   return salvar ? 'Não foi possível salvar agora. Confira sua internet e tente de novo.' : 'Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo.';
 }
 async function pay() {
+  etapa('tocou-pagar-' + (S.pay === 'card' ? 'cartao' : 'pix'));
   const em = $('#fEmail');
   if (!S.semEmail && !isEmail(S.email)) { $('#emailErr').hidden = false; em.classList.add('bad'); em.focus(); em.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   if (ocupado) return;
@@ -3843,11 +3844,13 @@ function resetDraft() {
 
 /* ----- Exemplo e prévias ----- */
 function openExample(plano) {
+  etapa('exemplo-' + (plano === 'premium' ? 'premium' : 'padrao'));
   const L = resolveLetter({ ...EXAMPLE, photos: fotosExemplo(plano), plano });
   track('ViewContent', { content_name: plano === 'premium' ? 'Exemplo de carta Premium' : 'Exemplo de carta' });
   openViewer(L, { mode: 'example', onCreate: () => { if (S.step === 0 && S.view === 'step') { const b = $('.opt'); if (b) b.focus(); } } });
 }
 function openPreview(withBuy) {
+  etapa('previa-da-propria-carta');
   const L = resolveLetter(S);
   openViewer(L, { mode: 'preview', buy: withBuy, buyLabel: editavel() ? 'Salvar as mudanças' : '',
     onBuy: () => { if (editavel()) { if (S.view !== 'ready') { S.view = 'ready'; save(); render('fwd'); } return salvarMudancas(); } if (S.view !== 'checkout') { S.view = 'checkout'; save(); render('fwd'); } },
@@ -3888,8 +3891,17 @@ function rerender(keepFocus) {
 }
 function changed() { save(); refreshBar(); schedulePreview(); }
 
+/* funil: conta quantas pessoas chegam a cada etapa (uma vez por etapa a cada visita).
+   É só um pedido a /e.gif?s=<etapa>; os números aparecem nos registros do Netlify. Sem dados de ninguém. */
+const etapasVistas = new Set();
+function etapa(nome) {
+  if (!nome || etapasVistas.has(nome) || rotaCarta) return;
+  etapasVistas.add(nome);
+  try { const i = new Image(); i.src = '/e.gif?s=' + encodeURIComponent(nome); } catch (e) {}
+}
 function render(dir) {
   const scr = $('#screen');
+  if (!naAcesso()) etapa(S.view === 'step' ? 'p' + String(S.step + 1).padStart(2, '0') + '-' + ((STEPS[S.step] || {}).id || '') : ({ ready: 'carta-pronta', checkout: 'tela-de-pagamento' })[S.view] || S.view);
   document.body.classList.toggle('na-acesso', naAcesso());
   if (naAcesso()) { scr.innerHTML = acessoView(); bindAcesso(scr); }
   else if (S.view === 'step') { if (!passoValido(S.step)) S.step = passosValidos().filter(i => i < S.step).pop() || 0; const id = STEPS[S.step].id; scr.innerHTML = VIEWS[id](); BIND[id](scr); }

@@ -14,3 +14,9 @@
   from = "/meuacesso"
   to = "/index.html"
   status = 200
+
+# contador do funil (etapa() no carta_tpl.html): não guardar em cache, para contar cada visita
+[[headers]]
+  for = "/e.gif"
+  [headers.values]
+    Cache-Control = "no-store"
