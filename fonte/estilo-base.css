@@ -1350,3 +1350,12 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ab-flash.on{animation:abFl 1.2s ease-out}
 @keyframes abFl{20%{opacity:.8}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.ab-aura,.ab-raios,.ab-motes,.ab-capa .ab-frente::before{animation:none}.ab-motes{display:none}.ab-pg{transition-duration:.4s,.2s;transition-delay:0s,.2s}}
+
+/* adicional "álbum de ouro" (Padrão): selo de novidade e botão de prévia */
+.bump-novo{display:inline-block;margin:0 0 5px;padding:3px 8px;border-radius:999px;font:700 10px/1 var(--f-ui);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:#3A0B2B;background:linear-gradient(180deg,#FCE6A6,#EEC266 46%,#CC9433);box-shadow:0 0 12px rgba(243,213,138,.55);animation:novoBrilha 2.4s ease-in-out infinite}
+@keyframes novoBrilha{50%{box-shadow:0 0 20px rgba(243,213,138,.9)}}
+.bump-previa{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 12px;border-radius:999px;border:1px solid rgba(243,213,138,.6);background:rgba(243,213,138,.08);color:#F3D58A;font:600 12.5px/1 var(--f-ui);cursor:pointer}
+.bump-previa svg{width:15px;height:15px}
+.ab-previa{margin-top:14px;container-type:inline-size}
+.ab-previa .cine-slides{margin:0}
+@media (prefers-reduced-motion:reduce){.bump-novo{animation:none}}

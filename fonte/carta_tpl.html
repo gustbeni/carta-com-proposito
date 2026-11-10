@@ -161,6 +161,7 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 /* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
    A Premium já vem com todos. */
 const EXTRAS = [
+  { id: 'album', preco: 3.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
   { id: 'vit', preco: 2.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
@@ -393,7 +394,7 @@ const FAQ = [
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
   ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99) e abertura gloriosa de cinema com mais 4 fotos (+ R$ 4,99).'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99), álbum de ouro (+ R$ 3,99) e abertura gloriosa de cinema com mais 4 fotos (+ R$ 4,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -841,7 +842,7 @@ function resolveLetter(src) {
     date: validDate(src.date) ? src.date : '', stats: validDate(src.date) ? calcStats(src.date) : null,
     music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src), mt: src.music === 'link' ? (src.musicNome || '').trim().slice(0, 120) : '',
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
-    premium: src.plano === 'premium', cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), pol: polIdx(src), vitalicia: temRec(src, 'vit'),
+    premium: src.plano === 'premium', album: temRec(src, 'album'), cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), pol: polIdx(src), vitalicia: temRec(src, 'vit'),
     grandes: src.plano !== 'premium' && temRec(src, 'grandes'),
     film: src.plano === 'premium' ? filmeFotos(src.photos || []) : temRec(src, 'filme') ? filmePadrao(src) : [],
     initial: (src.from || '').trim() ? from.charAt(0).toUpperCase() : ''
@@ -1255,6 +1256,52 @@ function playFilm(host, L, onEnd) {
   o.querySelector('[data-de-novo]').addEventListener('click', rodar);
   requestAnimationFrame(() => { o.classList.add('on'); rodar(); });
 }
+/* álbum de ouro: a capa abre, as páginas viram sozinhas a cada 3 s (ou no toque); onFim quando acaba */
+function rodarAlbum(box, onFim, timers = []) {
+  const cena = box.querySelector('.ab-cena');
+  const pgs = [box.querySelector('.ab-capa'), ...box.querySelectorAll('.ab-pg:not(.ab-capa)')];
+  let k = 0, t = null, fim = false, ultimo = 0;
+  const faiscas = () => {
+    if (reduced()) return;
+    for (let j = 0; j < 20; j++) {
+      const f = document.createElement('i'); f.className = 'ab-fa';
+      const a = Math.random() * Math.PI - Math.PI / 2, d = 60 + Math.random() * 130;
+      f.style.left = (8 + Math.random() * 6) + '%'; f.style.top = (10 + Math.random() * 80) + '%';
+      f.style.setProperty('--dx', Math.cos(a) * d + 'px'); f.style.setProperty('--dy', Math.sin(a) * d - 30 + 'px');
+      f.style.animationDelay = (.2 + Math.random() * .7) + 's';
+      cena.appendChild(f); setTimeout(() => f.remove(), 2600);
+    }
+  };
+  const virar = () => {
+    if (Date.now() - ultimo < 1100) return; /* um toque durante a virada não atropela a página */
+    ultimo = Date.now();
+    clearTimeout(t);
+    if (fim || !box.isConnected) return;
+    if (k >= pgs.length - 1) { fim = true; onFim(); return; }
+    const p = pgs[k]; p.style.zIndex = 60; p.classList.add('virando', 'virou');
+    setTimeout(() => { p.classList.remove('virando'); p.classList.add('some'); }, 1850);
+    pgs[k + 1].classList.add('atual'); faiscas();
+    if (k === 0) { const fl = box.querySelector('.ab-flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
+    k++;
+    t = setTimeout(virar, reduced() ? 1800 : 3000); timers.push(t);
+  };
+  cena.addEventListener('click', virar);
+  t = setTimeout(virar, reduced() ? 300 : 2200); timers.push(t);
+}
+/* prévia do adicional "álbum de ouro" (com as fotos de exemplo) */
+function previaAlbum() {
+  etapa('previa-album');
+  const pics = fotosExemplo('padrao').slice(0, 3).map((src, i) => ({ src, cap: ['Nosso cantinho', 'Meu lugar favorito', 'Te amo pra sempre'][i] }));
+  const card = openSheet(`<p class="eyebrow">Novidade ✨</p><h2 class="h2">Álbum de <em>ouro</em></h2>
+    <p class="sub">Assim as fotos da sua carta aparecem para quem recebe. Depois, elas ficam todas juntas no varal.</p>
+    <div class="ab-previa">${slidesHTML(pics, { to: 'Ana', from: 'João' })}</div>
+    <button class="btn btn-ghost w" id="albDeNovo" style="margin-top:14px" hidden>Ver de novo</button>`);
+  const host = card.querySelector('.ab-previa'), bt = card.querySelector('#albDeNovo');
+  const rodar = () => { bt.hidden = true; host.innerHTML = slidesHTML(pics, { to: 'Ana', from: 'João' }); rodarAlbum(host.querySelector('.cine-slides'), () => { bt.hidden = false; }); };
+  bt.addEventListener('click', rodar);
+  rodarAlbum(host.querySelector('.cine-slides'), () => { bt.hidden = false; });
+}
+
 /* Premium: abertura de cinema antes da carta, com faixas de cinema, nomes em ouro e um clarão */
 function cineOpen(host, L, onDone) {
   const tipo = L.r === 'amor' ? 'amor' : L.r === 'amigo' ? 'amizade' : 'família';
@@ -1323,7 +1370,8 @@ function letterHTML(L, mode, opt = {}) {
     <div class="wheel-res" hidden aria-live="polite"><blockquote class="l-verse"><p class="chars"></p><cite></cite></blockquote></div>${SKIP}`);
   if (pics.length || mini) {
     const grade = `<div class="pols${pics.length > 3 && L.premium ? ' pols6' : ''}${L.grandes ? ' grandes' : ''}" data-n="${pics.length || 3}">${(pics.length ? pics : [{}, {}, {}]).map(polHTML).join('')}</div>`;
-    h += sec('s-photos', L.premium && full && pics.length > 1 ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${L.premium && full && pics.length > 1 ? slidesHTML(pics, L) + grade + SKIP : grade}`);
+    const temAlbum = (L.premium || L.album) && full && pics.length > 1;
+    h += sec('s-photos', temAlbum ? 'cine-photos' : '', 'next', `<p class="l-label">Nossos momentos</p>${temAlbum ? slidesHTML(pics, L) + grade + SKIP : grade}`);
   }
   /* mini player com o vídeo da música escolhida, logo depois das fotos (o player é criado no toque do selo, já dentro dele) */
   if (full && L.ml) h += sec('s-music', 'l-music', 'next', `<p class="l-label">Nossa música</p><h3 class="l-h gold-t">Esta é a nossa música</h3>${musicaCard(L)}<p class="l-sub">Ela está tocando desde que você abriu a carta 🎶</p>`);
@@ -1549,43 +1597,12 @@ function bindLetter(root, L, mode, hooks = {}) {
     later(passo, 4100);
   }
 
-  /* Premium: álbum de ouro; a capa abre, as páginas viram sozinhas (ou no toque). No fim aparecem todas juntas */
+  /* Premium (ou adicional "álbum de ouro"): no fim do álbum aparecem todas as fotos juntas no varal */
   function slides(s) {
-    const box = s.querySelector('.cine-slides'), cena = box.querySelector('.ab-cena');
-    const pgs = [box.querySelector('.ab-capa'), ...box.querySelectorAll('.ab-pg:not(.ab-capa)')];
-    let k = 0, t = null, fim = false;
-    const faiscas = () => {
-      if (reduced()) return;
-      for (let j = 0; j < 20; j++) {
-        const f = document.createElement('i'); f.className = 'ab-fa';
-        const a = Math.random() * Math.PI - Math.PI / 2, d = 60 + Math.random() * 130;
-        f.style.left = (8 + Math.random() * 6) + '%'; f.style.top = (10 + Math.random() * 80) + '%';
-        f.style.setProperty('--dx', Math.cos(a) * d + 'px'); f.style.setProperty('--dy', Math.sin(a) * d - 30 + 'px');
-        f.style.animationDelay = (.2 + Math.random() * .7) + 's';
-        cena.appendChild(f); setTimeout(() => f.remove(), 2600);
-      }
-    };
-    const terminar = () => {
-      if (fim) return; fim = true; clearTimeout(t);
+    rodarAlbum(s.querySelector('.cine-slides'), () => {
       s.classList.add('cs-fim');
       later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
-    };
-    let ultimo = 0;
-    const virar = () => {
-      if (Date.now() - ultimo < 1100) return; /* um toque durante a virada não atropela a página */
-      ultimo = Date.now();
-      clearTimeout(t);
-      if (fim) return;
-      if (k >= pgs.length - 1) { terminar(); return; }
-      const p = pgs[k]; p.style.zIndex = 60; p.classList.add('virando', 'virou');
-      setTimeout(() => { p.classList.remove('virando'); p.classList.add('some'); }, 1850);
-      pgs[k + 1].classList.add('atual'); faiscas();
-      if (k === 0) { const fl = box.querySelector('.ab-flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
-      k++;
-      t = setTimeout(virar, reduced() ? 1800 : 3000); timers.push(t);
-    };
-    cena.addEventListener('click', virar);
-    t = setTimeout(virar, reduced() ? 300 : 2200); timers.push(t);
+    }, timers);
   }
 
   /* Premium: mini filme do casal; depois de assistir (ou pular até o fim), a carta continua */
@@ -2170,7 +2187,7 @@ function bumpsHTML() {
   const ex = extrasValidos(S.plano, S.extras), soma = precoTotal('padrao', ex);
   return `<div class="bumps"><p class="bumps-t">${ICON.sparkle}Deixe a sua carta ainda mais especial</p>
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
-      <span class="bump-txt"><b>${e.t}</b><small>${e.d}</small></span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
+      <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
     ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a câmera com raios de ouro.</p>` : ''}
   </div>`;
@@ -2203,6 +2220,7 @@ function bindReady(el) {
   $('#editBtn', el).addEventListener('click', openEditSheet);
 }
 function bindBumps(el) {
+  el.querySelectorAll('[data-previa-album]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaAlbum(); }));
   el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
     const k = c.dataset.extra, ex = new Set(S.extras || []);
     if (c.checked) { ex.add(k); track('adicional_' + k); if (k === 'cine') ex.delete('fotos'); } else ex.delete(k);
