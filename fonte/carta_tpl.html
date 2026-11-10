@@ -165,7 +165,7 @@ const EXTRAS = [
   { id: 'vit', preco: 2.99, t: 'Carta vitalícia', d: 'O link funciona para sempre (a Padrão fica no ar por 3 meses).' },
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
-  { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).' },
+  { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
   { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.', oculto: true } // não é mais vendido; fica para as cartas que já compraram
 ];
 /* a abertura de cinema já inclui as fotos a mais, então "fotos" não entra junto com "cine".
@@ -394,7 +394,7 @@ const FAQ = [
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 3 meses depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
   ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 3 meses.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99), álbum de ouro (+ R$ 3,99) e abertura gloriosa de cinema com mais 4 fotos (+ R$ 4,99).'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: carta vitalícia (+ R$ 2,99), mini filme do casal com mais 3 fotos (+ R$ 3,99), mais 3 fotos (+ R$ 3,99) e álbum de ouro (+ R$ 3,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
