@@ -138,7 +138,7 @@ svg{display:block}
 .stack.tight{gap:10px;margin-top:0}
 
 /* ---------- Passo 1 ---------- */
-.hero-env{width:max-content;margin:2px 0 22px;animation:float 5s ease-in-out infinite}
+.hero-env{width:max-content;margin:6px auto 26px;animation:float 5s ease-in-out infinite}
 .hero-env .env{--w:112px;margin:0}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(-1deg)}}
 .opt{display:grid;grid-template-columns:48px minmax(0,1fr) 22px;align-items:center;gap:14px;width:100%;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:0 10px 24px -20px rgba(0,0,0,.6);transition:border-color .2s,box-shadow .2s,transform .2s var(--ease),background-color .2s}
@@ -3237,9 +3237,7 @@ const idxPasso = id => STEPS.findIndex(x => x.id === id);
 const VIEWS = {
   quem() {
     return `<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
-      <p class="eyebrow">Uma carta de amor com a Palavra de Deus</p>
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
-      <p class="sub">Leva uns 3 minutos.</p>
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b><small>${r.desc}</small></span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
       <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>

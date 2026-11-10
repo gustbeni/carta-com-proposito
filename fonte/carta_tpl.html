@@ -1875,9 +1875,7 @@ const idxPasso = id => STEPS.findIndex(x => x.id === id);
 const VIEWS = {
   quem() {
     return `<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
-      <p class="eyebrow">Uma carta de amor com a Palavra de Deus</p>
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
-      <p class="sub">Leva uns 3 minutos.</p>
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b><small>${r.desc}</small></span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
       <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>
