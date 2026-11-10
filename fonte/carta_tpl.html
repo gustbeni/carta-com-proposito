@@ -8,7 +8,7 @@
 <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1595171231774957&ev=PageView&noscript=1"></noscript>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Playfair+Display:ital,wght@1,600&family=Parisienne&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600;700&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Alex+Brush&family=Parisienne&family=Cormorant+Garamond:ital,wght@1,700&display=swap">
 <style>
 {{CSS}}
 </style>
@@ -794,7 +794,7 @@ const Art = (() => {
   }
   async function card(L, qrCanvas) {
     const T = THEMES.find(t => t.id === L.theme) || THEMES[0];
-    try { await Promise.all(['400 120px "Great Vibes"', 'italic 500 48px "Cormorant Garamond"', 'italic 600 48px "Cormorant Garamond"', '600 30px Figtree'].map(f => document.fonts.load(f))); } catch (e) {}
+    try { await Promise.all(['400 120px "Alex Brush"', 'italic 500 48px "Playfair Display"', 'italic 600 48px "Playfair Display"', '600 30px "DM Sans"'].map(f => document.fonts.load(f))); } catch (e) {}
     const w = 1200, h = 1800, [c, x] = mk(w, h);
     const G = lin(x, 0, 0, w, 0, [[0, '#B4822C'], [.22, '#F6DB92'], [.38, '#FFF4D2'], [.55, '#D9A845'], [.78, '#FBE6A6'], [1, '#B4822C']]);
     x.fillStyle = lin(x, 0, 0, 0, h, [[0, T.bg1], [1, T.bg2]]); x.fillRect(0, 0, w, h);
@@ -802,18 +802,18 @@ const Art = (() => {
     x.strokeStyle = G; x.lineWidth = 3; x.strokeRect(56, 56, w - 112, h - 112); x.globalAlpha = .45; x.lineWidth = 1.5; x.strokeRect(72, 72, w - 144, h - 144); x.globalAlpha = 1;
     x.textAlign = 'center'; x.textBaseline = 'alphabetic';
     sealDraw(x, w / 2, 290, 86, T, L.initial);
-    x.fillStyle = T.acc; x.font = '600 28px Figtree, sans-serif'; spaced(x, 'UMA CARTA PARA', w / 2, 492, 9);
-    let fs = 176; x.font = `400 ${fs}px "Great Vibes", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Great Vibes", cursive`; }
+    x.fillStyle = T.acc; x.font = '600 28px "DM Sans", sans-serif'; spaced(x, 'UMA CARTA PARA', w / 2, 492, 9);
+    let fs = 176; x.font = `400 ${fs}px "Alex Brush", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Alex Brush", cursive`; }
     x.save(); x.shadowColor = 'rgba(255,190,90,.45)'; x.shadowBlur = 30; x.fillStyle = G; x.fillText(L.to, w / 2, 668); x.restore();
     const qs = 460, qx = (w - qs) / 2, qy = 860;
     x.save(); x.shadowColor = 'rgba(255,200,110,.35)'; x.shadowBlur = 40; x.fillStyle = '#fff'; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.fill(); x.restore();
     x.strokeStyle = G; x.lineWidth = 4; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.stroke();
     if (qrCanvas) { x.imageSmoothingEnabled = false; x.drawImage(qrCanvas, qx, qy, qs, qs); }
-    x.fillStyle = T.ink; x.font = '600 34px Figtree, sans-serif'; x.fillText('Aponte a câmera do celular', w / 2, 1470);
-    x.fillStyle = T.ink2; x.font = '500 28px Figtree, sans-serif'; x.fillText('para abrir a sua carta', w / 2, 1516);
-    x.fillStyle = G; x.font = '400 46px "Great Vibes", cursive'; x.fillText('“Põe-me como selo sobre o teu coração.”', w / 2, 1604);
-    x.fillStyle = T.ink2; x.font = '600 19px Figtree, sans-serif'; spaced(x, 'CANTARES 8:6', w / 2, 1646, 5);
-    x.fillStyle = T.acc; x.font = '600 20px Figtree, sans-serif'; spaced(x, BRAND.toUpperCase(), w / 2, 1700, 6);
+    x.fillStyle = T.ink; x.font = '600 34px "DM Sans", sans-serif'; x.fillText('Aponte a câmera do celular', w / 2, 1470);
+    x.fillStyle = T.ink2; x.font = '500 28px "DM Sans", sans-serif'; x.fillText('para abrir a sua carta', w / 2, 1516);
+    x.fillStyle = G; x.font = '400 46px "Alex Brush", cursive'; x.fillText('“Põe-me como selo sobre o teu coração.”', w / 2, 1604);
+    x.fillStyle = T.ink2; x.font = '600 19px "DM Sans", sans-serif'; spaced(x, 'CANTARES 8:6', w / 2, 1646, 5);
+    x.fillStyle = T.acc; x.font = '600 20px "DM Sans", sans-serif'; spaced(x, BRAND.toUpperCase(), w / 2, 1700, 6);
     return c.toDataURL('image/png');
   }
   return { example, card };
@@ -1274,7 +1274,7 @@ function cineOpen(host, L, onDone) {
   /* só começa com a letra cursiva já carregada, para o nome não trocar de fonte no meio (espera no máximo 0,8 s) */
   let comecou = false;
   const comecar = () => { if (comecou || feito) return; comecou = true; ajustar(); requestAnimationFrame(() => o.classList.add('on')); setTimeout(acabar, reduced() ? 600 : 7200); };
-  try { document.fonts.load('400 80px "Great Vibes"').then(() => { ajustar(); comecar(); }, comecar); } catch (e) { comecar(); }
+  try { document.fonts.load('400 80px "Alex Brush"').then(() => { ajustar(); comecar(); }, comecar); } catch (e) { comecar(); }
   setTimeout(comecar, 800);
 }
 
