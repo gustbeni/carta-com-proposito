@@ -160,4 +160,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - Decisão final do dono para a meia-noite de 10/11: VENDA CARTA 3 CC R$ 65, VENDA CARTA 2 R$ 75, original R$ 20 (total R$ 160). Original pausa se passar o 2º dia sem venda.
 - 10/11, 0h10: aplicado VENDA CARTA 3 CC R$ 65, VENDA CARTA 2 R$ 70, original R$ 22 (total R$ 157). Saldo do Meta R$ 191,88.
 - 10/11, tarde: publicado de uma vez: contador do funil, fontes "Moderna elegante", Dancing Script no pergaminho, pergaminho de ouro com moldura dourada (sem coroa e sem carimbo), polaroides num varal vertical de ouro e álbum de ouro no lugar dos slides de cinema do Premium. Textos do Premium e dos adicionais atualizados (álbum de ouro; preços certos dos adicionais na pergunta frequente).
-- 10/11, 14h50: novo adicional da Padrão "Álbum de ouro" (+R$ 3,99) com o selo "Novidade" e o botão de prévia. Guardado sem publicar.
+- 10/11, 14h50: novo adicional da Padrão "Álbum de ouro" (+R$ 3,99) com o selo "Novidade" e o botão de prévia, e aviso do WhatsApp em 30 minutos. Publicado às 14h52.
