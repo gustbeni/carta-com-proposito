@@ -1239,3 +1239,20 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .sem-email-row{margin-top:10px;padding:11px 14px;background:transparent;font-size:14px;color:var(--ink-2)}
 .sem-email-nota{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(243,213,138,.08);border:1px solid rgba(243,213,138,.3);color:var(--ink)}
 .mail-note.sem{border-color:rgba(243,213,138,.4)}
+
+/* Pergaminho de ouro (10/11, pedido do dono): papel em folha de ouro com brilho que passa devagar,
+   moldura dourada mais forte, tinta preta com contorno de ouro e a primeira letra em ouro. Sem coroa e sem carimbo. */
+.scroll.royal .parch-in{padding:30px 28px 20px;background:
+  linear-gradient(115deg,transparent 30%,rgba(255,250,225,.55) 46%,transparent 62%) 0 0/260% 100% no-repeat,
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .38 0 0 0 0 .1 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+  radial-gradient(120% 90% at 50% 38%,#FFF6D6 0%,#F7E2A6 34%,#EBC873 64%,#D4A24A 86%,#B8842E 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,246,214,.7),inset 0 0 46px rgba(140,88,20,.42),inset 16px 0 22px -14px rgba(120,72,14,.5),inset -16px 0 22px -14px rgba(120,72,14,.5);
+  animation:ouroPassa 7s ease-in-out infinite}
+@keyframes ouroPassa{0%,15%{background-position:130% 0,0 0,0 0}60%,100%{background-position:-130% 0,0 0,0 0}}
+.scroll.royal .parch-in::before{inset:11px 9px;border:2px solid #A8731F;box-shadow:inset 0 0 0 4px rgba(255,243,205,.65),inset 0 0 0 5.5px #C9933A,0 0 0 1px rgba(255,236,180,.55)}
+.scroll.royal .parch-in::after{filter:saturate(1.4) brightness(.9)}
+.scroll.royal .parch-txt p{color:#140C05}
+.scroll.royal .parch-txt .ink{text-shadow:0 0 .5px rgba(20,12,5,.6),0 .6px 0 rgba(255,236,170,.55),0 0 6px rgba(214,160,60,.28)}
+.scroll.royal .parch-txt p::first-letter{font-size:1.75em;line-height:.9;color:#A8731F;text-shadow:0 1px 0 #FFF0BE,0 0 8px rgba(226,176,74,.55),0 0 1px #6E4A10}
+.scroll.royal .parch-foot{margin-top:10px}
+@media (prefers-reduced-motion:reduce){.scroll.royal .parch-in{animation:none}}
