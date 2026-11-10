@@ -997,6 +997,7 @@ function scrollHTML(text, full, aberto) {
   return `<div class="scroll royal${full && !aberto ? ' fechado' : ''}">
     <div class="rod" aria-hidden="true"><i class="fin l"></i><i class="fin r"></i></div>
     <div class="parch-wrap"><div class="parch"><div class="parch-in">
+      <div class="orla" aria-hidden="true"><i class="cn tl"></i><i class="cn tr"></i><i class="cn bl"></i><i class="cn br"></i><i class="md t"></i><i class="md b"></i><i class="md l"></i><i class="md r"></i></div>
       <div class="parch-txt"><p class="ghost" aria-hidden="true">${t}</p><p class="ink">${full ? '' : t}</p></div>
       <div class="parch-foot">${INKWELL}</div>
     </div></div></div>
