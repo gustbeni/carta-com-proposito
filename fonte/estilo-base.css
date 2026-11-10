@@ -1359,3 +1359,4 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ab-previa{margin-top:14px;container-type:inline-size}
 .ab-previa .cine-slides{margin:0}
 @media (prefers-reduced-motion:reduce){.bump-novo{animation:none}}
+.bump-ouro{color:#F3D58A;font-weight:600}
