@@ -2934,7 +2934,7 @@ function bindLetter(root, L, mode, hooks = {}) {
       pgs[k + 1].classList.add('atual'); faiscas();
       if (k === 0) { const fl = box.querySelector('.ab-flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
       k++;
-      t = setTimeout(virar, reduced() ? 1800 : 4800); timers.push(t);
+      t = setTimeout(virar, reduced() ? 1800 : 3000); timers.push(t);
     };
     cena.addEventListener('click', virar);
     t = setTimeout(virar, reduced() ? 300 : 2200); timers.push(t);
