@@ -163,4 +163,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 10/11, 14h50: novo adicional da Padrão "Álbum de ouro" (+R$ 3,99) com o selo "Novidade" e o botão de prévia, e aviso do WhatsApp em 30 minutos. Publicado às 14h52.
 - 10/11, 14h55: adicional "Abertura gloriosa de cinema + 4 fotos" tirado da venda a pedido do dono (`oculto` no `EXTRAS` do site; continua valendo nas cartas que já compraram e no `comum.mjs`). Publicado às 14h57.
 - 10/11, 15h07: publicado versículos escolhidos bem maiores (`.l-verse p` até 46px) e pergaminho com bem mais espaço em cima e embaixo do texto (`.scroll.royal .parch-in` padding 124px 38px 112px).
-- 10/11, 15h15: Padrão passou de 3 meses para 1 mês nas compras novas (textos do site, e-mail e privacidade atualizados; quem comprou antes segue com 3 meses). Guardado sem publicar.
+- 10/11, 15h15: Padrão passou de 3 meses para 1 mês nas compras novas (textos do site, e-mail e privacidade atualizados; quem comprou antes segue com 3 meses) e "A carta funciona para sempre" em dourado no adicional da vitalícia. Publicado às 15h16.
