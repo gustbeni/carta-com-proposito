@@ -1193,12 +1193,12 @@ function cameraHTML(L, mini) {
 
 /* ===== Premium: as fotos aparecem num álbum de ouro (capa que abre e páginas que viram com luz) ===== */
 function slidesHTML(pics, L) {
-  const pg = pics.map((p, i) => `<div class="ab-pg" style="z-index:${40 - i - 1}"><div class="ab-face ab-fol"><i class="ab-lomb"></i><div class="ab-foto"><i class="ab-cn a"></i><i class="ab-cn b"></i><i class="ab-cn c"></i><i class="ab-cn d"></i><div class="ab-im"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><i class="ab-raio"></i></div></div>${p.cap ? `<p class="ab-leg">${esc(p.cap)}</p>` : ''}<i class="ab-orn"></i><span class="ab-num">${i + 1} de ${pics.length}</span></div><div class="ab-face ab-verso"></div></div>`).join('');
+  const pg = pics.map((p, i) => `<div class="ab-pg" style="z-index:${40 - i - 1};--z:${-(i + 1) * .6}px"><div class="ab-face ab-fol"><i class="ab-lomb"></i><div class="ab-foto"><i class="ab-cn a"></i><i class="ab-cn b"></i><i class="ab-cn c"></i><i class="ab-cn d"></i><div class="ab-im"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><i class="ab-raio"></i></div></div>${p.cap ? `<p class="ab-leg">${esc(p.cap)}</p>` : ''}<i class="ab-orn"></i><span class="ab-num">${i + 1} de ${pics.length}</span></div><div class="ab-face ab-verso"></div></div>`).join('');
   const nomes = L && L.to ? `${esc(L.to)}${L.from ? ' &amp; ' + esc(L.from) : ''}` : 'Nós dois';
   return `<div class="cine-slides" aria-label="Álbum das fotos">
     <div class="ab-cena"><div class="ab-raios" aria-hidden="true"></div><div class="ab-aura" aria-hidden="true"></div><div class="ab-motes" aria-hidden="true">${motes(14)}</div>
       <div class="ab-livro"><div class="ab-miolo"></div>${pg}
-        <div class="ab-pg ab-capa" style="z-index:50"><div class="ab-face ab-frente"><div class="ab-moldura"><i></i><i></i><i></i><i></i></div><div class="ab-medalha"><small>Álbum de</small><b>${nomes}</b><i class="ab-filete"></i><em>nossos momentos</em></div></div><div class="ab-face ab-verso"></div></div>
+        <div class="ab-pg ab-capa" style="z-index:50;--z:1px"><div class="ab-face ab-frente"><div class="ab-moldura"><i></i><i></i><i></i><i></i></div><div class="ab-medalha"><small>Álbum de</small><b>${nomes}</b><i class="ab-filete"></i><em>nossos momentos</em></div></div><div class="ab-face ab-verso"></div></div>
       </div><i class="ab-flash" aria-hidden="true"></i></div>
     <p class="cs-hint">Toque no álbum para virar a página</p>
   </div>`;
@@ -1570,15 +1570,19 @@ function bindLetter(root, L, mode, hooks = {}) {
       s.classList.add('cs-fim');
       later(() => { const b = nextBtn(s); if (b) { b.hidden = false; mostrar(b, 130); } }, 1200);
     };
+    let ultimo = 0;
     const virar = () => {
+      if (Date.now() - ultimo < 1100) return; /* um toque durante a virada não atropela a página */
+      ultimo = Date.now();
       clearTimeout(t);
       if (fim) return;
       if (k >= pgs.length - 1) { terminar(); return; }
-      const p = pgs[k]; p.classList.add('virando', 'virou'); setTimeout(() => p.classList.remove('virando'), 1700);
+      const p = pgs[k]; p.style.zIndex = 60; p.classList.add('virando', 'virou');
+      setTimeout(() => { p.classList.remove('virando'); p.classList.add('some'); }, 1850);
       pgs[k + 1].classList.add('atual'); faiscas();
       if (k === 0) { const fl = box.querySelector('.ab-flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
       k++;
-      t = setTimeout(virar, reduced() ? 1800 : 4600); timers.push(t);
+      t = setTimeout(virar, reduced() ? 1800 : 4800); timers.push(t);
     };
     cena.addEventListener('click', virar);
     t = setTimeout(virar, reduced() ? 300 : 2200); timers.push(t);
