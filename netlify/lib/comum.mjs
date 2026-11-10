@@ -183,7 +183,7 @@ async function avisarDono(id, reg, tok) {
 }
 
 // ===== Aviso de Pix não pago pelo WhatsApp (o dono manda na mão) =====
-// No pagamento, a pessoa pode deixar o WhatsApp (opcional). Se o Pix ficar 1 hora sem pagar,
+// No pagamento, a pessoa pode deixar o WhatsApp (opcional). Se o Pix ficar 30 minutos sem pagar,
 // o dono recebe no ntfy um botão "Mandar WhatsApp", que abre /api/zap (com uma chave do pedido)
 // e de lá o WhatsApp da pessoa com a mensagem pronta. O número nunca vai para o ntfy.
 // Não usa função agendada: a verificação pega carona nas chamadas do site (pagar e status), no máximo a cada 5 minutos.
@@ -192,7 +192,7 @@ export function zapValido(v) {
   if (d.length === 10 || d.length === 11) d = "55" + d;
   return /^55\d{10,11}$/.test(d) ? d : "";
 }
-const ZAP_ESPERA = 60 * 60e3, ZAP_LIMITE = 24 * 3600e3, ZAP_INTERVALO = 5 * 60e3;
+const ZAP_ESPERA = 30 * 60e3, ZAP_LIMITE = 24 * 3600e3, ZAP_INTERVALO = 5 * 60e3;
 export async function verPendentesZap() {
   const topico = (process.env.NTFY_TOPICO || "").trim();
   if (!topico) return;
