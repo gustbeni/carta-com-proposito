@@ -166,3 +166,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 10/11, 15h15: Padrão passou de 3 meses para 1 mês nas compras novas (textos do site, e-mail e privacidade atualizados; quem comprou antes segue com 3 meses) e "A carta funciona para sempre" em dourado no adicional da vitalícia. Publicado às 15h16.
 - 10/11, 15h26: publicado começo do site com o envelope no centro, sem "Uma carta de amor com a Palavra de Deus" e sem "Leva uns 3 minutos".
 - 10/11, 15h41: publicado versículos menores (até 38px) e com letra fina (peso 400).
+- 10/11, 17h11: publicado o pagamento sem a caixinha "Quero receber a carta neste e-mail" (a carta continua indo para o e-mail da compra). Tarde fraca: nenhuma venda nem Pix gerado entre 15h11 e 17h; o funil mostra a 1ª tela melhor (≈ 6 em 10 passam) e a perda entre carta pronta e pagamento. Original no 2º dia sem venda (pausar); se a Padrão de 1 mês derrubar o pagamento, voltar para 3 meses.
