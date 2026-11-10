@@ -1274,3 +1274,21 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .orla .r{right:-55px;top:50%;margin-top:-11px;transform:rotate(90deg)}
 .scroll.royal .parch-in{padding:50px 38px 34px}
 .scroll.royal .parch-txt,.scroll.royal .parch-foot{position:relative;z-index:2}
+
+/* Varal vertical de ouro (10/11): as polaroides ficam presas por prendedores de ouro num cordão dourado que desce pela carta */
+.pols{position:relative;padding:40px 0 30px}
+.pols::before{content:"";position:absolute;left:50%;top:6px;bottom:10px;width:4px;margin-left:-2px;border-radius:2px;z-index:0;background:repeating-linear-gradient(160deg,#8E5E1A 0 3px,#F7DE9A 3px 6px,#C99A45 6px 9px);box-shadow:0 0 6px rgba(226,176,74,.45),1px 0 2px rgba(0,0,0,.5)}
+.pols::after{content:"";position:absolute;left:50%;top:0;width:16px;height:16px;margin-left:-8px;border-radius:50%;z-index:0;border:3px solid #D9A848;background:transparent;box-shadow:0 0 6px rgba(226,176,74,.6),inset 0 0 0 1px #FFF0C2}
+.pol{background:#FFFBF3;padding:11px 11px 0;border-radius:2px;box-shadow:0 2px 4px rgba(0,0,0,.25),0 30px 44px -22px rgba(0,0,0,.85);transform-origin:50% -14px;z-index:1}
+.pol:nth-child(n){align-self:center}
+.pol + .pol{margin-top:46px}
+.pol::before{top:-26px;width:15px;height:40px;transform:translateX(-50%);border-radius:4px;background:linear-gradient(90deg,#8E5E1A,#F7DE9A 42%,#E2B04A 58%,#A8731F);box-shadow:0 2px 4px rgba(0,0,0,.45),inset 0 -14px 0 -12px rgba(90,55,15,.55)}
+.pol:nth-child(3n+2)::before{transform:translateX(-50%)}
+.pol figcaption{font:500 22px/1.2 var(--f-ink);color:#4a2a12}
+.pols.pols6{padding-top:40px;gap:44px 10px}
+.pols.pols6::before{left:calc(25% - 2.5px)}
+.pols.pols6::after{left:calc(75% + 2.5px);top:6px;bottom:10px;width:4px;height:auto;margin-left:-2px;border:0;border-radius:2px;background:repeating-linear-gradient(160deg,#8E5E1A 0 3px,#F7DE9A 3px 6px,#C99A45 6px 9px);box-shadow:0 0 6px rgba(226,176,74,.45),1px 0 2px rgba(0,0,0,.5)}
+.pols.pols6 .pol + .pol{margin-top:0}
+.pols.pols6 .pol:nth-child(even){margin-top:18px}
+.pols.pols6 .pol::before{top:-20px;width:11px;height:30px}
+.pols.pols6 .pol figcaption{font-size:16px}
