@@ -3628,11 +3628,7 @@ function checkoutView() {
       <span class="ck-pronta"><i></i>Pronta para enviar</span></div>
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
-    <div class="form"><div class="field${S.semEmail ? ' sem-email' : ''}" id="emailField"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"${S.semEmail ? ' disabled' : ''}><p class="hint em-hint">${cfg.reserva ? 'Usamos para mandar a carta, se você pedir.' : 'O Mercado Pago manda o comprovante para este e-mail.'}</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
-      <label class="check sem-email-row"><input type="checkbox" id="fSemEmail"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
-      <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problemas, depois de efetuar o pagamento a sua carta é gerada automaticamente.</p></div>
-      <div class="field"><label for="fZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="fZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>
-      <div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
+    <div class="form"><div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
     <p class="group-label">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-pay="pix" aria-pressed="${S.pay === 'pix'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
@@ -3682,18 +3678,6 @@ function slideCheckout(el) {
 }
 function bindCheckout(el) {
   slideCheckout(el);
-  const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
-  em.addEventListener('input', () => { S.email = em.value.trim(); err.hidden = true; em.classList.remove('bad'); save(); });
-  if (mm) mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
-  const fz = $('#fZap', el); if (fz) fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
-  const se = $('#fSemEmail', el);
-  se.addEventListener('change', () => {
-    S.semEmail = se.checked; save(); track(se.checked ? 'sem_email' : 'com_email');
-    em.disabled = se.checked; err.hidden = true; em.classList.remove('bad');
-    $('#emailField', el).classList.toggle('sem-email', se.checked);
-    $('#semEmailNota', el).hidden = !se.checked;
-    const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || se.checked;
-  });
   carregarConfig().then(() => {
     const r = $('#mailRow', el); if (r) r.hidden = !cfg.email || S.semEmail;
     if (cfg.reserva) { // plano B: só Pix, pede o CPF
@@ -3979,8 +3963,9 @@ function erroTexto(e, salvar) {
   if (e.dados && e.dados.erro === 'prazo') return 'O prazo de 7 dias para mudar esta carta acabou. O link abre a última versão salva.';
   return salvar ? 'Não foi possível salvar agora. Confira sua internet e tente de novo.' : 'Não foi possível iniciar o pagamento agora. Confira sua internet e tente de novo.';
 }
-async function pay() {
-  etapa('tocou-pagar-' + (S.pay === 'card' ? 'cartao' : 'pix'));
+async function pay(daJanela) {
+  /* o e-mail, o "Não tenho e-mail" e o WhatsApp ficam só na janela Finalizar presente (11/11) */
+  if (!daJanela) { etapa('tocou-pagar-' + (S.pay === 'card' ? 'cartao' : 'pix')); return emailSheet(); }
   if (!S.semEmail && !isEmail(S.email)) { etapa('faltou-email'); return emailSheet(); }
   if (ocupado) return;
   await carregarConfig();
@@ -4019,18 +4004,16 @@ function emailSheet() {
     <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento</span></p>
     <button class="btn btn-primary w" id="shIr" style="margin-top:12px">${ICON.lock}${pix ? 'Gerar meu Pix' : 'Ir para o pagamento'} · ${valor}</button>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap');
-  const copiar = () => { const f = $('#fEmail'); if (f) f.value = S.email; const z = $('#fZap'); if (z) z.value = mascaraZap(S.zap || ''); };
   em.addEventListener('input', () => { S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); });
   if (fz) fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
   setTimeout(() => { try { (fz || em).focus(); } catch (e) {} }, 350);
   card.querySelector('#shIr').addEventListener('click', () => {
     if (!isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
-    copiar(); closeSheet(); setTimeout(() => pay(), 250);
+    S.semEmail = false; save(); closeSheet(); setTimeout(() => pay(true), 250);
   });
   card.querySelector('#shSem').addEventListener('click', () => {
-    S.semEmail = true; save(); track('sem_email'); copiar(); closeSheet();
-    const se = $('#fSemEmail'); if (se && !se.checked) { se.checked = true; se.dispatchEvent(new Event('change')); }
-    setTimeout(() => pay(), 250);
+    S.semEmail = true; save(); track('sem_email'); closeSheet();
+    setTimeout(() => pay(true), 250);
   });
 }
 function openPix(pix, ate) {
@@ -4059,9 +4042,9 @@ function pixRecusadoSheet() {
     <p class="sub">O Mercado Pago não liberou o Pix desta vez. Isso acontece por segurança e nada foi cobrado. Confira se o seu e-mail está certinho e tente de novo${cfg.reserva ? '' : ', ou pague com <b>cartão</b>'}.</p>
     <button class="btn btn-primary w" id="pixDeNovo" style="margin-top:20px">${ICON.lock}Tentar de novo com Pix</button>
     ${cfg.reserva ? '' : `<button class="btn btn-ghost w" id="pixCartao" style="margin-top:10px">Pagar ${valor} com cartão</button>`}`);
-  const ir = metodo => { closeSheet(); S.pay = metodo; save(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => pay(), 250); };
+  const ir = metodo => { closeSheet(); S.pay = metodo; save(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => pay(true), 250); };
   const bp = $('#pixDeNovo'), bc = $('#pixCartao');
-  if (bp) bp.addEventListener('click', () => { closeSheet(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } const f = $('#fEmail'); if (f && !S.semEmail) { f.focus(); toast('Confira o e-mail e toque em pagar de novo.'); } else setTimeout(() => pay(), 250); });
+  if (bp) bp.addEventListener('click', () => { closeSheet(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => emailSheet(), 300); });
   if (bc) bc.addEventListener('click', () => ir('card'));
 }
 function cartaoRecusadoSheet() {
@@ -4071,7 +4054,7 @@ function cartaoRecusadoSheet() {
     <p class="sub">O Mercado Pago não aprovou o pagamento com este cartão. Isso acontece por segurança e não é cobrado nada. Pague pelo <b>Pix</b>, que é aprovado na hora e libera a carta na mesma hora.</p>
     <button class="btn btn-primary w" id="recusaPix" style="margin-top:20px">${ICON.lock}Pagar ${valor} com Pix</button>
     <button class="btn btn-ghost w" id="recusaCartao" style="margin-top:10px">Tentar com outro cartão</button>`);
-  const ir = metodo => { closeSheet(); S.pay = metodo; save(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => pay(), 250); };
+  const ir = metodo => { closeSheet(); S.pay = metodo; save(); if (S.view !== 'checkout') { S.view = 'checkout'; render('fwd'); } setTimeout(() => pay(true), 250); };
   const bp = $('#recusaPix'), bc = $('#recusaCartao');
   if (bp) bp.addEventListener('click', () => { track('recusa_pix'); ir('pix'); });
   if (bc) bc.addEventListener('click', () => ir('card'));
