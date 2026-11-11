@@ -2567,8 +2567,7 @@ function erroTexto(e, salvar) {
 }
 async function pay() {
   etapa('tocou-pagar-' + (S.pay === 'card' ? 'cartao' : 'pix'));
-  const em = $('#fEmail');
-  if (!S.semEmail && !isEmail(S.email)) { $('#emailErr').hidden = false; em.classList.add('bad'); em.focus(); em.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+  if (!S.semEmail && !isEmail(S.email)) { etapa('faltou-email'); return emailSheet(); }
   if (ocupado) return;
   await carregarConfig();
   if (cfg.reserva && !cpfOk(cpfDigitado)) { const fc = $('#fCpf'), ce = $('#cpfErr'); if (ce) ce.hidden = false; if (fc) { fc.classList.add('bad'); fc.focus(); fc.scrollIntoView({ block: 'center', behavior: 'smooth' }); } return; }
@@ -2589,12 +2588,37 @@ async function pay() {
     pedido = { id: j.id, chave: j.chave, pago: false, metodo, querEmail, semEmail: !!S.semEmail, plano: S.plano, extras: extrasValidos(S.plano, S.extras), valor }; store.set(PED, pedido);
     if (metodo === 'cartao') { location.href = j.link; return; }
     pedido.pix = { qr: (j.pix || {}).qr || '', copia: (j.pix || {}).copia || '', ate: Date.now() + PIX_MS }; store.set(PED, pedido);
+    etapa('pix-gerado');
     openPix(j.pix || {}, pedido.pix.ate);
     esperarPagamento(0);
-  } catch (e) { closeSheet(); if (e.dados && e.dados.erro === 'pix_recusado') pixRecusadoSheet(); else toast(erroTexto(e)); }
+  } catch (e) { etapa('erro-pagar'); closeSheet(); if (e.dados && e.dados.erro === 'pix_recusado') pixRecusadoSheet(); else toast(erroTexto(e)); }
   ocupado = false; refreshBar();
 }
 const PIX_MS = 2 * 36e5;
+/* quem toca em pagar sem e-mail: em vez de só rolar a tela até o campo (muita gente desistia ali), abre uma janela pedindo o e-mail e já gera o Pix */
+function emailSheet() {
+  const valor = brl(precoTotal(S.plano, S.extras)), pix = S.pay !== 'card';
+  const card = openSheet(`<p class="eyebrow">Último passo</p><h2 class="h2">Para onde enviamos a sua carta?</h2>
+    <p class="sub">Coloque o seu e-mail. Mandamos o link da carta e o comprovante para ele.</p>
+    <div class="form" style="margin-top:16px"><div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
+    ${pix ? `<div class="field"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"></div>` : ''}</div>
+    <button class="btn btn-primary w" id="shIr" style="margin-top:18px">${ICON.lock}${pix ? 'Gerar meu Pix' : 'Ir para o pagamento'} · ${valor}</button>
+    <button class="btn btn-ghost w" id="shSem" style="margin-top:10px">Não tenho e-mail</button>`);
+  const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap');
+  const copiar = () => { const f = $('#fEmail'); if (f) f.value = S.email; const z = $('#fZap'); if (z) z.value = mascaraZap(S.zap || ''); };
+  em.addEventListener('input', () => { S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); });
+  if (fz) fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
+  setTimeout(() => { try { em.focus(); } catch (e) {} }, 350);
+  card.querySelector('#shIr').addEventListener('click', () => {
+    if (!isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
+    copiar(); closeSheet(); setTimeout(() => pay(), 250);
+  });
+  card.querySelector('#shSem').addEventListener('click', () => {
+    S.semEmail = true; save(); track('sem_email'); closeSheet();
+    const se = $('#fSemEmail'); if (se && !se.checked) { se.checked = true; se.dispatchEvent(new Event('change')); }
+    setTimeout(() => pay(), 250);
+  });
+}
 function openPix(pix, ate) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
   openSheet(`<p class="eyebrow">Pix · ${brl(precoTotal(S.plano, S.extras))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
