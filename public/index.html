@@ -1396,6 +1396,24 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ck-selos div{padding:10px 6px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(226,176,74,.28);text-align:center;font-size:12px;line-height:1.3;color:var(--muted,#c9b3a6)}
 .ck-selos b{display:block;font-size:18px;margin-bottom:3px}
 .ck-selos strong{display:block;color:var(--ink,#f6ead6);font-weight:600}
+/* miniatura da carta no pagamento: fotos passando como slide */
+.ck-show{position:relative;width:52%;max-width:200px;aspect-ratio:.86;display:grid}
+.ck-show .ck-pol{grid-area:1/1;width:100%;max-width:none;align-self:center;opacity:0;transform:translateX(40px) rotate(6deg) scale(.92);transition:opacity .9s ease,transform 1s cubic-bezier(.2,.8,.2,1)}
+.ck-show .ck-pol.on{opacity:1;transform:rotate(-3deg)}
+.ck-show .ck-pol.sai{opacity:0;transform:translateX(-46px) rotate(-10deg) scale(.92)}
+.ck-show .ck-pol:nth-child(even).on{transform:rotate(3deg)}
+/* Premium: moldura de ouro, luz pulsando atrás e faíscas a cada troca */
+.ck-prem .ck-pol{background:linear-gradient(135deg,#FFF0C2,#D9A848 40%,#F7DE9A 60%,#A8731F);padding:7px 7px 0;box-shadow:0 0 22px rgba(243,213,138,.55),0 14px 24px -10px rgba(0,0,0,.8)}
+.ck-prem .ck-pol figcaption{color:#3B230C}
+.ck-prem .ck-pol::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,250,225,.75) 50%,transparent 65%) no-repeat;background-size:300% 100%;background-position:150% 0;pointer-events:none}
+.ck-prem .ck-pol.on::after{animation:ckBrilho 1.6s ease-in-out .5s both}
+@keyframes ckBrilho{to{background-position:-50% 0}}
+.ck-luz{grid-area:1/1;align-self:center;justify-self:center;width:150%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,130,.55),rgba(226,176,74,.15) 55%,transparent);animation:ckLuz 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes ckLuz{50%{opacity:.55;transform:scale(1.08)}}
+.ck-fa{position:absolute;left:50%;top:45%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#FFF3C4;box-shadow:0 0 8px 3px rgba(245,205,110,.9);pointer-events:none;opacity:0;animation:ckFa 1.3s ease-out forwards;z-index:3}
+@keyframes ckFa{15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
+@media (prefers-reduced-motion:reduce){.ck-luz{animation:none}}
+.ck-prem .ck-pol:not(:has(figcaption)){padding-bottom:20px}
 
 </style></head><body>
 <div class="app" id="app">
@@ -3581,7 +3599,6 @@ function checkoutView() {
   /* topo da tela de pagamento: a carta da pessoa, o que vai nela e os selos de confiança (10/11) */
   const ex = extrasValidos(S.plano, S.extras), prem = S.plano === 'premium';
   const fotosIdx = L.pol.concat(3).filter(i => L.photos[i]);
-  const f0 = L.pol.find(i => L.photos[i]);
   const n = (k, um, varios) => `${k} ${k === 1 ? um : varios}`;
   const itens = [n(L.verses.length, 'versículo', 'versículos')];
   if (fotosIdx.length) itens.push(n(fotosIdx.length, 'foto de vocês', 'fotos de vocês'));
@@ -3597,7 +3614,7 @@ function checkoutView() {
   }
   return `<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
     <div class="ck-mini lt" data-theme="${L.theme}"><span class="ck-para">Para</span><span class="ck-nome">${esc(L.to)}</span>
-      ${f0 !== undefined ? `<figure class="ck-pol"><img src="${L.photos[f0]}" alt="">${(L.captions[f0] || '').trim() ? `<figcaption>${esc(L.captions[f0])}</figcaption>` : ''}</figure>` : `<span class="seal ck-seal" style="--s:64px"><span>${sealInner(L)}</span></span>`}
+      ${fotosIdx.length ? `<div class="ck-show${prem ? ' ck-prem' : ''}">${prem ? '<i class="ck-luz" aria-hidden="true"></i>' : ''}${fotosIdx.map((i, k) => `<figure class="ck-pol${k === 0 ? ' on' : ''}"><img src="${L.photos[i]}" alt="">${(L.captions[i] || '').trim() ? `<figcaption>${esc(L.captions[i])}</figcaption>` : ''}</figure>`).join('')}</div>` : `<span class="seal ck-seal" style="--s:64px"><span>${sealInner(L)}</span></span>`}
       <span class="ck-pronta"><i></i>Pronta para enviar</span></div>
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
@@ -3630,7 +3647,31 @@ function bindBumps(el) {
     S.extras = EXTRAS.filter(e => !e.oculto).map(e => e.id).filter(x => ex.has(x)); save(); render(); refreshBar();
   }));
 }
+/* tela de pagamento: as fotos da carta passam uma a uma na miniatura (no Premium, com luz e faíscas de ouro) */
+let ckTimer = null;
+function slideCheckout(el) {
+  clearInterval(ckTimer);
+  const box = $('.ck-show', el); if (!box) return;
+  const fs = [...box.querySelectorAll('.ck-pol')]; if (fs.length < 2 || reduced()) return;
+  let k = 0;
+  ckTimer = setInterval(() => {
+    if (!box.isConnected) { clearInterval(ckTimer); return; }
+    fs[k].classList.remove('on'); fs[k].classList.add('sai');
+    const velho = fs[k]; setTimeout(() => velho.classList.remove('sai'), 1000);
+    k = (k + 1) % fs.length; fs[k].classList.add('on');
+    if (box.classList.contains('ck-prem')) {
+      for (let j = 0; j < 14; j++) {
+        const f = document.createElement('i'); f.className = 'ck-fa';
+        const a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 70;
+        f.style.setProperty('--dx', Math.cos(a) * d + 'px'); f.style.setProperty('--dy', Math.sin(a) * d + 'px');
+        f.style.animationDelay = (Math.random() * .3) + 's';
+        box.appendChild(f); setTimeout(() => f.remove(), 1600);
+      }
+    }
+  }, 2600);
+}
 function bindCheckout(el) {
+  slideCheckout(el);
   const em = $('#fEmail', el), err = $('#emailErr', el), mm = $('#fMailMe', el);
   em.addEventListener('input', () => { S.email = em.value.trim(); err.hidden = true; em.classList.remove('bad'); save(); });
   if (mm) mm.addEventListener('change', () => { S.mailMe = mm.checked; save(); });
