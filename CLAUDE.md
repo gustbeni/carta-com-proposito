@@ -186,3 +186,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 11/11, 9h30: os 5 Pix gerados entre 9h02 e 9h17 foram testes do dono na janela nova (desconsiderar no funil e no Mercado Pago). Vendas reais até 9h30: 2 (7h29 e 8h53).
 - 11/11, 9h40: publicado "Já presenteou? Entrar no Meu acesso" no começo do site (antes "Já comprou?").
 - 11/11, 9h45: publicado o botão dos adicionais só "Continuar" (sem o valor; o total aparece na carta pronta e no pagamento).
+- 11/11, 10h42: o dono disse que 6 das visitas do funil entre 9h25 e 10h31 foram testes dele (inclui as 3 aberturas da janela e o toque no cartão às 9h26). Até 10h42 não havia dado real de cliente na janela nova.
