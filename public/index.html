@@ -1439,6 +1439,21 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @keyframes shPulso{0%,100%{box-shadow:0 14px 30px -14px rgba(236,180,80,.75),0 0 0 0 rgba(243,213,138,.0),inset 0 1px 0 rgba(255,255,255,.6)}50%{box-shadow:0 16px 34px -12px rgba(236,180,80,.9),0 0 0 6px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,255,255,.6)}}
 @media (prefers-reduced-motion:reduce){.sh-ir{animation:none}}
 
+/* rascunho 11/11: janela Finalizar presente compacta (tudo cabe na tela, sem rolar) */
+.sh-resumo{margin:6px 0 0;font:500 15px/1.35 var(--f-ui);color:var(--ink-2)}
+.sh-resumo b{color:#F3D58A;font-weight:700}
+.sh-pay{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.sh-pay .payopt{padding:12px 12px;gap:10px;min-height:0}
+.sh-pay .payopt b{font-size:16px}
+.sh-pay .payopt small{font-size:12.5px;line-height:1.25}
+.sh-form{margin-top:14px;gap:12px}
+.sh-form .field{gap:6px}
+.sh-form .input{padding-top:12px;padding-bottom:12px;min-height:0}
+.sh-form .check.sem-email-row{margin-top:0;padding:10px 14px}
+.sh-aviso{flex-direction:row;justify-content:center;text-align:left;margin-top:12px;padding:10px 12px;font-size:13px}
+.sh-seguro{display:flex;align-items:center;justify-content:center;gap:6px;margin:10px 0 0;font:500 12.5px/1.3 var(--f-ui);color:var(--ink-3,rgba(255,240,220,.6))}
+.sh-seguro svg{width:13px;height:13px}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -3643,7 +3658,7 @@ function checkoutView() {
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
     <div class="form"><div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
-    <p class="trust" id="trustTxt">${ICON.lock}Pagamento seguro pelo ${cfg.reserva ? 'PagBank' : 'Mercado Pago'} · 7 dias de garantia</p>
+    <p class="trust" id="trustTxt">${ICON.lock}Pagamento seguro · 7 dias de garantia</p>
     <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div>
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }
@@ -4009,16 +4024,16 @@ function emailSheet() {
   if (cfg.reserva && S.pay === 'card') { S.pay = 'pix'; save(); }
   const valor = brl(precoTotal(S.plano, S.extras));
   const card = openSheet(`<p class="eyebrow">Finalizar presente</p>
-    <p class="group-label" style="margin-top:14px">Forma de pagamento</p>
-    <div class="pay">
-      <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
-      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
+    <p class="sh-resumo">Carta para <b>${esc(S.to || 'quem você ama')}</b> · <b>${valor}</b></p>
+    <div class="pay sh-pay">
+      <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span></button>
+      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão</b><small>Crédito ou saldo MP</small></span></button>
     </div>
-    <div class="form" style="margin-top:16px"><div class="field" id="shZapBox"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>
-    <div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
-    <label class="check sem-email-row" style="margin-top:-4px"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label></div>
+    <div class="form sh-form"><div class="field" id="shZapBox"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"></div>
+    <div class="field"><label for="shEmail">Seu e-mail <span style="font-weight:400;opacity:.65">(a carta chega nele)</span></label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
+    <label class="check sem-email-row"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label></div>
     <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento</span></p>
-    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
+    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button><p class="sh-seguro">${ICON.lock}Pagamento seguro · 7 dias de garantia</p></div>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap'), ir = card.querySelector('#shIr');
   const atualizar = () => {
     const pix = S.pay !== 'card';
