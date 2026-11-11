@@ -886,7 +886,7 @@ function cartaDoServidor(P) {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
     photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf, Array(7).fill(null)).slice(0, 14).concat(fu[6] || null),
-    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)), Array(7).fill(''), txt(fc[6], 40)),
+    captions: [0, 1, 2].map(i => txt(fc[i], 70)).concat(txt(P.ffc, 70), [3, 4, 5].map(i => txt(fc[i], 70)), Array(7).fill(''), txt(fc[6], 70)),
     plano: premium ? 'premium' : 'padrao', extras, legado: true,
     music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', musicNome: txt(P.mt, 120), prayer: -1
   };
@@ -2467,7 +2467,7 @@ function rascunhoDoServidor(P, plano, extras) {
     prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao', extras: extrasValidos(plano === 'premium' ? 'premium' : 'padrao', extras || P.ex, true),
     music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '', musicNome: txt(P.mt, 120),
     theme: THEMES.some(t => t.id === P.th) ? P.th : null,
-    captions: [0, 1, 2].map(i => txt(fc[i], 40)).concat(txt(P.ffc, 40), [3, 4, 5].map(i => txt(fc[i], 40)), Array(7).fill(''), txt(fc[6], 40))
+    captions: [0, 1, 2].map(i => txt(fc[i], 70)).concat(txt(P.ffc, 70), [3, 4, 5].map(i => txt(fc[i], 70)), Array(7).fill(''), txt(fc[6], 70))
   };
   return { campos, caminhos, fotos: caminhos.map(u => u ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null) };
 }
