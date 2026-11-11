@@ -1383,7 +1383,7 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ck-nome{max-width:100%;font:400 clamp(40px,14vw,58px)/1.05 var(--f-script);background:linear-gradient(180deg,#FFF8DC 0%,#F9E29A 24%,#E7BA55 45%,#7E4D0E 50%,#C28A2B 55%,#F4D27A 74%,#FFF0BE 90%,#B98428 100%);-webkit-background-clip:text;background-clip:text;color:transparent;margin:2px 0 12px;overflow-wrap:anywhere}
 .ck-pol{width:46%;max-width:180px;margin:0;background:#FFFBF3;padding:6px 6px 0;rotate:-3deg;box-shadow:0 14px 24px -10px rgba(0,0,0,.8)}
 .ck-pol img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
-.ck-pol figcaption{padding:5px 2px 7px;font:500 13px/1.2 var(--f-ink);color:#4a2a12}
+.ck-pol figcaption{padding:7px 4px 9px;font:500 17px/1.2 var(--f-ink);color:#4a2a12}
 .ck-pol:not(:has(figcaption)){padding-bottom:16px}
 .ck-seal{margin:4px 0 6px}
 .ck-pronta{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font:700 11px var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:#7CE0A7}
@@ -1397,7 +1397,7 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ck-selos b{display:block;font-size:18px;margin-bottom:3px}
 .ck-selos strong{display:block;color:var(--ink,#f6ead6);font-weight:600}
 /* miniatura da carta no pagamento: fotos passando como slide */
-.ck-show{position:relative;width:52%;max-width:200px;aspect-ratio:.86;display:grid}
+.ck-show{position:relative;width:78%;max-width:300px;aspect-ratio:.86;display:grid}
 .ck-show .ck-pol{grid-area:1/1;width:100%;max-width:none;align-self:center;opacity:0;transform:translateX(40px) rotate(6deg) scale(.92);transition:opacity .9s ease,transform 1s cubic-bezier(.2,.8,.2,1)}
 .ck-show .ck-pol.on{opacity:1;transform:rotate(-3deg)}
 .ck-show .ck-pol.sai{opacity:0;transform:translateX(-46px) rotate(-10deg) scale(.92)}
@@ -4184,7 +4184,7 @@ function refreshBar() {
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
     else { nx.innerHTML = `Quero enviar · ${brl(precoTotal(S.plano, S.extras))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
   } else if (S.view === 'checkout') {
-    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Enviar minha carta · ${brl(precoTotal(S.plano, S.extras))}`;
+    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Finalizar minha carta · ${brl(precoTotal(S.plano, S.extras))}`;
     note.textContent = S.pay === 'pix' ? 'No Pix, a carta é liberada na hora' : 'A carta é liberada assim que o pagamento cair';
   }
 }
