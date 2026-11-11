@@ -2790,7 +2790,7 @@ function refreshBar() {
   if (S.view === 'step') {
     const st = STEPS[S.step], last = S.step === ultimoPasso();
     nx.disabled = !st.ok();
-    nx.innerHTML = st.id === 'premium' ? `Quero a Premium ${ICON.sparkle}` : st.id === 'adicionais' ? `Continuar · ${brl(precoTotal(S.plano, S.extras))} ${ICON.next}` : ui.editando ? `Pronto ${ICON.check}` : last ? `Ver carta final ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
+    nx.innerHTML = st.id === 'premium' ? `Quero a Premium ${ICON.sparkle}` : st.id === 'adicionais' ? `Continuar ${ICON.next}` : ui.editando ? `Pronto ${ICON.check}` : last ? `Ver carta final ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
     note.textContent = st.id === 'premium' ? 'Vitalícia, com cinema, álbum de ouro e mini filme' : st.id === 'adicionais' ? (extrasValidos(S.plano, S.extras).length ? `Padrão + ${extrasValidos(S.plano, S.extras).length} adicional(is)` : 'Carta Padrão · sem adicionais') : ui.editando ? 'Volta para a carta pronta' : editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
