@@ -1409,3 +1409,6 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .sh-aviso{display:flex;flex-direction:column;align-items:center;gap:6px;margin:18px 0 0;padding:14px 16px;border:1.5px solid #E2BC6A;border-radius:16px;background:linear-gradient(135deg,rgba(243,213,138,.22),rgba(201,148,59,.12));box-shadow:0 0 22px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,240,200,.25);font:700 15px/1.35 var(--f-ui);letter-spacing:.02em;text-transform:uppercase;color:#F6DB92;text-align:center}
 .sh-aviso svg{flex:none;width:24px;height:24px;color:#F3D58A}
 .sh-aviso b{color:#fff;font-weight:800}
+/* 11/11: "Não tenho e-mail" mais destacado (pedido do dono) */
+.check.sem-email-row{margin-top:12px;padding:15px 16px;border:1.5px solid rgba(226,188,106,.75);background:linear-gradient(135deg,rgba(243,213,138,.16),rgba(201,148,59,.08));box-shadow:0 0 16px rgba(243,213,138,.12);font:700 16px/1.35 var(--f-ui);color:#F6DB92}
+.check.sem-email-row .check-box{border:2px solid #E2BC6A}
