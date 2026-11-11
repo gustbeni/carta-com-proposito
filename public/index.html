@@ -1417,6 +1417,11 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .bar-prem{font:500 14.5px/1.25 var(--f-ui);letter-spacing:.04em;text-align:center}.bar.com-prem .bar-prem{font-weight:600}
 .bar-prem .bp-t{display:grid;justify-items:center;gap:2px}.bar-prem .bp-t small{font:500 12px/1.2 var(--f-ui);letter-spacing:.02em;text-transform:none;opacity:.85}
 
+/* janela Finalizar presente: aviso de que a carta aparece no site depois do pagamento */
+.sh-aviso{display:flex;align-items:center;gap:10px;margin:18px 0 0;padding:14px 16px;border:1.5px solid #E2BC6A;border-radius:16px;background:linear-gradient(135deg,rgba(243,213,138,.22),rgba(201,148,59,.12));box-shadow:0 0 22px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,240,200,.25);font:700 15px/1.35 var(--f-ui);letter-spacing:.02em;text-transform:uppercase;color:#F6DB92;text-align:left}
+.sh-aviso svg{flex:none;width:24px;height:24px;color:#F3D58A}
+.sh-aviso b{color:#fff;font-weight:800}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -4008,7 +4013,7 @@ function emailSheet() {
     <div class="form" style="margin-top:12px"><div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
     <button class="btn btn-ghost w" id="shSem" style="margin:-4px 0 14px">Não tenho e-mail</button>
     ${pix ? `<div class="field"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>` : ''}</div>
-    <p class="eyebrow" style="text-align:center;margin:18px 0 0;line-height:1.5">Sua carta será gerada aqui quando efetuar o pagamento</p>
+    <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento</span></p>
     <button class="btn btn-primary w" id="shIr" style="margin-top:12px">${ICON.lock}${pix ? 'Gerar meu Pix' : 'Ir para o pagamento'} · ${valor}</button>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap');
   const copiar = () => { const f = $('#fEmail'); if (f) f.value = S.email; const z = $('#fZap'); if (z) z.value = mascaraZap(S.zap || ''); };
