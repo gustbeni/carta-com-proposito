@@ -1402,3 +1402,5 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @keyframes ckFa{15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
 @media (prefers-reduced-motion:reduce){.ck-luz{animation:none}}
 .ck-prem .ck-pol:not(:has(figcaption)){padding-bottom:20px}
+.bar-prem{font:500 14.5px/1.25 var(--f-ui);letter-spacing:.04em;text-align:center}.bar.com-prem .bar-prem{font-weight:600}
+.bar-prem .bp-t{display:grid;justify-items:center;gap:2px}.bar-prem .bp-t small{font:500 12px/1.2 var(--f-ui);letter-spacing:.02em;text-transform:none;opacity:.85}

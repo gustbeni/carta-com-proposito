@@ -1414,6 +1414,8 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @keyframes ckFa{15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
 @media (prefers-reduced-motion:reduce){.ck-luz{animation:none}}
 .ck-prem .ck-pol:not(:has(figcaption)){padding-bottom:20px}
+.bar-prem{font:500 14.5px/1.25 var(--f-ui);letter-spacing:.04em;text-align:center}.bar.com-prem .bar-prem{font-weight:600}
+.bar-prem .bp-t{display:grid;justify-items:center;gap:2px}.bar-prem .bp-t small{font:500 12px/1.2 var(--f-ui);letter-spacing:.02em;text-transform:none;opacity:.85}
 
 </style></head><body>
 <div class="app" id="app">
@@ -4169,7 +4171,7 @@ function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
   const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => bumpsVisiveis(ex).every(e => ex.includes(e.id)) || precoTotal('padrao', ex) >= PRICE_PREMIUM - 0.01)(extrasValidos(S.plano, S.extras)); /* todos marcados, ou a soma já chegou no preço da Premium */
   document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
-  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}QUERO A VERSÃO PREMIUM · ${brl(PRICE_PREMIUM)}`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
+  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${brl(PRICE_PREMIUM)} · vitalícia, com tudo</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);
   if (hide) return;

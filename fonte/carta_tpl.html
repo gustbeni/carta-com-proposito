@@ -2765,7 +2765,7 @@ function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
   const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => bumpsVisiveis(ex).every(e => ex.includes(e.id)) || precoTotal('padrao', ex) >= PRICE_PREMIUM - 0.01)(extrasValidos(S.plano, S.extras)); /* todos marcados, ou a soma já chegou no preço da Premium */
   document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
-  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}QUERO A VERSÃO PREMIUM · ${brl(PRICE_PREMIUM)}`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
+  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${brl(PRICE_PREMIUM)} · vitalícia, com tudo</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);
   if (hide) return;
