@@ -4016,7 +4016,7 @@ function emailSheet() {
     </div>
     <div class="form" style="margin-top:16px"><div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
     <label class="check sem-email-row" style="margin-top:-4px"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label></div>
-    <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento. Caso tenha e-mail, ela também será enviada para lá.</span></p>
+    <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento. <b>Pague e volte para cá.</b> Caso tenha e-mail, ela também será enviada para lá.</span></p>
     <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr');
   const atualizar = () => {
