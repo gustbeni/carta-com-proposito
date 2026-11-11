@@ -4002,7 +4002,7 @@ function emailSheet() {
     </div>
     <div class="form" style="margin-top:16px"><div class="field" id="shZapBox"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>
     <div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
-    <button class="btn btn-ghost w" id="shSem" style="margin:-4px 0 0">Não tenho e-mail</button></div>
+    <label class="check sem-email-row" style="margin-top:-4px"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label></div>
     <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento</span></p>
     <button class="btn btn-primary w" id="shIr" style="margin-top:12px"></button>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap'), ir = card.querySelector('#shIr');
@@ -4016,15 +4016,16 @@ function emailSheet() {
   card.querySelectorAll('[data-shpay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.shpay; save(); atualizar(); refreshBar(); }));
   em.addEventListener('input', () => { S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); });
   fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
+  const sem = card.querySelector('#shSem');
+  const marcarSem = () => { em.disabled = sem.checked; if (sem.checked) { er.hidden = true; em.classList.remove('bad'); } };
+  marcarSem();
+  sem.addEventListener('change', () => { S.semEmail = sem.checked; save(); track(sem.checked ? 'sem_email' : 'com_email'); marcarSem(); });
   ir.addEventListener('click', () => {
-    if (!isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
-    S.semEmail = false; save(); closeSheet(); setTimeout(() => pay(true), 250);
-  });
-  card.querySelector('#shSem').addEventListener('click', () => {
-    S.semEmail = true; save(); track('sem_email'); closeSheet();
-    setTimeout(() => pay(true), 250);
+    if (!sem.checked && !isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
+    S.semEmail = sem.checked; save(); closeSheet(); setTimeout(() => pay(true), 250);
   });
 }
+
 
 function openPix(pix, ate) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
