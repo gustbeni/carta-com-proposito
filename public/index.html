@@ -3333,7 +3333,7 @@ const VIEWS = {
         ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 1 mês.')}
       </ul>
       <button class="prem-ver prem-ver-dest" id="verPremium">${ICON.eye}VER COMO FICARIA NA VERSÃO PREMIUM</button>
-      <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão · ${brl(PRICE)}</button></div>`;
+      <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão</button></div>`;
   },
   adicionais() {
     return `<p class="eyebrow">Adicionais ✨</p>
@@ -4178,7 +4178,7 @@ function refreshBar() {
     const st = STEPS[S.step], last = S.step === ultimoPasso();
     nx.disabled = !st.ok();
     nx.innerHTML = st.id === 'premium' ? `Quero a Premium ${ICON.sparkle}` : st.id === 'adicionais' ? `Continuar · ${brl(precoTotal(S.plano, S.extras))} ${ICON.next}` : ui.editando ? `Pronto ${ICON.check}` : last ? `Ver carta final ${ICON.sparkle}` : (st.optional && st.empty() ? 'Pular' : `Continuar ${ICON.next}`);
-    note.textContent = st.id === 'premium' ? `Premium: ${brl(PRICE_PREMIUM)} · vitalícia, com cinema e mini filme` : st.id === 'adicionais' ? (extrasValidos(S.plano, S.extras).length ? `Padrão + ${extrasValidos(S.plano, S.extras).length} adicional(is)` : 'Carta Padrão · sem adicionais') : ui.editando ? 'Volta para a carta pronta' : editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
+    note.textContent = st.id === 'premium' ? 'Vitalícia, com cinema, álbum de ouro e mini filme' : st.id === 'adicionais' ? (extrasValidos(S.plano, S.extras).length ? `Padrão + ${extrasValidos(S.plano, S.extras).length} adicional(is)` : 'Carta Padrão · sem adicionais') : ui.editando ? 'Volta para a carta pronta' : editavel() ? 'Editando a carta já paga · Salve no final' : 'Salvo neste aparelho';
   } else if (S.view === 'ready') {
     nx.disabled = ocupado;
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
