@@ -2215,11 +2215,6 @@ function checkoutView() {
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
     <div class="form"><div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
-    <p class="group-label">Forma de pagamento</p>
-    <div class="pay">
-      <button class="payopt" data-pay="pix" aria-pressed="${S.pay === 'pix'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
-      <button class="payopt" data-pay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
-    </div>
     <p class="trust" id="trustTxt">${ICON.lock}Pagamento seguro pelo ${cfg.reserva ? 'PagBank' : 'Mercado Pago'} · 7 dias de garantia</p>
     <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div>
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
@@ -2551,7 +2546,8 @@ function erroTexto(e, salvar) {
 }
 async function pay(daJanela) {
   /* o e-mail, o "Não tenho e-mail" e o WhatsApp ficam só na janela Finalizar presente (11/11) */
-  if (!daJanela) { etapa('tocou-pagar-' + (S.pay === 'card' ? 'cartao' : 'pix')); return emailSheet(); }
+  if (!daJanela) { etapa('abriu-finalizar'); return emailSheet(); }
+  etapa('tocou-pagar-' + (S.pay === 'card' ? 'cartao' : 'pix'));
   if (!S.semEmail && !isEmail(S.email)) { etapa('faltou-email'); return emailSheet(); }
   if (ocupado) return;
   await carregarConfig();
@@ -2582,18 +2578,31 @@ async function pay(daJanela) {
 const PIX_MS = 2 * 36e5;
 /* quem toca em pagar sem e-mail: em vez de só rolar a tela até o campo (muita gente desistia ali), abre uma janela pedindo o e-mail e já gera o Pix */
 function emailSheet() {
-  const valor = brl(precoTotal(S.plano, S.extras)), pix = S.pay !== 'card';
+  if (cfg.reserva && S.pay === 'card') { S.pay = 'pix'; save(); }
+  const valor = brl(precoTotal(S.plano, S.extras));
   const card = openSheet(`<p class="eyebrow">Finalizar presente</p>
-    <div class="form" style="margin-top:12px">${pix ? `<div class="field"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>` : ''}
+    <p class="group-label" style="margin-top:14px">Forma de pagamento</p>
+    <div class="pay">
+      <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
+      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
+    </div>
+    <div class="form" style="margin-top:16px"><div class="field" id="shZapBox"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint" style="color:var(--gold)">Só para te ajudar se o pagamento não for concluído.</p></div>
     <div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
     <button class="btn btn-ghost w" id="shSem" style="margin:-4px 0 0">Não tenho e-mail</button></div>
     <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento</span></p>
-    <button class="btn btn-primary w" id="shIr" style="margin-top:12px">${ICON.lock}${pix ? 'Gerar meu Pix' : 'Ir para o pagamento'} · ${valor}</button>`);
-  const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap');
+    <button class="btn btn-primary w" id="shIr" style="margin-top:12px"></button>`);
+  const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap'), ir = card.querySelector('#shIr');
+  const atualizar = () => {
+    const pix = S.pay !== 'card';
+    card.querySelector('#shZapBox').hidden = !pix; /* o WhatsApp só vale para o Pix */
+    ir.innerHTML = `${ICON.lock}${pix ? 'Gerar meu Pix' : 'Pagar com cartão'} · ${valor}`;
+    card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
+  };
+  atualizar();
+  card.querySelectorAll('[data-shpay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.shpay; save(); atualizar(); refreshBar(); }));
   em.addEventListener('input', () => { S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); });
-  if (fz) fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
-  setTimeout(() => { try { (fz || em).focus(); } catch (e) {} }, 350);
-  card.querySelector('#shIr').addEventListener('click', () => {
+  fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
+  ir.addEventListener('click', () => {
     if (!isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
     S.semEmail = false; save(); closeSheet(); setTimeout(() => pay(true), 250);
   });
@@ -2602,6 +2611,7 @@ function emailSheet() {
     setTimeout(() => pay(true), 250);
   });
 }
+
 function openPix(pix, ate) {
   const qr = String(pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(pix.copia || '');
   openSheet(`<p class="eyebrow">Pix · ${brl(precoTotal(S.plano, S.extras))}</p><h2 class="h2">Pague com Pix para liberar a carta</h2>
