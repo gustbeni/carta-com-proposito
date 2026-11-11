@@ -4007,9 +4007,9 @@ function emailSheet() {
   const card = openSheet(`<p class="eyebrow">Último passo</p><h2 class="h2">Para onde enviamos a sua carta?</h2>
     <p class="sub">Coloque o seu e-mail. Mandamos o link da carta e o comprovante para ele.</p>
     <div class="form" style="margin-top:16px"><div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
+    <button class="btn btn-ghost w" id="shSem" style="margin:-4px 0 14px">Não tenho e-mail</button>
     ${pix ? `<div class="field"><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint" style="color:var(--gold)">Não enviamos a carta pelo WhatsApp. É só para te ajudar se o pagamento não for concluído.</p></div>` : ''}</div>
-    <button class="btn btn-primary w" id="shIr" style="margin-top:18px">${ICON.lock}${pix ? 'Gerar meu Pix' : 'Ir para o pagamento'} · ${valor}</button>
-    <button class="btn btn-ghost w" id="shSem" style="margin-top:10px">Não tenho e-mail</button>`);
+    <button class="btn btn-primary w" id="shIr" style="margin-top:18px">${ICON.lock}${pix ? 'Gerar meu Pix' : 'Ir para o pagamento'} · ${valor}</button>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), fz = card.querySelector('#shZap');
   const copiar = () => { const f = $('#fEmail'); if (f) f.value = S.email; const z = $('#fZap'); if (z) z.value = mascaraZap(S.zap || ''); };
   em.addEventListener('input', () => { S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); });
