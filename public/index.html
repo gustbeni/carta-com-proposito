@@ -1374,6 +1374,29 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .bump-ouro{color:#F3D58A;font-weight:600}
 .cap-cont{display:block;min-height:0;margin-top:3px;font:500 11px/1.2 var(--f-ui);color:var(--gold,#E2B04A);text-align:center}.cap-cont:empty{display:none}
 
+/* tela de pagamento (10/11): miniatura da carta, o que vai nela e selos de confiança */
+.ck-h1{text-align:center;margin-bottom:16px}
+.ck-mini{position:relative;display:grid;justify-items:center;padding:20px 18px 16px;border-radius:22px;border:1px solid rgba(243,213,138,.4);background:radial-gradient(90% 80% at 50% 20%,rgba(255,255,255,.07),transparent 70%),var(--bg,#3a0f26);box-shadow:0 0 40px rgba(226,176,74,.15),0 20px 40px -20px rgba(0,0,0,.8);overflow:hidden;text-align:center}
+.ck-mini::before{content:"";position:absolute;inset:-40%;background:repeating-conic-gradient(from 0deg at 50% 30%,rgba(255,226,150,.08) 0 6deg,transparent 6deg 22deg);-webkit-mask:radial-gradient(closest-side,#000 20%,transparent 75%);mask:radial-gradient(closest-side,#000 20%,transparent 75%);pointer-events:none}
+.ck-mini>*{position:relative}
+.ck-para{font:400 16px var(--f-display);color:var(--muted,#c9b3a6)}
+.ck-nome{max-width:100%;font:400 clamp(40px,14vw,58px)/1.05 var(--f-script);background:linear-gradient(180deg,#FFF8DC 0%,#F9E29A 24%,#E7BA55 45%,#7E4D0E 50%,#C28A2B 55%,#F4D27A 74%,#FFF0BE 90%,#B98428 100%);-webkit-background-clip:text;background-clip:text;color:transparent;margin:2px 0 12px;overflow-wrap:anywhere}
+.ck-pol{width:46%;max-width:180px;margin:0;background:#FFFBF3;padding:6px 6px 0;rotate:-3deg;box-shadow:0 14px 24px -10px rgba(0,0,0,.8)}
+.ck-pol img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.ck-pol figcaption{padding:5px 2px 7px;font:500 13px/1.2 var(--f-ink);color:#4a2a12}
+.ck-pol:not(:has(figcaption)){padding-bottom:16px}
+.ck-seal{margin:4px 0 6px}
+.ck-pronta{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font:700 11px var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:#7CE0A7}
+.ck-pronta i{width:7px;height:7px;border-radius:50%;background:#7CE0A7;box-shadow:0 0 8px #7CE0A7}
+.ck-inclui{margin-top:14px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(226,176,74,.28)}
+.ck-inclui b{display:block;margin-bottom:8px;font:600 12.5px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--gold,#E2B04A)}
+.ck-inclui ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:14px}
+.ck-inclui li::before{content:"✓ ";color:#F3D58A}
+.ck-selos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 4px}
+.ck-selos div{padding:10px 6px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(226,176,74,.28);text-align:center;font-size:12px;line-height:1.3;color:var(--muted,#c9b3a6)}
+.ck-selos b{display:block;font-size:18px;margin-bottom:3px}
+.ck-selos strong{display:block;color:var(--ink,#f6ead6);font-weight:600}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -3555,9 +3578,29 @@ function bumpsHTML() {
 }
 function checkoutView() {
   const L = resolveLetter(S);
-  return `<p class="eyebrow">Pagamento</p>
-    <h1 class="h1" tabindex="-1">Falta só <em>um passo</em></h1>
-    <div class="summary"><span class="lt sum-thumb" data-theme="${L.theme}"><span class="seal" style="--s:30px"><span>${sealInner(L)}</span></span></span><span style="min-width:0"><b>Carta ${S.plano === 'premium' ? 'Premium' : 'Padrão'} para ${esc(L.to)}</b><small>${extrasValidos(S.plano, S.extras).length ? '+ ' + EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t.toLowerCase()).join(', ') : esc(L.title)}</small></span><strong>${brl(precoTotal(S.plano, S.extras))}</strong></div>
+  /* topo da tela de pagamento: a carta da pessoa, o que vai nela e os selos de confiança (10/11) */
+  const ex = extrasValidos(S.plano, S.extras), prem = S.plano === 'premium';
+  const fotosIdx = L.pol.concat(3).filter(i => L.photos[i]);
+  const f0 = L.pol.find(i => L.photos[i]);
+  const n = (k, um, varios) => `${k} ${k === 1 ? um : varios}`;
+  const itens = [n(L.verses.length, 'versículo', 'versículos')];
+  if (fotosIdx.length) itens.push(n(fotosIdx.length, 'foto de vocês', 'fotos de vocês'));
+  itens.push('Sua mensagem', 'Motivos no pote');
+  if (L.prayer) itens.push('Uma oração');
+  itens.push(L.music === 'link' ? 'A música de vocês' : 'Música de fundo');
+  if (prem) itens.push('Abertura de cinema', 'Álbum de ouro', 'Mini filme do casal', 'Câmera com raios de ouro', 'Carta para sempre');
+  else {
+    if (ex.includes('album')) itens.push('Álbum de ouro');
+    if (ex.includes('filme')) itens.push('Mini filme do casal');
+    if (ex.includes('cine')) itens.push('Abertura de cinema');
+    itens.push(ex.includes('vit') ? 'Carta para sempre' : 'Fica no ar por 1 mês');
+  }
+  return `<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
+    <div class="ck-mini lt" data-theme="${L.theme}"><span class="ck-para">Para</span><span class="ck-nome">${esc(L.to)}</span>
+      ${f0 !== undefined ? `<figure class="ck-pol"><img src="${L.photos[f0]}" alt="">${(L.captions[f0] || '').trim() ? `<figcaption>${esc(L.captions[f0])}</figcaption>` : ''}</figure>` : `<span class="seal ck-seal" style="--s:64px"><span>${sealInner(L)}</span></span>`}
+      <span class="ck-pronta"><i></i>Pronta para enviar</span></div>
+    <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
+    <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
     <div class="form"><div class="field${S.semEmail ? ' sem-email' : ''}" id="emailField"><label for="fEmail">Seu e-mail</label><input class="input" id="fEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email)}"${S.semEmail ? ' disabled' : ''}><p class="hint em-hint">${cfg.reserva ? 'Usamos para mandar a carta, se você pedir.' : 'O Mercado Pago manda o comprovante para este e-mail.'}</p><p class="err" id="emailErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p>
       <label class="check sem-email-row"><input type="checkbox" id="fSemEmail"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
       <p class="hint sem-email-nota" id="semEmailNota"${S.semEmail ? '' : ' hidden'}>Sem problemas, depois de efetuar o pagamento a sua carta é gerada automaticamente.</p></div>
@@ -4100,8 +4143,8 @@ function refreshBar() {
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
     else { nx.innerHTML = `Quero enviar · ${brl(precoTotal(S.plano, S.extras))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
   } else if (S.view === 'checkout') {
-    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Pagar ${brl(precoTotal(S.plano, S.extras))}${S.pay === 'pix' ? ' com Pix' : ''}`;
-    note.textContent = 'O link da carta aparece aqui assim que o pagamento cair';
+    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Enviar minha carta · ${brl(precoTotal(S.plano, S.extras))}`;
+    note.textContent = S.pay === 'pix' ? 'No Pix, a carta é liberada na hora' : 'A carta é liberada assim que o pagamento cair';
   }
 }
 
