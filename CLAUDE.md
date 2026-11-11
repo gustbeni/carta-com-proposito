@@ -185,3 +185,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 11/11, 9h25: publicado a forma de pagamento (Pix ou cartão) dentro da janela "Finalizar presente", em cima do WhatsApp e do e-mail (`data-shpay`); a tela de pagamento não tem mais a escolha. No cartão o WhatsApp some e o botão vira "Pagar com cartão". Funil: `abriu-finalizar` (toque em "Finalizar minha carta") e `tocou-pagar-pix`/`tocou-pagar-cartao` (botão de dentro da janela).
 - 11/11, 9h30: os 5 Pix gerados entre 9h02 e 9h17 foram testes do dono na janela nova (desconsiderar no funil e no Mercado Pago). Vendas reais até 9h30: 2 (7h29 e 8h53).
 - 11/11, 9h40: publicado "Já presenteou? Entrar no Meu acesso" no começo do site (antes "Já comprou?").
+- 11/11, 9h45: publicado o botão dos adicionais só "Continuar" (sem o valor; o total aparece na carta pronta e no pagamento).
