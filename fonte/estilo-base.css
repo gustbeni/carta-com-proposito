@@ -1412,10 +1412,3 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 /* 11/11: "Não tenho e-mail" mais destacado (pedido do dono) */
 .check.sem-email-row{margin-top:12px;padding:15px 16px;border:1.5px solid rgba(226,188,106,.75);background:linear-gradient(135deg,rgba(243,213,138,.16),rgba(201,148,59,.08));box-shadow:0 0 16px rgba(243,213,138,.12);font:700 16px/1.35 var(--f-ui);color:#F6DB92}
 .check.sem-email-row .check-box{border:2px solid #E2BC6A}
-
-/* janela Finalizar presente simplificada: Pix já escolhido, cartão num link */
-.sh-total{margin:6px 0 0;font:500 15px/1.3 var(--f-ui);color:var(--ink-2)}
-.sh-total b{font:700 26px/1.1 var(--f-display);color:#F6DB92;margin-left:6px}
-.sh-link{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 0;background:none;border:0;font:600 15px/1.3 var(--f-ui);color:#F3D58A;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.sh-link svg{width:18px;height:18px}
-.sh-troca{display:flex;justify-content:center;width:100%;margin-top:14px;font-weight:500;color:var(--ink-2)}
