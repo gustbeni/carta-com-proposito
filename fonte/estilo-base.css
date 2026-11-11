@@ -1419,3 +1419,10 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .sh-aviso{padding:12px 14px;gap:4px;font:600 13.5px/1.4 var(--f-ui);letter-spacing:0;text-transform:none}
 .sh-aviso svg{width:18px;height:18px}
 .sh-aviso b{font-weight:700}
+
+/* 11/11: "Gerar meu Pix" mais visível e preso no fim da janela (não some em celular pequeno) */
+.sh-fim{position:sticky;bottom:calc(-26px - env(safe-area-inset-bottom,0px));margin:12px calc(-1*var(--gut-r)) calc(-26px - env(safe-area-inset-bottom,0px)) calc(-1*var(--gut));padding:14px var(--gut-r) calc(18px + env(safe-area-inset-bottom,0px)) var(--gut);background:linear-gradient(180deg,rgba(40,9,31,0),#28091F 30%);z-index:2}
+.sh-ir{min-height:60px;font:800 17.5px/1.2 var(--f-ui);letter-spacing:.01em;animation:shPulso 2.4s ease-in-out infinite}
+.sh-ir svg{width:20px;height:20px}
+@keyframes shPulso{0%,100%{box-shadow:0 14px 30px -14px rgba(236,180,80,.75),0 0 0 0 rgba(243,213,138,.0),inset 0 1px 0 rgba(255,255,255,.6)}50%{box-shadow:0 16px 34px -12px rgba(236,180,80,.9),0 0 0 6px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,255,255,.6)}}
+@media (prefers-reduced-motion:reduce){.sh-ir{animation:none}}
