@@ -187,3 +187,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 11/11, 9h40: publicado "Já presenteou? Entrar no Meu acesso" no começo do site (antes "Já comprou?").
 - 11/11, 9h45: publicado o botão dos adicionais só "Continuar" (sem o valor; o total aparece na carta pronta e no pagamento).
 - 11/11, 10h42: o dono disse que 6 das visitas do funil entre 9h25 e 10h31 foram testes dele (inclui as 3 aberturas da janela e o toque no cartão às 9h26). Até 10h42 não havia dado real de cliente na janela nova.
+- 11/11, 11h08: publicado na janela "Finalizar presente": "Não tenho e-mail" virou caixinha de marcar (`#shSem` checkbox; o Pix só sai no botão), na fonte dos títulos dos campos (600 14,5px); aviso `.sh-aviso` menor e sem maiúsculas; "Gerar meu Pix" maior, com brilho pulsando (`.sh-ir`, `shPulso`) e preso no fim da janela (`.sh-fim`, sticky). Testado em 320×568, 360×640, 375×667 e 390×844.
