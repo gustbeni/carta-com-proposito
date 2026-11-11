@@ -4223,7 +4223,7 @@ function refreshBar() {
     if (editavel()) { nx.innerHTML = `Salvar as mudanças ${ICON.check}`; note.textContent = 'O link e o QR code continuam os mesmos'; }
     else { nx.innerHTML = `Quero enviar · ${brl(precoTotal(S.plano, S.extras))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
   } else if (S.view === 'checkout') {
-    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Finalizar minha carta · ${brl(precoTotal(S.plano, S.extras))}`;
+    nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Finalizar minha carta`;
     note.textContent = S.pay === 'pix' ? 'No Pix, a carta é liberada na hora' : 'A carta é liberada assim que o pagamento cair';
   }
 }
