@@ -1426,3 +1426,14 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .sh-ir svg{width:20px;height:20px}
 @keyframes shPulso{0%,100%{box-shadow:0 14px 30px -14px rgba(236,180,80,.75),0 0 0 0 rgba(243,213,138,.0),inset 0 1px 0 rgba(255,255,255,.6)}50%{box-shadow:0 16px 34px -12px rgba(236,180,80,.9),0 0 0 6px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,255,255,.6)}}
 @media (prefers-reduced-motion:reduce){.sh-ir{animation:none}}
+
+/* Black Novembro (até 30/11): faixa preta com ouro e vitalícia grátis nos adicionais */
+.black-faixa{display:flex;flex-direction:column;align-items:center;gap:2px;margin:12px 0 14px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,#0b0b0d,#1d1a14);border:1px solid rgba(232,196,110,.55);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 22px rgba(0,0,0,.35);text-align:center}
+.black-faixa b{font:800 13px/1.2 var(--f-ui);letter-spacing:.18em;text-transform:uppercase;color:#F3D58A}
+.black-faixa span{font:500 14px/1.35 var(--f-ui);color:#f3eee4}
+.black-faixa em{font-style:normal;font-weight:800;color:#F3D58A}
+.bump-black{background:#0b0b0d!important;color:#F3D58A!important;border:1px solid rgba(232,196,110,.6)}
+.bump-gratis{display:flex;flex-direction:column;align-items:flex-end;color:#F3D58A}
+.bump-gratis s{font-weight:500;font-size:12px;opacity:.6;color:var(--ink-2)}
+.bump input:disabled+.check-box{opacity:1}
+.black-faixa s{opacity:.6;font-weight:500}

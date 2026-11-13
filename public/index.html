@@ -1439,6 +1439,17 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @keyframes shPulso{0%,100%{box-shadow:0 14px 30px -14px rgba(236,180,80,.75),0 0 0 0 rgba(243,213,138,.0),inset 0 1px 0 rgba(255,255,255,.6)}50%{box-shadow:0 16px 34px -12px rgba(236,180,80,.9),0 0 0 6px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,255,255,.6)}}
 @media (prefers-reduced-motion:reduce){.sh-ir{animation:none}}
 
+/* Black Novembro (até 30/11): faixa preta com ouro e vitalícia grátis nos adicionais */
+.black-faixa{display:flex;flex-direction:column;align-items:center;gap:2px;margin:12px 0 14px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,#0b0b0d,#1d1a14);border:1px solid rgba(232,196,110,.55);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 22px rgba(0,0,0,.35);text-align:center}
+.black-faixa b{font:800 13px/1.2 var(--f-ui);letter-spacing:.18em;text-transform:uppercase;color:#F3D58A}
+.black-faixa span{font:500 14px/1.35 var(--f-ui);color:#f3eee4}
+.black-faixa em{font-style:normal;font-weight:800;color:#F3D58A}
+.bump-black{background:#0b0b0d!important;color:#F3D58A!important;border:1px solid rgba(232,196,110,.6)}
+.bump-gratis{display:flex;flex-direction:column;align-items:flex-end;color:#F3D58A}
+.bump-gratis s{font-weight:500;font-size:12px;opacity:.6;color:var(--ink-2)}
+.bump input:disabled+.check-box{opacity:1}
+.black-faixa s{opacity:.6;font-weight:500}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -1596,18 +1607,23 @@ const EXTRAS = [
   { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
   { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.', oculto: true } // não é mais vendido; fica para as cartas que já compraram
 ];
+/* Black Novembro (até 30/11, horário de Brasília): a vitalícia sai grátis na Padrão. O servidor (comum.mjs, pagar.mjs) faz o mesmo. */
+const BLACK_ATE = Date.parse('2026-12-01T03:00:00Z');
+const black = () => Date.now() < BLACK_ATE;
+const precoEx = e => (e.id === 'vit' && black() ? 0 : e.preco);
 /* a abertura de cinema já inclui as fotos a mais, então "fotos" não entra junto com "cine".
    legado = carta já paga (aceita também os adicionais que não são mais vendidos) */
 const extrasValidos = (plano, ex, legado) => {
   if (plano === 'premium' || !Array.isArray(ex)) return [];
   const v = EXTRAS.filter(e => (legado || !e.oculto) && ex.includes(e.id)).map(e => e.id);
+  if (!legado && black() && !v.includes('vit')) v.push('vit');
   return v.includes('cine') ? v.filter(k => k !== 'fotos') : v;
 };
 const temRec = (src, k) => { if (src.plano === 'premium') return true; const v = extrasValidos(src.plano, src.extras, src.legado); return v.includes(k) || (k === 'fotos' && v.includes('cine')); };
 /* posições das polaroides no rascunho: 0-2 da carta, 4-6 do adicional (ou Premium), 14 a 4ª foto da abertura de cinema */
 const polIdx = src => src.plano === 'premium' ? [0, 1, 2, 4, 5, 6] : temRec(src, 'cine') ? [0, 1, 2, 4, 5, 6, 14] : temRec(src, 'fotos') ? [0, 1, 2, 4, 5, 6] : [0, 1, 2];
 const bumpsVisiveis = ex => EXTRAS.filter(e => !e.oculto && !(e.id === 'fotos' && ex.includes('cine')));
-const precoTotal = (plano, ex) => plano === 'premium' ? PRICE_PREMIUM : Math.round((PRICE + EXTRAS.filter(e => extrasValidos(plano, ex).includes(e.id)).reduce((t, e) => t + e.preco, 0)) * 100) / 100;
+const precoTotal = (plano, ex) => plano === 'premium' ? PRICE_PREMIUM : Math.round((PRICE + EXTRAS.filter(e => extrasValidos(plano, ex).includes(e.id)).reduce((t, e) => t + precoEx(e), 0)) * 100) / 100;
 const NFOTOS = 15; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium), 14 a 4ª polaroide da abertura de cinema
 const API = '/api';        // funções do Netlify (Mercado Pago, cartas)
 const CLOUD = { nome: 'kmd9kglx', preset: 'carta_com_proposito' }; // Cloudinary: guarda as fotos das cartas
@@ -3609,11 +3625,22 @@ function readyView() {
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
 }
 /* order bump: adicionais avulsos para quem fica na Padrão */
+/* preço riscado só com comparação verdadeira (CDC): na Padrão, o que ela custaria pagando a vitalícia (Black Novembro);
+   na Premium, a soma dos adicionais vendidos separados (Padrão + vitalícia + álbum + filme + mais fotos) */
+const FAIXA = () => {
+  if (S.plano === 'premium') {
+    const sep = Math.round((PRICE + EXTRAS.filter(e => !e.oculto).reduce((t, e) => t + e.preco, 0)) * 100) / 100;
+    return `<p class="black-faixa"><b>Premium com tudo incluído</b><span>Comprando separado sairia <s>${brl(sep)}</s> · na Premium <em>${brl(PRICE_PREMIUM)}</em></span></p>`;
+  }
+  if (!black()) return '';
+  const agora = precoTotal(S.plano, S.extras);
+  return `<p class="black-faixa"><b>Black Novembro</b><span>Carta vitalícia grátis: de <s>${brl(agora + 2.99)}</s> por <em>${brl(agora)}</em> · até 30/11</span></p>`;
+};
 function bumpsHTML() {
   const ex = extrasValidos(S.plano, S.extras), soma = precoTotal('padrao', ex);
   return `<div class="bumps"><p class="bumps-t">${ICON.sparkle}Deixe a sua carta ainda mais especial</p>
-    ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
-      <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
+    ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}${e.id === 'vit' && black() ? ' disabled' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
+      <span class="bump-txt">${e.id === 'vit' && black() ? '<i class="bump-novo bump-black">Black Novembro</i>' : e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}</span>${e.id === 'vit' && black() ? `<strong class="bump-gratis"><s>+ ${brl(e.preco)}</s>Grátis</strong>` : `<strong>+ ${brl(e.preco)}</strong>`}</label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
     ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a câmera com raios de ouro.</p>` : ''}
   </div>`;
@@ -3636,7 +3663,7 @@ function checkoutView() {
     if (ex.includes('cine')) itens.push('Abertura de cinema');
     itens.push(ex.includes('vit') ? 'Carta para sempre' : 'Fica no ar por 1 mês');
   }
-  return `<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
+  return `${FAIXA()}<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
     <div class="ck-mini lt" data-theme="${L.theme}"><span class="ck-para">Para</span><span class="ck-nome">${esc(L.to)}</span>
       ${fotosIdx.length ? `<div class="ck-show${prem ? ' ck-prem' : ''}">${prem ? '<i class="ck-luz" aria-hidden="true"></i>' : ''}${fotosIdx.map((i, k) => `<figure class="ck-pol${k === 0 ? ' on' : ''}"><img src="${L.photos[i]}" alt="">${(L.captions[i] || '').trim() ? `<figcaption>${esc(L.captions[i])}</figcaption>` : ''}</figure>`).join('')}</div>` : `<span class="seal ck-seal" style="--s:64px"><span>${sealInner(L)}</span></span>`}
       <span class="ck-pronta"><i></i>Pronta para enviar</span></div>
@@ -4008,7 +4035,7 @@ const PIX_MS = 2 * 36e5;
 function emailSheet() {
   if (cfg.reserva && S.pay === 'card') { S.pay = 'pix'; save(); }
   const valor = brl(precoTotal(S.plano, S.extras));
-  const card = openSheet(`<p class="eyebrow">Finalizar presente</p>
+  const card = openSheet(`<p class="eyebrow">Finalizar presente</p>${FAIXA()}
     <p class="group-label" style="margin-top:14px">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
