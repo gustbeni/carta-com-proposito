@@ -1439,6 +1439,11 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @keyframes shPulso{0%,100%{box-shadow:0 14px 30px -14px rgba(236,180,80,.75),0 0 0 0 rgba(243,213,138,.0),inset 0 1px 0 rgba(255,255,255,.6)}50%{box-shadow:0 16px 34px -12px rgba(236,180,80,.9),0 0 0 6px rgba(243,213,138,.18),inset 0 1px 0 rgba(255,255,255,.6)}}
 @media (prefers-reduced-motion:reduce){.sh-ir{animation:none}}
 
+/* janela Finalizar presente: prova verdadeira acima do botão (contagem real de vendas e a garantia) */
+.sh-prova{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 0 10px;font:500 13px/1.3 var(--f-ui);color:#f3eee4;text-align:center}
+.sh-prova b{color:#F3D58A;font-weight:700}
+.sh-prova svg{width:15px;height:15px;flex:none;color:#7ED49B}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -4018,7 +4023,7 @@ function emailSheet() {
     <label class="check sem-email-row" style="margin-top:-4px"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
     <div class="field" id="shZapBox" hidden><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint">Só para te ajudar se o pagamento não for concluído.</p></div></div>
     <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento. <b>Pague e volte para cá.</b> Caso tenha e-mail, ela também será enviada para lá.</span></p>
-    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
+    <div class="sh-fim"><p class="sh-prova">${ICON.check}<span>Mais de <b>100 cartas</b> já enviadas · <b>7 dias de garantia</b></span></p><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
   const atualizar = () => {
     const pix = S.pay !== 'card';
