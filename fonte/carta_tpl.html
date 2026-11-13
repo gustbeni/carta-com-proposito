@@ -2590,7 +2590,7 @@ function emailSheet() {
     <label class="check sem-email-row" style="margin-top:-4px"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
     <div class="field" id="shZapBox" hidden><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint">Só para te ajudar se o pagamento não for concluído.</p></div></div>
     <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento. <b>Pague e volte para cá.</b> Caso tenha e-mail, ela também será enviada para lá.</span></p>
-    <div class="sh-fim"><p class="sh-prova">${ICON.check}<span>Mais de <b>100 cartas</b> já enviadas · <b>7 dias de garantia</b></span></p><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
+    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
   const atualizar = () => {
     const pix = S.pay !== 'card';
