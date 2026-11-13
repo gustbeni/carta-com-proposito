@@ -17,12 +17,8 @@ export const extrasDe = (lista, plano) => {
   const v = Object.keys(EXTRAS).filter(k => lista.includes(k));
   return v.includes("cine") ? v.filter(k => k !== "fotos") : v;
 };
-/* Black Novembro (até 30/11, horário de Brasília): a carta vitalícia sai grátis na Padrão. Só vale para pedidos novos (pagar.mjs). */
-export const BLACK_ATE = Date.parse("2026-12-01T03:00:00Z");
-export const blackAtivo = () => Date.now() < BLACK_ATE;
-const precoExtra = k => (k === "vit" && blackAtivo() ? 0 : EXTRAS[k]);
 export const valorDo = (plano, extras = []) => planoDe(plano) === "premium" ? PRECO_PREMIUM
-  : Math.round((PRECO + extrasDe(extras, plano).reduce((s, k) => s + precoExtra(k), 0)) * 100) / 100;
+  : Math.round((PRECO + extrasDe(extras, plano).reduce((s, k) => s + EXTRAS[k], 0)) * 100) / 100;
 // o pedido tem este recurso? (Premium tem tudo; Padrão só os adicionais que comprou)
 export const temRecurso = (reg, k) => !!reg && (reg.plano === "premium" || (Array.isArray(reg.extras) && reg.extras.includes(k)));
 // a carta como vai para o site: o servidor marca o que o pedido liberou (pl = Premium, ex = adicionais)

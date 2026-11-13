@@ -1,7 +1,7 @@
 // Cria a carta (ainda não paga) e gera o Pix ou o link do cartão no Mercado Pago
 import { randomBytes } from "node:crypto";
 import QRCode from "qrcode";
-import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido, zapValido, verPendentesZap, DIAS_PADRAO, blackAtivo } from "../lib/comum.mjs";
+import { DESCRICAO, loja, pendentes, resposta, enderecoSite, limparCarta, mp, dadosNavegador, planoDe, valorDo, extrasDe, guardarNoAcesso, usaReserva, pagbank, cpfValido, zapValido, verPendentesZap, DIAS_PADRAO } from "../lib/comum.mjs";
 
 export default async (req, context) => {
   // aproveita a chamada para ver se algum Pix ficou 1 hora sem pagar (aviso de WhatsApp para o dono)
@@ -9,10 +9,7 @@ export default async (req, context) => {
   if (context && context.waitUntil) context.waitUntil(verZap);
   if (req.method !== "POST") return resposta({ erro: "metodo" }, 405);
   let b; try { b = await req.json(); } catch { return resposta({ erro: "dados" }, 400); }
-  const plano = planoDe(b.plano), extras0 = extrasDe(b.extras, plano);
-  /* Black Novembro: toda Padrão nova já sai vitalícia, sem cobrar */
-  const extras = blackAtivo() && plano !== "premium" && !extras0.includes("vit") ? extras0.concat("vit") : extras0;
-  const PRECO = valorDo(plano, extras);
+  const plano = planoDe(b.plano), extras = extrasDe(b.extras, plano), PRECO = valorDo(plano, extras);
   const carta = limparCarta(b.carta, plano, extras);
   if (carta === "grande") return resposta({ erro: "grande" }, 413);
   if (!carta) return resposta({ erro: "carta" }, 400);
