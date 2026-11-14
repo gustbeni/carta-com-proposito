@@ -36,7 +36,7 @@ export default async (req, context) => {
     if (reserva) {
       const nome = plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO;
       const centavos = Math.round(PRECO * 100);
-      const vence = new Date(Date.now() + 2 * 36e5).toISOString().replace(/\.\d{3}Z$/, "Z"); // 2 horas, como no Mercado Pago
+      const vence = new Date(Date.now() + 30 * 60e3).toISOString().replace(/\.\d{3}Z$/, "Z"); // 30 minutos, como no Mercado Pago
       const base = {
         reference_id: id,
         customer: { name: "Cliente Carta com Proposito", email: emailMP, tax_id: cpf },
@@ -65,7 +65,7 @@ export default async (req, context) => {
         description: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO,
         payer: { email: emailMP },
         items: [{ title: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO, unit_price: valor, quantity: 1, description: "Carta on-line com QR code" }],
-        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT2H" }] },
+        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT30M" }] },
       };
       // O antifraude do Mercado Pago às vezes recusa o Pix (status "failed", sem QR code).
       // Tentativas: normal; sem o nome do produto; e com o e-mail genérico da loja (como no "Não tenho e-mail").

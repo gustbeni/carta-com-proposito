@@ -184,7 +184,7 @@ async function avisarDono(id, reg, tok) {
 }
 
 // ===== Aviso de Pix não pago pelo WhatsApp (o dono manda na mão) =====
-// No pagamento, a pessoa pode deixar o WhatsApp (opcional). Se o Pix ficar 30 minutos sem pagar,
+// No pagamento, a pessoa pode deixar o WhatsApp (opcional). Se o Pix ficar 20 minutos sem pagar (desde 14/11; o Pix vale 30),
 // o dono recebe no ntfy um botão "Mandar WhatsApp", que abre /api/zap (com uma chave do pedido)
 // e de lá o WhatsApp da pessoa com a mensagem pronta. O número nunca vai para o ntfy.
 // Não usa função agendada: a verificação pega carona nas chamadas do site (pagar e status), no máximo a cada 5 minutos.
@@ -193,7 +193,7 @@ export function zapValido(v) {
   if (d.length === 10 || d.length === 11) d = "55" + d;
   return /^55\d{10,11}$/.test(d) ? d : "";
 }
-const ZAP_ESPERA = 30 * 60e3, ZAP_LIMITE = 24 * 3600e3, ZAP_INTERVALO = 5 * 60e3;
+const ZAP_ESPERA = 20 * 60e3, ZAP_LIMITE = 24 * 3600e3, ZAP_INTERVALO = 5 * 60e3;
 export async function verPendentesZap() {
   const topico = (process.env.NTFY_TOPICO || "").trim();
   if (!topico) return;
@@ -223,12 +223,13 @@ async function avisarZap(id, reg, topico) {
   const valor = (Number(reg.valor) || PRECO).toFixed(2).replace(".", ",");
   const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
   const link = site + "/api/zap?id=" + encodeURIComponent(id) + "&k=" + encodeURIComponent(reg.zapTok || "");
-  const hora = new Date(reg.criado || Date.now()).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
+  const hm = t => new Date(t).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
+  const hora = hm(reg.criado || Date.now()), vale = hm((reg.criado || Date.now()) + 30 * 60e3);
   const q = new URLSearchParams({ title: "Pix não pago ⏳", tags: "hourglass", click: link });
   await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
     method: "POST",
     headers: { Actions: "view, Mandar WhatsApp, " + link },
-    body: `Carta ${premium ? "Premium" : "Padrão"} · R$ ${valor} · Pix gerado às ${hora} (Brasília) e não pago.\nToque em "Mandar WhatsApp" para lembrar a pessoa.`,
+    body: `Carta ${premium ? "Premium" : "Padrão"} · R$ ${valor} · Pix gerado às ${hora} (Brasília) e ainda não pago. Ele vale até ${vale}.\nToque em "Mandar WhatsApp" para lembrar a pessoa.`,
   }), 5000);
 }
 
