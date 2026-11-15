@@ -2579,37 +2579,44 @@ const PIX_MS = 30 * 60e3; /* 30 minutos (desde 14/11; antes 2 horas) */
 /* quem toca em pagar sem e-mail: em vez de só rolar a tela até o campo (muita gente desistia ali), abre uma janela pedindo o e-mail e já gera o Pix */
 function emailSheet() {
   if (cfg.reserva && S.pay === 'card') { S.pay = 'pix'; save(); }
-  const valor = brl(precoTotal(S.plano, S.extras));
+  const valor = brl(precoTotal(S.plano, S.extras)), L = resolveLetter(S), prem = S.plano === 'premium';
+  const nEx = extrasValidos(S.plano, S.extras).length;
+  /* 15/11: e-mail opcional (sem a caixinha "Não tenho e-mail"), resumo do pedido no topo, "Gerar o Pix não cobra nada" e etapas para medir onde a pessoa desiste */
   const card = openSheet(`<p class="eyebrow">Finalizar presente</p>
+    <div class="sh-resumo"><span><b>Carta ${prem ? 'Premium' : 'Padrão'}${nEx ? ` + ${nEx} adicional${nEx > 1 ? 'is' : ''}` : ''}</b><small>Para ${esc(L.to || 'quem você ama')}</small></span><strong>${valor}</strong></div>
+    <p class="sh-selos">${ICON.lock}<span>Pagamento seguro</span><i aria-hidden="true">·</i><span>7 dias de garantia</span></p>
     <p class="group-label" style="margin-top:14px">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
       <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
     </div>
-    <div class="form" style="margin-top:16px"><div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
-    <label class="check sem-email-row" style="margin-top:-4px"><input type="checkbox" id="shSem"${S.semEmail ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span><span>Não tenho e-mail</span></label>
-    <div class="field" id="shZapBox" hidden><label for="shZap">Seu WhatsApp <span style="font-weight:400;opacity:.65">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint">Só para te ajudar se o pagamento não for concluído.</p></div></div>
-    <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento. <b>Pague e volte para cá.</b> Caso tenha e-mail, ela também será enviada para lá.</span></p>
-    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button></div>`);
-  const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
+    <div class="form" style="margin-top:16px"><div class="field"><label for="shEmail">Seu e-mail <span class="opc">(opcional)</span></label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.semEmail ? '' : (S.email || ''))}"><p class="hint">Para receber a carta também no e-mail.</p><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com. Ou apague para continuar sem e-mail.</p></div>
+    <button class="link sh-zaplink" id="shZapLink" type="button">Não tem e-mail? Deixe seu WhatsApp (opcional)</button>
+    <div class="field" id="shZapBox" hidden><label for="shZap">Seu WhatsApp <span class="opc">(opcional)</span></label><input class="input" id="shZap" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" value="${esc(mascaraZap(S.zap || ''))}"><p class="hint">Só para te ajudar se o pagamento não for concluído.</p></div></div>
+    <p class="sh-aviso">${ICON.sparkle}<span>Sua carta será gerada <b>aqui no site</b> quando efetuar o pagamento. <b>Pague e volte para cá.</b></span></p>
+    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button><p class="sh-gratis" id="shGratis">Gerar o Pix não cobra nada. Você só paga no app do seu banco.</p></div>`, () => { if (!foi) etapa('fechou-finalizar'); });
+  let foi = false, digitou = false;
+  const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap'), gr = card.querySelector('#shGratis');
+  /* o WhatsApp só aparece no Pix sem e-mail: é o único contato para o aviso "Pix não pago" */
+  const zl = card.querySelector('#shZapLink'); let querZap = !!S.zap;
+  const mostrarZap = () => { const pode = S.pay !== 'card' && !em.value.trim(); zb.hidden = !(pode && querZap); zl.hidden = !pode || querZap; };
+  zl.addEventListener('click', () => { querZap = true; mostrarZap(); fz.focus(); });
   const atualizar = () => {
     const pix = S.pay !== 'card';
     ir.innerHTML = `${ICON.lock}${pix ? 'Gerar meu Pix' : 'Pagar com cartão'} · ${valor}`;
+    gr.hidden = !pix;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
+    mostrarZap();
   };
   atualizar();
-  card.querySelectorAll('[data-shpay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.shpay; save(); atualizar(); refreshBar(); if (zb) zb.hidden = !(card.querySelector('#shSem').checked && S.pay !== 'card'); }));
-  em.addEventListener('input', () => { S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); });
-  const sem = card.querySelector('#shSem');
-  /* o WhatsApp só aparece para quem marca "Não tenho e-mail" e paga com Pix: é o único contato para o aviso "Pix não pago" */
-  const mostrarZap = () => { zb.hidden = !(sem.checked && S.pay !== 'card'); };
-  const marcarSem = () => { em.disabled = sem.checked; if (sem.checked) { er.hidden = true; em.classList.remove('bad'); } mostrarZap(); };
+  card.querySelectorAll('[data-shpay]').forEach(b => b.addEventListener('click', () => { if (b.dataset.shpay === 'card' && S.pay !== 'card') etapa('escolheu-cartao'); S.pay = b.dataset.shpay; save(); atualizar(); refreshBar(); }));
+  em.addEventListener('input', () => { if (!digitou) { digitou = true; etapa('digitou-email'); } S.email = em.value.trim(); er.hidden = true; em.classList.remove('bad'); save(); mostrarZap(); });
   fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); save(); });
-  marcarSem();
-  sem.addEventListener('change', () => { S.semEmail = sem.checked; save(); track(sem.checked ? 'sem_email' : 'com_email'); marcarSem(); });
   ir.addEventListener('click', () => {
-    if (!sem.checked && !isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
-    S.semEmail = sem.checked; save(); closeSheet(); setTimeout(() => pay(true), 250);
+    const v = em.value.trim();
+    if (v && !isEmail(v)) { etapa('email-invalido'); er.hidden = false; em.classList.add('bad'); em.focus(); return; }
+    S.email = v; S.semEmail = !v; if (!v) etapa('pagou-sem-email');
+    foi = true; save(); closeSheet(); setTimeout(() => pay(true), 250);
   });
 }
 
