@@ -876,7 +876,7 @@ function cartaParaServidor(fotos) {
   return P;
 }
 function cartaDoServidor(P) {
-  const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
+  const txt = (x, n) => typeof x === 'string' ? x.normalize('NFC').slice(0, n) : '';
   const nuvem = u => typeof u === 'string' && /^[\w\/.-]+$/.test(u) ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null;
   const premium = P.pl === 'p'; // quem marca é o servidor, pelo pedido (pl = Premium, ex = adicionais da Padrão)
   const extras = premium ? [] : extrasValidos('padrao', P.ex, true), tem = k => premium || extras.includes(k) || (k === 'fotos' && extras.includes('cine'));
@@ -886,7 +886,7 @@ function cartaDoServidor(P) {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
     photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf, Array(7).fill(null)).slice(0, 14).concat(fu[6] || null),
-    captions: [0, 1, 2].map(i => txt(fc[i], 70)).concat(txt(P.ffc, 70), [3, 4, 5].map(i => txt(fc[i], 70)), Array(7).fill(''), txt(fc[6], 70)),
+    captions: [0, 1, 2].map(i => txt(fc[i], 100)).concat(txt(P.ffc, 100), [3, 4, 5].map(i => txt(fc[i], 100)), Array(7).fill(''), txt(fc[6], 100)),
     plano: premium ? 'premium' : 'padrao', extras, legado: true,
     music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', musicNome: txt(P.mt, 120), prayer: -1
   };
@@ -2011,7 +2011,7 @@ function photoSlot(i) {
   const tag = i === 3 ? `<span class="ph-tag">${ICON.sparkle}Foto final</span>` : '';
   const pl = i < 7 || i === 14; // 14 = a 4ª polaroide da abertura de cinema
   const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : pl ? `Polaroide ${i < 3 ? i + 1 : i === 14 ? 7 : i}<small>toque para escolher</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
-  const cap = pl ? `<input class="cap" data-cap="${i}" maxlength="70" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}"><small class="cap-cont" data-cc="${i}" aria-live="polite"></small>` : '';
+  const cap = pl ? `<input class="cap" data-cap="${i}" maxlength="100" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}"><small class="cap-cont" data-cc="${i}" aria-live="polite"></small>` : '';
   if (S.photos[i]) return `<figure class="ph"><img src="${S.photos[i]}" alt="Foto ${i + 1}">${tag}${cap}<button class="x" data-rm="${i}" aria-label="Remover foto ${i + 1}">${ICON.x}</button></figure>`;
   return `<button class="ph" data-add="${i}"><span class="ph-drop">${ICON.plus}${nome}</span></button>`;
 }
@@ -2063,7 +2063,7 @@ const BIND = {
     const file = $('#fileIn');
     el.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => abrirGaleria(+b.dataset.add)));
     el.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.rm; S.photos[i] = null; S.captions[i] = ''; savePhoto(i); save(); rerender(); }));
-    el.querySelectorAll('[data-cap]').forEach(inp => inp.addEventListener('input', () => { S.captions[+inp.dataset.cap] = inp.value; const cc = el.querySelector(`[data-cc="${inp.dataset.cap}"]`); if (cc) cc.textContent = inp.value.length >= 55 ? `${inp.value.length} de 70 letras` : ''; changed(); }));
+    el.querySelectorAll('[data-cap]').forEach(inp => inp.addEventListener('input', () => { const v = inp.value.normalize('NFC'); if (v !== inp.value) inp.value = v; S.captions[+inp.dataset.cap] = v; const cc = el.querySelector(`[data-cc="${inp.dataset.cap}"]`); if (cc) cc.textContent = v.length >= 80 ? `${v.length} de 100 letras` : ''; changed(); }));
   },
   versiculos(el) {
     el.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => {
@@ -2434,7 +2434,7 @@ function rascunhoDoServidor(P, plano, extras) {
   [0, 1, 2, 4, 5, 6, 14].forEach((i, j) => { caminhos[i] = ok(fu[j]); });
   caminhos[3] = ok(P.ffu);
   mf.slice(0, 7).forEach((u, j) => { caminhos[7 + j] = ok(u); });
-  const txt = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
+  const txt = (x, n) => typeof x === 'string' ? x.normalize('NFC').slice(0, n) : '';
   const names = { to: txt(P.p, 40), from: txt(P.d, 40) };
   let prayer = -1, prayerCustom = '';
   if (P.ora) { const k = PRAYERS[r].findIndex(t => fill(t, names) === P.ora); if (k >= 0 && k < 3) prayer = k; else { prayer = 3; prayerCustom = txt(P.ora, 800); } }
@@ -2446,7 +2446,7 @@ function rascunhoDoServidor(P, plano, extras) {
     prayer, prayerCustom, plano: plano === 'premium' ? 'premium' : 'padrao', extras: extrasValidos(plano === 'premium' ? 'premium' : 'padrao', extras || P.ex, true),
     music: mus ? 'link' : P.mu ? 'instrumental' : 'none', musicLink: mus ? (mus.tipo === 'y' ? 'https://youtu.be/' + mus.id : 'https://open.spotify.com/' + mus.id) : '', musicNome: txt(P.mt, 120),
     theme: THEMES.some(t => t.id === P.th) ? P.th : null,
-    captions: [0, 1, 2].map(i => txt(fc[i], 70)).concat(txt(P.ffc, 70), [3, 4, 5].map(i => txt(fc[i], 70)), Array(7).fill(''), txt(fc[6], 70))
+    captions: [0, 1, 2].map(i => txt(fc[i], 100)).concat(txt(P.ffc, 100), [3, 4, 5].map(i => txt(fc[i], 100)), Array(7).fill(''), txt(fc[6], 100))
   };
   return { campos, caminhos, fotos: caminhos.map(u => u ? `https://res.cloudinary.com/${CLOUD.nome}/image/upload/${u}` : null) };
 }
