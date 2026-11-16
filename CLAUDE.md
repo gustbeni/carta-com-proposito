@@ -212,4 +212,4 @@ Abra o `public/index.html` gerado no navegador e use "Ver prévia carta Premium"
 - 16/11, 19h40: frase "Mais barato que um buquê de flores" maior (`.sh-buque` de 14px para 17–19px). Guardado sem publicar.
 - 16/11, 19h41: texto do botão "Seguir para pagamento · R$ X" um pouco menor (`.sh-ir` clamp 13–15,5px). Guardado sem publicar.
 - 16/11, 19h43: na janela "Finalizar presente", a forma de pagamento (Pix ou cartão) desceu para depois do aviso "Sua carta será gerada…" (ordem: e-mail, "Não tenho e-mail", WhatsApp, aviso, forma de pagamento, botão). Publicado às 19h45, junto com o botão menor e a frase do buquê maior.
-- 16/11, 19h50: frase embaixo do botão virou "Mais barato que um buquê de flores, e não murcha com o tempo" (`.sh-buque`, duas linhas equilibradas com `text-wrap:balance`). Guardado sem publicar.
+- 16/11, 19h50: frase embaixo do botão virou "Mais barato que um buquê de flores, e não murcha com o tempo" (`.sh-buque`, duas linhas equilibradas com `text-wrap:balance`). Publicado às 19h48.
