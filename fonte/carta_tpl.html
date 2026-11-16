@@ -2589,7 +2589,7 @@ function emailSheet() {
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
   const atualizar = () => {
     const pix = S.pay !== 'card';
-    ir.innerHTML = `${ICON.lock}${pix ? 'Ir para pagamento' : 'Pagar com cartão'} · ${valor}`;
+    ir.innerHTML = `${ICON.lock}${pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
   };
   atualizar();

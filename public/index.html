@@ -1440,6 +1440,9 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @media (prefers-reduced-motion:reduce){.sh-ir{animation:none}}
 /* 16/11: frase embaixo do botão da janela "Finalizar presente" */
 .sh-buque{margin:9px 0 0;text-align:center;font:italic 500 14px/1.3 var(--f-display);letter-spacing:.01em;color:#F3D58A}
+/* 16/11: "Seguir para pagamento · R$ X" cabe numa linha em celulares estreitos */
+.sh-ir{font-size:clamp(14px,4.3vw,17.5px);gap:8px;padding-inline:14px}
+.sh-ir svg{flex:none;width:18px;height:18px}
 
 </style></head><body>
 <div class="app" id="app">
@@ -4019,7 +4022,7 @@ function emailSheet() {
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
   const atualizar = () => {
     const pix = S.pay !== 'card';
-    ir.innerHTML = `${ICON.lock}${pix ? 'Ir para pagamento' : 'Pagar com cartão'} · ${valor}`;
+    ir.innerHTML = `${ICON.lock}${pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
   };
   atualizar();
