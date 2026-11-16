@@ -1431,3 +1431,4 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 /* 16/11: "Seguir para pagamento · R$ X" cabe numa linha em celulares estreitos */
 .sh-ir{font-size:clamp(13px,3.8vw,15.5px);gap:8px;padding-inline:14px}
 .sh-ir svg{flex:none;width:18px;height:18px}
+.sh-buque{text-wrap:balance}

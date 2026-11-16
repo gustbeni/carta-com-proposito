@@ -2585,7 +2585,7 @@ function emailSheet() {
       <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
       <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
     </div>
-    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button><p class="sh-buque">Mais barato que um buquê de flores</p></div>`);
+    <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button><p class="sh-buque">Mais barato que um buquê de flores, e não murcha com o tempo</p></div>`);
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
   const atualizar = () => {
     const pix = S.pay !== 'card';
