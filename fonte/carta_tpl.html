@@ -2210,7 +2210,6 @@ function checkoutView() {
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
     <div class="form"><div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
-    <p class="trust" id="trustTxt">${ICON.lock}Pagamento seguro pelo ${cfg.reserva ? 'PagBank' : 'Mercado Pago'} · 7 dias de garantia</p>
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }
 function bindReady(el) {
