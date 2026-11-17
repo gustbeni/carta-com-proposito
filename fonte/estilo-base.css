@@ -1542,3 +1542,29 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .bc-btn svg{width:17px;height:17px}
 .bar-prem .bp-t small s{opacity:.8}
 @media (prefers-reduced-motion:reduce){.bump-comp::after{animation:none}}
+
+/* 16/11, 0h: botões "Ver prévia" dourados brilhando como o selo "Novidade" */
+.bump-previa{position:relative;overflow:hidden;isolation:isolate;border:0;color:#3A0B2B;background:linear-gradient(180deg,#FCE6A6,#EEC266 46%,#CC9433);box-shadow:0 0 12px rgba(243,213,138,.55);animation:novoBrilha 2.4s ease-in-out infinite;font-weight:700}
+.bump-previa svg{color:#3A0B2B}
+.bump-previa::after{content:"";position:absolute;top:0;bottom:0;left:-60%;z-index:-1;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-20deg);animation:btnShine 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.bump-previa,.bump-previa::after{animation:none}}
+
+/* cabine, 0h: depois do 3-2-1 tudo escurece devagar e a cabine surge do escuro; tiras com borda de ouro brilhando e balançando */
+.bt-noite{position:absolute;inset:-120vh -60vw;z-index:5;background:#05010a;opacity:0;pointer-events:none;transition:opacity 1.9s ease-in-out}
+.bt-noite-on .bt-noite{opacity:.94}
+.bt-surge .bt-cab{z-index:7;animation:btSurge 1.4s ease-out both}
+.bt-surge .bt-raios,.bt-surge .bt-aura,.bt-surge .bt-motes{z-index:6}
+.bt-surge .bt-foco{z-index:8;opacity:1}
+@keyframes btSurge{0%{opacity:0;filter:brightness(.15) drop-shadow(0 0 0 rgba(255,214,130,0));scale:.94}60%{opacity:1}100%{opacity:1;filter:brightness(1) drop-shadow(0 0 34px rgba(255,214,130,.55)) drop-shadow(0 26px 30px rgba(0,0,0,.55));scale:1}}
+.bt-surge .bt-cab.bloom{animation:none;filter:drop-shadow(0 0 46px rgba(255,248,225,.95)) brightness(1.3)}
+.bt-tira{background:linear-gradient(135deg,#FFF0C2,#D9A848 38%,#F7DE9A 58%,#B9873A 80%,#F3D58A);box-shadow:0 0 18px rgba(255,214,130,.55),0 12px 22px -6px rgba(0,0,0,.7);transform-origin:50% 0}
+.bt-leg{color:#3B230C}
+.bt-rev .bt-tira{animation:btOuro 2.6s ease-in-out infinite}
+.bt-rev .bt-tira.a{animation:btOuro 2.6s ease-in-out infinite,btBalA 3.6s ease-in-out 1.8s infinite}
+.bt-rev .bt-tira.b{animation:btOuro 2.6s ease-in-out .6s infinite,btBalB 4s ease-in-out 2.2s infinite}
+@keyframes btOuro{50%{box-shadow:0 0 30px rgba(255,224,150,.9),0 12px 22px -6px rgba(0,0,0,.7)}}
+@keyframes btBalA{0%,100%{rotate:-1.4deg}50%{rotate:-3.2deg}}
+@keyframes btBalB{0%,100%{rotate:1.6deg}50%{rotate:3.4deg}}
+.bt-final .bt-tira::after{animation:ckBrilho 1.6s ease-in-out both,btSweep 4.5s ease-in-out 2s infinite}
+@keyframes btSweep{0%,60%{background-position:150% 0}100%{background-position:-50% 0}}
+@media (prefers-reduced-motion:reduce){.bt-rev .bt-tira,.bt-rev .bt-tira.a,.bt-rev .bt-tira.b,.bt-surge .bt-cab{animation:none}.bt-noite{display:none}}

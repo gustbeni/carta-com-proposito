@@ -1225,7 +1225,7 @@ function boothHTML(fotos, L, pronta) {
       </div>
       <div class="bt-base" aria-hidden="true"><i></i></div>
     </div>
-    <i class="bt-foco" aria-hidden="true"></i></div>
+    <i class="bt-foco" aria-hidden="true"></i><i class="bt-noite" aria-hidden="true"></i></div>
     <p class="bt-hint">Toque na cabine para tirar as fotos</p>
     <p class="bt-sub">Os nossos melhores momentos</p>
   </div>`;
@@ -1237,21 +1237,29 @@ function rodarCabine(bt, onFim, timers = [], opt = {}) {
   bt.classList.add('bt-foi');
   const rapido = reduced(), at = (f, ms) => timers.push(setTimeout(f, rapido ? 0 : ms));
   const fl = bt.querySelector('.bt-flash'), cab = bt.querySelector('.bt-cab'), num = bt.querySelector('.bt-conta b');
-  at(() => bt.classList.add('bt-luz'), 0);
-  if (!rapido) ['3', '2', '1'].forEach((t, k) => at(() => { num.textContent = t; num.classList.remove('on'); void num.offsetWidth; num.classList.add('on'); }, 250 + k * 650));
-  [2300, 2900, 3500, 4100].forEach((ms, k) => at(() => {
+  /* 1. contagem 3-2-1 */
+  if (!rapido) ['3', '2', '1'].forEach((t, k) => at(() => { num.textContent = t; num.classList.remove('on'); void num.offsetWidth; num.classList.add('on'); }, 250 + k * 700));
+  /* 2. tudo escurece devagar */
+  at(() => bt.classList.add('bt-noite-on'), 2300);
+  /* 3. a cabine surge do escuro, com o facho de luz, e a luz rosa acende atrás da cortina */
+  at(() => { bt.classList.add('bt-surge'); if (opt.onSurge) opt.onSurge(); }, 4400);
+  at(() => bt.classList.add('bt-luz'), 5300);
+  /* 4. quatro flashes */
+  [6000, 6650, 7300, 7950].forEach((ms, k) => at(() => {
     bt.style.setProperty('--pose', k);
     fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on');
     cab.classList.add('bloom'); setTimeout(() => cab.classList.remove('bloom'), 260);
     if (opt.flash) opt.flash();
     try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
   }, ms));
-  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-abre'); }, 4700);
-  at(() => { bt.classList.add('bt-a'); if (opt.onTiras) opt.onTiras(); }, 5300);
-  at(() => bt.classList.add('bt-b'), 5900);
-  at(() => bt.classList.add('bt-rev'), 6200);
-  at(() => { bt.classList.add('bt-final'); sparkBurst(bt.querySelector('.bt-janela')); }, 8900);
-  at(() => { if (onFim) onFim(); }, 9600);
+  /* 5. a cortina abre no fundo de ouro, as tiras descem e as fotos se revelam */
+  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-abre'); }, 8600);
+  at(() => { bt.classList.add('bt-a'); if (opt.onTiras) opt.onTiras(); }, 9200);
+  at(() => bt.classList.add('bt-b'), 9800);
+  at(() => bt.classList.add('bt-rev'), 10100);
+  /* 6. raios de ouro, faíscas e a luz volta */
+  at(() => { bt.classList.add('bt-final'); sparkBurst(bt.querySelector('.bt-janela')); bt.classList.remove('bt-noite-on'); }, 12800);
+  at(() => { if (onFim) onFim(); }, 13800);
 }
 function previaCabine() {
   etapa('previa-cabine');
@@ -1780,7 +1788,7 @@ function bindLetter(root, L, mode, hooks = {}) {
       if (bt.classList.contains('bt-foi')) return;
       try { if (navigator.vibrate) navigator.vibrate([10, 40, 10, 40, 10]); } catch (e) {}
       rodarCabine(bt, () => { done(bt.closest('.lsec')); }, timers, {
-        onTiras: () => later(() => mostrar(bt.querySelector('.bt-cab'), 120), 0),
+        onSurge: () => later(() => mostrar(bt.querySelector('.bt-cab'), 120), 0),
         flash: () => { if (full && hooks.host && !reduced()) { const f = document.createElement('div'); f.className = 'screen-flash'; f.style.opacity = '.55'; hooks.host.appendChild(f); setTimeout(() => f.remove(), 900); } }
       });
     };
