@@ -1445,6 +1445,12 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .sh-ir svg{flex:none;width:18px;height:18px}
 .sh-buque{text-wrap:balance}
 
+/* 16/11: miniatura do pagamento com moldura de ouro em todos os pacotes e 10% maior; frase do buquê com luz de ouro passando */
+.ck-show{width:86%;max-width:330px}
+.sh-buque{background:linear-gradient(100deg,#D9A848 0%,#E8C06A 38%,#FFFFFF 50%,#E8C06A 62%,#D9A848 100%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:buqueLuz 2.8s ease-in-out infinite}
+@keyframes buqueLuz{0%{background-position:100% 0}70%,100%{background-position:0% 0}}
+@media (prefers-reduced-motion:reduce){.sh-buque{animation:none;background-position:50% 0}}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -3639,7 +3645,7 @@ function checkoutView() {
   }
   return `<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
     <div class="ck-mini lt" data-theme="${L.theme}"><span class="ck-para">Para</span><span class="ck-nome">${esc(L.to)}</span>
-      ${fotosIdx.length ? `<div class="ck-show${prem ? ' ck-prem' : ''}">${prem ? '<i class="ck-luz" aria-hidden="true"></i>' : ''}${fotosIdx.map((i, k) => `<figure class="ck-pol${k === 0 ? ' on' : ''}"><img src="${L.photos[i]}" alt="">${(L.captions[i] || '').trim() ? `<figcaption>${esc(L.captions[i])}</figcaption>` : ''}</figure>`).join('')}</div>` : `<span class="seal ck-seal" style="--s:64px"><span>${sealInner(L)}</span></span>`}
+      ${fotosIdx.length ? `<div class="ck-show ck-prem"><i class="ck-luz" aria-hidden="true"></i>${fotosIdx.map((i, k) => `<figure class="ck-pol${k === 0 ? ' on' : ''}"><img src="${L.photos[i]}" alt="">${(L.captions[i] || '').trim() ? `<figcaption>${esc(L.captions[i])}</figcaption>` : ''}</figure>`).join('')}</div>` : `<span class="seal ck-seal" style="--s:64px"><span>${sealInner(L)}</span></span>`}
       <span class="ck-pronta"><i></i>Pronta para enviar</span></div>
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
