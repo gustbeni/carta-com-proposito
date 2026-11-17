@@ -4233,7 +4233,7 @@ function refreshBar() {
     else { nx.innerHTML = `Quero enviar · ${brl(precoTotal(S.plano, S.extras))}`; note.textContent = 'Pagamento único · Pix ou cartão · Garantia de 7 dias'; }
   } else if (S.view === 'checkout') {
     nx.disabled = ocupado; nx.innerHTML = `${ICON.lock}Finalizar minha carta`;
-    note.textContent = S.pay === 'pix' ? 'No Pix, a carta é liberada na hora' : 'A carta é liberada assim que o pagamento cair';
+    note.textContent = ''; /* sem a frase embaixo do botão (pedido do dono, 16/11) */
   }
 }
 
