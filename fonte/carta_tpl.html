@@ -1205,48 +1205,58 @@ function boothHTML(fotos, L, pronta) {
   const ini = s => (s || '').trim().charAt(0).toUpperCase();
   const tira = (fs, leg, c) => `<div class="bt-tira ${c}">${fs.map(u => `<div class="bt-f"><img src="${u}" alt="" loading="lazy"></div>`).join('')}<p class="bt-leg">${leg}</p></div>`;
   const luzes = n => '<i></i>'.repeat(n);
-  return `<div class="bt${pronta ? ' bt-pronta bt-foi bt-a bt-b bt-rev' : ''}">
+  return `<div class="bt${pronta ? ' bt-pronta bt-foi bt-abre bt-a bt-b bt-rev bt-final' : ''}">
+    <div class="bt-cena"><i class="bt-raios" aria-hidden="true"></i><i class="bt-aura" aria-hidden="true"></i><div class="bt-motes" aria-hidden="true">${motes(16)}</div>
     <div class="bt-cab" role="button" tabindex="0" aria-label="Tirar as fotos na cabine">
       <div class="bt-topo"><span class="bt-coroa" aria-hidden="true"></span>
-        <div class="bt-placa"><span class="bt-luzes t" aria-hidden="true">${luzes(11)}</span><b>Cabine de fotos</b><small>4 poses e muito amor</small><span class="bt-luzes b" aria-hidden="true">${luzes(11)}</span></div>
+        <div class="bt-placa"><span class="bt-luzes t" aria-hidden="true">${luzes(12)}</span><b>Cabine de fotos</b><small>4 poses e muito amor</small><span class="bt-luzes b" aria-hidden="true">${luzes(12)}</span></div>
+        <span class="bt-lamp e" aria-hidden="true"></span><span class="bt-lamp d" aria-hidden="true">${ICON.heart}</span>
       </div>
       <div class="bt-corpo">
-        <span class="bt-lamp e" aria-hidden="true"></span><span class="bt-lamp d" aria-hidden="true">${ICON.heart}</span>
         <div class="bt-janela">
-          <div class="bt-cortina"><i class="bt-brilho"></i>
-            <svg class="bt-sil" viewBox="0 0 120 120" aria-hidden="true"><g fill="currentColor"><ellipse cx="41" cy="50" rx="13" ry="15" transform="rotate(14 41 50)"/><path d="M12 120c0-28 13-48 30-48 9 0 16 5 21 14l-6 34z"/><ellipse cx="77" cy="45" rx="14" ry="16.5" transform="rotate(-12 77 45)"/><path d="M50 120c3-30 13-50 29-50 18 0 29 20 29 50z"/></g></svg>
+          <div class="bt-fundo" aria-hidden="true"></div>
+          <div class="bt-cortina" aria-hidden="true"><div class="bt-cm e"></div><div class="bt-cm d"></div><i class="bt-rosa"></i><i class="bt-brilho"></i>
+            <svg class="bt-sil" viewBox="0 0 120 120"><g fill="currentColor"><ellipse cx="41" cy="50" rx="13" ry="15" transform="rotate(14 41 50)"/><path d="M12 120c0-28 13-48 30-48 9 0 16 5 21 14l-6 34z"/><ellipse cx="77" cy="45" rx="14" ry="16.5" transform="rotate(-12 77 45)"/><path d="M50 120c3-30 13-50 29-50 18 0 29 20 29 50z"/></g></svg>
           </div>
-          <i class="bt-fenda" aria-hidden="true"></i><i class="bt-flash" aria-hidden="true"></i>
+          <i class="bt-valance" aria-hidden="true"></i><i class="bt-fenda" aria-hidden="true"></i>
           <div class="bt-tiras">${tira(fotos.slice(0, 4), `${esc(ini(L.to))} &amp; ${esc(ini(L.from))}`, 'a')}${tira(fotos.slice(4, 8), 'Para sempre', 'b')}</div>
+          <div class="bt-conta" aria-hidden="true"><b></b></div><i class="bt-flash" aria-hidden="true"></i>
         </div>
       </div>
       <div class="bt-base" aria-hidden="true"><i></i></div>
     </div>
+    <i class="bt-foco" aria-hidden="true"></i></div>
     <p class="bt-hint">Toque na cabine para tirar as fotos</p>
     <p class="bt-sub">Os nossos melhores momentos</p>
   </div>`;
 }
-/* a sessão: luz rosa e 4 flashes atrás da cortina, depois as duas tiras saem e as fotos se revelam uma a uma */
-function rodarCabine(bt, onFim, timers = [], onTiras) {
+/* a sessão, como no cinema: luz no palco, contagem 3-2-1, luz rosa e 4 flashes atrás da cortina,
+   a cortina abre num fundo de ouro, as duas tiras descem e as fotos se revelam, e no fim os raios de ouro crescem */
+function rodarCabine(bt, onFim, timers = [], opt = {}) {
   if (!bt || bt.classList.contains('bt-foi')) return;
   bt.classList.add('bt-foi');
-  const at = (f, ms) => timers.push(setTimeout(f, reduced() ? 0 : ms));
-  const fl = bt.querySelector('.bt-flash');
+  const rapido = reduced(), at = (f, ms) => timers.push(setTimeout(f, rapido ? 0 : ms));
+  const fl = bt.querySelector('.bt-flash'), cab = bt.querySelector('.bt-cab'), num = bt.querySelector('.bt-conta b');
   at(() => bt.classList.add('bt-luz'), 0);
-  [600, 1250, 1900, 2550].forEach((ms, k) => at(() => {
+  if (!rapido) ['3', '2', '1'].forEach((t, k) => at(() => { num.textContent = t; num.classList.remove('on'); void num.offsetWidth; num.classList.add('on'); }, 250 + k * 650));
+  [2300, 2900, 3500, 4100].forEach((ms, k) => at(() => {
     bt.style.setProperty('--pose', k);
     fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on');
+    cab.classList.add('bloom'); setTimeout(() => cab.classList.remove('bloom'), 260);
+    if (opt.flash) opt.flash();
+    try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
   }, ms));
-  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-a'); if (onTiras) onTiras(); }, 3300);
-  at(() => bt.classList.add('bt-b'), 4000);
-  at(() => bt.classList.add('bt-rev'), 4300);
-  at(() => { if (onFim) onFim(); }, 7600);
+  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-abre'); }, 4700);
+  at(() => { bt.classList.add('bt-a'); if (opt.onTiras) opt.onTiras(); }, 5300);
+  at(() => bt.classList.add('bt-b'), 5900);
+  at(() => bt.classList.add('bt-rev'), 6200);
+  at(() => { bt.classList.add('bt-final'); sparkBurst(bt.querySelector('.bt-janela')); }, 8900);
+  at(() => { if (onFim) onFim(); }, 9600);
 }
 function previaCabine() {
   etapa('previa-cabine');
   const fs = [6, 1, 5, 2, 7, 3, 4, 2].map(EXEMPLO_FOTOS), L = { to: 'Ana', from: 'João' };
   const card = openSheet(`<p class="eyebrow">Novidade ✨</p><h2 class="h2">Cabine de <em>fotos</em></h2>
-    <p class="sub">Assim a cabine aparece no fim da carta, no lugar da foto grande. Ela revela 8 fotos de vocês em duas tiras.</p>
     <div class="bt-previa lt" data-theme="rosa">${boothHTML(fs, L)}</div>
     <button class="btn btn-ghost w" id="cabDeNovo" style="margin-top:14px" hidden>Ver de novo</button>`);
   const host = card.querySelector('.bt-previa'), b = card.querySelector('#cabDeNovo');
@@ -1769,7 +1779,10 @@ function bindLetter(root, L, mode, hooks = {}) {
     const tirar = () => {
       if (bt.classList.contains('bt-foi')) return;
       try { if (navigator.vibrate) navigator.vibrate([10, 40, 10, 40, 10]); } catch (e) {}
-      rodarCabine(bt, () => { sparkBurst(bt); done(bt.closest('.lsec')); }, timers, n => { later(() => mostrar(bt.querySelector('.bt-tiras'), 120), 0); });
+      rodarCabine(bt, () => { done(bt.closest('.lsec')); }, timers, {
+        onTiras: () => later(() => mostrar(bt.querySelector('.bt-cab'), 120), 0),
+        flash: () => { if (full && hooks.host && !reduced()) { const f = document.createElement('div'); f.className = 'screen-flash'; f.style.opacity = '.55'; hooks.host.appendChild(f); setTimeout(() => f.remove(), 900); } }
+      });
     };
     cabBtn.addEventListener('click', tirar);
     cabBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tirar(); } });

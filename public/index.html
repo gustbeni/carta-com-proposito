@@ -1451,63 +1451,92 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 @keyframes buqueLuz{0%{background-position:100% 0}70%,100%{background-position:0% 0}}
 @media (prefers-reduced-motion:reduce){.sh-buque{animation:none;background-position:50% 0}}
 
-/* ===== Cabine de fotos (adicional "cabine" e Premium, 16/11): no fim da carta, no lugar da câmera ===== */
-.bt{--pose:0;position:relative;width:min(340px,92%);margin:6px auto 0;text-align:center}
-.bt-cab{position:relative;display:block;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;filter:drop-shadow(0 26px 30px rgba(0,0,0,.55))}
+/* ===== Cabine de fotos (adicional "cabine" e Premium, 16/11): no fim da carta, no lugar da câmera.
+   23h40: 30% maior, fotos 50% maiores e sessão de cinema (contagem, flashes, cortina que abre, raios de ouro) ===== */
+.bt{--pose:0;position:relative;width:min(442px,calc(100% + 44px));margin:6px 0 0 50%;translate:-50% 0;text-align:center;isolation:isolate}
+.bt-cena{position:relative}
+.bt-raios{position:absolute;left:50%;top:46%;z-index:-1;width:170%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,222,150,.30) 0deg 4deg,rgba(255,222,150,0) 4deg 13deg);-webkit-mask:radial-gradient(closest-side,#000 18%,transparent 72%);mask:radial-gradient(closest-side,#000 18%,transparent 72%);opacity:.35;animation:btGira 40s linear infinite;pointer-events:none;transition:opacity 1s,scale 1.4s cubic-bezier(.2,.8,.2,1)}
+.bt-aura{position:absolute;left:50%;top:46%;z-index:-1;width:120%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,130,.35),rgba(226,150,90,.12) 55%,transparent);animation:ckLuz 3.2s ease-in-out infinite;pointer-events:none}
+.bt-motes{position:absolute;inset:-6% -8%;z-index:-1;overflow:hidden;pointer-events:none;--mote:#F7DE9A}
+.bt-motes i{position:absolute;bottom:-12px;left:var(--x);width:var(--z);height:var(--z);border-radius:50%;background:var(--mote);box-shadow:0 0 8px 1px var(--mote);opacity:0;animation:mote var(--d) linear var(--dl) infinite}
+.bt-foco{position:absolute;left:50%;top:-14%;z-index:3;width:140%;height:120%;translate:-50% 0;background:conic-gradient(from 168deg at 50% 0%,transparent 0deg,rgba(255,240,205,.22) 10deg,rgba(255,240,205,.32) 12deg,rgba(255,240,205,.22) 14deg,transparent 24deg);-webkit-mask:linear-gradient(180deg,#000 30%,transparent 95%);mask:linear-gradient(180deg,#000 30%,transparent 95%);opacity:0;transition:opacity .8s;pointer-events:none;mix-blend-mode:screen}
+.bt-luz .bt-foco,.bt-abre .bt-foco{opacity:1}
+.bt-final .bt-raios{opacity:1;scale:1.25;animation-duration:18s}
+.bt-final .bt-aura{background:radial-gradient(closest-side,rgba(255,224,150,.6),rgba(226,170,90,.2) 55%,transparent)}
+.bt-cab{position:relative;display:block;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;filter:drop-shadow(0 26px 30px rgba(0,0,0,.55));transition:filter .3s}
 .bt-cab:focus-visible{outline:2px solid #F3D58A;outline-offset:6px;border-radius:18px}
-.bt-topo{position:relative;margin:0 6%;padding:16px 10px 10px;border-radius:120px 120px 0 0;background:linear-gradient(180deg,#5a1a2b,#3a0d1b 70%);border:2px solid #C99A45;border-bottom:0;box-shadow:inset 0 2px 0 rgba(255,236,180,.35),inset 0 -10px 18px rgba(0,0,0,.35)}
-.bt-coroa{position:absolute;left:50%;top:-12px;width:34px;height:20px;translate:-50% 0;border-radius:20px 20px 4px 4px;background:radial-gradient(circle at 50% 30%,#FFF0C2,#D9A848 55%,#8a5a17);box-shadow:0 0 14px rgba(243,213,138,.6)}
-.bt-placa{position:relative;padding:14px 8px 13px;border-radius:8px;background:linear-gradient(180deg,#F8EBD0,#E9D3A6);border:2px solid #B9873A;box-shadow:inset 0 0 0 3px #F8EBD0,inset 0 0 0 4px rgba(150,100,40,.45),0 0 18px rgba(255,214,130,.35)}
-.bt-placa b{display:block;font:700 clamp(15px,4.6vw,19px)/1.1 var(--f-display);letter-spacing:.2em;text-transform:uppercase;color:#4a2412}
-.bt-placa small{display:block;margin-top:4px;font:italic 400 12.5px/1.2 var(--f-display);color:#6b3b1d}
+.bt-cab.bloom{filter:drop-shadow(0 0 40px rgba(255,248,225,.95)) drop-shadow(0 26px 30px rgba(0,0,0,.55)) brightness(1.25)}
+.bt-topo{position:relative;margin:0 5%;padding:16px 10px 10px;border-radius:140px 140px 0 0;background:linear-gradient(180deg,#5a1a2b,#3a0d1b 70%);border:2px solid #C99A45;border-bottom:0;box-shadow:inset 0 2px 0 rgba(255,236,180,.35),inset 0 -10px 18px rgba(0,0,0,.35)}
+.bt-coroa{position:absolute;left:50%;top:-13px;width:38px;height:22px;translate:-50% 0;border-radius:20px 20px 4px 4px;background:radial-gradient(circle at 50% 30%,#FFF0C2,#D9A848 55%,#8a5a17);box-shadow:0 0 16px rgba(243,213,138,.7)}
+.bt-placa{position:relative;margin:0 9%;padding:15px 8px 14px;border-radius:8px;background:linear-gradient(180deg,#F8EBD0,#E9D3A6);border:2px solid #B9873A;box-shadow:inset 0 0 0 3px #F8EBD0,inset 0 0 0 4px rgba(150,100,40,.45),0 0 22px rgba(255,214,130,.4)}
+.bt-placa b{display:block;white-space:nowrap;font:700 clamp(14px,4.6vw,22px)/1.1 var(--f-display);letter-spacing:.16em;text-transform:uppercase;color:#4a2412}
+.bt-placa small{display:block;margin-top:4px;font:italic 400 13.5px/1.2 var(--f-display);color:#6b3b1d}
 .bt-luzes{position:absolute;left:6px;right:6px;display:flex;justify-content:space-between}
 .bt-luzes.t{top:-6px}.bt-luzes.b{bottom:-6px}
-.bt-luzes i{width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#FFE29A 45%,#E0A33A);box-shadow:0 0 6px 2px rgba(255,214,120,.75);animation:btLuz 1.4s ease-in-out infinite}
+.bt-luzes i{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#FFE29A 45%,#E0A33A);box-shadow:0 0 7px 2px rgba(255,214,120,.8);animation:btLuz 1.4s ease-in-out infinite}
 .bt-luzes i:nth-child(odd){animation-delay:-.7s}
-.bt-luz .bt-luzes i{animation-duration:.45s}
-@keyframes btLuz{0%,100%{opacity:1}50%{opacity:.35;box-shadow:0 0 2px rgba(255,214,120,.3)}}
-.bt-corpo{position:relative;padding:14px 13% 16px;border-radius:6px 6px 0 0;background:linear-gradient(90deg,#3a0d1b,#5a1a2b 12%,#4a1424 50%,#5a1a2b 88%,#3a0d1b);border:2px solid #C99A45;box-shadow:inset 0 0 0 5px rgba(0,0,0,.18),inset 0 0 0 7px rgba(201,154,69,.5)}
-.bt-lamp{position:absolute;top:44%;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
-.bt-lamp.e{left:3.5%;background:radial-gradient(circle at 40% 35%,#ffb4a8,#d22a35 55%,#6d0a12);box-shadow:0 0 0 3px #C99A45,0 0 12px rgba(255,80,80,.55)}
-.bt-lamp.d{right:3.5%;background:radial-gradient(circle at 40% 35%,#FFF0C2,#D9A848 60%,#8a5a17);box-shadow:0 0 0 3px #7a4a14,0 0 12px rgba(243,213,138,.55)}
+.bt-luz .bt-luzes i,.bt-final .bt-luzes i{animation-duration:.4s}
+@keyframes btLuz{0%,100%{opacity:1}50%{opacity:.3;box-shadow:0 0 2px rgba(255,214,120,.3)}}
+.bt-lamp{position:absolute;bottom:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.bt-lamp.e{left:3%;background:radial-gradient(circle at 40% 35%,#ffb4a8,#d22a35 55%,#6d0a12);box-shadow:0 0 0 3px #C99A45,0 0 12px rgba(255,80,80,.55)}
+.bt-lamp.d{right:3%;background:radial-gradient(circle at 40% 35%,#FFF0C2,#D9A848 60%,#8a5a17);box-shadow:0 0 0 3px #7a4a14,0 0 12px rgba(243,213,138,.55)}
 .bt-lamp.d svg{width:12px;height:12px;fill:#7a1f2e;stroke:none}
-.bt-luz .bt-lamp.e{animation:btPisca .4s steps(2) infinite}
-@keyframes btPisca{50%{filter:brightness(1.8)}}
-.bt-janela{position:relative;aspect-ratio:260/440;overflow:hidden;border-radius:4px;border:3px solid #C99A45;box-shadow:inset 0 0 0 2px #2a0712,inset 0 14px 22px rgba(0,0,0,.55);background:#2a0712}
-.bt-cortina{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 12%,transparent 85%,rgba(0,0,0,.4)),repeating-linear-gradient(90deg,#5c0f2c 0,#8e1f4a 4.5%,#b22d5c 6.5%,#8e1f4a 8.5%,#5c0f2c 12.5%);transition:filter .5s}
-.bt-cortina::before{content:"";position:absolute;inset:0;background:radial-gradient(closest-side at 50% 58%,rgba(255,150,200,.85),rgba(255,90,160,.35) 55%,transparent);opacity:0;transition:opacity .5s}
-.bt-cortina::after{content:"";position:absolute;left:0;right:0;top:0;height:7%;background:linear-gradient(180deg,#C99A45,#8a5a17);box-shadow:0 3px 8px rgba(0,0,0,.5)}
-.bt-sil{position:absolute;left:50%;bottom:0;width:78%;translate:-50% 0;color:#3a0a1d;opacity:0;filter:blur(1.6px);transition:opacity .5s,transform .25s;transform:rotate(calc((var(--pose) - 1.5) * 3deg)) translateX(calc((var(--pose) - 1.5) * 4px))}
-.bt-luz .bt-cortina{filter:brightness(1.15) saturate(1.1)}
-.bt-luz .bt-cortina::before{opacity:1}
+.bt-luz .bt-lamp.e{animation:btPisca .35s steps(2) infinite}
+@keyframes btPisca{50%{filter:brightness(2)}}
+.bt-corpo{position:relative;padding:12px 4.5% 14px;border-radius:6px 6px 0 0;background:linear-gradient(90deg,#3a0d1b,#5a1a2b 12%,#4a1424 50%,#5a1a2b 88%,#3a0d1b);border:2px solid #C99A45;box-shadow:inset 0 0 0 5px rgba(0,0,0,.18),inset 0 0 0 7px rgba(201,154,69,.5)}
+.bt-janela{position:relative;aspect-ratio:300/545;overflow:hidden;border-radius:4px;border:3px solid #C99A45;box-shadow:inset 0 0 0 2px #2a0712,inset 0 14px 22px rgba(0,0,0,.55);background:#2a0712}
+/* fundo de ouro que aparece quando a cortina abre */
+.bt-fundo{position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 45%,#FFF1C9 0%,#F0C76A 28%,#B9782A 62%,#4a1a10 100%)}
+.bt-fundo::before{content:"";position:absolute;inset:-40%;background:repeating-conic-gradient(from 0deg at 50% 45%,rgba(255,255,240,.35) 0 5deg,transparent 5deg 15deg);animation:btGira 22s linear infinite}
+@keyframes btGira{to{rotate:360deg}}
+.bt-cortina{position:absolute;inset:0;display:flex}
+.bt-cm{position:relative;width:50%;height:100%;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 12%,transparent 85%,rgba(0,0,0,.4)),repeating-linear-gradient(90deg,#5c0f2c 0,#8e1f4a 9%,#b22d5c 13%,#8e1f4a 17%,#5c0f2c 25%);transition:transform 1.4s cubic-bezier(.65,0,.3,1),filter .5s;transform-origin:top center}
+.bt-cm.e{box-shadow:inset -8px 0 14px rgba(0,0,0,.35)}.bt-cm.d{box-shadow:inset 8px 0 14px rgba(0,0,0,.35)}
+.bt-abre .bt-cm.e{transform:translateX(-82%) scaleX(.5)}
+.bt-abre .bt-cm.d{transform:translateX(82%) scaleX(.5)}
+.bt-valance{position:absolute;left:0;right:0;top:0;z-index:2;height:7%;background:linear-gradient(180deg,#E9C26A,#8a5a17);box-shadow:0 3px 8px rgba(0,0,0,.5)}
+.bt-valance::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:8px;background:radial-gradient(circle at 50% 0,#B9873A 5px,transparent 6px) 0 0/16px 8px repeat-x}
+.bt-rosa{position:absolute;inset:0;background:radial-gradient(closest-side at 50% 58%,rgba(255,150,200,.85),rgba(255,90,160,.35) 55%,transparent);opacity:0;transition:opacity .5s;pointer-events:none}
+.bt-luz .bt-rosa{opacity:1}
+.bt-sil{position:absolute;left:50%;bottom:0;width:78%;translate:-50% 0;color:#3a0a1d;opacity:0;filter:blur(1.6px);transition:opacity .5s,transform .25s;transform:rotate(calc((var(--pose) - 1.5) * 3deg)) translateX(calc((var(--pose) - 1.5) * 5px));pointer-events:none}
 .bt-luz .bt-sil{opacity:.92}
-.bt-brilho{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,220,240,.18) 50%,transparent 60%) no-repeat;background-size:300% 100%;animation:btBrilho 4s ease-in-out infinite}
+.bt-brilho{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,220,240,.18) 50%,transparent 60%) no-repeat;background-size:300% 100%;animation:btBrilho 4s ease-in-out infinite;pointer-events:none}
+.bt-abre .bt-brilho{opacity:0}
 @keyframes btBrilho{0%{background-position:120% 0}60%,100%{background-position:-20% 0}}
-.bt-fenda{position:absolute;left:8%;right:8%;top:1.5%;height:5px;z-index:3;border-radius:3px;background:#0d0206;box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,220,160,.35)}
-.bt-flash{position:absolute;inset:0;z-index:4;background:#FFFDF6;opacity:0;pointer-events:none}
-.bt-flash.on{animation:btFlash .5s ease-out}
-@keyframes btFlash{0%{opacity:.95}100%{opacity:0}}
-.bt-tiras{position:absolute;inset:3% 6% 0;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
-.bt-tira{width:46%;padding:5% 5% 0;background:linear-gradient(180deg,#FBF5E8,#F1E6CE);box-shadow:0 10px 18px -6px rgba(0,0,0,.65);transform:translateY(-115%);transition:transform 1.7s cubic-bezier(.3,.7,.25,1)}
-.bt-tira.b{margin-top:5%}
+.bt-conta{position:absolute;inset:0;z-index:5;display:grid;place-items:center;pointer-events:none}
+.bt-conta b{font:700 clamp(90px,30vw,140px)/1 var(--f-display);color:transparent;background:linear-gradient(180deg,#FFF6D6,#F3D58A 45%,#B9873A);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 18px rgba(255,214,130,.8));opacity:0}
+.bt-conta b.on{animation:btConta .62s ease-out both}
+@keyframes btConta{0%{opacity:0;transform:scale(2.2)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.7)}}
+.bt-fenda{position:absolute;left:8%;right:8%;top:1.2%;height:6px;z-index:4;border-radius:3px;background:#0d0206;box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,220,160,.35)}
+.bt-flash{position:absolute;inset:0;z-index:6;background:#FFFDF6;opacity:0;pointer-events:none}
+.bt-flash.on{animation:btFlash .55s ease-out}
+@keyframes btFlash{0%{opacity:1}100%{opacity:0}}
+.bt-tiras{position:absolute;inset:2.5% 3% 0;z-index:3;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.bt-tira{position:relative;width:48%;padding:4.5% 4.5% 0;background:linear-gradient(180deg,#FBF5E8,#F1E6CE);box-shadow:0 12px 22px -6px rgba(0,0,0,.7);transform:translateY(-115%);transition:transform 1.8s cubic-bezier(.3,.7,.25,1);overflow:hidden}
+.bt-tira.b{margin-top:6%}
 .bt-a .bt-tira.a,.bt-b .bt-tira.b{transform:translateY(0)}
-.bt-a .bt-tira.a{rotate:-1.2deg}.bt-b .bt-tira.b{rotate:1.4deg}
-.bt-f{aspect-ratio:1;margin-bottom:6%;overflow:hidden;background:#2b1a12}
+.bt-a .bt-tira.a{rotate:-1.4deg}.bt-b .bt-tira.b{rotate:1.6deg}
+.bt-tira::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,250,225,.8) 50%,transparent 65%) no-repeat;background-size:300% 100%;background-position:150% 0;pointer-events:none}
+.bt-final .bt-tira::after{animation:ckBrilho 1.6s ease-in-out both}
+.bt-final .bt-tira.b::after{animation-delay:.35s}
+.bt-final .bt-tira{box-shadow:0 0 26px rgba(255,214,130,.55),0 12px 22px -6px rgba(0,0,0,.7)}
+.bt-f{aspect-ratio:1;margin-bottom:5%;overflow:hidden;background:#2b1a12}
 .bt-f img{display:block;width:100%;height:100%;object-fit:cover;filter:brightness(2.4) sepia(.9) blur(5px);opacity:.25;transition:filter 1.6s ease,opacity 1.6s ease}
 .bt-rev .bt-f img{filter:none;opacity:1}
 .bt-rev .bt-tira.a .bt-f:nth-child(2) img,.bt-rev .bt-tira.b .bt-f:nth-child(1) img{transition-delay:.5s}
 .bt-rev .bt-tira.a .bt-f:nth-child(3) img,.bt-rev .bt-tira.b .bt-f:nth-child(2) img{transition-delay:1s}
 .bt-rev .bt-tira.a .bt-f:nth-child(4) img,.bt-rev .bt-tira.b .bt-f:nth-child(3) img{transition-delay:1.5s}
 .bt-rev .bt-tira.b .bt-f:nth-child(4) img{transition-delay:2s}
-.bt-leg{margin:0;padding:1% 0 7%;white-space:nowrap;font:600 clamp(8px,2.3vw,10px)/1 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:#6b3b1d}
-.bt-base{height:22px;margin:0 -2%;border-radius:0 0 8px 8px;background:linear-gradient(180deg,#C99A45,#7a4a14);box-shadow:0 6px 12px rgba(0,0,0,.45)}
+.bt-leg{margin:0;padding:1% 0 6%;white-space:nowrap;font:600 clamp(9px,2.6vw,12px)/1 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:#6b3b1d}
+.bt-base{height:24px;margin:0 -1%;border-radius:0 0 8px 8px;background:linear-gradient(180deg,#C99A45,#7a4a14);box-shadow:0 6px 12px rgba(0,0,0,.45)}
 .bt-base i{display:block;height:7px;margin:0 8%;background:repeating-linear-gradient(90deg,rgba(0,0,0,.25) 0 2px,transparent 2px 12px)}
 .bt-hint{margin:18px 0 0;font:italic 400 17px/1.4 var(--f-text);color:var(--ink-l2);animation:breathe 2.4s ease-in-out infinite}
 .bt-foi .bt-hint{display:none}
 .bt-sub{margin:12px 0 0;font:italic 400 15px/1.3 var(--f-display);color:#F3D58A;opacity:.85}
-.bt-pronta .bt-tira,.bt-pronta .bt-f img{transition:none}
-.bt-previa{margin:10px auto 0;padding:6px 0 4px;border-radius:16px;background:radial-gradient(120% 80% at 50% 30%,#4a1430,#1e0812)}
-@media (prefers-reduced-motion:reduce){.bt-luzes i,.bt-brilho,.bt-hint{animation:none}.bt-tira,.bt-f img{transition:none}}
+.bt-pronta .bt-tira,.bt-pronta .bt-f img,.bt-pronta .bt-cm{transition:none}
+.bt-previa{margin:10px -6px 0;padding:10px 0 6px;border-radius:16px;background:radial-gradient(120% 80% at 50% 30%,#4a1430,#1e0812);overflow:hidden}
+.bt-previa .bt{width:100%;margin-left:0;translate:none}
+@media (prefers-reduced-motion:reduce){.bt-luzes i,.bt-brilho,.bt-hint,.bt-raios,.bt-aura,.bt-fundo::before{animation:none}.bt-motes{display:none}.bt-tira,.bt-f img,.bt-cm{transition:none}}
 
 </style></head><body>
 <div class="app" id="app">
@@ -2703,48 +2732,58 @@ function boothHTML(fotos, L, pronta) {
   const ini = s => (s || '').trim().charAt(0).toUpperCase();
   const tira = (fs, leg, c) => `<div class="bt-tira ${c}">${fs.map(u => `<div class="bt-f"><img src="${u}" alt="" loading="lazy"></div>`).join('')}<p class="bt-leg">${leg}</p></div>`;
   const luzes = n => '<i></i>'.repeat(n);
-  return `<div class="bt${pronta ? ' bt-pronta bt-foi bt-a bt-b bt-rev' : ''}">
+  return `<div class="bt${pronta ? ' bt-pronta bt-foi bt-abre bt-a bt-b bt-rev bt-final' : ''}">
+    <div class="bt-cena"><i class="bt-raios" aria-hidden="true"></i><i class="bt-aura" aria-hidden="true"></i><div class="bt-motes" aria-hidden="true">${motes(16)}</div>
     <div class="bt-cab" role="button" tabindex="0" aria-label="Tirar as fotos na cabine">
       <div class="bt-topo"><span class="bt-coroa" aria-hidden="true"></span>
-        <div class="bt-placa"><span class="bt-luzes t" aria-hidden="true">${luzes(11)}</span><b>Cabine de fotos</b><small>4 poses e muito amor</small><span class="bt-luzes b" aria-hidden="true">${luzes(11)}</span></div>
+        <div class="bt-placa"><span class="bt-luzes t" aria-hidden="true">${luzes(12)}</span><b>Cabine de fotos</b><small>4 poses e muito amor</small><span class="bt-luzes b" aria-hidden="true">${luzes(12)}</span></div>
+        <span class="bt-lamp e" aria-hidden="true"></span><span class="bt-lamp d" aria-hidden="true">${ICON.heart}</span>
       </div>
       <div class="bt-corpo">
-        <span class="bt-lamp e" aria-hidden="true"></span><span class="bt-lamp d" aria-hidden="true">${ICON.heart}</span>
         <div class="bt-janela">
-          <div class="bt-cortina"><i class="bt-brilho"></i>
-            <svg class="bt-sil" viewBox="0 0 120 120" aria-hidden="true"><g fill="currentColor"><ellipse cx="41" cy="50" rx="13" ry="15" transform="rotate(14 41 50)"/><path d="M12 120c0-28 13-48 30-48 9 0 16 5 21 14l-6 34z"/><ellipse cx="77" cy="45" rx="14" ry="16.5" transform="rotate(-12 77 45)"/><path d="M50 120c3-30 13-50 29-50 18 0 29 20 29 50z"/></g></svg>
+          <div class="bt-fundo" aria-hidden="true"></div>
+          <div class="bt-cortina" aria-hidden="true"><div class="bt-cm e"></div><div class="bt-cm d"></div><i class="bt-rosa"></i><i class="bt-brilho"></i>
+            <svg class="bt-sil" viewBox="0 0 120 120"><g fill="currentColor"><ellipse cx="41" cy="50" rx="13" ry="15" transform="rotate(14 41 50)"/><path d="M12 120c0-28 13-48 30-48 9 0 16 5 21 14l-6 34z"/><ellipse cx="77" cy="45" rx="14" ry="16.5" transform="rotate(-12 77 45)"/><path d="M50 120c3-30 13-50 29-50 18 0 29 20 29 50z"/></g></svg>
           </div>
-          <i class="bt-fenda" aria-hidden="true"></i><i class="bt-flash" aria-hidden="true"></i>
+          <i class="bt-valance" aria-hidden="true"></i><i class="bt-fenda" aria-hidden="true"></i>
           <div class="bt-tiras">${tira(fotos.slice(0, 4), `${esc(ini(L.to))} &amp; ${esc(ini(L.from))}`, 'a')}${tira(fotos.slice(4, 8), 'Para sempre', 'b')}</div>
+          <div class="bt-conta" aria-hidden="true"><b></b></div><i class="bt-flash" aria-hidden="true"></i>
         </div>
       </div>
       <div class="bt-base" aria-hidden="true"><i></i></div>
     </div>
+    <i class="bt-foco" aria-hidden="true"></i></div>
     <p class="bt-hint">Toque na cabine para tirar as fotos</p>
     <p class="bt-sub">Os nossos melhores momentos</p>
   </div>`;
 }
-/* a sessão: luz rosa e 4 flashes atrás da cortina, depois as duas tiras saem e as fotos se revelam uma a uma */
-function rodarCabine(bt, onFim, timers = [], onTiras) {
+/* a sessão, como no cinema: luz no palco, contagem 3-2-1, luz rosa e 4 flashes atrás da cortina,
+   a cortina abre num fundo de ouro, as duas tiras descem e as fotos se revelam, e no fim os raios de ouro crescem */
+function rodarCabine(bt, onFim, timers = [], opt = {}) {
   if (!bt || bt.classList.contains('bt-foi')) return;
   bt.classList.add('bt-foi');
-  const at = (f, ms) => timers.push(setTimeout(f, reduced() ? 0 : ms));
-  const fl = bt.querySelector('.bt-flash');
+  const rapido = reduced(), at = (f, ms) => timers.push(setTimeout(f, rapido ? 0 : ms));
+  const fl = bt.querySelector('.bt-flash'), cab = bt.querySelector('.bt-cab'), num = bt.querySelector('.bt-conta b');
   at(() => bt.classList.add('bt-luz'), 0);
-  [600, 1250, 1900, 2550].forEach((ms, k) => at(() => {
+  if (!rapido) ['3', '2', '1'].forEach((t, k) => at(() => { num.textContent = t; num.classList.remove('on'); void num.offsetWidth; num.classList.add('on'); }, 250 + k * 650));
+  [2300, 2900, 3500, 4100].forEach((ms, k) => at(() => {
     bt.style.setProperty('--pose', k);
     fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on');
+    cab.classList.add('bloom'); setTimeout(() => cab.classList.remove('bloom'), 260);
+    if (opt.flash) opt.flash();
+    try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
   }, ms));
-  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-a'); if (onTiras) onTiras(); }, 3300);
-  at(() => bt.classList.add('bt-b'), 4000);
-  at(() => bt.classList.add('bt-rev'), 4300);
-  at(() => { if (onFim) onFim(); }, 7600);
+  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-abre'); }, 4700);
+  at(() => { bt.classList.add('bt-a'); if (opt.onTiras) opt.onTiras(); }, 5300);
+  at(() => bt.classList.add('bt-b'), 5900);
+  at(() => bt.classList.add('bt-rev'), 6200);
+  at(() => { bt.classList.add('bt-final'); sparkBurst(bt.querySelector('.bt-janela')); }, 8900);
+  at(() => { if (onFim) onFim(); }, 9600);
 }
 function previaCabine() {
   etapa('previa-cabine');
   const fs = [6, 1, 5, 2, 7, 3, 4, 2].map(EXEMPLO_FOTOS), L = { to: 'Ana', from: 'João' };
   const card = openSheet(`<p class="eyebrow">Novidade ✨</p><h2 class="h2">Cabine de <em>fotos</em></h2>
-    <p class="sub">Assim a cabine aparece no fim da carta, no lugar da foto grande. Ela revela 8 fotos de vocês em duas tiras.</p>
     <div class="bt-previa lt" data-theme="rosa">${boothHTML(fs, L)}</div>
     <button class="btn btn-ghost w" id="cabDeNovo" style="margin-top:14px" hidden>Ver de novo</button>`);
   const host = card.querySelector('.bt-previa'), b = card.querySelector('#cabDeNovo');
@@ -3267,7 +3306,10 @@ function bindLetter(root, L, mode, hooks = {}) {
     const tirar = () => {
       if (bt.classList.contains('bt-foi')) return;
       try { if (navigator.vibrate) navigator.vibrate([10, 40, 10, 40, 10]); } catch (e) {}
-      rodarCabine(bt, () => { sparkBurst(bt); done(bt.closest('.lsec')); }, timers, n => { later(() => mostrar(bt.querySelector('.bt-tiras'), 120), 0); });
+      rodarCabine(bt, () => { done(bt.closest('.lsec')); }, timers, {
+        onTiras: () => later(() => mostrar(bt.querySelector('.bt-cab'), 120), 0),
+        flash: () => { if (full && hooks.host && !reduced()) { const f = document.createElement('div'); f.className = 'screen-flash'; f.style.opacity = '.55'; hooks.host.appendChild(f); setTimeout(() => f.remove(), 900); } }
+      });
     };
     cabBtn.addEventListener('click', tirar);
     cabBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tirar(); } });
