@@ -1538,6 +1538,23 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .bt-previa .bt{width:100%;margin-left:0;translate:none}
 @media (prefers-reduced-motion:reduce){.bt-luzes i,.bt-brilho,.bt-hint,.bt-raios,.bt-aura,.bt-fundo::before{animation:none}.bt-motes{display:none}.bt-tira,.bt-f img,.bt-cm{transition:none}}
 
+/* 16/11: quando a Padrão com adicionais passa do preço da Premium, mostra a conta (o total real da pessoa cortado e o preço da Premium) */
+.bump-comp{position:relative;margin:16px 0 4px;padding:18px 16px 16px;border-radius:18px;text-align:center;border:1.5px solid #E9C26A;background:radial-gradient(120% 90% at 50% 0%,rgba(243,213,138,.22),rgba(243,213,138,.05) 60%),rgba(40,8,26,.55);box-shadow:0 0 0 4px rgba(243,213,138,.08),0 18px 36px -18px rgba(236,180,80,.6);overflow:hidden;isolation:isolate}
+.bump-comp::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 35%,rgba(255,240,200,.16) 50%,transparent 65%) no-repeat;background-size:300% 100%;animation:btBrilho 4.5s ease-in-out infinite}
+.bc-t{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;font:600 19px/1.2 var(--f-display);color:#FFF3D6}
+.bc-t svg{width:18px;height:18px;color:#F3D58A}
+.bc-t em{font-style:italic;color:#F3D58A}
+.bc-lin{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 4px;border-top:1px solid rgba(243,213,138,.18);font:500 14.5px/1.3 var(--f-ui);color:var(--ink-l2,#d9c6cf);text-align:left}
+.bc-lin s{font:600 17px/1 var(--f-ui);color:#cdb7c1;text-decoration-color:#ff8a8a;text-decoration-thickness:2px;opacity:.85}
+.bc-lin.prem span{color:#FFF3D6;font-weight:600}
+.bc-lin.prem b{font:700 26px/1 var(--f-display);color:transparent;background:linear-gradient(180deg,#FFF6D6,#F3D58A 50%,#C99A45);-webkit-background-clip:text;background-clip:text}
+.bc-eco{display:inline-block;margin:8px 0 0;padding:5px 12px;border-radius:999px;font:700 13px/1.2 var(--f-ui);letter-spacing:.03em;color:#2a1405;background:linear-gradient(180deg,#9BE7B6,#5CC88A)}
+.bc-s{margin:10px 0 0;font:400 13px/1.45 var(--f-ui);color:var(--ink-l2,#d9c6cf)}
+.bc-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:14px 0 0;padding:14px 16px;border:0;border-radius:999px;font:700 15.5px/1.2 var(--f-ui);color:#3A0B2B;background:var(--gold-btn);box-shadow:0 12px 26px -12px rgba(236,180,80,.8),inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer}
+.bc-btn svg{width:17px;height:17px}
+.bar-prem .bp-t small s{opacity:.8}
+@media (prefers-reduced-motion:reduce){.bump-comp::after{animation:none}}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -1690,7 +1707,7 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 const EXTRAS = [
   { id: 'cabine', preco: 4.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
   { id: 'album', preco: 4.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
-  { id: 'vit', preco: 3.99, t: 'Carta vitalícia', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 1 mês).' },
+  { id: 'vit', preco: 3.99, t: 'Carta para sempre', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 1 mês).' },
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
@@ -3810,7 +3827,14 @@ function bumpsHTML() {
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}${e.id === 'cabine' ? `<button type="button" class="bump-previa" data-previa-cabine>${ICON.eye}Ver prévia da cabine</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') || ex.includes('cabine') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a cabine de fotos.</p>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<div class="bump-comp" role="note">
+      <p class="bc-t">${ICON.sparkle}Compensa mais a <em>Premium</em></p>
+      <div class="bc-lin"><span>Padrão com ${ex.length > 1 ? 'esses adicionais' : 'esse adicional'}</span><s>${brl(soma)}</s></div>
+      <div class="bc-lin prem"><span>Premium com tudo</span><b>${brl(PRICE_PREMIUM)}</b></div>
+      <p class="bc-eco">Você economiza ${brl(Math.round((soma - PRICE_PREMIUM) * 100) / 100)}</p>
+      <p class="bc-s">A Premium já vem com a cabine de fotos, o álbum de ouro e a carta para sempre, e ainda tem a abertura de cinema, o mini filme e 6 fotos.</p>
+      <button type="button" class="bc-btn" data-ir-premium>${ICON.sparkle}Quero a Premium por ${brl(PRICE_PREMIUM)}</button>
+    </div>` : ''}
   </div>`;
 }
 function checkoutView() {
@@ -3850,6 +3874,7 @@ function bindReady(el) {
 }
 function bindBumps(el) {
   el.querySelectorAll('[data-previa-album]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaAlbum(); }));
+  el.querySelectorAll('[data-ir-premium]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); querPremiumDosAdicionais(); }));
   el.querySelectorAll('[data-previa-cabine]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaCabine(); }));
   el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
     const k = c.dataset.extra, ex = new Set(S.extras || []);
@@ -4413,7 +4438,8 @@ function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
   const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => bumpsVisiveis(ex).every(e => ex.includes(e.id)) || precoTotal('padrao', ex) >= PRICE_PREMIUM - 0.01)(extrasValidos(S.plano, S.extras)); /* todos marcados, ou a soma já chegou no preço da Premium */
   document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
-  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${brl(PRICE_PREMIUM)} · vitalícia, com tudo</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
+  const somaEx = precoTotal('padrao', extrasValidos(S.plano, S.extras));
+  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${somaEx > PRICE_PREMIUM ? `de <s>${brl(somaEx)}</s> por ${brl(PRICE_PREMIUM)} · com tudo` : `${brl(PRICE_PREMIUM)} · vitalícia, com tudo`}</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);
   if (hide) return;

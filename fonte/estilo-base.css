@@ -1525,3 +1525,20 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .bt-previa{margin:10px -6px 0;padding:10px 0 6px;border-radius:16px;background:radial-gradient(120% 80% at 50% 30%,#4a1430,#1e0812);overflow:hidden}
 .bt-previa .bt{width:100%;margin-left:0;translate:none}
 @media (prefers-reduced-motion:reduce){.bt-luzes i,.bt-brilho,.bt-hint,.bt-raios,.bt-aura,.bt-fundo::before{animation:none}.bt-motes{display:none}.bt-tira,.bt-f img,.bt-cm{transition:none}}
+
+/* 16/11: quando a Padrão com adicionais passa do preço da Premium, mostra a conta (o total real da pessoa cortado e o preço da Premium) */
+.bump-comp{position:relative;margin:16px 0 4px;padding:18px 16px 16px;border-radius:18px;text-align:center;border:1.5px solid #E9C26A;background:radial-gradient(120% 90% at 50% 0%,rgba(243,213,138,.22),rgba(243,213,138,.05) 60%),rgba(40,8,26,.55);box-shadow:0 0 0 4px rgba(243,213,138,.08),0 18px 36px -18px rgba(236,180,80,.6);overflow:hidden;isolation:isolate}
+.bump-comp::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 35%,rgba(255,240,200,.16) 50%,transparent 65%) no-repeat;background-size:300% 100%;animation:btBrilho 4.5s ease-in-out infinite}
+.bc-t{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;font:600 19px/1.2 var(--f-display);color:#FFF3D6}
+.bc-t svg{width:18px;height:18px;color:#F3D58A}
+.bc-t em{font-style:italic;color:#F3D58A}
+.bc-lin{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 4px;border-top:1px solid rgba(243,213,138,.18);font:500 14.5px/1.3 var(--f-ui);color:var(--ink-l2,#d9c6cf);text-align:left}
+.bc-lin s{font:600 17px/1 var(--f-ui);color:#cdb7c1;text-decoration-color:#ff8a8a;text-decoration-thickness:2px;opacity:.85}
+.bc-lin.prem span{color:#FFF3D6;font-weight:600}
+.bc-lin.prem b{font:700 26px/1 var(--f-display);color:transparent;background:linear-gradient(180deg,#FFF6D6,#F3D58A 50%,#C99A45);-webkit-background-clip:text;background-clip:text}
+.bc-eco{display:inline-block;margin:8px 0 0;padding:5px 12px;border-radius:999px;font:700 13px/1.2 var(--f-ui);letter-spacing:.03em;color:#2a1405;background:linear-gradient(180deg,#9BE7B6,#5CC88A)}
+.bc-s{margin:10px 0 0;font:400 13px/1.45 var(--f-ui);color:var(--ink-l2,#d9c6cf)}
+.bc-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:14px 0 0;padding:14px 16px;border:0;border-radius:999px;font:700 15.5px/1.2 var(--f-ui);color:#3A0B2B;background:var(--gold-btn);box-shadow:0 12px 26px -12px rgba(236,180,80,.8),inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer}
+.bc-btn svg{width:17px;height:17px}
+.bar-prem .bp-t small s{opacity:.8}
+@media (prefers-reduced-motion:reduce){.bump-comp::after{animation:none}}

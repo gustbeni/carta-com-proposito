@@ -163,7 +163,7 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 const EXTRAS = [
   { id: 'cabine', preco: 4.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
   { id: 'album', preco: 4.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
-  { id: 'vit', preco: 3.99, t: 'Carta vitalícia', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 1 mês).' },
+  { id: 'vit', preco: 3.99, t: 'Carta para sempre', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 1 mês).' },
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
@@ -2283,7 +2283,14 @@ function bumpsHTML() {
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}${e.id === 'cabine' ? `<button type="button" class="bump-previa" data-previa-cabine>${ICON.eye}Ver prévia da cabine</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') || ex.includes('cabine') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a cabine de fotos.</p>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<div class="bump-comp" role="note">
+      <p class="bc-t">${ICON.sparkle}Compensa mais a <em>Premium</em></p>
+      <div class="bc-lin"><span>Padrão com ${ex.length > 1 ? 'esses adicionais' : 'esse adicional'}</span><s>${brl(soma)}</s></div>
+      <div class="bc-lin prem"><span>Premium com tudo</span><b>${brl(PRICE_PREMIUM)}</b></div>
+      <p class="bc-eco">Você economiza ${brl(Math.round((soma - PRICE_PREMIUM) * 100) / 100)}</p>
+      <p class="bc-s">A Premium já vem com a cabine de fotos, o álbum de ouro e a carta para sempre, e ainda tem a abertura de cinema, o mini filme e 6 fotos.</p>
+      <button type="button" class="bc-btn" data-ir-premium>${ICON.sparkle}Quero a Premium por ${brl(PRICE_PREMIUM)}</button>
+    </div>` : ''}
   </div>`;
 }
 function checkoutView() {
@@ -2323,6 +2330,7 @@ function bindReady(el) {
 }
 function bindBumps(el) {
   el.querySelectorAll('[data-previa-album]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaAlbum(); }));
+  el.querySelectorAll('[data-ir-premium]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); querPremiumDosAdicionais(); }));
   el.querySelectorAll('[data-previa-cabine]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaCabine(); }));
   el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
     const k = c.dataset.extra, ex = new Set(S.extras || []);
@@ -2886,7 +2894,8 @@ function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
   const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => bumpsVisiveis(ex).every(e => ex.includes(e.id)) || precoTotal('padrao', ex) >= PRICE_PREMIUM - 0.01)(extrasValidos(S.plano, S.extras)); /* todos marcados, ou a soma já chegou no preço da Premium */
   document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
-  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${brl(PRICE_PREMIUM)} · vitalícia, com tudo</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
+  const somaEx = precoTotal('padrao', extrasValidos(S.plano, S.extras));
+  if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${somaEx > PRICE_PREMIUM ? `de <s>${brl(somaEx)}</s> por ${brl(PRICE_PREMIUM)} · com tudo` : `${brl(PRICE_PREMIUM)} · vitalícia, com tudo`}</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
   const hide = naAcesso() || (S.view === 'step' && S.step === 0);
   bar.hidden = hide; document.body.classList.toggle('nobar', hide);
   if (hide) return;
