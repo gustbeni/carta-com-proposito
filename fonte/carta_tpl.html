@@ -165,6 +165,7 @@ const EXTRAS = [
   { id: 'vit', preco: 2.99, t: 'Carta vitalícia', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 1 mês).' },
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.' },
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.' },
+  { id: 'cabine', preco: 3.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
   { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
   { id: 'grandes', preco: 1.99, t: 'Fotos maiores', d: 'As polaroides aparecem bem maiores na carta.', oculto: true } // não é mais vendido; fica para as cartas que já compraram
 ];
@@ -180,7 +181,8 @@ const temRec = (src, k) => { if (src.plano === 'premium') return true; const v =
 const polIdx = src => src.plano === 'premium' ? [0, 1, 2, 4, 5, 6] : temRec(src, 'cine') ? [0, 1, 2, 4, 5, 6, 14] : temRec(src, 'fotos') ? [0, 1, 2, 4, 5, 6] : [0, 1, 2];
 const bumpsVisiveis = ex => EXTRAS.filter(e => !e.oculto && !(e.id === 'fotos' && ex.includes('cine')));
 const precoTotal = (plano, ex) => plano === 'premium' ? PRICE_PREMIUM : Math.round((PRICE + EXTRAS.filter(e => extrasValidos(plano, ex).includes(e.id)).reduce((t, e) => t + e.preco, 0)) * 100) / 100;
-const NFOTOS = 15; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium), 14 a 4ª polaroide da abertura de cinema
+const NFOTOS = 19; // 0-2 polaroides, 3 foto final, 4-6 polaroides do Premium, 7-13 mini filme (Premium), 14 a 4ª polaroide da abertura de cinema, 15-18 as 4 fotos da cabine
+const CAB = [15, 16, 17, 18];
 const API = '/api';        // funções do Netlify (Mercado Pago, cartas)
 const CLOUD = { nome: 'kmd9kglx', preset: 'carta_com_proposito' }; // Cloudinary: guarda as fotos das cartas
 const SITE = 'https://carta-com-proposito.netlify.app';
@@ -412,7 +414,7 @@ const EXEMPLO_FOTOS = n => '/img/exemplo/casal' + n + '.jpg';
 function fotosExemplo(plano) {
   const f = [1, 2, 3, 4].map(EXEMPLO_FOTOS);
   if (plano !== 'premium') return f;
-  return f.concat([5, 6, 7].map(EXEMPLO_FOTOS), [5, 2, 1, 7, 3, 6, 4].map(EXEMPLO_FOTOS));
+  return f.concat([5, 6, 7].map(EXEMPLO_FOTOS), [5, 2, 1, 7, 3, 6, 4].map(EXEMPLO_FOTOS), [null], [6, 5, 7, 2].map(EXEMPLO_FOTOS));
 }
 
 /* ===== Música instrumental gerada no navegador (Fundo de adoração) ===== */
@@ -838,7 +840,7 @@ function resolveLetter(src) {
     music: src.music || 'instrumental', musicLink: src.musicLink || '', ml: mlDe(src), mt: src.music === 'link' ? (src.musicNome || '').trim().slice(0, 120) : '',
     theme: src.theme || REC[r].theme, ask: occ.ask || null,
     premium: src.plano === 'premium', album: temRec(src, 'album'), cine: temRec(src, 'cine'), maisFotos: temRec(src, 'fotos'), pol: polIdx(src), vitalicia: temRec(src, 'vit'),
-    grandes: src.plano !== 'premium' && temRec(src, 'grandes'),
+    grandes: src.plano !== 'premium' && temRec(src, 'grandes'), cabine: temRec(src, 'cabine'),
     film: src.plano === 'premium' ? filmeFotos(src.photos || []) : temRec(src, 'filme') ? filmePadrao(src) : [],
     initial: (src.from || '').trim() ? from.charAt(0).toUpperCase() : ''
   };
@@ -868,6 +870,7 @@ function cartaParaServidor(fotos) {
   if (pol.length) { P.fu = pol.map(i => fotos[i]); if (pol.some(i => (S.captions[i] || '').trim())) P.fc = pol.map(i => (S.captions[i] || '').trim()); }
   if (S.photos[3] && fotos[3]) { P.ffu = fotos[3]; if ((S.captions[3] || '').trim()) P.ffc = S.captions[3].trim(); }
   if (temRec(S, 'filme')) { const mf = (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]).filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (mf.length) P.mf = mf; }
+  if (temRec(S, 'cabine')) { const cb = CAB.filter(i => S.photos[i] && fotos[i]).map(i => fotos[i]); if (cb.length) P.cb = cb; }
   return P;
 }
 function cartaDoServidor(P) {
@@ -877,10 +880,11 @@ function cartaDoServidor(P) {
   const extras = premium ? [] : extrasValidos('padrao', P.ex, true), tem = k => premium || extras.includes(k) || (k === 'fotos' && extras.includes('cine'));
   const fu = (Array.isArray(P.fu) ? P.fu : []).slice(0, !premium && tem('cine') ? 7 : tem('fotos') ? 6 : 3).map(nuvem).filter(Boolean), fc = Array.isArray(P.fc) ? P.fc : [];
   const mf = tem('filme') && Array.isArray(P.mf) ? P.mf.slice(0, premium ? 7 : 3).map(nuvem).filter(Boolean) : [];
+  const cb = tem('cabine') && Array.isArray(P.cb) ? P.cb.slice(0, 4).map(nuvem).filter(Boolean) : [];
   const base = {
     to: txt(P.p, 40), from: txt(P.d, 40), date: txt(P.dt, 10), message: txt(P.m, 1500),
     reasons: (Array.isArray(P.mot) ? P.mot : []).map(x => txt(x, 120)).filter(Boolean).slice(0, 20),
-    photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf, Array(7).fill(null)).slice(0, 14).concat(fu[6] || null),
+    photos: [fu[0] || null, fu[1] || null, fu[2] || null, nuvem(P.ffu), fu[3] || null, fu[4] || null, fu[5] || null].concat(mf, Array(7).fill(null)).slice(0, 14).concat(fu[6] || null, cb.concat(Array(4).fill(null)).slice(0, 4)),
     captions: [0, 1, 2].map(i => txt(fc[i], 100)).concat(txt(P.ffc, 100), [3, 4, 5].map(i => txt(fc[i], 100)), Array(7).fill(''), txt(fc[6], 100)),
     plano: premium ? 'premium' : 'padrao', extras, legado: true,
     music: infoMusica(P.ml) ? 'link' : P.mu ? 'instrumental' : 'none', musicNome: txt(P.mt, 120), prayer: -1
@@ -1187,6 +1191,70 @@ function cameraHTML(L, mini) {
   </div>`;
 }
 
+/* ===== Cabine de fotos (adicional "cabine", 16/11; a Premium também tem): no fim da carta, no lugar da câmera.
+   8 fotos em duas tiras: as 4 da carta (3 polaroides e a foto final) e as 4 da cabine (15-18), misturadas.
+   Se faltar foto, usa as outras da carta e repete. ===== */
+function fotosCabine(L) {
+  const ph = L.photos || [], carta = [0, 1, 2, 3].map(i => ph[i]).filter(Boolean), cab = CAB.map(i => ph[i]).filter(Boolean);
+  const mix = []; for (let k = 0; k < 4; k++) { if (cab[k]) mix.push(cab[k]); if (carta[k]) mix.push(carta[k]); }
+  const resto = (L.pol || []).slice(3).map(i => ph[i]).concat(L.film || []).filter(u => u && !mix.includes(u));
+  const f = mix.concat(resto).slice(0, 8);
+  return f.length ? [...Array(8).keys()].map(k => f[k % f.length]) : [];
+}
+function boothHTML(fotos, L, pronta) {
+  const ini = s => (s || '').trim().charAt(0).toUpperCase();
+  const tira = (fs, leg, c) => `<div class="bt-tira ${c}">${fs.map(u => `<div class="bt-f"><img src="${u}" alt="" loading="lazy"></div>`).join('')}<p class="bt-leg">${leg}</p></div>`;
+  const luzes = n => '<i></i>'.repeat(n);
+  return `<div class="bt${pronta ? ' bt-pronta bt-foi bt-a bt-b bt-rev' : ''}">
+    <div class="bt-cab" role="button" tabindex="0" aria-label="Tirar as fotos na cabine">
+      <div class="bt-topo"><span class="bt-coroa" aria-hidden="true"></span>
+        <div class="bt-placa"><span class="bt-luzes t" aria-hidden="true">${luzes(11)}</span><b>Cabine de fotos</b><small>4 poses e muito amor</small><span class="bt-luzes b" aria-hidden="true">${luzes(11)}</span></div>
+      </div>
+      <div class="bt-corpo">
+        <span class="bt-lamp e" aria-hidden="true"></span><span class="bt-lamp d" aria-hidden="true">${ICON.heart}</span>
+        <div class="bt-janela">
+          <div class="bt-cortina"><i class="bt-brilho"></i>
+            <svg class="bt-sil" viewBox="0 0 120 120" aria-hidden="true"><g fill="currentColor"><ellipse cx="41" cy="50" rx="13" ry="15" transform="rotate(14 41 50)"/><path d="M12 120c0-28 13-48 30-48 9 0 16 5 21 14l-6 34z"/><ellipse cx="77" cy="45" rx="14" ry="16.5" transform="rotate(-12 77 45)"/><path d="M50 120c3-30 13-50 29-50 18 0 29 20 29 50z"/></g></svg>
+          </div>
+          <i class="bt-fenda" aria-hidden="true"></i><i class="bt-flash" aria-hidden="true"></i>
+          <div class="bt-tiras">${tira(fotos.slice(0, 4), `${esc(ini(L.to))} &amp; ${esc(ini(L.from))}`, 'a')}${tira(fotos.slice(4, 8), 'Para sempre', 'b')}</div>
+        </div>
+      </div>
+      <div class="bt-base" aria-hidden="true"><i></i></div>
+    </div>
+    <p class="bt-hint">Toque na cabine para tirar as fotos</p>
+    <p class="bt-sub">Os nossos melhores momentos</p>
+  </div>`;
+}
+/* a sessão: luz rosa e 4 flashes atrás da cortina, depois as duas tiras saem e as fotos se revelam uma a uma */
+function rodarCabine(bt, onFim, timers = [], onTiras) {
+  if (!bt || bt.classList.contains('bt-foi')) return;
+  bt.classList.add('bt-foi');
+  const at = (f, ms) => timers.push(setTimeout(f, reduced() ? 0 : ms));
+  const fl = bt.querySelector('.bt-flash');
+  at(() => bt.classList.add('bt-luz'), 0);
+  [600, 1250, 1900, 2550].forEach((ms, k) => at(() => {
+    bt.style.setProperty('--pose', k);
+    fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on');
+  }, ms));
+  at(() => { bt.classList.remove('bt-luz'); bt.classList.add('bt-a'); if (onTiras) onTiras(); }, 3300);
+  at(() => bt.classList.add('bt-b'), 4000);
+  at(() => bt.classList.add('bt-rev'), 4300);
+  at(() => { if (onFim) onFim(); }, 7600);
+}
+function previaCabine() {
+  etapa('previa-cabine');
+  const fs = [6, 1, 5, 2, 7, 3, 4, 2].map(EXEMPLO_FOTOS), L = { to: 'Ana', from: 'João' };
+  const card = openSheet(`<p class="eyebrow">Novidade ✨</p><h2 class="h2">Cabine de <em>fotos</em></h2>
+    <p class="sub">Assim a cabine aparece no fim da carta, no lugar da foto grande. Ela revela 8 fotos de vocês em duas tiras.</p>
+    <div class="bt-previa lt" data-theme="rosa">${boothHTML(fs, L)}</div>
+    <button class="btn btn-ghost w" id="cabDeNovo" style="margin-top:14px" hidden>Ver de novo</button>`);
+  const host = card.querySelector('.bt-previa'), b = card.querySelector('#cabDeNovo');
+  const rodar = () => { b.hidden = true; host.innerHTML = boothHTML(fs, L); setTimeout(() => rodarCabine(host.querySelector('.bt'), () => { b.hidden = false; }), 700); };
+  b.addEventListener('click', rodar);
+  setTimeout(() => rodarCabine(host.querySelector('.bt'), () => { b.hidden = false; }), 700);
+}
+
 /* ===== Premium: as fotos aparecem num álbum de ouro (capa que abre e páginas que viram com luz) ===== */
 function slidesHTML(pics, L) {
   const pg = pics.map((p, i) => `<div class="ab-pg" style="z-index:${40 - i - 1};--z:${-(i + 1) * .6}px"><div class="ab-face ab-fol"><i class="ab-lomb"></i><div class="ab-foto"><i class="ab-cn a"></i><i class="ab-cn b"></i><i class="ab-cn c"></i><i class="ab-cn d"></i><div class="ab-im"><img src="${p.src}" alt="${esc(p.cap || 'Foto')}"><i class="ab-raio"></i></div></div>${p.cap ? `<p class="ab-leg">${esc(p.cap)}</p>` : ''}<i class="ab-orn"></i><span class="ab-num">${i + 1} de ${pics.length}</span></div><div class="ab-face ab-verso"></div></div>`).join('');
@@ -1354,7 +1422,7 @@ function letterHTML(L, mode, opt = {}) {
   const NEXT = `<div class="l-next-wrap"><button class="l-next" hidden><span>Continuar</span>${ICON.down}</button></div>`;
   const rapido = full && opt.mode === 'example';
   const SKIP = demo && !rapido ? `<button class="l-skip" data-skip>Pular esta parte${ICON.down}</button>` : ''; // nas prévias de exemplo a carta passa sozinha ao rolar
-  const sec = (id, cls, step, inner) => `<section class="lsec${cls ? ' ' + cls : ''}${full ? ' wait' : ''}"${id ? ` id="${id}"` : ''}${full ? ` data-step="${step}"` : ''}>${inner}${full && (step === 'next' || step === 'spin') ? NEXT : ''}</section>`;
+  const sec = (id, cls, step, inner) => `<section class="lsec${cls ? ' ' + cls : ''}${full ? ' wait' : ''}"${id ? ` id="${id}"` : ''}${full ? ` data-step="${step}"` : ''}>${inner}${full && (step === 'next' || step === 'spin' || step === 'booth') ? NEXT : ''}</section>`;
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
@@ -1380,7 +1448,9 @@ function letterHTML(L, mode, opt = {}) {
   h += sec('s-verses', 'l-verses', 'next', `<p class="l-label">Versículos que escolhi para você</p>${L.verses.map(verseHTML).join(FLOURISH)}`);
   h += sec('s-message', '', 'next', `<p class="l-label">${esc(C.msgLabel)}</p>${scrollHTML(L.message, full, rapido)}`);
   if (L.stats || mini) h += sec('s-numbers', `l-numbers${L.stats ? '' : ' ph-mode'}`, 'next', numbersHTML(L, C, !L.stats));
-  if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
+  const cab = L.cabine ? fotosCabine(L) : [];
+  if (cab.length) h += sec('s-booth', 'l-booth', 'booth', `<p class="l-label">Nossa cabine de fotos</p>${boothHTML(cab, L, mini)}`);
+  else if (L.photos[3]) h += sec('s-final', '', 'reveal', `<p class="l-label">Uma última foto</p>${cameraHTML(L, mini)}`);
   if (L.film.length) h += sec('s-film', '', 'film', filmCardHTML(L) + SKIP);
   if (L.ask) {
     h += sec('s-ask', '', 'ask', `<div class="ask"><p class="ask-k gold-t">${esc(L.to)},</p><h3>${esc(L.ask)}</h3>
@@ -1496,6 +1566,7 @@ function bindLetter(root, L, mode, hooks = {}) {
       const auto = sel => later(() => { const b = s.querySelector(sel); if (steps[cur] === s && !s.dataset.done && b) b.click(); }, 900);
       if (s.id === 's-wheel') auto('.wheel-btn');
       if (s.id === 's-final') auto('.camera');
+      if (s.id === 's-booth') auto('.bt-cab');
       const dica = hooks.host && hooks.host.querySelector('.vw-dica');
       if (dica) dica.hidden = s.id !== 's-open'; /* só no começo da carta */
     }
@@ -1691,6 +1762,19 @@ function bindLetter(root, L, mode, hooks = {}) {
     });
   }
 
+  /* cabine de fotos: flashes atrás da cortina e as duas tiras saem revelando as fotos */
+  const bt = root.querySelector('.bt');
+  if (bt && !bt.classList.contains('bt-pronta')) {
+    const cabBtn = bt.querySelector('.bt-cab');
+    const tirar = () => {
+      if (bt.classList.contains('bt-foi')) return;
+      try { if (navigator.vibrate) navigator.vibrate([10, 40, 10, 40, 10]); } catch (e) {}
+      rodarCabine(bt, () => { sparkBurst(bt); done(bt.closest('.lsec')); }, timers, n => { later(() => mostrar(bt.querySelector('.bt-tiras'), 120), 0); });
+    };
+    cabBtn.addEventListener('click', tirar);
+    cabBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tirar(); } });
+  }
+
   const amen = root.querySelector('.amen');
   if (amen) amen.addEventListener('click', () => {
     if (amen.classList.contains('on')) return;
@@ -1859,7 +1943,7 @@ const STEPS = [
   { id: 'premium', label: 'Versão Premium', sec: 's-cover', so: () => !editavel(), ok: () => true, summary: () => S.plano === 'premium' ? 'Premium ✨' : 'Padrão' },
   /* quem fica na Padrão escolhe os adicionais aqui, antes de ir para a carta pronta e o pagamento */
   { id: 'adicionais', label: 'Adicionais', sec: 's-cover', so: () => S.plano === 'padrao' && !editavel(), ok: () => true, summary: () => { const ex = extrasValidos(S.plano, S.extras); return ex.length ? EXTRAS.filter(e => ex.includes(e.id)).map(e => e.t).join(', ') : 'Nenhum'; } },
-  { id: 'extras', label: 'Fotos a mais', sec: 's-photos', so: () => temRec(S, 'fotos') || temRec(S, 'filme'), optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
+  { id: 'extras', label: 'Fotos a mais', sec: 's-photos', so: () => temRec(S, 'fotos') || temRec(S, 'filme') || temRec(S, 'cabine'), optional: true, empty: () => ![4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, ...CAB].some(i => S.photos[i]), ok: () => true, summary: () => { const n = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, ...CAB].filter(i => S.photos[i]).length; return n ? `${n} ${n > 1 ? 'fotos' : 'foto'}` : 'Sem fotos a mais'; } }
 ];
 /* nem toda etapa vale para toda carta (Premium, carta já paga) */
 const passoValido = i => !!STEPS[i] && (!STEPS[i].so || STEPS[i].so());
@@ -1920,7 +2004,7 @@ const VIEWS = {
         ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
         ${item('Mais 3 fotos, num álbum de ouro', 'As 6 fotos aparecem grandes num álbum de ouro que abre e vira as páginas com luz e faíscas.')}
         ${item('Mini filme do casal', 'Mais 7 fotos viram um filminho com transições, frases românticas, música e uma tela final especial.')}
-        ${item('Câmera com raios de ouro', 'A última foto se revela com mais brilho.')}
+        ${item('Cabine de fotos', 'No fim, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras.')}
         ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 1 mês.')}
       </ul>
       <button class="prem-ver prem-ver-dest" id="verPremium">${ICON.eye}VER COMO FICARIA NA VERSÃO PREMIUM</button>
@@ -1933,15 +2017,19 @@ const VIEWS = {
       ${bumpsHTML()}`;
   },
   extras() {
-    const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme'), nf = prem ? 3 : polIdx(S).length - 3;
+    const prem = S.plano === 'premium', f = temRec(S, 'fotos'), fm = temRec(S, 'filme'), cb = temRec(S, 'cabine'), nf = prem ? 3 : polIdx(S).length - 3;
+    const partes = [f && `mais ${nf} polaroides`, fm && 'as fotos do mini filme', cb && 'as 4 fotos da cabine'].filter(Boolean);
+    const sub = partes.length > 1 ? `Coloque ${partes.slice(0, -1).join(', ')} e ${partes[partes.length - 1]}.` : f ? `Coloque mais ${nf} polaroides. Elas aparecem junto com as outras, na parte das fotos.` : fm ? 'Escolha as fotos do mini filme do casal.' : 'Escolha mais 4 fotos para a cabine de fotos.';
     return `<p class="eyebrow">${prem ? 'Versão Premium ✨' : 'Adicionais ✨'}</p><h1 class="h1" tabindex="-1">Mais fotos de <em>vocês</em></h1>
-      <p class="sub">${f && fm ? `Coloque mais ${nf} polaroides e as fotos do mini filme do casal.` : f ? `Coloque mais ${nf} polaroides. Elas aparecem junto com as outras, na parte das fotos.` : 'Escolha as fotos do mini filme do casal.'}</p>
+      <p class="sub">${sub}</p>
       ${f ? `<p class="group-label">Mais ${nf} polaroides</p><p class="hint">${prem ? 'Elas entram no álbum de ouro junto com as outras.' : 'Elas ficam penduradas junto com as outras.'}</p>
       <div class="photos">${(prem ? [4, 5, 6] : polIdx(S).slice(3)).map(photoSlot).join('')}</div>` : ''}
       ${fm && prem ? `<p class="group-label">Mini filme do casal</p><p class="hint">Até 7 fotos que viram um filminho com transições, frases românticas, música e uma tela final especial. Se deixar vazio, o filme usa as fotos da carta.</p>
       <div class="photos film">${[7, 8, 9, 10, 11, 12, 13].map(photoSlot).join('')}</div>` : ''}
       ${fm && !prem ? `<p class="group-label">Mais 3 fotos para o mini filme</p><p class="hint">O filme passa as fotos da carta e mais estas 3, com transições, frases românticas, música e uma tela final especial. Se deixar vazio, ele usa só as fotos da carta.</p>
-      <div class="photos film">${[7, 8, 9].map(photoSlot).join('')}</div>` : ''}`;
+      <div class="photos film">${[7, 8, 9].map(photoSlot).join('')}</div>` : ''}
+      ${cb ? `<p class="group-label">4 fotos para a cabine de fotos</p><p class="hint">No fim da carta, a cabine revela 8 fotos em duas tiras: estas 4 e as fotos da carta. Se deixar vazio, ela usa só as fotos da carta.</p>
+      <div class="photos film">${CAB.map(photoSlot).join('')}</div>` : ''}`;
   },
   mensagem() {
     const opts = messageOptions(S.recipient, S.occasion);
@@ -2005,7 +2093,7 @@ function countCard() {
 function photoSlot(i) {
   const tag = i === 3 ? `<span class="ph-tag">${ICON.sparkle}Foto final</span>` : '';
   const pl = i < 7 || i === 14; // 14 = a 4ª polaroide da abertura de cinema
-  const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : pl ? `Polaroide ${i < 3 ? i + 1 : i === 14 ? 7 : i}<small>toque para escolher</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
+  const nome = i === 3 ? 'Foto final<small>revelada no fim da carta</small>' : pl ? `Polaroide ${i < 3 ? i + 1 : i === 14 ? 7 : i}<small>toque para escolher</small>` : i >= 15 ? `Pose ${i - 14}<small>da cabine de fotos</small>` : `Cena ${i - 6}<small>do mini filme</small>`;
   const cap = pl ? `<input class="cap" data-cap="${i}" maxlength="100" placeholder="Escreva uma legenda" value="${esc(S.captions[i] || '')}"><small class="cap-cont" data-cc="${i}" aria-live="polite"></small>` : '';
   if (S.photos[i]) return `<figure class="ph"><img src="${S.photos[i]}" alt="Foto ${i + 1}">${tag}${cap}<button class="x" data-rm="${i}" aria-label="Remover foto ${i + 1}">${ICON.x}</button></figure>`;
   return `<button class="ph" data-add="${i}"><span class="ph-drop">${ICON.plus}${nome}</span></button>`;
@@ -2180,9 +2268,9 @@ function bumpsHTML() {
   const ex = extrasValidos(S.plano, S.extras), soma = precoTotal('padrao', ex);
   return `<div class="bumps"><p class="bumps-t">${ICON.sparkle}Deixe a sua carta ainda mais especial</p>
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
-      <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
-    ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a câmera com raios de ouro.</p>` : ''}
+      <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}${e.id === 'cabine' ? `<button type="button" class="bump-previa" data-previa-cabine>${ICON.eye}Ver prévia da cabine</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
+    ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') || ex.includes('cabine') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
+    ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bump-prem">Com esses adicionais, a Premium sai mais em conta: ${brl(PRICE_PREMIUM)} com tudo isso, o álbum de ouro e a cabine de fotos.</p>` : ''}
   </div>`;
 }
 function checkoutView() {
@@ -2196,11 +2284,12 @@ function checkoutView() {
   itens.push('Sua mensagem', 'Motivos no pote');
   if (L.prayer) itens.push('Uma oração');
   itens.push(L.music === 'link' ? 'A música de vocês' : 'Música de fundo');
-  if (prem) itens.push('Abertura de cinema', 'Álbum de ouro', 'Mini filme do casal', 'Câmera com raios de ouro', 'Carta para sempre');
+  if (prem) itens.push('Abertura de cinema', 'Álbum de ouro', 'Mini filme do casal', 'Cabine de fotos', 'Carta para sempre');
   else {
     if (ex.includes('album')) itens.push('Álbum de ouro');
     if (ex.includes('filme')) itens.push('Mini filme do casal');
     if (ex.includes('cine')) itens.push('Abertura de cinema');
+    if (ex.includes('cabine')) itens.push('Cabine de fotos');
     itens.push(ex.includes('vit') ? 'Carta para sempre' : 'Fica no ar por 1 mês');
   }
   return `<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
@@ -2221,6 +2310,7 @@ function bindReady(el) {
 }
 function bindBumps(el) {
   el.querySelectorAll('[data-previa-album]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaAlbum(); }));
+  el.querySelectorAll('[data-previa-cabine]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); previaCabine(); }));
   el.querySelectorAll('[data-extra]').forEach(c => c.addEventListener('change', () => {
     const k = c.dataset.extra, ex = new Set(S.extras || []);
     if (c.checked) { ex.add(k); track('adicional_' + k); if (k === 'cine') ex.delete('fotos'); } else ex.delete(k);
@@ -2427,6 +2517,7 @@ function rascunhoDoServidor(P, plano, extras) {
   [0, 1, 2, 4, 5, 6, 14].forEach((i, j) => { caminhos[i] = ok(fu[j]); });
   caminhos[3] = ok(P.ffu);
   mf.slice(0, 7).forEach((u, j) => { caminhos[7 + j] = ok(u); });
+  (Array.isArray(P.cb) ? P.cb : []).slice(0, 4).forEach((u, j) => { caminhos[CAB[j]] = ok(u); });
   const txt = (x, n) => typeof x === 'string' ? x.normalize('NFC').slice(0, n) : '';
   const names = { to: txt(P.p, 40), from: txt(P.d, 40) };
   let prayer = -1, prayerCustom = '';
@@ -2514,7 +2605,7 @@ async function api(caminho, corpo) {
 const fotosUp = (store.get('cp2:fotosUp') || []).concat(Array(NFOTOS).fill(null)).slice(0, NFOTOS);
 const fotoChave = d => d.length + ':' + d.slice(-48);
 async function subirFotos(msg) {
-  const usadas = polIdx(S).concat(3, temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : []);
+  const usadas = polIdx(S).concat(3, temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : [], temRec(S, 'cabine') ? CAB : []);
   const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
   for (const i of usadas) {
     const d = S.photos[i]; if (!d) continue;

@@ -11,7 +11,7 @@ export const planoDe = p => p === "premium" ? "premium" : "padrao";
 // adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
 // "grandes" (fotos maiores) não é mais oferecido no site, mas continua valendo para os pedidos antigos.
 // A abertura de cinema já inclui as fotos a mais (4 polaroides), então "fotos" não é cobrado junto com "cine".
-export const EXTRAS = { vit: 2.99, filme: 3.99, cine: 4.99, fotos: 3.99, album: 3.99, grandes: 1.99 };
+export const EXTRAS = { vit: 2.99, filme: 3.99, cine: 4.99, fotos: 3.99, album: 3.99, cabine: 3.99, grandes: 1.99 };
 export const extrasDe = (lista, plano) => {
   if (planoDe(plano) === "premium" || !Array.isArray(lista)) return [];
   const v = Object.keys(EXTRAS).filter(k => lista.includes(k));
@@ -79,6 +79,8 @@ export function limparCarta(c, plano, extras = []) {
   if (Array.isArray(limpa.fu)) limpa.fu = limpa.fu.slice(0, nfu);
   if (Array.isArray(limpa.fc)) limpa.fc = limpa.fc.slice(0, nfu);
   if ((premium || ex.includes("filme")) && Array.isArray(limpa.mf)) limpa.mf = limpa.mf.slice(0, premium ? 7 : 3); else delete limpa.mf;
+  // cabine de fotos (16/11): até 4 fotos só dela
+  if ((premium || ex.includes("cabine")) && Array.isArray(limpa.cb)) limpa.cb = limpa.cb.slice(0, 4); else delete limpa.cb;
   return limpa;
 }
 
