@@ -4008,6 +4008,8 @@ const PIX_MS = 30 * 60e3; /* 30 minutos (desde 14/11; antes 2 horas) */
 /* quem toca em pagar sem e-mail: em vez de só rolar a tela até o campo (muita gente desistia ali), abre uma janela pedindo o e-mail e já gera o Pix */
 function emailSheet() {
   if (cfg.reserva && S.pay === 'card') { S.pay = 'pix'; save(); }
+  /* quem seguiu sem preencher nada foi como "Não tenho e-mail" só naquele pedido: ao abrir de novo, a caixinha volta desmarcada */
+  if (S.emailPulado) { S.semEmail = false; S.emailPulado = false; save(); }
   const valor = brl(precoTotal(S.plano, S.extras));
   const card = openSheet(`<p class="eyebrow">Finalizar presente</p>
     <div class="form" style="margin-top:14px"><div class="field"><label for="shEmail">Seu e-mail</label><input class="input" id="shEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(S.email || '')}"><p class="err" id="shErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
@@ -4037,8 +4039,11 @@ function emailSheet() {
   marcarSem();
   sem.addEventListener('change', () => { S.semEmail = sem.checked; save(); track(sem.checked ? 'sem_email' : 'com_email'); marcarSem(); });
   ir.addEventListener('click', () => {
-    if (!sem.checked && !isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
-    S.semEmail = sem.checked; save(); closeSheet(); setTimeout(() => pay(true), 250);
+    /* e-mail em branco e caixinha desmarcada: segue direto, como "Não tenho e-mail" (pedido do dono, 16/11). E-mail digitado errado continua pedindo para conferir. */
+    const vazio = !sem.checked && !(S.email || '').trim();
+    if (!sem.checked && !vazio && !isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
+    if (vazio) etapa('pulou-email');
+    S.semEmail = sem.checked || vazio; S.emailPulado = vazio; save(); closeSheet(); setTimeout(() => pay(true), 250);
   });
 }
 
