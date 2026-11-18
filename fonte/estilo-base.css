@@ -1580,3 +1580,9 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .vit-nao{margin-top:10px;font-size:clamp(13px,3.8vw,15px)}
 @keyframes vitPulso{0%,100%{box-shadow:0 0 18px rgba(243,213,138,.25)}50%{box-shadow:0 0 34px rgba(243,213,138,.55)}}
 @media (prefers-reduced-motion:reduce){.vit-ico,.vit-preco{animation:none}}
+/* janelinha "Carta para sempre": letra mais acolhedora (Lora) e preço menor (18/11) */
+.vit-sh .h2{font:600 clamp(24px,6.6vw,28px)/1.25 "Lora",Georgia,serif;letter-spacing:0}
+.vit-sh .h2 em{font-weight:500}
+.vit-txt{font:400 16px/1.6 "Lora",Georgia,serif}
+.vit-txt b{font-weight:600}
+.vit-preco{margin:12px 0 16px;font:500 21px/1 "Lora",Georgia,serif}
