@@ -1568,3 +1568,15 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .bt-final .bt-tira::after{animation:ckBrilho 1.6s ease-in-out both,btSweep 4.5s ease-in-out 2s infinite}
 @keyframes btSweep{0%,60%{background-position:150% 0}100%{background-position:-50% 0}}
 @media (prefers-reduced-motion:reduce){.bt-rev .bt-tira,.bt-rev .bt-tira.a,.bt-rev .bt-tira.b,.bt-surge .bt-cab{animation:none}.bt-noite{display:none}}
+/* janelinha "Carta para sempre" depois de "Seguir para pagamento" (18/11) */
+.vit-sh{text-align:center}
+.vit-ico{display:grid;place-items:center;width:62px;height:62px;margin:14px auto 6px;border-radius:50%;border:1.5px solid #E2BC6A;background:radial-gradient(circle at 50% 40%,rgba(243,213,138,.35),rgba(201,148,59,.08));box-shadow:0 0 26px rgba(243,213,138,.35);color:#F6DB92;animation:vitPulso 2.4s ease-in-out infinite}
+.vit-ico svg{width:30px;height:30px}
+.vit-sh .h2 em{font-style:italic;color:#F3D58A}
+.vit-txt{margin:10px auto 0;max-width:340px;font:400 15.5px/1.5 var(--f-text);opacity:.92}
+.vit-txt b{color:#F3D58A;font-weight:600}
+.vit-preco{margin:14px 0 16px;font:600 30px/1 var(--f-display);background:linear-gradient(100deg,#D9A848 0%,#E8C06A 38%,#FFFFFF 50%,#E8C06A 62%,#D9A848 100%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:buqueLuz 2.8s ease-in-out infinite}
+.vit-sim{font-size:clamp(13.5px,4vw,16px)}
+.vit-nao{margin-top:10px;font-size:clamp(13px,3.8vw,15px)}
+@keyframes vitPulso{0%,100%{box-shadow:0 0 18px rgba(243,213,138,.25)}50%{box-shadow:0 0 34px rgba(243,213,138,.55)}}
+@media (prefers-reduced-motion:reduce){.vit-ico,.vit-preco{animation:none}}
