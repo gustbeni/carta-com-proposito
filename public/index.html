@@ -1616,6 +1616,9 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ace-card .qr-card .btn{max-width:100%;padding-inline:12px}
 .ace-card .qr-card .btn{white-space:nowrap}
 @media (max-width:380px){.ace-card .qr-card{grid-template-columns:1fr;justify-items:center;text-align:center}.ace-card .qr-card .qr{width:120px;height:120px}}
+.ace-ou{display:flex;align-items:center;gap:12px;margin:-2px 0;font:italic 500 15px/1 "Lora",Georgia,serif;color:#F3D58A}
+.ace-ou::before,.ace-ou::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(236,193,107,.45),transparent)}
+.ace-ou{margin:2px 0;font-size:16px}.ace-ou::before,.ace-ou::after{background:linear-gradient(90deg,transparent,rgba(236,193,107,.7))}.ace-ou::after{background:linear-gradient(90deg,rgba(236,193,107,.7),transparent)}
 
 </style></head><body>
 <div class="app" id="app">
@@ -4065,6 +4068,7 @@ function cartaAcessoHTML(c, ehNovo) {
     ${meta}
     ${c.expirada ? '' : `<div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" data-copiar>${ICON.copy}Copiar</button></div>
     <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
+    <p class="ace-ou"><span>ou</span></p>
     <div class="qr-card"><div class="qr" data-qr></div><div><b>Cartão com QR code</b><p>Imprima e entregue junto com um presente. É só apontar a câmera.</p><button class="btn btn-ghost sm" data-cartao>${ICON.download}Baixar QR code</button></div></div>
     <div class="ace-mini"><button class="ace-mb" data-abrir>${ICON.eye}<span>Abrir</span></button>${edita ? `<button class="ace-mb" data-editar>${ICON.edit}<span>Editar</span></button>` : ''}</div>
     <p class="ace-nota">${edita ? `Dá para editar até ${esc(dataCurta(c.editarAte))}.` : 'O prazo para editar acabou.'}${ehNovo || !cfg.email ? '' : ` <button class="link" data-email>Receber no meu e-mail</button>`}</p>`}

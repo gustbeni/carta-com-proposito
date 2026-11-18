@@ -2459,6 +2459,7 @@ function cartaAcessoHTML(c, ehNovo) {
     ${meta}
     ${c.expirada ? '' : `<div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" data-copiar>${ICON.copy}Copiar</button></div>
     <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
+    <p class="ace-ou"><span>ou</span></p>
     <div class="qr-card"><div class="qr" data-qr></div><div><b>Cartão com QR code</b><p>Imprima e entregue junto com um presente. É só apontar a câmera.</p><button class="btn btn-ghost sm" data-cartao>${ICON.download}Baixar QR code</button></div></div>
     <div class="ace-mini"><button class="ace-mb" data-abrir>${ICON.eye}<span>Abrir</span></button>${edita ? `<button class="ace-mb" data-editar>${ICON.edit}<span>Editar</span></button>` : ''}</div>
     <p class="ace-nota">${edita ? `Dá para editar até ${esc(dataCurta(c.editarAte))}.` : 'O prazo para editar acabou.'}${ehNovo || !cfg.email ? '' : ` <button class="link" data-email>Receber no meu e-mail</button>`}</p>`}

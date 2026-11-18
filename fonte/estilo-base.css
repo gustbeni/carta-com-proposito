@@ -1604,3 +1604,6 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ace-card .qr-card .btn{max-width:100%;padding-inline:12px}
 .ace-card .qr-card .btn{white-space:nowrap}
 @media (max-width:380px){.ace-card .qr-card{grid-template-columns:1fr;justify-items:center;text-align:center}.ace-card .qr-card .qr{width:120px;height:120px}}
+.ace-ou{display:flex;align-items:center;gap:12px;margin:-2px 0;font:italic 500 15px/1 "Lora",Georgia,serif;color:#F3D58A}
+.ace-ou::before,.ace-ou::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(236,193,107,.45),transparent)}
+.ace-ou{margin:2px 0;font-size:16px}.ace-ou::before,.ace-ou::after{background:linear-gradient(90deg,transparent,rgba(236,193,107,.7))}.ace-ou::after{background:linear-gradient(90deg,rgba(236,193,107,.7),transparent)}
