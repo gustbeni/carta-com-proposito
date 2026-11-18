@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Carta com Propósito</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><title>Carta com Propósito</title>
 <meta name="description" content="Uma carta de amor com a Palavra de Deus: versículos, fotos, o pote dos motivos e uma oração. Pronta em 3 minutos.">
 <meta name="theme-color" content="#2A0B22">
 <meta property="og:title" content="Carta com Propósito">
@@ -1620,6 +1620,8 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ace-ou::before,.ace-ou::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(236,193,107,.45),transparent)}
 .ace-ou{margin:2px 0;font-size:16px}.ace-ou::before,.ace-ou::after{background:linear-gradient(90deg,transparent,rgba(236,193,107,.7))}.ace-ou::after{background:linear-gradient(90deg,rgba(236,193,107,.7),transparent)}
 .ace-ou{margin:6px 0;gap:14px;font:italic 600 21px/1 "Lora",Georgia,serif;color:#F6DB92;text-shadow:0 0 14px rgba(243,213,138,.55)}.ace-ou::before,.ace-ou::after{height:1.5px}.ace-ou::before{background:linear-gradient(90deg,transparent,#E2BC6A)}.ace-ou::after{background:linear-gradient(90deg,#E2BC6A,transparent)}
+/* sem zoom de dois toques (18/11): o toque duplo sem querer dava zoom e a pessoa não sabia sair */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 </style></head><body>
 <div class="app" id="app">
@@ -1662,6 +1664,8 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
+/* sem zoom (18/11): o iPhone ignora user-scalable=no, então barra o gesto de pinça aqui; o toque duplo é barrado pelo touch-action:manipulation do CSS */
+['gesturestart','gesturechange'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
 /* ===== Utilitários ===== */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
