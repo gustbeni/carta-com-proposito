@@ -1586,3 +1586,15 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .vit-txt{font:400 16px/1.6 "Lora",Georgia,serif}
 .vit-txt b{font-weight:600}
 .vit-preco{margin:12px 0 16px;font:500 21px/1 "Lora",Georgia,serif}
+/* tela da carta paga mais limpa (18/11) */
+.ace-card .ace-meta{text-align:center;margin:0}
+.ace-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+.ace-mb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:16px;border:1px solid rgba(236,193,107,.28);background:rgba(255,226,160,.05);color:#F3D58A;font:600 13px/1.2 var(--f-ui);cursor:pointer}
+.ace-mb svg{width:20px;height:20px}
+.ace-mb:active{transform:scale(.97)}
+.ace-pe{font-size:12.5px;line-height:1.7}
+.ace-pe b{color:var(--ink-2);font-weight:600}
+.ace-pe .link{font-size:13px}
+.ace-card{grid-template-columns:minmax(0,1fr)}
+.ace-card .linkbox{min-width:0}
+.ace-card .linkbox code{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
