@@ -1613,3 +1613,6 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 /* 18/11: aviso "Sua carta será gerada…" menor e sem o ícone, para o cartão aparecer sem rolar */
 .sh-aviso{margin-top:12px;padding:8px 12px;font:600 12px/1.4 var(--f-ui);border-radius:12px}
 .sh-aviso + .group-label{margin-top:12px!important}
+/* 18/11: botão "Seguir para pagamento" um pouco menor */
+.sh-ir{min-height:50px;height:50px;font-size:clamp(12.5px,3.6vw,14.5px)}
+.sh-ir svg{width:16px;height:16px}
