@@ -1598,6 +1598,7 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .vit-txt{font:400 16px/1.6 "Lora",Georgia,serif}
 .vit-txt b{font-weight:600}
 .vit-preco{margin:12px 0 16px;font:500 21px/1 "Lora",Georgia,serif}
+.vit-vit{margin:8px 0 0;font:italic 500 17px/1.3 "Lora",Georgia,serif;color:#F3D58A}
 
 </style></head><body>
 <div class="app" id="app">
@@ -4330,6 +4331,7 @@ function vitSheet() {
     <span class="vit-ico" aria-hidden="true">${ICON.heart}</span>
     <h2 class="h2">Quer que a carta dure <em>para sempre</em>?</h2>
     <p class="vit-txt">Na versão Padrão, a carta fica no ar por <b>1&nbsp;mês</b>. Com a <b>Carta para sempre</b>, ${esc(L.to || 'quem recebe')} pode abrir a carta quando quiser, por toda a vida.</p>
+    <p class="vit-vit">A carta fica vitalícia</p>
     <p class="vit-preco">+ ${brl(vit.preco)}</p>
     <button class="btn btn-primary w vit-sim" id="vitSim">${ICON.sparkle}Sim, quero para sempre · ${brl(com)}</button>
     <button class="btn btn-ghost w vit-nao" id="vitNao">Não, seguir com 1 mês · ${brl(sem)}</button></div>`);

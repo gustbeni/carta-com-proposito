@@ -1586,3 +1586,4 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .vit-txt{font:400 16px/1.6 "Lora",Georgia,serif}
 .vit-txt b{font-weight:600}
 .vit-preco{margin:12px 0 16px;font:500 21px/1 "Lora",Georgia,serif}
+.vit-vit{margin:8px 0 0;font:italic 500 17px/1.3 "Lora",Georgia,serif;color:#F3D58A}
