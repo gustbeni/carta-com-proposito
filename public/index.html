@@ -1610,6 +1610,12 @@ body:has(.bar.com-prem) .builder{padding-bottom:calc(210px + env(safe-area-inset
 .ace-card{grid-template-columns:minmax(0,1fr)}
 .ace-card .linkbox{min-width:0}
 .ace-card .linkbox code{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ace-card .qr-card{grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+.ace-card .qr-card .qr{width:96px;height:96px}
+.ace-card .qr-card .qr img,.ace-card .qr-card .qr canvas{width:100%!important;height:100%!important}
+.ace-card .qr-card .btn{max-width:100%;padding-inline:12px}
+.ace-card .qr-card .btn{white-space:nowrap}
+@media (max-width:380px){.ace-card .qr-card{grid-template-columns:1fr;justify-items:center;text-align:center}.ace-card .qr-card .qr{width:120px;height:120px}}
 
 </style></head><body>
 <div class="app" id="app">
@@ -4059,7 +4065,8 @@ function cartaAcessoHTML(c, ehNovo) {
     ${meta}
     ${c.expirada ? '' : `<div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" data-copiar>${ICON.copy}Copiar</button></div>
     <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
-    <div class="ace-mini"><button class="ace-mb" data-cartao>${ICON.download}<span>QR code</span></button><button class="ace-mb" data-abrir>${ICON.eye}<span>Abrir</span></button>${edita ? `<button class="ace-mb" data-editar>${ICON.edit}<span>Editar</span></button>` : ''}</div>
+    <div class="qr-card"><div class="qr" data-qr></div><div><b>Cartão com QR code</b><p>Imprima e entregue junto com um presente. É só apontar a câmera.</p><button class="btn btn-ghost sm" data-cartao>${ICON.download}Baixar QR code</button></div></div>
+    <div class="ace-mini"><button class="ace-mb" data-abrir>${ICON.eye}<span>Abrir</span></button>${edita ? `<button class="ace-mb" data-editar>${ICON.edit}<span>Editar</span></button>` : ''}</div>
     <p class="ace-nota">${edita ? `Dá para editar até ${esc(dataCurta(c.editarAte))}.` : 'O prazo para editar acabou.'}${ehNovo || !cfg.email ? '' : ` <button class="link" data-email>Receber no meu e-mail</button>`}</p>`}
   </article>`;
 }
