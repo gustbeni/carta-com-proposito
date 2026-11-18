@@ -2709,6 +2709,7 @@ function emailSheet() {
       <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard de qualquer banco: Nubank, Itaú, Bradesco, Santander, Banco do Brasil, Caixa, Inter, C6 e outros. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
     </div>
     <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="shIr"></button><p class="sh-buque">Mais barato que um buquê de flores, e não murcha com o tempo</p></div>`);
+  card.classList.add('sh-fin'); /* letras 10% menores nesta janela (18/11), menos a frase do buquê */
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr'), zb = card.querySelector('#shZapBox'), fz = card.querySelector('#shZap');
   const atualizar = () => {
     const pix = S.pay !== 'card';

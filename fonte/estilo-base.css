@@ -1616,3 +1616,15 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 /* 18/11: botão "Seguir para pagamento" um pouco menor */
 .sh-ir{min-height:50px;height:50px;font-size:clamp(12.5px,3.6vw,14.5px)}
 .sh-ir svg{width:16px;height:16px}
+/* 18/11: janela "Finalizar presente" com as letras 10% menores (menos a frase do buquê) */
+.sh-fin .eyebrow{font-size:9.9px}
+.sh-fin .field label{font-size:12.15px}
+.sh-fin .input{font-size:15.3px}
+.sh-fin .err,.sh-fin .hint{font-size:11.7px}
+.sh-fin .sem-email-row{font-size:13.05px}
+.sh-fin .sh-aviso{font-size:10.8px}
+.sh-fin .group-label{font-size:10.35px}
+.sh-fin .payopt b{font-size:13.95px}
+.sh-fin .payopt small{font-size:11.7px}
+.sh-fin .badge{font-size:9.45px}
+.sh-fin .sh-ir{font-size:clamp(11.25px,3.24vw,13.05px)}
