@@ -2754,7 +2754,6 @@ function zapSheet() {
       <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
       <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b><small>Visa, Master, Elo, Amex e Hipercard de qualquer banco: Nubank, Itaú, Bradesco, Santander, Banco do Brasil, Caixa, Inter, C6 e outros. Também aceita saldo e Linha de Crédito do Mercado Pago</small></span>${ICON.card}</button>
     </div>
-    <p class="zp-volta"><button class="link" id="zpVolta">Tenho e-mail, voltar</button></p>
     <div class="sh-fim"><button class="btn btn-primary w sh-ir" id="zpIr"></button><p class="sh-buque">Mais barato que um buquê de flores, e não murcha com o tempo</p></div>`);
   card.classList.add('sh-fin');
   const fz = card.querySelector('#zpZap'), er = card.querySelector('#zpErr'), nao = card.querySelector('#zpNao'), ir = card.querySelector('#zpIr');
@@ -2767,7 +2766,6 @@ function zapSheet() {
   card.querySelectorAll('[data-shpay]').forEach(b => b.addEventListener('click', () => { S.pay = b.dataset.shpay; save(); atualizar(); refreshBar(); }));
   fz.addEventListener('input', () => { fz.value = mascaraZap(fz.value); S.zap = fz.value.replace(/\D/g, ''); er.hidden = true; fz.classList.remove('bad'); if (S.zap) nao.checked = false; fz.disabled = false; save(); });
   nao.addEventListener('change', () => { fz.disabled = nao.checked; if (nao.checked) { er.hidden = true; fz.classList.remove('bad'); } });
-  card.querySelector('#zpVolta').addEventListener('click', () => { S.semEmail = false; save(); closeSheet(); setTimeout(emailSheet, 220); });
   ir.addEventListener('click', () => {
     const d = (S.zap || '').replace(/\D/g, '');
     if (!nao.checked && d && (d.length < 10 || d.length > 11)) { er.hidden = false; fz.classList.add('bad'); fz.focus(); return; }
