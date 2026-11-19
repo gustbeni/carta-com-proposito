@@ -1654,7 +1654,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
         <span class="seal brand-seal"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M7.6 10h8.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span></span>
         <span>Carta com Propósito</span>
       </button>
-      <span class="stepcount" id="stepcount">Passo 1 de 10</span>
+      <span class="stepcount" id="stepcount"></span>
     </div>
     <div class="progress" id="progress"><i></i></div>
   </header>
@@ -4588,7 +4588,7 @@ function render(dir) {
 }
 function updateChrome() {
   const vs = passosValidos(), n = vs.length;
-  $('#stepcount').textContent = naAcesso() ? 'Meu acesso' : S.view === 'step' ? `Passo ${vs.indexOf(S.step) + 1} de ${n}` : ({ ready: editavel() ? 'Editando a carta' : 'Prévia pronta', checkout: 'Pagamento', done: 'Carta selada' })[S.view];
+  $('#stepcount').textContent = naAcesso() ? 'Meu acesso' : S.view === 'step' ? '' : ({ ready: editavel() ? 'Editando a carta' : 'Prévia pronta', checkout: 'Pagamento', done: 'Carta selada' })[S.view];
   $('#progress').style.setProperty('--p', `${S.view === 'step' ? (vs.indexOf(S.step) + 1) / n * 100 : 100}%`);
   refreshBar();
 }
