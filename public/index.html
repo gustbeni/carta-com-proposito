@@ -4048,7 +4048,7 @@ function itensAcesso() {
   /* a compra que acabou de cair neste aparelho aparece mesmo antes do servidor listar */
   if (pedido && pedido.pago && S.view === 'done' && S.code === pedido.id && !lista.some(c => c.id === pedido.id)) {
     const pg = pedido.pagoEm || Date.now();
-    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' && !(pedido.extras || []).includes('vit') ? pg + 30 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, L: resolveLetter(S), local: true });
+    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' && !(pedido.extras || []).includes('vit') ? pg + 30 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, semEmail: !!pedido.semEmail, L: resolveLetter(S), local: true });
   }
   return lista;
 }
@@ -4094,7 +4094,7 @@ function cartaAcessoHTML(c, ehNovo) {
     <p class="ace-ou"><span>ou</span></p>
     <div class="qr-card"><div class="qr" data-qr></div><div><b>Cartão com QR code</b><p>Envie ou imprima. A pessoa que recebe aponta a câmera para o QR code e a carta abre automaticamente no celular dela.</p><button class="btn btn-ghost sm" data-cartao>${ICON.download}Baixar QR code</button></div></div>
     <div class="ace-mini"><button class="ace-mb" data-abrir>${ICON.eye}<span>Abrir carta</span></button>${edita ? `<button class="ace-mb" data-editar>${ICON.edit}<span>Editar carta</span></button>` : ''}</div>
-    <p class="ace-nota">${edita ? `Dá para editar até ${esc(dataCurta(c.editarAte))}.` : 'O prazo para editar acabou.'}${ehNovo || !cfg.email ? '' : ` <button class="link" data-email>Receber no meu e-mail</button>`}</p>`}
+    <p class="ace-nota">${edita ? `Dá para editar até ${esc(dataCurta(c.editarAte))}.` : 'O prazo para editar acabou.'}${ehNovo || !cfg.email || c.semEmail ? '' : ` <button class="link" data-email>Receber no meu e-mail</button>`}</p>`}
   </article>`;
 }
 function bindAcesso(el) {
