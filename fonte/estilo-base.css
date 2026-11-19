@@ -1628,3 +1628,8 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .sh-fin .payopt small{font-size:11.7px}
 .sh-fin .badge{font-size:9.45px}
 .sh-fin .sh-ir{font-size:clamp(11.25px,3.24vw,13.05px)}
+/* 19/11: janela do WhatsApp para quem não tem e-mail */
+.zp-t{margin:6px 0 0}
+.zp-sub{margin:6px 0 0;font:500 14px/1.45 var(--f-ui);color:#F3D58A}
+.zp-volta{margin:12px 0 0;text-align:center}
+.zp-volta .link{font-size:13px}
