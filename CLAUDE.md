@@ -18,7 +18,7 @@ Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 21,99**
 
 ## Domínio
 
-Site em **https://cartacomproposito.com.br** desde 22/11 (Registro.br, no CPF do dono; DNS no Registro.br: **A** `75.2.60.5` e **CNAME** `www` → `carta-com-proposito.netlify.app`; renovar em 22/11/2027). O endereço antigo `carta-com-proposito.netlify.app` continua abrindo (links e QR codes antigos funcionam). O servidor usa `process.env.URL` (domínio primário). O `Referer` da busca do YouTube continua com o endereço antigo de propósito (a chave pode estar presa a ele).
+Site em **https://cartacomproposito.com.br** desde 22/11 (Registro.br, no CPF do dono; DNS no Registro.br: **A** `75.2.60.5` e **CNAME** `www` → `carta-com-proposito.netlify.app`; renovar em 22/11/2027). O endereço antigo `carta-com-proposito.netlify.app` **redireciona** (301, `netlify.toml`) para o domínio novo, mantendo o caminho e o `?fbclid` (anúncios, links e QR codes antigos funcionam); só `/api/*` continua respondendo no antigo, por causa dos avisos do Mercado Pago dos pedidos antigos. O servidor usa `process.env.URL` (domínio primário). O `Referer` da busca do YouTube continua com o endereço antigo de propósito (a chave pode estar presa a ele).
 
 ## Arquivos
 
