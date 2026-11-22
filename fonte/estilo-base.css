@@ -1633,3 +1633,6 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .zp-sub{margin:6px 0 0;font:500 14px/1.45 var(--f-ui);color:#F3D58A}
 .zp-volta{margin:12px 0 0;text-align:center}
 .zp-volta .link{font-size:13px}
+
+/* QR code em coração na carta paga */
+.qr-card .qr.cor{padding:0;border:0;background:none;border-radius:0}

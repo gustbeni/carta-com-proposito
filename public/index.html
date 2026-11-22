@@ -1646,6 +1646,9 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .zp-volta{margin:12px 0 0;text-align:center}
 .zp-volta .link{font-size:13px}
 
+/* QR code em coração na carta paga */
+.qr-card .qr.cor{padding:0;border:0;background:none;border-radius:0}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -2440,10 +2443,13 @@ const Art = (() => {
     x.fillStyle = T.acc; x.font = '600 28px "DM Sans", sans-serif'; spaced(x, 'UMA CARTA PARA', w / 2, 492, 9);
     let fs = 176; x.font = `400 ${fs}px "Alex Brush", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Alex Brush", cursive`; }
     x.save(); x.shadowColor = 'rgba(255,190,90,.45)'; x.shadowBlur = 30; x.fillStyle = G; x.fillText(L.to, w / 2, 668); x.restore();
-    const qs = 460, qx = (w - qs) / 2, qy = 860;
-    x.save(); x.shadowColor = 'rgba(255,200,110,.35)'; x.shadowBlur = 40; x.fillStyle = '#fff'; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.fill(); x.restore();
-    x.strokeStyle = G; x.lineWidth = 4; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.stroke();
-    if (qrCanvas) { x.imageSmoothingEnabled = false; x.drawImage(qrCanvas, qx, qy, qs, qs); }
+    if (qrCanvas && qrCanvas.coracao) { const hs = 720; x.save(); x.shadowColor = 'rgba(255,200,110,.45)'; x.shadowBlur = 50; x.drawImage(qrCanvas, (w - hs) / 2, 720, hs, hs); x.restore(); }
+    else {
+      const qs = 460, qx = (w - qs) / 2, qy = 860;
+      x.save(); x.shadowColor = 'rgba(255,200,110,.35)'; x.shadowBlur = 40; x.fillStyle = '#fff'; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.fill(); x.restore();
+      x.strokeStyle = G; x.lineWidth = 4; rr(x, qx - 36, qy - 36, qs + 72, qs + 72, 36); x.stroke();
+      if (qrCanvas) { x.imageSmoothingEnabled = false; x.drawImage(qrCanvas, qx, qy, qs, qs); }
+    }
     x.fillStyle = T.ink; x.font = '600 34px "DM Sans", sans-serif'; x.fillText('Aponte a câmera do celular', w / 2, 1470);
     x.fillStyle = T.ink2; x.font = '500 28px "DM Sans", sans-serif'; x.fillText('para abrir a sua carta', w / 2, 1516);
     x.fillStyle = G; x.font = '400 46px "Alex Brush", cursive'; x.fillText('“Põe-me como selo sobre o teu coração.”', w / 2, 1604);
@@ -2454,6 +2460,31 @@ const Art = (() => {
   return { example, card };
 })();
 
+/* QR code em formato de coração: o QR de verdade fica no meio (nível H) e o resto do coração
+   é preenchido com pontinhos rosa claros, que a câmera ignora. Fundo transparente fora do coração. */
+function qrCoracao(text, px) {
+  if (!window.QRCode) return null;
+  let mod; try { const tmp = new QRCode(document.createElement('div'), { text, width: 64, height: 64, correctLevel: QRCode.CorrectLevel.H }); mod = tmp._oQRCode; } catch (e) { return null; }
+  if (!mod || !mod.getModuleCount) return null;
+  const N = mod.getModuleCount(), c = document.createElement('canvas'); c.width = c.height = px; const x = c.getContext('2d');
+  const SC = px / 33.5, HCY = px / 2 - 2.5 * SC, M = 12.4 * SC / N, X0 = px / 2 - N * M / 2, Y0 = HCY + 1.8 * SC - N * M / 2;
+  const heart = () => { x.beginPath(); for (let i = 0; i <= 200; i++) { const t = 2 * Math.PI * i / 200, hx = 16 * Math.sin(t) ** 3, hy = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t); i ? x.lineTo(px / 2 + hx * SC, HCY - hy * SC) : x.moveTo(px / 2 + hx * SC, HCY - hy * SC); } x.closePath(); };
+  heart(); x.fillStyle = '#fff'; x.fill();
+  x.save(); heart(); x.clip(); let sd = 7; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  x.fillStyle = '#ECB2C0';
+  for (let r = -Math.ceil(Y0 / M) - 1; r < Math.ceil((px - Y0) / M) + 1; r++) for (let k = -Math.ceil(X0 / M) - 1; k < Math.ceil((px - X0) / M) + 1; k++) {
+    const keep = rnd() < .5; if (r >= -3 && r < N + 3 && k >= -3 && k < N + 3) continue;
+    if (keep) { x.beginPath(); x.arc(X0 + (k + .5) * M, Y0 + (r + .5) * M, M * .42, 0, 7); x.fill(); }
+  }
+  x.restore();
+  const D = '#3A101E', fin = (r, k) => (r < 7 && k < 7) || (r < 7 && k >= N - 7) || (r >= N - 7 && k < 7);
+  x.fillStyle = D;
+  for (let r = 0; r < N; r++) for (let k = 0; k < N; k++) if (mod.isDark(r, k) && !fin(r, k)) { x.beginPath(); x.arc(X0 + (k + .5) * M, Y0 + (r + .5) * M, M * .48, 0, 7); x.fill(); }
+  const rrect = (a, b, w, rad, col) => { x.beginPath(); x.moveTo(a + rad, b); x.arcTo(a + w, b, a + w, b + w, rad); x.arcTo(a + w, b + w, a, b + w, rad); x.arcTo(a, b + w, a, b, rad); x.arcTo(a, b, a + w, b, rad); x.closePath(); x.fillStyle = col; x.fill(); };
+  [[0, 0], [0, N - 7], [N - 7, 0]].forEach(([r, k]) => { const a = X0 + k * M, b = Y0 + r * M; rrect(a, b, 7 * M, M, D); rrect(a + M, b + M, 5 * M, .7 * M, '#fff'); rrect(a + 2 * M, b + 2 * M, 3 * M, .5 * M, D); });
+  heart(); x.lineWidth = Math.max(2, px / 125); x.strokeStyle = '#C9983E'; x.stroke();
+  c.coracao = true; return c;
+}
 /* ===== A carta: dados prontos, HTML e interações ===== */
 function resolveLetter(src) {
   const r = src.recipient || 'amor';
@@ -4118,7 +4149,8 @@ function bindAcesso(el) {
     const c = itens.find(x => x.id === card.dataset.id); if (!c) return;
     const url = cartaUrl(c.id), on = (sel, fn) => { const b = card.querySelector(sel); if (b) b.addEventListener('click', fn); };
     const qr = card.querySelector('[data-qr]');
-    if (qr && window.QRCode) { try { new QRCode(qr, { text: url, width: 200, height: 200, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {} }
+    const qc = qr && qrCoracao(url, 400); if (qc) { qr.classList.add('cor'); qr.appendChild(qc); }
+    else if (qr && window.QRCode) { try { new QRCode(qr, { text: url, width: 200, height: 200, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {} }
     on('[data-copiar]', () => copyText(url, 'Link copiado'));
     on('[data-cartao]', () => mostrarCartao(c.L, url));
     on('[data-abrir]', () => openViewer(c.L, { mode: 'recipient', onMake: criarOutra }));
@@ -4133,7 +4165,8 @@ function bindAcesso(el) {
 }
 async function mostrarCartao(L, url) {
   let qrCanvas = null;
-  if (window.QRCode) { const big = document.createElement('div'); try { new QRCode(big, { text: url, width: 512, height: 512, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); qrCanvas = big.querySelector('canvas'); } catch (e) {} }
+  qrCanvas = qrCoracao(url, 1440);
+  if (!qrCanvas && window.QRCode) { const big = document.createElement('div'); try { new QRCode(big, { text: url, width: 512, height: 512, colorDark: '#221A17', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); qrCanvas = big.querySelector('canvas'); } catch (e) {} }
   const png = await Art.card(L, qrCanvas);
   const framed = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
   openSheet(`<p class="eyebrow">Cartão para imprimir</p><h2 class="h2">Pronto para entregar</h2><p class="sub">No celular, toque e segure a imagem para salvar. No computador, clique com o botão direito.</p><img class="card-img" src="${png}" alt="Cartão com QR code da carta para ${esc(L.to)}">${framed ? '' : `<button class="btn btn-primary w" style="margin-top:20px" id="baixarCartao">${ICON.download}Salvar imagem</button><p class="hint" id="baixarDica" style="text-align:center;margin-top:10px" hidden></p>`}`);
