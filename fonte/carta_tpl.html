@@ -2,6 +2,9 @@
 <meta name="description" content="Uma carta de amor com a Palavra de Deus: versículos, fotos, o pote dos motivos e uma oração. Pronta em 3 minutos.">
 <meta name="theme-color" content="#2A0B22">
 <meta property="og:title" content="Carta com Propósito">
+<meta property="og:site_name" content="Carta com Propósito">
+<meta property="og:url" content="https://cartacomproposito.com.br/">
+<link rel="canonical" href="https://cartacomproposito.com.br/">
 <meta property="og:description" content="Uma carta de amor com a Palavra de Deus: versículos, fotos, o pote dos motivos e uma oração.">
 <!-- Pixel da Meta -->
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1595171231774957');fbq('track','PageView');</script>
@@ -156,6 +159,8 @@ const ICON = {
 
 /* ===== Conteúdo da oferta ===== */
 const BRAND = 'Carta com Propósito';
+const DOMINIO = 'cartacomproposito.com.br';
+const seloSite = (t) => `<p class="site-oficial">${ICON.lock}<span>${t} · <b>${DOMINIO}</b></span></p>`;
 const PRICE = 21.99;       // só o texto mostrado; o valor cobrado de verdade é PRECO em netlify/lib/comum.mjs
 const PRICE_OLD = 34.90;
 const PRICE_PREMIUM = 29.99; // só o texto; o valor cobrado é PRECO_PREMIUM em netlify/lib/comum.mjs
@@ -815,7 +820,7 @@ const Art = (() => {
     x.fillStyle = T.ink; x.font = '600 34px "DM Sans", sans-serif'; x.fillText('Aponte a câmera do celular', w / 2, 1470);
     x.fillStyle = G; x.font = '400 46px "Alex Brush", cursive'; x.fillText('“Põe-me como selo sobre o teu coração.”', w / 2, 1604);
     x.fillStyle = T.ink2; x.font = '600 19px "DM Sans", sans-serif'; spaced(x, 'CANTARES 8:6', w / 2, 1646, 5);
-    x.fillStyle = T.acc; x.font = '600 20px "DM Sans", sans-serif'; spaced(x, BRAND.toUpperCase(), w / 2, 1700, 6);
+    x.fillStyle = T.acc; x.font = '600 20px "DM Sans", sans-serif'; spaced(x, DOMINIO.toUpperCase(), w / 2, 1700, 5);
     return c.toDataURL('image/png');
   }
   return { example, card };
@@ -1507,7 +1512,7 @@ function letterHTML(L, mode, opt = {}) {
   if (L.prayer) h += sec('s-prayer', '', 'amen', `<div class="pray"><div class="dove">${ICON.dove}</div><p class="l-label">${esc(C.prayLabel)}</p><p class="pray-t">${esc(L.prayer)}</p><button class="amen" aria-pressed="false">Amém</button><p class="amen-note" hidden>Agora vocês oraram juntos.</p></div>`);
   h += sec('s-close', 'l-closing', 'end', `${orn()}<p class="l-close">${esc(C.closing)}</p><p class="l-sign gold-t shine">${esc(L.from)}</p>
     <div class="l-actions">${opt.mode === 'recipient' ? `<a class="l-btn" href="${waLink(`${L.from}, recebi a sua carta e amei! ❤️`, L.phone)}" target="_blank" rel="noopener">${ICON.send}Responder ${esc(L.from)}</a>` : ''}<button class="l-btn ghost" data-again>Ler de novo</button>${opt.mode === 'preview' ? `<button class="l-btn ghost" data-editar>Voltar a editar</button>` : ''}</div>
-    <div class="l-credit"><span class="row"><span class="seal"><span></span></span>Feito com ${BRAND}</span>${opt.mode === 'recipient' ? '<button data-make>Faça uma carta assim</button>' : ''}<small>Versículos da Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0.</small></div>`);
+    <div class="l-credit"><span class="row"><span class="seal"><span></span></span>Feito com ${BRAND}</span><span class="dom">${DOMINIO}</span>${opt.mode === 'recipient' ? '<button data-make>Faça uma carta assim</button>' : ''}<small>Versículos da Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0.</small></div>`);
   h += `</div></div>`;
   return h;
 }
@@ -2008,7 +2013,8 @@ const VIEWS = {
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b>${r.desc ? `<small>${r.desc}</small>` : ''}</span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
       <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>
-      <p class="ja-comprou">Já presenteou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>`;
+      <p class="ja-comprou">Já presenteou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>
+      ${seloSite('Site oficial')}`;
   },
   ocasiao() {
     return `<h1 class="h1" tabindex="-1">Qual é a <em>ocasião</em>?</h1>
@@ -2355,6 +2361,7 @@ function checkoutView() {
       <span class="ck-pronta"><i></i>Pronta para enviar</span></div>
     <div class="ck-inclui"><b>Vai tudo nela</b><ul>${itens.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="ck-selos"><div><b>⚡</b><strong>Chega na hora</strong>link e QR code</div><div><b>✍️</b><strong>Edite por 7 dias</strong>depois de pagar</div><div><b>🛡️</b><strong>7 dias</strong>de garantia</div></div>
+    ${seloSite('Compra segura')}
     <div class="form"><div class="field" id="cpfField"${cfg.reserva ? '' : ' hidden'}><label for="fCpf">Seu CPF</label><input class="input" id="fCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" value="${esc(mascaraCpf(cpfDigitado))}"><p class="hint">O PagBank pede o CPF para gerar o Pix. Ele não fica guardado na carta.</p><p class="err" id="cpfErr" hidden>Confira o CPF: são 11 números.</p></div></div>
     <p class="legal">Sem cadastro. Enquanto você monta, a carta fica salva só neste aparelho. Depois do pagamento, ela fica guardada no site e só abre com o link ou o QR code. O e-mail serve para o comprovante e para mandar a carta, se você pedir. Versículos: Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, CC BY 4.0, via eBible.org. <a href="/privacidade.html">Privacidade e reembolso</a> · <a href="https://www.instagram.com/carta.comproposito" target="_blank" rel="noopener">Instagram @carta.comproposito</a></p>`;
 }

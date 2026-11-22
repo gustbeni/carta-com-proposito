@@ -48,6 +48,7 @@ export function textoEmail(link, para, plano) {
   <tr><td style="padding:18px 28px 30px;text-align:center;font:400 13px/1.55 Arial,sans-serif;color:#B8919F">
     ${plano === "padrao" ? "A carta Padrão fica no ar por 1 mês depois do pagamento.<br>" : plano === "premium" ? "Sua carta Premium é vitalícia: o link funciona para sempre.<br>" : plano === "vitalicia" ? "Sua carta é vitalícia: o link funciona para sempre.<br>" : ""}Guarde este e-mail. Você pode mudar a carta por 7 dias depois do pagamento.<br><br>Para ver todas as suas cartas (link, QR code e edição), entre em <a href="${esc(acesso)}" style="color:#F7D995">Meu acesso</a> com este e-mail.
   </td></tr>
+  <tr><td style="padding:0 28px 26px;text-align:center;font:600 11px/1.4 Arial,sans-serif;letter-spacing:2px;color:#ECC16B">&#128274; CARTACOMPROPOSITO.COM.BR</td></tr>
 </table>
 </td></tr></table></body></html>`;
   return { assunto, texto, html };
