@@ -147,3 +147,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 22/11, 10h05: notificação de venda no ntfy com o título "💰💸🤑 Dinheiro na conta! Venda PREMIUM 💰💸🤑" (ou PADRÃO / PADRÃO + ADICIONAL) e o valor embaixo (`avisarDono`), última linha "Toque para ver detalhes". Publicado às 10h05.
 - 22/11, 10h50: rascunho do QR code em coração (opção 2: coração branco com pontinhos rosa, QR nível H no meio e borda dourada; `qrCoracao`) no cartão para imprimir e no QR pequeno da carta paga. O e-mail continua com o QR quadrado. Guardado sem publicar, esperando o dono aprovar.
 - 22/11, 10h45: cartão para imprimir com "UM PRESENTE PARA" (antes "UMA CARTA PARA") e sem "para abrir a sua carta". Guardado sem publicar.
+- 22/11, 10h46: mensagem do "Enviar no WhatsApp" da carta paga virou "<nome>, preparei um presente especial pra você ❤️💌" + link. Guardado sem publicar.

@@ -2487,7 +2487,7 @@ function cartaAcessoHTML(c, ehNovo) {
     ${ehNovo ? '' : `<div class="ace-top"><span class="seal"><span>${sealInner(L)}</span></span><div style="min-width:0"><p class="ace-para gold-t">Para ${esc(L.to)}</p><p class="ace-occ">Paga em ${esc(dataCurta(c.pagoEm))}</p></div></div>`}
     ${meta}
     ${c.expirada ? '' : `<div class="linkbox"><code>${esc(link)}</code><button class="btn btn-ghost sm" data-copiar>${ICON.copy}Copiar</button></div>
-    <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei uma carta especial pra você 💌 Abra com calma: ${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
+    <a class="btn btn-primary w" href="${waLink(`${L.to}, preparei um presente especial pra você ❤️💌\n\n${url}`)}" target="_blank" rel="noopener">${ICON.send}Enviar no WhatsApp</a>
     <p class="ace-ou"><span>ou</span></p>
     <div class="qr-card"><div class="qr" data-qr></div><div><b>Cartão com QR code</b><p>Envie ou imprima. A pessoa que recebe aponta a câmera para o QR code e a carta abre automaticamente no celular dela.</p><button class="btn btn-ghost sm" data-cartao>${ICON.download}Baixar QR code</button></div></div>
     <div class="ace-mini"><button class="ace-mb" data-abrir>${ICON.eye}<span>Abrir carta</span></button>${edita ? `<button class="ace-mb" data-editar>${ICON.edit}<span>Editar carta</span></button>` : ''}</div>
