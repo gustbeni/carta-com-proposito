@@ -4566,7 +4566,7 @@ function cartaoRecusadoSheet() {
   clearTimeout(esperando); esperando = null; track('cartao_recusado');
   const valor = brl(precoTotal(S.plano, S.extras));
   openSheet(`<p class="eyebrow">Cartão de crédito</p><h2 class="h2">Seu cartão não foi aprovado</h2>
-    <p class="sub">O Mercado Pago recusou por segurança. Isso é comum na <b>primeira compra</b> com o cartão num site novo, em compras <b>parceladas</b> ou num celular diferente do que você costuma usar. <b>Nada foi cobrado.</b></p>
+    <p class="sub">O Mercado Pago recusou por segurança. Isso é comum na <b>primeira compra</b> com o cartão em um site novo, em compras <b>parceladas</b> ou em um celular diferente do que você costuma usar. <b>Nada foi cobrado.</b></p>
     <p class="sub" style="margin-top:10px">Pague pelo <b>Pix</b>, que é aprovado na hora, ou tente de novo <b>à vista</b>.</p>
     <button class="btn btn-primary w" id="recusaPix" style="margin-top:20px">${ICON.lock}Pagar ${valor} com Pix</button>
     <button class="btn btn-ghost w" id="recusaCartao" style="margin-top:10px">Tentar de novo com cartão</button>`);
