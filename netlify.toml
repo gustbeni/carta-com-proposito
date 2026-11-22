@@ -14,6 +14,19 @@
   status = 200
   force = true
 
+# Começo do site e Meu acesso no endereço antigo: página que leva para o domínio novo junto com o que ficou guardado no celular
+[[redirects]]
+  from = "https://carta-com-proposito.netlify.app/"
+  to = "/migrar.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://carta-com-proposito.netlify.app/meuacesso"
+  to = "/migrar.html"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "https://carta-com-proposito.netlify.app/*"
   to = "https://cartacomproposito.com.br/:splat"

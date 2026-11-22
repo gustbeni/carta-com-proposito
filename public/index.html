@@ -1759,6 +1759,15 @@ const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) 
 const isUrl = s => /^https?:\/\/\S+\.\S+/.test((s || '').trim());
 const isEmail = s => /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test((s || '').trim());
 
+/* vindo do endereço antigo (public/migrar.html): recebe o que ficou guardado lá, sem apagar nada que já exista aqui */
+try {
+  const mg = location.hash.match(/[#&]migrar=([^&]+)/);
+  if (mg) {
+    const d = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(mg[1])))));
+    Object.keys(d).forEach(k => { if (/^(cp2:|cd_pedido$)/.test(k) && typeof d[k] === 'string' && localStorage.getItem(k) == null) localStorage.setItem(k, d[k]); });
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+} catch (e) {}
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },

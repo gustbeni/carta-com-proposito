@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carta com Propósito</title><meta name="robots" content="noindex">
+<style>html,body{margin:0;height:100%;background:#2a0f1f;color:#ECC16B;font:600 15px/1.4 system-ui,sans-serif;display:flex;align-items:center;justify-content:center}</style>
+</head><body><p>Abrindo cartacomproposito.com.br…</p>
+<script>
+/* Endereço antigo → domínio novo, levando junto o que ficou guardado neste celular
+   (pedido, carta paga, rascunho em texto e fotos já enviadas), porque o domínio novo não enxerga o que o antigo guardou. */
+(function () {
+  var dest = 'https://cartacomproposito.com.br' + location.pathname + location.search, d = {}, n = 0;
+  try {
+    ['cp2:pedido', 'cp2:acesso', 'cp2:draft', 'cp2:fotosUp', 'cd_pedido'].forEach(function (k) {
+      var v = localStorage.getItem(k); if (v && v.length < 60000) { d[k] = v; n++; }
+    });
+  } catch (e) {}
+  if (n) { try { dest += '#migrar=' + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(d))))); } catch (e) {} }
+  location.replace(dest);
+})();
+</script></body></html>
