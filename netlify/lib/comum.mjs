@@ -183,7 +183,7 @@ async function avisarDono(id, reg, tok) {
   const q = new URLSearchParams({ title: `💰💸🤑 Dinheiro na conta! Venda ${tipo} 💰💸🤑`, priority: "high", click: site + "/c/" + id });
   await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
     method: "POST",
-    body: `R$ ${valor}${nAd ? " · " + nAd + (nAd > 1 ? " adicionais" : " adicional") : ""}\nToque para ver a carta.`,
+    body: `R$ ${valor}${nAd ? " · " + nAd + (nAd > 1 ? " adicionais" : " adicional") : ""}\nToque para ver detalhes`,
   }), 5000);
 }
 
