@@ -1642,3 +1642,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .site-oficial svg{width:13px;height:13px;flex:0 0 auto;color:var(--gold,#C9983E)}
 .site-oficial b{font-weight:700;color:var(--ink-2,inherit);letter-spacing:.01em}
 .l-credit .dom{font:600 11.5px/1 var(--f-ui);letter-spacing:.06em;color:var(--ink-l3)}
+/* 22/11: "Já presenteou?" menor e "Site oficial" maior */
+.ja-comprou,.ja-comprou .link{font-size:12.5px}
+.site-oficial{font-size:15.5px;gap:7px;margin-top:16px}
+.site-oficial svg{width:16px;height:16px}
