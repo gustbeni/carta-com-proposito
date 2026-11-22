@@ -144,4 +144,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - Decisão do dono para 21/11 (sábado), 0h07: PRO MAX **R$ 40**, VENDA CARTA 2 **R$ 115** (de 95, contra a sugestão de voltar para 80), original **R$ 65** (total R$ 220). Vigiar a VENDA CARTA 2: se passar de R$ 20 por venda de novo, voltar para R$ 80.
 - 21/11 (sábado) fechou no Meta: 15 compras, R$ 213,07 de anúncio. VENDA CARTA 2 (R$ 115): 8 a R$ 14,39; original: 5 a R$ 13,05; PRO MAX: 2 a R$ 16,34. Faltou o total do Mercado Pago. Decisão do dono para 22/11 (domingo), 0h02: PRO MAX **R$ 40**, VENDA CARTA 2 **R$ 140**, original **R$ 80** (total R$ 260).
 - 21/11 (sábado): R$ 394,00 de vendas no Mercado Pago, lucro ≈ R$ 181 (ROAS 1,85): melhor sábado.
-- 22/11, 10h05: notificação de venda no ntfy com o título "💰💸🤑 Dinheiro na conta! Venda PREMIUM 💰💸🤑" (ou PADRÃO / PADRÃO + ADICIONAL) e o valor embaixo (`avisarDono`). Guardado sem publicar.
+- 22/11, 10h05: notificação de venda no ntfy com o título "💰💸🤑 Dinheiro na conta! Venda PREMIUM 💰💸🤑" (ou PADRÃO / PADRÃO + ADICIONAL) e o valor embaixo (`avisarDono`), última linha "Toque para ver detalhes". Publicado às 10h05.
