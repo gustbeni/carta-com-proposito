@@ -2,7 +2,7 @@
 
 Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 21,99** e **Premium R$ 29,99**, com Pix ou cartão (Mercado Pago). Quem compra monta a carta no site; quem recebe abre por `/c/<id>` ou QR code.
 
-- Site: https://carta-com-proposito.netlify.app · Repo: github.com/gustbeni/carta-com-proposito (deploy automático no Netlify a cada push na `main`; siteId `ad41fbad-e2d7-48fe-8d45-b13d3d141d31`).
+- Site: https://cartacomproposito.com.br (antigo: carta-com-proposito.netlify.app) · Repo: github.com/gustbeni/carta-com-proposito (deploy automático no Netlify a cada push na `main`; siteId `ad41fbad-e2d7-48fe-8d45-b13d3d141d31`).
 - O dono (Gustavo Benites) fala português do Brasil e não é programador: responda sempre em português simples.
 - **Histórico do dia a dia** (vendas, anúncios, cada mudança com data): `historico.md`. Leia só quando precisar. Cada fechamento de dia e cada mudança publicada ganha uma linha curta lá, não aqui.
 
@@ -16,9 +16,9 @@ Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 21,99**
 - **Não exponha dados de compradores** (nome, e-mail, telefone) em commits, logs, textos ou ntfy.
 - Meta: Pixel `1595171231774957`; navegador e servidor mandam `Purchase` com o mesmo `eventID` `compra_<id>`. Webhook do Mercado Pago: `/api/aviso` (Order e Pagamentos).
 
-## ⚠️ Domínio novo (22/11, em andamento)
+## Domínio
 
-`cartacomproposito.com.br` comprado no Registro.br e adicionado no Netlify como **domínio primário** (DNS ainda pendente: falta criar no Registro.br a entrada **A** `75.2.60.5` e o **CNAME** `www` → `carta-com-proposito.netlify.app`). **Não publique nada até o domínio abrir com cadeado**: o Netlify passa `process.env.URL` para o domínio novo no próximo deploy, e o servidor usa isso nos links do Mercado Pago (`comum.mjs` linha ~65), do e-mail, do ntfy e do Meta. Quando abrir: trocar `SITE` no `carta_tpl.html`, conferir `siteBase`, webhook do Mercado Pago, domínio no Meta (Pixel), e publicar junto o que está guardado (QR em coração, "UM PRESENTE PARA", mensagem nova do WhatsApp).
+Site em **https://cartacomproposito.com.br** desde 22/11 (Registro.br, no CPF do dono; DNS no Registro.br: **A** `75.2.60.5` e **CNAME** `www` → `carta-com-proposito.netlify.app`; renovar em 22/11/2027). O endereço antigo `carta-com-proposito.netlify.app` continua abrindo (links e QR codes antigos funcionam). O servidor usa `process.env.URL` (domínio primário). O `Referer` da busca do YouTube continua com o endereço antigo de propósito (a chave pode estar presa a ele).
 
 ## Arquivos
 

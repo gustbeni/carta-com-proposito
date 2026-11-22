@@ -148,3 +148,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 22/11, 10h50: rascunho do QR code em coração (opção 2: coração branco com pontinhos rosa, QR nível H no meio e borda dourada; `qrCoracao`) no cartão para imprimir e no QR pequeno da carta paga. O e-mail continua com o QR quadrado. Guardado sem publicar, esperando o dono aprovar.
 - 22/11, 10h45: cartão para imprimir com "UM PRESENTE PARA" (antes "UMA CARTA PARA") e sem "para abrir a sua carta". Guardado sem publicar.
 - 22/11, 10h46: mensagem do "Enviar no WhatsApp" da carta paga virou "<nome>, preparei um presente especial pra você ❤️💌" + link. Guardado sem publicar.
+- 22/11, 13h20: domínio **cartacomproposito.com.br** no ar (Registro.br + Netlify). `SITE` e os endereços de reserva do servidor trocados para o domínio novo. Publicado junto: QR code em coração no cartão e na carta paga, "UM PRESENTE PARA" no cartão e mensagem nova do WhatsApp.

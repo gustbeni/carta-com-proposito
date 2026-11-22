@@ -177,7 +177,7 @@ async function avisarDono(id, reg, tok) {
   if (atual && atual.avisoTok && atual.avisoTok !== tok) return;
   const premium = planoDe(reg.plano) === "premium";
   const valor = (Number(reg.valor) || PRECO).toFixed(2).replace(".", ",");
-  const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+  const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
   const nAd = premium ? 0 : extrasDe(reg.extras, reg.plano).length;
   const tipo = premium ? "PREMIUM" : nAd ? "PADRÃO + ADICIONAL" : "PADRÃO";
   const q = new URLSearchParams({ title: `💰💸🤑 Dinheiro na conta! Venda ${tipo} 💰💸🤑`, priority: "high", click: site + "/c/" + id });
@@ -225,7 +225,7 @@ export async function verPendentesZap() {
 async function avisarZap(id, reg, topico) {
   const premium = planoDe(reg.plano) === "premium";
   const valor = (Number(reg.valor) || PRECO).toFixed(2).replace(".", ",");
-  const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+  const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
   const link = site + "/api/zap?id=" + encodeURIComponent(id) + "&k=" + encodeURIComponent(reg.zapTok || "");
   const hm = t => new Date(t).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
   const hora = hm(reg.criado || Date.now()), vale = hm((reg.criado || Date.now()) + 30 * 60e3);
@@ -250,7 +250,7 @@ export async function mandarEmail(id, reg, { forcar = false } = {}) {
   if (atual) Object.assign(reg, atual); // outra chamada pode ter acabado de mandar
   if (!forcar && reg.emailOk) return true;
   try {
-    const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+    const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
     await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano === "padrao" && temRecurso(reg, "vit") ? "vitalicia" : reg.plano }), 9000);
     reg.emailOk = Date.now(); reg.emailEnvios = (reg.emailEnvios || 0) + 1;
   } catch (e) {
@@ -288,7 +288,7 @@ export async function avisarMeta(id, reg) {
   if (n.fbc) user_data.fbc = n.fbc;
   const corpo = { data: [{
     event_name: "Purchase", event_time: Math.floor(Date.now() / 1000), event_id: "compra_" + id,
-    action_source: "website", event_source_url: (process.env.URL || "https://carta-com-proposito.netlify.app") + "/",
+    action_source: "website", event_source_url: (process.env.URL || "https://cartacomproposito.com.br") + "/",
     user_data, custom_data: { currency: "BRL", value: Number(reg.valor) || 17.99, content_name: DESCRICAO },
   }] };
   if (process.env.META_TEST_CODE) corpo.test_event_code = process.env.META_TEST_CODE;

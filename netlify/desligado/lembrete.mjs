@@ -22,7 +22,7 @@ async function pagouOutro(email, id, criado) {
 
 export default async () => {
   if (!emailLigado()) return;
-  const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
+  const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
   const { blobs } = await pendentes().list({ prefix: "p/" });
   for (const b of blobs) {
     const id = b.key.slice(2);
