@@ -154,3 +154,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 22/11, 13h50: "Já presenteou? Entrar no Meu acesso" menor (12,5px) e "Site oficial · cartacomproposito.com.br" maior (15,5px). Publicado às 13h46.
 - 22/11, 13h50: tela de pagamento sem o texto "Sem cadastro. Enquanto você monta..." (ficou só o crédito dos versículos e os links de privacidade e Instagram). Publicado às 13h46.
 - 22/11, 13h55: "Compra segura · cartacomproposito.com.br" mais para baixo (34px dos selos) e maior (15px; 13,5px até 380 de largura). Publicado às 13h46.
+- 22/11, 13h58: rascunho com "🔒 Site oficial · cartacomproposito.com.br" no topo da primeira tela (em cima do envelope, `.site-oficial.topo`), saindo de baixo. Guardado sem publicar.

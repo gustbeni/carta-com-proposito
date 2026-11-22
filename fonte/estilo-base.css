@@ -1655,3 +1655,5 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .ck-selos + .site-oficial svg{width:16px;height:16px}
 @media (max-width:380px){.ck-selos + .site-oficial{font-size:13.5px}}
 @media (max-width:340px){.ck-selos + .site-oficial{font-size:12px}}
+.site-oficial.topo{margin:0 auto 24px;font-size:14.5px;white-space:nowrap}
+@media (max-width:350px){.site-oficial.topo{font-size:12.5px}}

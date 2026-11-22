@@ -1670,6 +1670,8 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .ck-selos + .site-oficial svg{width:16px;height:16px}
 @media (max-width:380px){.ck-selos + .site-oficial{font-size:13.5px}}
 @media (max-width:340px){.ck-selos + .site-oficial{font-size:12px}}
+.site-oficial.topo{margin:0 auto 24px;font-size:14.5px;white-space:nowrap}
+@media (max-width:350px){.site-oficial.topo{font-size:12.5px}}
 
 </style></head><body>
 <div class="app" id="app">
@@ -3665,13 +3667,12 @@ const idxPasso = id => STEPS.findIndex(x => x.id === id);
 
 const VIEWS = {
   quem() {
-    return `<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
+    return `${seloSite('Site oficial').replace('site-oficial', 'site-oficial topo')}<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
       <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b>${r.desc ? `<small>${r.desc}</small>` : ''}</span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
       <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>
-      <p class="ja-comprou">Já presenteou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>
-      ${seloSite('Site oficial')}`;
+      <p class="ja-comprou">Já presenteou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>`;
   },
   ocasiao() {
     return `<h1 class="h1" tabindex="-1">Qual é a <em>ocasião</em>?</h1>
