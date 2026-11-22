@@ -1698,6 +1698,12 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .payopt small.mp-seguro{white-space:nowrap}
 .mp-ida p.mp-txt{display:block!important}.mp-ida p.mp-txt .mp-forte{display:inline!important}
 
+/* Meu acesso: ajuda para quem pagou sem e-mail */
+.ace-ajuda{margin:22px 0 0;padding:16px;border-radius:16px;border:1px solid var(--line);background:var(--card);text-align:center;font-size:13.5px;line-height:1.45;color:var(--ink-3)}
+.ace-ajuda b{display:block;margin-bottom:4px;font:600 15px/1.3 var(--f-ui);color:var(--ink,inherit)}
+.ace-ajuda .btn{margin-top:12px;width:100%}
+.ace-ajuda b.ig{display:inline;margin:0;font:600 13.5px/1.45 var(--f-ui);color:var(--gold,#E2B65C)}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -4156,7 +4162,8 @@ function acessoView() {
       <p class="sub">${temLista ? 'Copie o link, baixe o QR code ou mude a carta.' : 'Digite o e-mail que você usou no pagamento para ver as cartas que comprou.'}</p></div>`;
   if (!temLista) {
     h += `<form class="ace-form" id="aceForm" novalidate><div class="field"><label for="aceEmail">E-mail da compra</label><input class="input" id="aceEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(acesso.email)}"><p class="err" id="aceErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
-      <button class="btn btn-primary w" type="submit">Ver minhas cartas</button></form>`;
+      <button class="btn btn-primary w" type="submit">Ver minhas cartas</button></form>
+      <div class="ace-ajuda"><b>Pagou sem e-mail e a carta sumiu?</b>Chame a gente no Instagram <b class="ig">@carta.comproposito</b> com o comprovante do Pix, e enviamos o link da sua carta.<a class="btn btn-ghost sm" href="https://ig.me/m/carta.comproposito" target="_blank" rel="noopener">Chamar no Instagram</a></div>`;
   } else if (!soLocal && !novo) {
     h += `<p class="ace-quem">Cartas de <b>${esc(acesso.email)}</b> · <button class="link" id="aceTrocar">Trocar e-mail</button></p>`;
   }

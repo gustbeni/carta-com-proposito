@@ -2472,7 +2472,8 @@ function acessoView() {
       <p class="sub">${temLista ? 'Copie o link, baixe o QR code ou mude a carta.' : 'Digite o e-mail que você usou no pagamento para ver as cartas que comprou.'}</p></div>`;
   if (!temLista) {
     h += `<form class="ace-form" id="aceForm" novalidate><div class="field"><label for="aceEmail">E-mail da compra</label><input class="input" id="aceEmail" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" value="${esc(acesso.email)}"><p class="err" id="aceErr" hidden>Confira o e-mail: falta algo como @gmail.com.</p></div>
-      <button class="btn btn-primary w" type="submit">Ver minhas cartas</button></form>`;
+      <button class="btn btn-primary w" type="submit">Ver minhas cartas</button></form>
+      <div class="ace-ajuda"><b>Pagou sem e-mail e a carta sumiu?</b>Chame a gente no Instagram <b class="ig">@carta.comproposito</b> com o comprovante do Pix, e enviamos o link da sua carta.<a class="btn btn-ghost sm" href="https://ig.me/m/carta.comproposito" target="_blank" rel="noopener">Chamar no Instagram</a></div>`;
   } else if (!soLocal && !novo) {
     h += `<p class="ace-quem">Cartas de <b>${esc(acesso.email)}</b> · <button class="link" id="aceTrocar">Trocar e-mail</button></p>`;
   }
