@@ -802,7 +802,7 @@ const Art = (() => {
     x.strokeStyle = G; x.lineWidth = 3; x.strokeRect(56, 56, w - 112, h - 112); x.globalAlpha = .45; x.lineWidth = 1.5; x.strokeRect(72, 72, w - 144, h - 144); x.globalAlpha = 1;
     x.textAlign = 'center'; x.textBaseline = 'alphabetic';
     sealDraw(x, w / 2, 290, 86, T, L.initial);
-    x.fillStyle = T.acc; x.font = '600 28px "DM Sans", sans-serif'; spaced(x, 'UMA CARTA PARA', w / 2, 492, 9);
+    x.fillStyle = T.acc; x.font = '600 28px "DM Sans", sans-serif'; spaced(x, 'UM PRESENTE PARA', w / 2, 492, 9);
     let fs = 176; x.font = `400 ${fs}px "Alex Brush", cursive`; while (x.measureText(L.to).width > w - 260 && fs > 70) { fs -= 6; x.font = `400 ${fs}px "Alex Brush", cursive`; }
     x.save(); x.shadowColor = 'rgba(255,190,90,.45)'; x.shadowBlur = 30; x.fillStyle = G; x.fillText(L.to, w / 2, 668); x.restore();
     if (qrCanvas && qrCanvas.coracao) { const hs = 720; x.save(); x.shadowColor = 'rgba(255,200,110,.45)'; x.shadowBlur = 50; x.drawImage(qrCanvas, (w - hs) / 2, 720, hs, hs); x.restore(); }
@@ -813,7 +813,6 @@ const Art = (() => {
       if (qrCanvas) { x.imageSmoothingEnabled = false; x.drawImage(qrCanvas, qx, qy, qs, qs); }
     }
     x.fillStyle = T.ink; x.font = '600 34px "DM Sans", sans-serif'; x.fillText('Aponte a câmera do celular', w / 2, 1470);
-    x.fillStyle = T.ink2; x.font = '500 28px "DM Sans", sans-serif'; x.fillText('para abrir a sua carta', w / 2, 1516);
     x.fillStyle = G; x.font = '400 46px "Alex Brush", cursive'; x.fillText('“Põe-me como selo sobre o teu coração.”', w / 2, 1604);
     x.fillStyle = T.ink2; x.font = '600 19px "DM Sans", sans-serif'; spaced(x, 'CANTARES 8:6', w / 2, 1646, 5);
     x.fillStyle = T.acc; x.font = '600 20px "DM Sans", sans-serif'; spaced(x, BRAND.toUpperCase(), w / 2, 1700, 6);
