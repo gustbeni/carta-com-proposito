@@ -5,6 +5,21 @@
 [functions]
   node_bundler = "esbuild"
 
+# Domínio novo (22/11): quem chega pelo endereço antigo (anúncios, links e QR codes antigos) vai para cartacomproposito.com.br.
+# As funções (/api/...) continuam respondendo no endereço antigo sem redirecionar, porque os avisos do Mercado Pago
+# de pedidos antigos chegam lá por POST, e um redirecionamento quebraria a confirmação do pagamento.
+[[redirects]]
+  from = "https://carta-com-proposito.netlify.app/api/*"
+  to = "/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://carta-com-proposito.netlify.app/*"
+  to = "https://cartacomproposito.com.br/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/c/*"
   to = "/index.html"
