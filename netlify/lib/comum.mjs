@@ -178,10 +178,12 @@ async function avisarDono(id, reg, tok) {
   const premium = planoDe(reg.plano) === "premium";
   const valor = (Number(reg.valor) || PRECO).toFixed(2).replace(".", ",");
   const site = (process.env.URL || "https://carta-com-proposito.netlify.app").replace(/\/$/, "");
-  const q = new URLSearchParams({ title: "Nova venda! 💌", tags: "moneybag", priority: "high", click: site + "/c/" + id });
+  const nAd = premium ? 0 : extrasDe(reg.extras, reg.plano).length;
+  const tipo = premium ? "PREMIUM" : nAd ? "PADRÃO + ADICIONAL" : "PADRÃO";
+  const q = new URLSearchParams({ title: `💰💸🤑 Dinheiro na conta! Venda ${tipo} 💰💸🤑`, priority: "high", click: site + "/c/" + id });
   await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
     method: "POST",
-    body: `Carta ${premium ? "Premium" : "Padrão"}${!premium && extrasDe(reg.extras, reg.plano).length ? " + " + extrasDe(reg.extras, reg.plano).length + " adicional(is)" : ""} · R$ ${valor}\nToque para ver a carta.`,
+    body: `R$ ${valor}${nAd ? " · " + nAd + (nAd > 1 ? " adicionais" : " adicional") : ""}\nToque para ver a carta.`,
   }), 5000);
 }
 
