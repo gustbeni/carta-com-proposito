@@ -170,3 +170,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 23/11: saiu a janela do WhatsApp; quem marca "Não tenho e-mail" segue direto pelo botão. Publicado.
 - 23/11: rascunho de Natal: caixa de presente refeita igual ao vídeo do dono (vista de cima, laço se desfaz, tampa sobe, foto dentro com neve, fundo de pinheiros). Guardado sem publicar (rascunho fora do site).
 - 23/11: capa da carta: nome em letra limpa (Playfair), sem quebrar palavra no meio, nomes longos diminuem; ouro vivo com luz, brilho pulsando, halo e estrelinhas (guardado sem publicar).
+- 23/11: capa da carta: nome em Cormorant Garamond itálica fina, ouro com luz, brilho suave e estrelinhas. Publicado.
