@@ -183,7 +183,7 @@ async function avisarDono(id, reg, tok) {
   const q = new URLSearchParams({ title: "💰Nova venda chefe! 💌", priority: "high", click: site + "/c/" + id });
   await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
     method: "POST",
-    body: `Carta ${premium ? "Premium" : nAd ? "Padrão + " + nAd + (nAd > 1 ? " adicionais" : " adicional") : "Padrão"} • R$ ${valor}\nToque para ver 👀`,
+    body: `${premium ? "Premium" : nAd ? "Padrão + " + nAd + (nAd > 1 ? " adicionais" : " adicional") : "Padrão"} • R$ ${valor}\nToque para ver 👀`,
   }), 5000);
 }
 
