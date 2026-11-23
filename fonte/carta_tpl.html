@@ -1008,7 +1008,7 @@ function coverHTML(L, mode) {
   return `<section class="cv" id="s-cover">
     ${fx ? `<div class="cv-rays" aria-hidden="true"></div><div class="cv-motes" aria-hidden="true">${motes(mode === 'full' ? 26 : 12)}</div><div class="twinkle" aria-hidden="true">${sparkles(mode === 'full' ? 14 : 8)}</div>` : ''}
     <p class="cv-kicker">Uma carta para</p>
-    <h2 class="cv-name gold-t shine">${esc(L.to)}</h2>
+    <h2 class="cv-name gold-t shine" style="--maior:${Math.max(4, ...String(L.to || '').split(/\s+/).map(w => [...w].length))}">${esc(L.to)}</h2>
     ${envHTML(L, { static: mode === 'thumb' })}
     <p class="cv-hint">Toque no selo para abrir</p>
     ${fx ? '<div class="glory" aria-hidden="true"></div>' : ''}
