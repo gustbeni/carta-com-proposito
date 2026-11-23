@@ -168,3 +168,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 23/11: janela Finalizar presente da Premium: botão "Pagar presente Premium 💌" com raios de ouro e brilho; botão cinza "Escolher pagar a Padrão · R$ 21,99" que troca para a Padrão e abre a oferta da carta para sempre. Publicado.
 - 23/11: notificação de venda: "Obrigado Deus 💌🙏🏻" e "Padrão 💰R$ X 💸". Publicado..
 - 23/11: saiu a janela do WhatsApp; quem marca "Não tenho e-mail" segue direto pelo botão. Publicado.
+- 23/11: rascunho de Natal: caixa de presente refeita igual ao vídeo do dono (vista de cima, laço se desfaz, tampa sobe, foto dentro com neve, fundo de pinheiros). Guardado sem publicar (rascunho fora do site).
