@@ -180,10 +180,10 @@ async function avisarDono(id, reg, tok) {
   const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
   const nAd = premium ? 0 : extrasDe(reg.extras, reg.plano).length;
   const tipo = premium ? "PREMIUM" : nAd ? "PADRÃO + ADICIONAL" : "PADRÃO";
-  const q = new URLSearchParams({ title: `💰💸🤑 Dinheiro na conta! Venda ${tipo} 💰💸🤑`, priority: "high", click: site + "/c/" + id });
+  const q = new URLSearchParams({ title: "💰Nova venda chefe! 💌", priority: "high", click: site + "/c/" + id });
   await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, {
     method: "POST",
-    body: `R$ ${valor}${nAd ? " · " + nAd + (nAd > 1 ? " adicionais" : " adicional") : ""}\nToque para ver detalhes`,
+    body: `Carta ${premium ? "Premium" : nAd ? "Padrão + " + nAd + (nAd > 1 ? " adicionais" : " adicional") : "Padrão"} • R$ ${valor}\nToque para ver 👀`,
   }), 5000);
 }
 
