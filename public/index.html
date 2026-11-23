@@ -524,7 +524,7 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 .l-open{padding-top:8px}
 .l-date{margin:0;font:600 10.5px/1 var(--f-ui);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-l3)}
 .l-to-para{display:block;font-size:.4em;line-height:1.6;padding:.15em .4em 0;margin-bottom:-.1em;opacity:.9}
-.l-to{margin:14px -.3em 0;padding:0 .4em;font:400 clamp(56px,17cqw,74px)/1.2 var(--f-script);overflow-wrap:anywhere;filter:drop-shadow(0 0 14px rgba(255,190,90,.32))}
+.l-to{margin:14px -.3em 0;padding:0 .4em;font:400 min(clamp(56px,17cqw,74px),calc(118cqw / var(--maior,6)))/1.2 var(--f-script);overflow-wrap:normal;word-break:keep-all;text-wrap:balance;filter:drop-shadow(0 0 14px rgba(255,190,90,.32))}
 .l-music .mbox{margin-top:20px}
 .l-occ{margin:4px 0 0;font:italic 500 21px/1.3 var(--f-display);color:var(--ink-l2)}
 
@@ -2718,6 +2718,12 @@ function envHTML(L, opts = {}) {
     ${opts.static ? `<span class="seal env-seal"><span>${SEAL_EMBLEM}</span></span>` : `<button class="seal env-seal" aria-label="Abrir a carta"><span>${SEAL_EMBLEM}</span></button>`}
   </div>`;
 }
+/* 23/11: nome todo em MAIÚSCULAS fica ilegível na letra cursiva; mostra com só a primeira letra maiúscula */
+function nomeBonito(t) {
+  t = String(t || '');
+  if (t.length < 4 || t !== t.toLocaleUpperCase('pt-BR') || t === t.toLocaleLowerCase('pt-BR')) return t;
+  return t.toLocaleLowerCase('pt-BR').replace(/(^|[\s\-'])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase('pt-BR')).replace(/\b(De|Da|Do|Das|Dos|E)\b/g, w => w.toLowerCase()).replace(/^./, c => c.toLocaleUpperCase('pt-BR'));
+}
 function coverHTML(L, mode) {
   const fx = mode !== 'thumb';
   return `<section class="cv" id="s-cover">
@@ -3203,7 +3209,7 @@ function letterHTML(L, mode, opt = {}) {
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  h += sec('s-open', 'l-open', 'next', `<h2 class="l-to gold-t shine">${esc(L.to)},</h2>`);
+  h += sec('s-open', 'l-open', 'next', `<h2 class="l-to gold-t shine" style="--maior:${Math.max(4, ...nomeBonito(L.to).split(/\s+/).map(w => [...w].length))}">${esc(nomeBonito(L.to))},</h2>`);
   /* ordem: roleta, música, fotos, pote, versículos, carta escrita, números, última foto */
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>

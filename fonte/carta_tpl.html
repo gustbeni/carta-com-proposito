@@ -1003,6 +1003,12 @@ function envHTML(L, opts = {}) {
     ${opts.static ? `<span class="seal env-seal"><span>${SEAL_EMBLEM}</span></span>` : `<button class="seal env-seal" aria-label="Abrir a carta"><span>${SEAL_EMBLEM}</span></button>`}
   </div>`;
 }
+/* 23/11: nome todo em MAIÚSCULAS fica ilegível na letra cursiva; mostra com só a primeira letra maiúscula */
+function nomeBonito(t) {
+  t = String(t || '');
+  if (t.length < 4 || t !== t.toLocaleUpperCase('pt-BR') || t === t.toLocaleLowerCase('pt-BR')) return t;
+  return t.toLocaleLowerCase('pt-BR').replace(/(^|[\s\-'])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase('pt-BR')).replace(/\b(De|Da|Do|Das|Dos|E)\b/g, w => w.toLowerCase()).replace(/^./, c => c.toLocaleUpperCase('pt-BR'));
+}
 function coverHTML(L, mode) {
   const fx = mode !== 'thumb';
   return `<section class="cv" id="s-cover">
@@ -1488,7 +1494,7 @@ function letterHTML(L, mode, opt = {}) {
   let h = `<div class="lt" data-theme="${L.theme}" data-mode="${mode}">`;
   if (!full) h += coverHTML(L, mode);
   h += `<div class="lb">`;
-  h += sec('s-open', 'l-open', 'next', `<h2 class="l-to gold-t shine">${esc(L.to)},</h2>`);
+  h += sec('s-open', 'l-open', 'next', `<h2 class="l-to gold-t shine" style="--maior:${Math.max(4, ...nomeBonito(L.to).split(/\s+/).map(w => [...w].length))}">${esc(nomeBonito(L.to))},</h2>`);
   /* ordem: roleta, música, fotos, pote, versículos, carta escrita, números, última foto */
   h += sec('s-wheel', '', 'spin', `<p class="l-label">A roleta da Palavra</p><h3 class="l-h gold-t">Gire e receba um versículo</h3><p class="l-sub">${WHEEL_SUB[L.r] || WHEEL_SUB.amor}</p>${wheelHTML()}
     <button class="l-btn wheel-btn">${ICON.sparkle}Girar a roleta</button>
