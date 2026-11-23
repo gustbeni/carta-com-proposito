@@ -1723,10 +1723,10 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 @keyframes premOuro{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 @keyframes premMexe{0%,46%,100%{transform:scale(1) rotate(0)}52%{transform:scale(1.04) rotate(-1.2deg)}58%{transform:scale(1.04) rotate(1.2deg)}64%{transform:scale(1.03) rotate(-.8deg)}70%{transform:scale(1) rotate(0)}}
 @media (prefers-reduced-motion:reduce){.ir-wrap.prem::before,.ir-wrap.prem::after,.sh-ir.sh-prem{animation:none}}
-/* 23/11: nome da capa só em ouro, sem luz, balançando devagar de um lado para o outro */
-.cv-name.gold-t{background:linear-gradient(100deg,#C8963C 0%,#F3D58A 30%,#FFF1C8 50%,#EBC66E 70%,#C8963C 100%);-webkit-background-clip:text;background-clip:text;filter:none;animation:nomeBalanca 4.5s ease-in-out infinite;transform-origin:50% 60%}
+/* 23/11: nome da capa em ouro com o raio dourado passando (igual à carta), sem halo, balançando devagar de um lado para o outro */
+.cv-name.gold-t{background:var(--gold-grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;filter:none;animation:goldShine 7s linear infinite,nomeBalanca 4.5s ease-in-out infinite;transform-origin:50% 60%}
 @keyframes nomeBalanca{0%,100%{transform:translateX(-7px) rotate(-1.5deg)}50%{transform:translateX(7px) rotate(1.5deg)}}
-@media (prefers-reduced-motion:reduce){.cv-name.gold-t{animation:none}}
+@media (prefers-reduced-motion:reduce){.cv-name.gold-t{animation:goldShine 7s linear infinite}}
 
 </style></head><body>
 <div class="app" id="app">
