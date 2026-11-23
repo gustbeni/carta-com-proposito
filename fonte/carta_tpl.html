@@ -2770,15 +2770,14 @@ function emailSheet() {
   const sem = card.querySelector('#shSem');
   const marcarSem = () => { em.disabled = sem.checked; if (sem.checked) { er.hidden = true; em.classList.remove('bad'); } };
   marcarSem();
-  /* 19/11: quem marca "Não tenho e-mail" vai para a janela do WhatsApp (zapSheet) */
-  sem.addEventListener('change', () => { S.semEmail = sem.checked; save(); track(sem.checked ? 'sem_email' : 'com_email'); marcarSem(); if (sem.checked) { closeSheet(); setTimeout(zapSheet, 220); } });
+  /* 23/11: a janela do WhatsApp (zapSheet) saiu; quem marca "Não tenho e-mail" fica aqui e segue pelo mesmo botão */
+  sem.addEventListener('change', () => { S.semEmail = sem.checked; save(); track(sem.checked ? 'sem_email' : 'com_email'); marcarSem(); });
   const seguir = () => {
     /* e-mail em branco e caixinha desmarcada: segue direto, como "Não tenho e-mail" (pedido do dono, 16/11). E-mail digitado errado continua pedindo para conferir. */
     const vazio = !sem.checked && !(S.email || '').trim();
     if (!sem.checked && !vazio && !isEmail(S.email)) { er.hidden = false; em.classList.add('bad'); em.focus(); return; }
     if (vazio) etapa('pulou-email');
-    S.semEmail = sem.checked || vazio; S.emailPulado = vazio; save(); closeSheet();
-    if (sem.checked) { setTimeout(zapSheet, 220); return true; }
+    S.semEmail = sem.checked || vazio; S.emailPulado = vazio; if (S.semEmail) S.zap = ''; save(); closeSheet();
     seguirPagamento();
     return true;
   };
