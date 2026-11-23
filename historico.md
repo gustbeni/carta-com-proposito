@@ -172,3 +172,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 23/11: capa da carta: nome em letra limpa (Playfair), sem quebrar palavra no meio, nomes longos diminuem; ouro vivo com luz, brilho pulsando, halo e estrelinhas (guardado sem publicar).
 - 23/11: capa da carta: nome em Cormorant Garamond itálica fina, ouro com luz, brilho suave e estrelinhas. Publicado.
 - 23/11: capa: nome sem luz, balançando, com raio dourado, 20% maior; "Uma carta para" 10% menor; 1ª tela da carta só com o nome (sem "Para"). Publicado.
+- 23/11: capa com o nome na letra cursiva (igual à 1ª tela), 20% maior, balançando com raio dourado; nomes em MAIÚSCULAS mostrados como Nome Próprio na capa e na 1ª tela, sem quebrar palavra. Publicado.
