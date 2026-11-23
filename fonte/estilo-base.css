@@ -409,7 +409,7 @@ button.ph:hover .ph-drop{border-color:#C9963A;background:#F9EDD6}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
 .cv-kicker{margin:0;font:600 11px/1 var(--f-ui);letter-spacing:.34em;text-transform:uppercase;color:var(--acc);text-shadow:0 0 12px rgba(255,200,110,.45)}
 /* 23/11: nome na capa com letra limpa (Playfair), sem quebrar palavra no meio; nomes longos diminuem sozinhos */
-.cv-name{margin:12px 0 0;padding:0 .2em;font:italic 500 min(clamp(44px,14cqw,66px),calc(160cqw / var(--maior,6)))/1.12 "Cormorant Garamond",var(--f-display);letter-spacing:.01em;overflow-wrap:normal;word-break:keep-all;text-wrap:balance;filter:drop-shadow(0 0 14px rgba(255,190,90,.35))}
+.cv-name{margin:12px 0 0;padding:0 .2em;font:italic 500 min(clamp(53px,16.8cqw,79px),calc(176cqw / var(--maior,6)))/1.12 "Cormorant Garamond",var(--f-display);letter-spacing:.01em;overflow-wrap:normal;word-break:keep-all;text-wrap:balance;filter:drop-shadow(0 0 14px rgba(255,190,90,.35))}
 .cv-title{margin:2px 0 0;font:italic 500 21px/1.3 var(--f-display);color:var(--ink-l2)}
 .cv-hint{margin:30px 0 0;font:italic 400 17px/1.3 var(--f-text);color:var(--ink-l2);animation:breathe 2.4s ease-in-out infinite}
 @keyframes breathe{0%,100%{opacity:.6}50%{opacity:1}}
@@ -1708,12 +1708,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 @keyframes premOuro{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 @keyframes premMexe{0%,46%,100%{transform:scale(1) rotate(0)}52%{transform:scale(1.04) rotate(-1.2deg)}58%{transform:scale(1.04) rotate(1.2deg)}64%{transform:scale(1.03) rotate(-.8deg)}70%{transform:scale(1) rotate(0)}}
 @media (prefers-reduced-motion:reduce){.ir-wrap.prem::before,.ir-wrap.prem::after,.sh-ir.sh-prem{animation:none}}
-/* 23/11: nome da capa glorioso: ouro vivo com faixa de luz passando, brilho pulsando e halo de luz atrás */
-.cv-name.gold-t{position:relative;isolation:isolate;background:linear-gradient(100deg,#B8862F 0%,#F3D58A 18%,#FFF7DC 30%,#E9BE5C 42%,#FCE7A6 55%,#C9973A 70%,#FFF3C9 84%,#C08A2E 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;animation:nomeOuro 5s linear infinite,nomeBrilho 2.8s ease-in-out infinite}
-.cv-name.gold-t::before{content:"";position:absolute;left:50%;top:50%;width:120%;height:160%;transform:translate(-50%,-50%);z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,226,150,.26),rgba(255,200,100,.09) 50%,transparent 100%);animation:nomeHalo 2.8s ease-in-out infinite;pointer-events:none}
-@keyframes nomeOuro{from{background-position:100% 0}to{background-position:-150% 0}}
-@keyframes nomeBrilho{0%,100%{filter:drop-shadow(0 0 2px rgba(255,236,170,.6)) drop-shadow(0 0 12px rgba(255,200,90,.3))}50%{filter:drop-shadow(0 0 4px rgba(255,248,210,.9)) drop-shadow(0 0 20px rgba(255,214,110,.55))}}
-@keyframes nomeHalo{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(.92)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
-.cv-name.gold-t::after{content:"";position:absolute;inset:-14% -6%;z-index:1;pointer-events:none;background:radial-gradient(circle at 8% 22%,#fff 0 1.6px,rgba(255,230,150,.8) 2.4px,transparent 5px),radial-gradient(circle at 92% 30%,#fff 0 1.8px,rgba(255,230,150,.8) 2.6px,transparent 6px),radial-gradient(circle at 70% 88%,#fff 0 1.4px,rgba(255,230,150,.8) 2.2px,transparent 5px),radial-gradient(circle at 24% 84%,#fff 0 1.2px,rgba(255,230,150,.8) 2px,transparent 4px),radial-gradient(circle at 52% 6%,#fff 0 1.5px,rgba(255,230,150,.8) 2.3px,transparent 5px);animation:nomeEstrelas 2.2s ease-in-out infinite}
-@keyframes nomeEstrelas{0%,100%{opacity:.25}50%{opacity:1}}
-@media (prefers-reduced-motion:reduce){.cv-name.gold-t,.cv-name.gold-t::before,.cv-name.gold-t::after{animation:none}}
+/* 23/11: nome da capa só em ouro, sem luz, balançando devagar de um lado para o outro */
+.cv-name.gold-t{background:linear-gradient(100deg,#C8963C 0%,#F3D58A 30%,#FFF1C8 50%,#EBC66E 70%,#C8963C 100%);-webkit-background-clip:text;background-clip:text;filter:none;animation:nomeBalanca 4.5s ease-in-out infinite;transform-origin:50% 60%}
+@keyframes nomeBalanca{0%,100%{transform:translateX(-7px) rotate(-1.5deg)}50%{transform:translateX(7px) rotate(1.5deg)}}
+@media (prefers-reduced-motion:reduce){.cv-name.gold-t{animation:none}}
