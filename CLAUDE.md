@@ -60,7 +60,7 @@ Envelope de ouro com selo real → toque no selo abre com luz e começa a músic
 
 - **Vendas:** prints do ntfy e do Mercado Pago (hora do Mercado Pago = hora local + 1h). Testes do dono não contam.
 - **Funil:** observability do Netlify, `get-topk`, `urls_with_query`, filtro URL `/e.gif` (guarda 24 h; local = UTC-4). Pix gerados: logs da função `pagar`; pagos: 2º evento no `aviso` ≈ 1–3 min depois.
-- **Meta:** dar ROAS, custo por venda por campanha e sugestão de orçamento; lembrar de recarregar o saldo à noite.
+- **Meta:** dar ROAS, custo por venda por campanha e sugestão de orçamento; lembrar de recarregar o saldo à noite. O "valor gasto" do app da Meta vem **sem imposto** (ISS 2,9% + PIS/COFINS 9,25% = 12,15% do total pago): desde 24/11 o anúncio na conta e no CSV é **gasto × 1,1383** (até 23/11 o CSV ficou sem imposto).
 - **Fechamento do dia (à noite):** linha no `historico.md`, CSV `relatorios/vendas-por-dia.csv` (só totais do dia, sem dados de compradores) e painel de lucros (artefato https://claude.ai/code/artifact/DLyKVHddyFzspHJYYPrEhE: subir o CSV com `Artifact publish asset:true` e atualizar `ArtifactData` coleção `datasets`, doc `dias`, campo **`source.url`** (não `url`), com `if_version`). Relatório semanal todo **domingo à noite**.
 - **Pendências:** carta de Natal (`rascunhos/carta-de-natal.html`) esperando o dono; depois do CNPJ (Contajá): Mercado Pago no CNPJ, emissor de NFS-e (Focus NFe) e textos como "serviço" (não "produto digital").
 
