@@ -173,3 +173,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 23/11: capa da carta: nome em Cormorant Garamond itálica fina, ouro com luz, brilho suave e estrelinhas. Publicado.
 - 23/11: capa: nome sem luz, balançando, com raio dourado, 20% maior; "Uma carta para" 10% menor; 1ª tela da carta só com o nome (sem "Para"). Publicado.
 - 23/11: capa com o nome na letra cursiva (igual à 1ª tela), 20% maior, balançando com raio dourado; nomes em MAIÚSCULAS mostrados como Nome Próprio na capa e na 1ª tela, sem quebrar palavra. Publicado.
+- 23/11 (seg) fechamento: 17 vendas reais, R$ 464,38 faturado, R$ 254,98 anúncio, lucro R$ 209,40 (4º melhor dia; ROAS 1,82). VENDA CARTA 2 12 a R$ 11,31; WhatsApp vídeo 2 a R$ 39,88; PRO MAX 1 a R$ 39,55. Carta para sempre: 10 de 21 ofertas. Total desde 31/10: 235 vendas, lucro ≈ R$ 2.381.
