@@ -2688,22 +2688,50 @@ async function api(caminho, corpo) {
 /* fotos vão para o Cloudinary; a carta guarda só o caminho de cada uma */
 const fotosUp = (store.get('cp2:fotosUp') || []).concat(Array(NFOTOS).fill(null)).slice(0, NFOTOS);
 const fotoChave = d => d.length + ':' + d.slice(-48);
+/* 24/11: as fotos começam a subir sozinhas quando a carta fica pronta (enquanto a pessoa vê a prévia e a tela de pagamento).
+   Assim, ao tocar em pagar, quase sempre já estão guardadas e o Pix sai na hora. Cada foto sobe uma vez só (subindo[i]). */
+const subindo = {};
+const fotosUsadas = () => polIdx(S).concat(3, temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : [], temRec(S, 'cabine') ? CAB : []);
+const fotoPronta = i => !!(S.photos[i] && fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i]));
+function subirUma(i) {
+  const d = S.photos[i], k = fotoChave(d);
+  if (fotoPronta(i)) return Promise.resolve(fotosUp[i].u);
+  if (subindo[i] && subindo[i].k === k) return subindo[i].p;
+  const p = (async () => {
+    const fd = new FormData(); fd.append('file', d); fd.append('upload_preset', CLOUD.preset); fd.append('folder', 'cartas');
+    let u = '';
+    try { const r = await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUD.nome)}/image/upload`, { method: 'POST', body: fd }); if (r.ok) u = ((await r.json()).secure_url || '').split('/image/upload/')[1] || ''; } catch (e) {}
+    if (!u) throw Object.assign(new Error('upload'), { tipo: 'upload' });
+    if (S.photos[i] && fotoChave(S.photos[i]) === k) { fotosUp[i] = { k, u }; store.set('cp2:fotosUp', fotosUp); }
+    return u;
+  })();
+  subindo[i] = { k, p };
+  p.catch(() => {}).finally(() => { if (subindo[i] && subindo[i].p === p) delete subindo[i]; });
+  return p;
+}
+let preSubindo = false;
+async function preSubirFotos() {
+  if (preSubindo) return; preSubindo = true;
+  try { for (const i of fotosUsadas()) if (S.photos[i] && !fotoPronta(i)) { try { await subirUma(i); } catch (e) { break; } } } finally { preSubindo = false; }
+}
 async function subirFotos(msg) {
-  const usadas = polIdx(S).concat(3, temRec(S, 'filme') ? (S.plano === 'premium' ? [7, 8, 9, 10, 11, 12, 13] : [7, 8, 9]) : [], temRec(S, 'cabine') ? CAB : []);
-  const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !(fotosUp[i] && fotosUp[i].k === fotoChave(S.photos[i])));
+  const usadas = fotosUsadas();
+  const out = Array(NFOTOS).fill(null), falta = usadas.filter(i => S.photos[i] && !fotoPronta(i));
   for (const i of usadas) {
-    const d = S.photos[i]; if (!d) continue;
-    if (falta.includes(i)) {
-      msg(`Guardando as fotos (${falta.indexOf(i) + 1} de ${falta.length})…`);
-      const fd = new FormData(); fd.append('file', d); fd.append('upload_preset', CLOUD.preset); fd.append('folder', 'cartas');
-      let u = '';
-      try { const r = await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUD.nome)}/image/upload`, { method: 'POST', body: fd }); if (r.ok) u = ((await r.json()).secure_url || '').split('/image/upload/')[1] || ''; } catch (e) {}
-      if (!u) throw Object.assign(new Error('upload'), { tipo: 'upload' });
-      fotosUp[i] = { k: fotoChave(d), u }; store.set('cp2:fotosUp', fotosUp);
-    }
-    out[i] = fotosUp[i].u;
+    if (!S.photos[i]) continue;
+    if (falta.includes(i)) msg(`Guardando as fotos (${falta.indexOf(i) + 1} de ${falta.length})…`);
+    out[i] = await subirUma(i);
   }
   return out;
+}
+/* 24/11: se as fotos não sobem (internet fraca), em vez de um aviso que some, uma janela com "Tentar de novo" que continua de onde parou */
+function internetFracaSheet() {
+  etapa('internet-fraca');
+  const card = openSheet(`<p class="eyebrow">Quase lá</p><h2 class="h2">Sua internet está fraca</h2>
+    <p class="sub">As fotos da sua carta ainda não terminaram de ser enviadas. <b>Sua carta está salva</b>, nada foi perdido e nada foi cobrado.</p>
+    <p class="sub" style="margin-top:10px">Se puder, conecte no Wi-Fi ou chegue perto do sinal e toque abaixo.</p>
+    <button class="btn btn-primary w" id="ifTentar" style="margin-top:20px">${ICON.lock}Tentar de novo</button>`);
+  card.querySelector('#ifTentar').addEventListener('click', () => { etapa('internet-fraca-tentou'); closeSheet(); setTimeout(() => pay(true), 250); });
 }
 function erroTexto(e, salvar) {
   if (e.status === 413) return 'A carta ficou grande demais. Encurte a mensagem ou a oração.';
@@ -2742,7 +2770,7 @@ async function pay(daJanela) {
     etapa('pix-gerado');
     openPix(j.pix || {}, pedido.pix.ate);
     esperarPagamento(0);
-  } catch (e) { etapa('erro-pagar'); closeSheet(); if (e.dados && e.dados.erro === 'pix_recusado') pixRecusadoSheet(); else toast(erroTexto(e)); }
+  } catch (e) { etapa('erro-pagar'); closeSheet(); if (e.dados && e.dados.erro === 'pix_recusado') pixRecusadoSheet(); else if (e.tipo === 'upload') { ocupado = false; refreshBar(); setTimeout(internetFracaSheet, 250); return; } else toast(erroTexto(e)); }
   ocupado = false; refreshBar();
 }
 const PIX_MS = 30 * 60e3; /* 30 minutos (desde 14/11; antes 2 horas) */
@@ -3009,6 +3037,7 @@ function etapa(nome) {
 function render(dir) {
   const scr = $('#screen');
   if (!naAcesso()) etapa(S.view === 'step' ? 'p' + String(S.step + 1).padStart(2, '0') + '-' + ((STEPS[S.step] || {}).id || '') : ({ ready: 'carta-pronta', checkout: 'tela-de-pagamento' })[S.view] || S.view);
+  if ((S.view === 'ready' || S.view === 'checkout') && !naAcesso() && !(pedido && pedido.pago)) setTimeout(preSubirFotos, 600);
   document.body.classList.toggle('na-acesso', naAcesso());
   if (naAcesso()) { scr.innerHTML = acessoView(); bindAcesso(scr); }
   else if (S.view === 'step') { if (!passoValido(S.step)) S.step = passosValidos().filter(i => i < S.step).pop() || 0; const id = STEPS[S.step].id; scr.innerHTML = VIEWS[id](); BIND[id](scr); }

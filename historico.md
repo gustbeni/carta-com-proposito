@@ -174,3 +174,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 23/11: capa: nome sem luz, balançando, com raio dourado, 20% maior; "Uma carta para" 10% menor; 1ª tela da carta só com o nome (sem "Para"). Publicado.
 - 23/11: capa com o nome na letra cursiva (igual à 1ª tela), 20% maior, balançando com raio dourado; nomes em MAIÚSCULAS mostrados como Nome Próprio na capa e na 1ª tela, sem quebrar palavra. Publicado.
 - 23/11 (seg) fechamento: 17 vendas reais, R$ 464,38 faturado, R$ 260,20 anúncio (final, sem imposto), lucro R$ 204,18 (4º melhor dia; ROAS 1,78). VENDA CARTA 2 12 a R$ 11,53; WhatsApp vídeo 2 a R$ 40,67; PRO MAX 2 a R$ 20,25. Carta para sempre: 10 de 21 ofertas. Total desde 31/10: 235 vendas, lucro ≈ R$ 2.381.
+- 24/11: fotos sobem sozinhas quando a carta fica pronta (antes de pagar); se a internet falha, janela "Sua internet está fraca" com "Tentar de novo" (guardado sem publicar).
