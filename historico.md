@@ -177,3 +177,4 @@ Movido do CLAUDE.md em 20/11/2026 para economizar. Leia só quando precisar de n
 - 24/11: fotos sobem sozinhas quando a carta fica pronta (antes de pagar); se a internet falha, janela "Sua internet está fraca" com "Tentar de novo". Publicado.
 - 24/11 (ter) fechamento: RECORDE 24 vendas, R$ 636,33 faturado, anúncio R$ 355,81 com imposto (Meta R$ 312,58), lucro R$ 280,52 (maior até hoje; ROAS 1,79 com imposto). PRO MAX 4 a R$ 10,14; VENDA CARTA 2 15 a R$ 13,04; WhatsApp vídeo 5 a R$ 15,30. Carta para sempre 16 de 27. Meta marcou as 24. Orçamento 25/11: CARTA 2 200, WhatsApp 70, PRO MAX 40.
 - 25/11: Meu acesso: quadro "Tem mais alguém especial?" com botão "Fazer outra carta" (antes era um link miúdo no rodapé; cliente não achou). Funil: fazer-outra. Publicado.
+- 25/11: criador ganhou "Filho ou filha" no primeiro passo (ocasiões, textos, orações e motivos próprios; tema céu) e o "Amigo ou amiga" ganhou descrição. Guardado sem publicar.
