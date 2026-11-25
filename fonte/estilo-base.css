@@ -1713,3 +1713,9 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .cv-name.gold-t{background:var(--gold-grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;filter:none;animation:goldShine 7s linear infinite,nomeBalanca 4.5s ease-in-out infinite;transform-origin:50% 60%}
 @keyframes nomeBalanca{0%,100%{transform:translateX(-7px) rotate(-1.5deg)}50%{transform:translateX(7px) rotate(1.5deg)}}
 @media (prefers-reduced-motion:reduce){.cv-name.gold-t{animation:goldShine 7s linear infinite}}
+
+/* 25/11: quadro "Fazer outra carta" no Meu acesso */
+.ace-outra{margin:26px 0 0;padding:22px 18px 18px;text-align:center;border-radius:20px;background:linear-gradient(180deg,rgba(243,213,138,.10),rgba(243,213,138,.03));border:1px solid rgba(243,213,138,.38);box-shadow:0 10px 30px -18px rgba(0,0,0,.7)}
+.ace-outra-ic{display:block;font-size:30px;line-height:1;margin-bottom:8px}
+.ace-outra-t{margin:0;font:600 20px/1.25 var(--f-display);color:var(--ink)}
+.ace-outra-s{margin:6px 0 16px;font-size:14px;line-height:1.5;color:var(--ink-2)}

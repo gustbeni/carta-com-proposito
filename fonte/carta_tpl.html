@@ -2496,7 +2496,9 @@ function acessoView() {
   if (acesso.erro) h += `<p class="err ace-erro">${esc(acesso.erro)} <button class="link" id="aceDeNovo">Tentar de novo</button></p>`;
   if (temLista && !acesso.carregando && !acesso.erro && !itens.length) h += `<p class="ace-vazio">Não achamos cartas pagas com este e-mail. Confira se é o mesmo e-mail que você usou no pagamento.</p>`;
   if (temLista && itens.length) h += `<div class="ace-lista">${itens.map(c => cartaAcessoHTML(c, novo && c.id === novo.id)).join('')}</div>`;
-  h += `<p class="done-foot ace-pe">${novo ? `Para voltar depois: <b>${esc(siteBase().replace(/^https?:\/\//, ''))}/meuacesso</b><br>` : ''}<button class="link" id="aceNova">Criar outra carta</button></p>`;
+  /* 25/11: "Criar outra carta" era um link miúdo no rodapé e clientes não achavam; agora é um quadro com botão logo depois das cartas */
+  if (temLista && itens.length) h += `<div class="ace-outra"><span class="ace-outra-ic" aria-hidden="true">💌</span><p class="ace-outra-t">Tem mais alguém especial?</p><p class="ace-outra-s">Faça uma carta para sua mãe, filha, amiga ou para quem você ama.</p><button class="btn btn-primary w" id="aceNova">Fazer outra carta</button></div>`;
+  h += `<p class="done-foot ace-pe">${novo ? `Para voltar depois: <b>${esc(siteBase().replace(/^https?:\/\//, ''))}/meuacesso</b>` : ''}${temLista && itens.length ? '' : `${novo ? '<br>' : ''}<button class="link" id="aceNova">Criar outra carta</button>`}</p>`;
   return h;
 }
 function cartaAcessoHTML(c, ehNovo) {
@@ -2526,7 +2528,7 @@ function bindAcesso(el) {
   });
   const tr = $('#aceTrocar', el); if (tr) tr.addEventListener('click', () => { acesso.trocar = true; render(null); const i = $('#aceEmail'); if (i) i.focus(); });
   const dn = $('#aceDeNovo', el); if (dn) dn.addEventListener('click', () => carregarAcesso());
-  $('#aceNova', el).addEventListener('click', criarOutra);
+  $('#aceNova', el).addEventListener('click', () => { etapa('fazer-outra'); criarOutra(); });
   if ($('#mailArea', el)) carregarConfig().then(() => pintarEmail(el, true));
   const itens = itensAcesso();
   el.querySelectorAll('.ace-card').forEach(card => {
