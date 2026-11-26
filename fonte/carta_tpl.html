@@ -3209,7 +3209,7 @@ async function abrirCartaRecebida(id) {
   abrir();
 }
 /* 26/11: carta Padrão que passou do prazo: "Tornar ela para sempre" (Pix de 4,99 em /api/renovar) */
-const PRECO_RENOVA = 9.99; /* só o texto; o cobrado é PRECO_RENOVA em comum.mjs */
+const PRECO_RENOVA = 9.97; /* só o texto; o cobrado é PRECO_RENOVA em comum.mjs */
 const pingE = n => { try { new Image().src = '/e.gif?s=' + encodeURIComponent(n); } catch (e) {} }; /* no link da carta o etapa() fica desligado */
 async function renovarCarta(id) {
   const b = $('#renovaBtn'); if (b) { b.disabled = true; b.textContent = 'Gerando o Pix…'; }

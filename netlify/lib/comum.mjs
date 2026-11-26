@@ -164,7 +164,7 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
 
 // ===== Renovar a carta Padrão que passou do prazo: "Tornar ela para sempre" (26/11) =====
 // Pix separado, com external_reference "<id>.renova". Pago: a carta ganha o "vit" e volta a abrir para sempre.
-export const PRECO_RENOVA = 9.99;
+export const PRECO_RENOVA = 9.97;
 export const refRenova = id => id + ".renova";
 export async function confirmarRenovacao(id, reg) {
   if (!reg || reg.plano !== "padrao") return false;
