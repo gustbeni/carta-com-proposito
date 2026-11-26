@@ -280,6 +280,8 @@ const RECIPIENTS = [
   { id: 'filhos', label: 'Filho ou filha', desc: 'Aniversário, formatura, palavra de bênção', icon: 'filhos', theme: 'ceu' }
 ];
 const REC = Object.fromEntries(RECIPIENTS.map(r => [r.id, r]));
+/* 26/11: emoji no fim de cada opção do primeiro passo (as descrições saíram da tela) */
+const QUEM_EMO = { amor: '❤️', amigo: '🫂', pais: '👨‍👩‍👧', filhos: '🧒' };
 
 const OCCASIONS = {
   amor: [
@@ -2067,9 +2069,9 @@ const idxPasso = id => STEPS.findIndex(x => x.id === id);
 
 const VIEWS = {
   quem() {
-    return `${seloSite('Site oficial').replace('site-oficial', 'site-oficial topo')}<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
+    return `${seloSite('Site oficial').replace('site-oficial', 'site-oficial topo')}<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}<span class="hero-raio" aria-hidden="true"></span></div>
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
-      <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b>${r.desc ? `<small>${r.desc}</small>` : ''}</span><span class="radio"></span></button>`).join('')}</div>
+      <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}${QUEM_EMO[r.id] ? ` <span class="quem-emo${r.id === 'amor' ? ' pulsa' : ''}" aria-hidden="true">${QUEM_EMO[r.id]}</span>` : ''}</b></span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
       <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>
       <p class="ja-comprou">Já presenteou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>`;

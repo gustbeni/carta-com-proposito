@@ -141,8 +141,8 @@ svg{display:block}
 .stack.tight{gap:10px;margin-top:0}
 
 /* ---------- Passo 1 ---------- */
-.hero-env{width:max-content;margin:6px auto 26px;animation:float 5s ease-in-out infinite}
-.hero-env .env{--w:112px;margin:0}
+.hero-env{position:relative;width:max-content;margin:6px auto 26px;animation:float 5s ease-in-out infinite}
+.hero-env .env{--w:92px;margin:0}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(-1deg)}}
 .opt{display:grid;grid-template-columns:48px minmax(0,1fr) 22px;align-items:center;gap:14px;width:100%;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:0 10px 24px -20px rgba(0,0,0,.6);transition:border-color .2s,box-shadow .2s,transform .2s var(--ease),background-color .2s}
 .opt:hover{border-color:var(--line-2);transform:translateY(-1px);box-shadow:0 14px 28px -18px rgba(0,0,0,.75)}
@@ -1758,6 +1758,15 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .msg-page .renova-hint{margin-top:-4px;font-size:13px;opacity:.8}
 .msg-page #renovaBtn{gap:8px}
 
+/* 26/11: raio de ouro passando na carta do primeiro passo; emojis das opções */
+.hero-raio{position:absolute;inset:0;z-index:8;overflow:hidden;border-radius:4px;pointer-events:none;mix-blend-mode:screen}
+.hero-raio::before{content:"";position:absolute;top:-30%;bottom:-30%;left:-60%;width:45%;background:linear-gradient(100deg,transparent 0%,rgba(255,236,170,.0) 20%,rgba(255,240,190,.95) 50%,rgba(255,236,170,0) 80%,transparent 100%);transform:skewX(-18deg);animation:heroRaio 3.2s ease-in-out infinite}
+@keyframes heroRaio{0%{left:-60%}55%,100%{left:130%}}
+.quem-emo{display:inline-block;margin-left:4px;font-size:1.05em;line-height:1}
+.quem-emo.pulsa{animation:quemPulsa 1.1s ease-in-out infinite;transform-origin:50% 60%}
+@keyframes quemPulsa{0%,100%{transform:scale(1)}15%{transform:scale(1.28)}30%{transform:scale(1)}45%{transform:scale(1.18)}60%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.hero-raio::before,.quem-emo.pulsa{animation:none}}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -2024,6 +2033,8 @@ const RECIPIENTS = [
   { id: 'filhos', label: 'Filho ou filha', desc: 'Aniversário, formatura, palavra de bênção', icon: 'filhos', theme: 'ceu' }
 ];
 const REC = Object.fromEntries(RECIPIENTS.map(r => [r.id, r]));
+/* 26/11: emoji no fim de cada opção do primeiro passo (as descrições saíram da tela) */
+const QUEM_EMO = { amor: '❤️', amigo: '🫂', pais: '👨‍👩‍👧', filhos: '🧒' };
 
 const OCCASIONS = {
   amor: [
@@ -3811,9 +3822,9 @@ const idxPasso = id => STEPS.findIndex(x => x.id === id);
 
 const VIEWS = {
   quem() {
-    return `${seloSite('Site oficial').replace('site-oficial', 'site-oficial topo')}<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}</div>
+    return `${seloSite('Site oficial').replace('site-oficial', 'site-oficial topo')}<div class="hero-env">${envHTML({ to: 'você', initial: '' }, { static: true })}<span class="hero-raio" aria-hidden="true"></span></div>
       <h1 class="h1" tabindex="-1">Para quem é a sua <em>carta</em>?</h1>
-      <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}</b>${r.desc ? `<small>${r.desc}</small>` : ''}</span><span class="radio"></span></button>`).join('')}</div>
+      <div class="stack">${RECIPIENTS.map(r => `<button class="opt" data-rec="${r.id}" aria-pressed="${S.recipient === r.id}"><span class="ic">${ICON[r.icon]}</span><span><b>${r.label}${QUEM_EMO[r.id] ? ` <span class="quem-emo${r.id === 'amor' ? ' pulsa' : ''}" aria-hidden="true">${QUEM_EMO[r.id]}</span>` : ''}</b></span><span class="radio"></span></button>`).join('')}</div>
       <div class="ex-links"><button class="link ex-link ex-premium" id="exPremium"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Premium</button>
       <button class="link ex-link" id="exBtn"><span class="emo" aria-hidden="true">👁️</span> Ver prévia carta Padrão</button></div>
       <p class="ja-comprou">Já presenteou? <a class="link" href="/meuacesso" id="meuAcessoLink">Entrar no Meu acesso</a></p>`;
