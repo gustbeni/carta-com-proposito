@@ -2032,6 +2032,10 @@ function savePhoto(i) {
   fotosDB.guardar(i, v).then(() => store.raw(PKEY(i), null)).catch(() => { if (!store.raw(PKEY(i), v)) toast('Não deu para guardar a foto neste aparelho, mas ela continua na carta.'); });
 }
 const toName = () => (S.to || '').trim() || copyFor(S.recipient || 'amor', OCC[S.occasion]).toFallback;
+/* 26/11: ordem e cores das ocasiões só na tela de escolha (a ordem de OCCASIONS fica igual, porque o [0] é o padrão das cartas antigas) */
+const OCC_ORDEM = { amor: ['te_amo', 'saudade', 'desculpas', 'pedido_namoro'] };
+const OCC_COR = { te_amo: 'ouro', saudade: 'azul', desculpas: 'amarelo', pedido_namoro: 'vermelho' };
+const occsNaTela = r => { const ord = OCC_ORDEM[r] || [], L = OCCASIONS[r]; return [...ord.map(id => L.find(o => o.id === id)).filter(Boolean), ...L.filter(o => !ord.includes(o.id))]; };
 const curOcc = () => OCC[S.occasion] || OCCASIONS[S.recipient || 'amor'][0];
 const curTheme = () => S.theme || (REC[S.recipient] || REC.amor).theme;
 
@@ -2070,8 +2074,7 @@ const VIEWS = {
   },
   ocasiao() {
     return `<h1 class="h1" tabindex="-1">Qual é a <em>ocasião</em>?</h1>
-      <p class="sub">Assim a gente separa os versículos certos para ela.</p>
-      <div class="tiles">${OCCASIONS[S.recipient].map(o => `<button class="tile" data-occ="${o.id}" aria-pressed="${S.occasion === o.id}">${o.label}</button>`).join('')}</div>`;
+      <div class="tiles">${occsNaTela(S.recipient).map((o, i) => `<button class="tile${OCC_COR[o.id] ? ' occ-' + OCC_COR[o.id] : ''}" data-occ="${o.id}" aria-pressed="${S.occasion === o.id}"><span class="occ-txt" style="animation-delay:${-(i * 0.45).toFixed(2)}s">${o.label}</span></button>`).join('')}</div>`;
   },
   nomes() {
     const C = copyFor(S.recipient, curOcc());

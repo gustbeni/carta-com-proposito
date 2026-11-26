@@ -1729,3 +1729,13 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .sh-prem .ir-promo{display:block;margin-top:3px;font:600 11.5px/1.2 var(--f-sans,'DM Sans',sans-serif);letter-spacing:.02em;opacity:.85}
 .sh-ir.sh-prem:has(.ir-promo){flex-direction:column;justify-content:center;gap:1px;white-space:normal;height:auto;min-height:62px;padding-top:9px;padding-bottom:9px;line-height:1.2}
 .sh-prem .ir-l1{flex-wrap:nowrap;white-space:nowrap}
+
+/* 26/11: ocasiões com cor e texto balançando */
+.tile .occ-txt{display:inline-block;animation:occBalanca 3.6s ease-in-out infinite;will-change:transform}
+@keyframes occBalanca{0%,100%{transform:translateX(-3px) rotate(-1deg)}50%{transform:translateX(3px) rotate(1deg)}}
+.tile.occ-ouro .occ-txt{background:var(--gold-grad,linear-gradient(90deg,#C8922E,#F7DC8A,#E3AE4A));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:#F7D995;animation:occBalanca 3.6s ease-in-out infinite,goldShine 7s linear infinite}
+.tile.occ-azul .occ-txt{color:#8FC8FF}
+.tile.occ-amarelo .occ-txt{color:#FFE266}
+.tile.occ-vermelho .occ-txt{color:#FF6F6F}
+.tile[aria-pressed="true"] .occ-txt{color:#3A0B2B;-webkit-text-fill-color:#3A0B2B;background:none}
+@media (prefers-reduced-motion:reduce){.tile .occ-txt{animation:none}}
