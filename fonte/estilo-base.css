@@ -1748,6 +1748,6 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .hero-raio::before{content:"";position:absolute;top:-30%;bottom:-30%;left:-60%;width:45%;background:linear-gradient(100deg,transparent 0%,rgba(255,236,170,.0) 20%,rgba(255,240,190,.95) 50%,rgba(255,236,170,0) 80%,transparent 100%);transform:skewX(-18deg);animation:heroRaio 3.2s ease-in-out infinite}
 @keyframes heroRaio{0%{left:-60%}55%,100%{left:130%}}
 .quem-emo{display:inline-block;margin-left:4px;font-size:1.05em;line-height:1}
-.quem-emo.pulsa{animation:quemPulsa 1.1s ease-in-out infinite;transform-origin:50% 60%}
-@keyframes quemPulsa{0%,100%{transform:scale(1)}15%{transform:scale(1.28)}30%{transform:scale(1)}45%{transform:scale(1.18)}60%{transform:scale(1)}}
+.quem-emo.pulsa{animation:quemPulsa .9s ease-in-out infinite;transform-origin:50% 60%;filter:drop-shadow(0 0 6px rgba(255,40,60,.55))}
+@keyframes quemPulsa{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(255,40,60,.35))}14%{transform:scale(1.6);filter:drop-shadow(0 0 14px rgba(255,40,60,.95))}28%{transform:scale(1)}42%{transform:scale(1.45);filter:drop-shadow(0 0 12px rgba(255,40,60,.85))}60%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.hero-raio::before,.quem-emo.pulsa{animation:none}}
