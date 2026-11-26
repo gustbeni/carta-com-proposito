@@ -8,7 +8,7 @@ export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // ca
 // Promoção de verdade só em 26/11 (horário de MS): Premium por 27,99; acaba sozinha à meia-noite.
 export const PROMO_PREMIUM = { por: 27.99, ate: Date.parse("2026-11-27T04:00:00Z") };
 export const precoPremium = () => Date.now() < PROMO_PREMIUM.ate ? PROMO_PREMIUM.por : PRECO_PREMIUM;
-export const DIAS_PADRAO = 30; // a carta Padrão fica no ar por 1 mês depois do pagamento (pedidos desde 10/11; os anteriores guardam 90 dias); a Premium é vitalícia
+export const DIAS_PADRAO = 15; // a carta Padrão fica no ar por 15 dias depois do pagamento (pedidos desde 26/11; de 10/11 a 26/11 guardam 30; os anteriores, 90); a Premium é vitalícia
 export const diasDe = reg => (reg && reg.diasPadrao) || 90; // pedido sem diasPadrao é de antes de 10/11: 3 meses, como foi vendido
 export const planoDe = p => p === "premium" ? "premium" : "padrao";
 // adicionais avulsos da carta Padrão (order bump). A Premium já vem com todos.
@@ -30,7 +30,7 @@ export function cartaEntregue(reg, carta = reg.carta) {
   const ex = extrasDe(reg.extras, reg.plano);
   return ex.length ? { ...carta, ex } : carta;
 }
-// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira 1 mês (ou 3, nos pedidos antigos) depois do pagamento,
+// a carta Padrão (só pedidos com plano, feitos depois que os pacotes existiram) expira em 15 dias (30 nos pedidos de 10/11 a 26/11; 90 nos de antes) depois do pagamento,
 // a não ser que tenha comprado o adicional "carta vitalícia"
 export function expirou(reg) {
   if (!reg || reg.plano !== "padrao" || temRecurso(reg, "vit")) return false;
@@ -293,7 +293,7 @@ export async function mandarEmail(id, reg, { forcar = false } = {}) {
   if (!forcar && reg.emailOk) return true;
   try {
     const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
-    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano === "padrao" && temRecurso(reg, "vit") ? "vitalicia" : reg.plano }), 9000);
+    await prazo(enviarCartaPorEmail({ link: site + "/c/" + id, emailDestino: reg.email, para: (reg.carta || {}).p, plano: reg.plano === "padrao" && temRecurso(reg, "vit") ? "vitalicia" : reg.plano, dias: diasDe(reg) }), 9000);
     reg.emailOk = Date.now(); reg.emailEnvios = (reg.emailEnvios || 0) + 1;
   } catch (e) {
     console.error("E-mail da carta não foi", e.code || (e.message === "demorou" ? "demorou" : "erro"), e.responseCode || ""); // sem o endereço de ninguém

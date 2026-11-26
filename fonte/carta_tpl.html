@@ -185,7 +185,7 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 const EXTRAS = [
   { id: 'cabine', preco: 4.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
   { id: 'album', preco: 4.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
-  { id: 'vit', preco: 3.99, t: 'Carta para sempre', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 1 mês).', separado: true }, // desde 18/11 sai da lista e é oferecido na janelinha depois de "Seguir para pagamento" (vitSheet)
+  { id: 'vit', preco: 3.99, t: 'Carta para sempre', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 15 dias).', separado: true }, // desde 18/11 sai da lista e é oferecido na janelinha depois de "Seguir para pagamento" (vitSheet)
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'cine', preco: 4.99, t: 'Abertura gloriosa de cinema + 4 fotos do casal', d: 'A carta começa como um filme, com os nomes de vocês em ouro, e ganha mais 4 polaroides (7 no total).', oculto: true }, // tirado da venda em 10/11; fica para as cartas que já compraram
@@ -448,8 +448,8 @@ const FAQ = [
   ['Precisa baixar alguma coisa?', 'Não. A carta abre direto no navegador do celular, sem aplicativo e sem cadastro.'],
   ['Posso ver antes de pagar?', 'Pode. Você monta a carta inteira e vê a prévia exatamente como a pessoa vai receber. Só paga se gostar.'],
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
-  ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 1 mês depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
-  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 1 mês.'],
+  ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 15 dias depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
+  ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 15 dias.'],
   ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: cabine de fotos (+ R$ 4,99), álbum de ouro (+ R$ 4,99) e carta vitalícia (+ R$ 3,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
@@ -2118,7 +2118,7 @@ const VIEWS = {
         ${item('Mais 3 fotos, num álbum de ouro', 'As 6 fotos aparecem grandes num álbum de ouro que abre e vira as páginas com luz e faíscas.')}
         ${item('Mini filme do casal', 'Mais 7 fotos viram um filminho com transições, frases românticas, música e uma tela final especial.')}
         ${item('Cabine de fotos', 'No fim, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras.')}
-        ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 1 mês.')}
+        ${item('Carta vitalícia', 'O link funciona para sempre. A Padrão fica no ar por 15 dias.')}
       </ul>
       <button class="prem-ver prem-ver-dest" id="verPremium">${ICON.eye}VER COMO FICARIA NA VERSÃO PREMIUM</button>
       <div class="prem-acoes"><button class="btn btn-ghost w" id="ficarPadrao">Não, quero continuar na versão Padrão</button></div>`;
@@ -2370,7 +2370,7 @@ function readyView() {
     <h1 class="h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> ficou linda</h1>
     <button class="ready" id="readyOpen" aria-label="Ver a carta como ${esc(L.to)} vai receber"><div class="lt" data-theme="${L.theme}" data-mode="thumb">${coverHTML(L, 'thumb')}</div><span class="ready-play">${ICON.play}Ver como ${esc(L.to)} vai receber</span></button>
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
-    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 1 mês'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
+    ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 15 dias'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
     ${pago || prem ? '' : `<div class="adic-res"><span><b>Adicionais</b><small>${extrasValidos(S.plano, S.extras).length ? EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t).join(' · ') : 'Nenhum'}</small></span><button class="link" id="mudarAdic">${extrasValidos(S.plano, S.extras).length ? 'Mudar' : 'Adicionar'}</button></div>`}
     ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? (PROMO_HOJE ? `<s>${brl(PROMO.de)}</s><span class="tag">Só hoje · Premium</span>` : '<span class="tag">Premium · vitalícia</span>') : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
@@ -2410,7 +2410,7 @@ function checkoutView() {
     if (ex.includes('filme')) itens.push('Mini filme do casal');
     if (ex.includes('cine')) itens.push('Abertura de cinema');
     if (ex.includes('cabine')) itens.push('Cabine de fotos');
-    itens.push(ex.includes('vit') ? 'Carta para sempre' : 'Fica no ar por 1 mês');
+    itens.push(ex.includes('vit') ? 'Carta para sempre' : 'Fica no ar por 15 dias');
   }
   return `<h1 class="h1 ck-h1" tabindex="-1">Sua carta para <em>${esc(L.to)}</em> está pronta</h1>
     <div class="ck-mini lt" data-theme="${L.theme}"><span class="ck-para">Para</span><span class="ck-nome">${esc(L.to)}</span>
@@ -2509,7 +2509,7 @@ function itensAcesso() {
   /* a compra que acabou de cair neste aparelho aparece mesmo antes do servidor listar */
   if (pedido && pedido.pago && S.view === 'done' && S.code === pedido.id && !lista.some(c => c.id === pedido.id)) {
     const pg = pedido.pagoEm || Date.now();
-    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' && !(pedido.extras || []).includes('vit') ? pg + 30 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, semEmail: !!pedido.semEmail, L: resolveLetter(S), local: true });
+    lista.unshift({ id: pedido.id, chave: pedido.chave, plano: pedido.plano || null, pagoEm: pg, expira: pedido.plano === 'padrao' && !(pedido.extras || []).includes('vit') ? pg + 15 * 864e5 : null, editarAte: pg + 7 * 864e5, emailOk: !!pedido.emailOk, semEmail: !!pedido.semEmail, L: resolveLetter(S), local: true });
   }
   return lista;
 }
@@ -2923,10 +2923,10 @@ function vitSheet() {
   const card = openSheet(`<div class="vit-sh"><p class="eyebrow">Antes de pagar</p>
     <span class="vit-ico" aria-hidden="true">${ICON.heart}</span>
     <h2 class="h2">Quer que a carta dure <em>para sempre</em>?</h2>
-    <p class="vit-txt">Na versão Padrão, a carta fica no ar por <b>1&nbsp;mês</b>. Com a <b>Carta para sempre</b>, ${esc(L.to || 'quem recebe')} pode abrir a carta quando quiser, por toda a vida.</p>
+    <p class="vit-txt">Na versão Padrão, a carta fica no ar por <b>15&nbsp;dias</b>. Com a <b>Carta para sempre</b>, ${esc(L.to || 'quem recebe')} pode abrir a carta quando quiser, por toda a vida.</p>
     <p class="vit-preco">+ ${brl(vit.preco)}</p>
     <button class="btn btn-primary w vit-sim" id="vitSim">${ICON.sparkle}Sim, quero para sempre · ${brl(com)}</button>
-    <button class="btn btn-ghost w vit-nao" id="vitNao">Não, seguir com 1 mês · ${brl(sem)}</button></div>`);
+    <button class="btn btn-ghost w vit-nao" id="vitNao">Não, seguir com 15 dias · ${brl(sem)}</button></div>`);
   card.querySelector('#vitSim').addEventListener('click', () => {
     S.extras = EXTRAS.map(e => e.id).filter(x => (S.extras || []).includes(x) || x === 'vit'); save(); etapa('vit-sim'); track('adicional_vit');
     closeSheet(); render(); refreshBar(); setTimeout(() => pay(true), 250);
