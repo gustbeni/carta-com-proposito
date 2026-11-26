@@ -1739,6 +1739,11 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .promo-hoje{margin:14px 0 4px;padding:10px 14px;border-radius:14px;border:1px solid rgba(236,193,107,.55);background:linear-gradient(135deg,rgba(236,193,107,.18),rgba(236,193,107,.06));color:var(--ink,#f6e7d8);font:500 14.5px/1.4 var(--f-sans,'DM Sans',sans-serif);text-align:center}
 .promo-hoje s{opacity:.7}
 .promo-hoje b{color:#F7D995}
+.sh-prem .ir-l1{display:inline-flex;align-items:center;gap:6px}
+.sh-prem .ir-l1 s{opacity:.6;font-weight:500}
+.sh-prem .ir-promo{display:block;margin-top:3px;font:600 11.5px/1.2 var(--f-sans,'DM Sans',sans-serif);letter-spacing:.02em;opacity:.85}
+.sh-ir.sh-prem:has(.ir-promo){flex-direction:column;justify-content:center;gap:1px;white-space:normal;height:auto;min-height:62px;padding-top:9px;padding-bottom:9px;line-height:1.2}
+.sh-prem .ir-l1{flex-wrap:nowrap;white-space:nowrap}
 
 </style></head><body>
 <div class="app" id="app">
@@ -3833,7 +3838,6 @@ const VIEWS = {
     const item = (t, d) => `<li>${ICON.check}<span><b>${t}</b><small>${d}</small></span></li>`;
     return `<p class="eyebrow">Versão Premium ✨</p>
       <h1 class="h1" tabindex="-1">Você não quer ver a sua carta na versão <em>Premium</em>?</h1>
-      ${promoSelo()}
       <p class="sub">Tudo o que já tem na sua carta, e mais:</p>
       <ul class="prem-lista">
         ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
@@ -4561,7 +4565,7 @@ function emailSheet() {
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr');
   const atualizar = () => {
     const pix = S.pay !== 'card';
-    ir.innerHTML = `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
+    ir.innerHTML = S.plano === 'premium' && PROMO_HOJE ? `<span class="ir-l1">${ICON.lock}Pagar presente Premium 💌 · <s>${brl(PROMO.de)}</s> ${valor}</span><small class="ir-promo">🔥 Valor promocional só hoje</small>` : `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
   };
   atualizar();
@@ -4620,7 +4624,7 @@ function zapSheet() {
   const fz = card.querySelector('#zpZap'), er = card.querySelector('#zpErr'), nao = card.querySelector('#zpNao'), ir = card.querySelector('#zpIr');
   const atualizar = () => {
     const pix = S.pay !== 'card';
-    ir.innerHTML = `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
+    ir.innerHTML = S.plano === 'premium' && PROMO_HOJE ? `<span class="ir-l1">${ICON.lock}Pagar presente Premium 💌 · <s>${brl(PROMO.de)}</s> ${valor}</span><small class="ir-promo">🔥 Valor promocional só hoje</small>` : `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
   };
   atualizar();

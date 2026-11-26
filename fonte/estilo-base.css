@@ -1724,3 +1724,8 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .promo-hoje{margin:14px 0 4px;padding:10px 14px;border-radius:14px;border:1px solid rgba(236,193,107,.55);background:linear-gradient(135deg,rgba(236,193,107,.18),rgba(236,193,107,.06));color:var(--ink,#f6e7d8);font:500 14.5px/1.4 var(--f-sans,'DM Sans',sans-serif);text-align:center}
 .promo-hoje s{opacity:.7}
 .promo-hoje b{color:#F7D995}
+.sh-prem .ir-l1{display:inline-flex;align-items:center;gap:6px}
+.sh-prem .ir-l1 s{opacity:.6;font-weight:500}
+.sh-prem .ir-promo{display:block;margin-top:3px;font:600 11.5px/1.2 var(--f-sans,'DM Sans',sans-serif);letter-spacing:.02em;opacity:.85}
+.sh-ir.sh-prem:has(.ir-promo){flex-direction:column;justify-content:center;gap:1px;white-space:normal;height:auto;min-height:62px;padding-top:9px;padding-bottom:9px;line-height:1.2}
+.sh-prem .ir-l1{flex-wrap:nowrap;white-space:nowrap}

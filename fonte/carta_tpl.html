@@ -2107,7 +2107,6 @@ const VIEWS = {
     const item = (t, d) => `<li>${ICON.check}<span><b>${t}</b><small>${d}</small></span></li>`;
     return `<p class="eyebrow">Versão Premium ✨</p>
       <h1 class="h1" tabindex="-1">Você não quer ver a sua carta na versão <em>Premium</em>?</h1>
-      ${promoSelo()}
       <p class="sub">Tudo o que já tem na sua carta, e mais:</p>
       <ul class="prem-lista">
         ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
@@ -2835,7 +2834,7 @@ function emailSheet() {
   const em = card.querySelector('#shEmail'), er = card.querySelector('#shErr'), ir = card.querySelector('#shIr');
   const atualizar = () => {
     const pix = S.pay !== 'card';
-    ir.innerHTML = `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
+    ir.innerHTML = S.plano === 'premium' && PROMO_HOJE ? `<span class="ir-l1">${ICON.lock}Pagar presente Premium 💌 · <s>${brl(PROMO.de)}</s> ${valor}</span><small class="ir-promo">🔥 Valor promocional só hoje</small>` : `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
   };
   atualizar();
@@ -2894,7 +2893,7 @@ function zapSheet() {
   const fz = card.querySelector('#zpZap'), er = card.querySelector('#zpErr'), nao = card.querySelector('#zpNao'), ir = card.querySelector('#zpIr');
   const atualizar = () => {
     const pix = S.pay !== 'card';
-    ir.innerHTML = `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
+    ir.innerHTML = S.plano === 'premium' && PROMO_HOJE ? `<span class="ir-l1">${ICON.lock}Pagar presente Premium 💌 · <s>${brl(PROMO.de)}</s> ${valor}</span><small class="ir-promo">🔥 Valor promocional só hoje</small>` : `${ICON.lock}${S.plano === 'premium' ? 'Pagar presente Premium 💌' : pix ? 'Seguir para pagamento' : 'Pagar com cartão'} · ${valor}`;
     card.querySelectorAll('[data-shpay]').forEach(x => x.setAttribute('aria-pressed', (x.dataset.shpay === 'card') === !pix));
   };
   atualizar();
