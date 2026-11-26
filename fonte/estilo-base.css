@@ -1719,3 +1719,8 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .ace-outra-ic{display:block;font-size:30px;line-height:1;margin-bottom:8px}
 .ace-outra-t{margin:0;font:600 20px/1.25 var(--f-display);color:var(--ink)}
 .ace-outra-s{margin:6px 0 16px;font-size:14px;line-height:1.5;color:var(--ink-2)}
+
+/* 26/11: selo da promoção de um dia da Premium */
+.promo-hoje{margin:14px 0 4px;padding:10px 14px;border-radius:14px;border:1px solid rgba(236,193,107,.55);background:linear-gradient(135deg,rgba(236,193,107,.18),rgba(236,193,107,.06));color:var(--ink,#f6e7d8);font:500 14.5px/1.4 var(--f-sans,'DM Sans',sans-serif);text-align:center}
+.promo-hoje s{opacity:.7}
+.promo-hoje b{color:#F7D995}

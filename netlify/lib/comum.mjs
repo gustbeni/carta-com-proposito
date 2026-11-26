@@ -3,8 +3,11 @@ import { getStore } from "@netlify/blobs";
 import { createHash } from "node:crypto";
 import { emailLigado, enviarCartaPorEmail } from "./correio.mjs";
 
-export const PRECO = Number(process.env.PRECO || "21.99"); // valor cobrado de verdade (carta Padrão)
+export const PRECO = Number(process.env.PRECO || "22.99"); // valor cobrado de verdade (carta Padrão)
 export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // carta Premium
+// Promoção de verdade só em 26/11 (horário de MS): Premium por 27,99; acaba sozinha à meia-noite.
+export const PROMO_PREMIUM = { por: 27.99, ate: Date.parse("2026-11-27T04:00:00Z") };
+export const precoPremium = () => Date.now() < PROMO_PREMIUM.ate ? PROMO_PREMIUM.por : PRECO_PREMIUM;
 export const DIAS_PADRAO = 30; // a carta Padrão fica no ar por 1 mês depois do pagamento (pedidos desde 10/11; os anteriores guardam 90 dias); a Premium é vitalícia
 export const diasDe = reg => (reg && reg.diasPadrao) || 90; // pedido sem diasPadrao é de antes de 10/11: 3 meses, como foi vendido
 export const planoDe = p => p === "premium" ? "premium" : "padrao";
@@ -17,7 +20,7 @@ export const extrasDe = (lista, plano) => {
   const v = Object.keys(EXTRAS).filter(k => lista.includes(k));
   return v.includes("cine") ? v.filter(k => k !== "fotos") : v;
 };
-export const valorDo = (plano, extras = []) => planoDe(plano) === "premium" ? PRECO_PREMIUM
+export const valorDo = (plano, extras = []) => planoDe(plano) === "premium" ? precoPremium()
   : Math.round((PRECO + extrasDe(extras, plano).reduce((s, k) => s + EXTRAS[k], 0)) * 100) / 100;
 // o pedido tem este recurso? (Premium tem tudo; Padrão só os adicionais que comprou)
 export const temRecurso = (reg, k) => !!reg && (reg.plano === "premium" || (Array.isArray(reg.extras) && reg.extras.includes(k)));

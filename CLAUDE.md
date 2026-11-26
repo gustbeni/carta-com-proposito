@@ -1,6 +1,6 @@
 # Carta com Propósito
 
-Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 21,99** e **Premium R$ 29,99**, com Pix ou cartão (Mercado Pago). Quem compra monta a carta no site; quem recebe abre por `/c/<id>` ou QR code.
+Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 22,99** (era 21,99 até 26/11) e **Premium R$ 29,99** (promoção real de um dia em 26/11: 27,99, acaba sozinha à meia-noite via `PROMO`/`PROMO_PREMIUM`), com Pix ou cartão (Mercado Pago). Quem compra monta a carta no site; quem recebe abre por `/c/<id>` ou QR code.
 
 - Site: https://cartacomproposito.com.br (antigo: carta-com-proposito.netlify.app) · Repo: github.com/gustbeni/carta-com-proposito (deploy automático no Netlify a cada push na `main`; siteId `ad41fbad-e2d7-48fe-8d45-b13d3d141d31`).
 - O dono (Gustavo Benites) fala português do Brasil e não é programador: responda sempre em português simples.
@@ -38,7 +38,7 @@ Cartas no Netlify Blobs, store `cartas`, chave `c/<id>`. Fotos no Cloudinary (`k
 
 ## Pacotes e adicionais (hoje)
 
-- **Padrão R$ 21,99:** 4 fotos (3 polaroides + foto final na câmera). Fica no ar **1 mês** (`reg.diasPadrao` = 30; pedidos antes de 10/11 têm 3 meses; antes dos pacotes, para sempre).
+- **Padrão R$ 22,99:** 4 fotos (3 polaroides + foto final na câmera). Fica no ar **1 mês** (`reg.diasPadrao` = 30; pedidos antes de 10/11 têm 3 meses; antes dos pacotes, para sempre).
 - **Premium R$ 29,99:** vitalícia, abertura de cinema, 6 fotos no álbum de ouro, **cabine de fotos** e mini filme (até 7 fotos). Quem decide é o pedido (`reg.plano`), nunca a carta.
 - **Adicionais da Padrão à venda:** Cabine de fotos 4,99 (`cabine`), Álbum de ouro 4,99 (`album`). **Carta para sempre** 3,99 (`vit`, `separado`) não fica na lista: aparece na janelinha `vitSheet` antes de pagar. Fora de venda mas válidos em cartas antigas: `filme`, `fotos`, `cine`, `grandes` (`oculto`). Quando a Padrão com adicionais passa da Premium aparece "Compensa mais a Premium".
 - Slots de foto no rascunho: 0-2 polaroides, 3 foto final, 4-6 extras, 7-13 mini filme, 14 4ª da abertura, 15-18 cabine (`NFOTOS` = 19).

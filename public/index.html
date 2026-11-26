@@ -1735,6 +1735,11 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .ace-outra-t{margin:0;font:600 20px/1.25 var(--f-display);color:var(--ink)}
 .ace-outra-s{margin:6px 0 16px;font-size:14px;line-height:1.5;color:var(--ink-2)}
 
+/* 26/11: selo da promoção de um dia da Premium */
+.promo-hoje{margin:14px 0 4px;padding:10px 14px;border-radius:14px;border:1px solid rgba(236,193,107,.55);background:linear-gradient(135deg,rgba(236,193,107,.18),rgba(236,193,107,.06));color:var(--ink,#f6e7d8);font:500 14.5px/1.4 var(--f-sans,'DM Sans',sans-serif);text-align:center}
+.promo-hoje s{opacity:.7}
+.promo-hoje b{color:#F7D995}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -1893,9 +1898,13 @@ const BRAND = 'Carta com Propósito';
 const DOMINIO = 'cartacomproposito.com.br';
 const BANDEIRAS = '<span class="bandeiras" aria-label="Visa, Mastercard, Elo, Amex e Hipercard"><i class="b-visa">VISA</i><i class="b-master">Mastercard</i><i class="b-elo">elo</i><i class="b-amex">AMEX</i><i class="b-hiper">Hipercard</i></span>';
 const seloSite = (t) => `<p class="site-oficial">${ICON.lock}<span>${t} · <b>${DOMINIO}</b></span></p>`;
-const PRICE = 21.99;       // só o texto mostrado; o valor cobrado de verdade é PRECO em netlify/lib/comum.mjs
+const PRICE = 22.99;       // só o texto mostrado; o valor cobrado de verdade é PRECO em netlify/lib/comum.mjs
 const PRICE_OLD = 34.90;
-const PRICE_PREMIUM = 29.99; // só o texto; o valor cobrado é PRECO_PREMIUM em netlify/lib/comum.mjs
+/* Promoção de verdade, só em 26/11 (horário de MS): Premium de 29,99 por 27,99. Acaba sozinha à meia-noite (aqui e no servidor, PROMO_PREMIUM em comum.mjs). */
+const PROMO = { de: 29.99, por: 27.99, ate: Date.parse('2026-11-27T04:00:00Z') };
+const PROMO_HOJE = Date.now() < PROMO.ate;
+const PRICE_PREMIUM = PROMO_HOJE ? PROMO.por : PROMO.de; // só o texto; o valor cobrado é precoPremium() em netlify/lib/comum.mjs
+const promoSelo = () => PROMO_HOJE ? `<p class="promo-hoje">🔥 <b>Só hoje:</b> Premium de <s>${brl(PROMO.de)}</s> por <b>${brl(PROMO.por)}</b></p>` : '';
 const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 /* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
    A Premium já vem com todos. */
@@ -3824,6 +3833,7 @@ const VIEWS = {
     const item = (t, d) => `<li>${ICON.check}<span><b>${t}</b><small>${d}</small></span></li>`;
     return `<p class="eyebrow">Versão Premium ✨</p>
       <h1 class="h1" tabindex="-1">Você não quer ver a sua carta na versão <em>Premium</em>?</h1>
+      ${promoSelo()}
       <p class="sub">Tudo o que já tem na sua carta, e mais:</p>
       <ul class="prem-lista">
         ${item('Abertura de cinema', 'A carta começa como um filme, com os nomes de vocês.')}
@@ -4084,7 +4094,7 @@ function readyView() {
     <button class="btn btn-ghost sm ready-desk" id="readyDesk">${ICON.play}Abrir a carta em tela cheia</button>
     ${pago ? `<p class="price-note">Esta carta já está paga (${prem ? 'Premium' : 'Padrão'}). Toque em salvar para atualizar: o link e o QR code continuam os mesmos.</p>` : `<div class="plano-escolhido${prem ? ' premium' : ''}"><span><b>Carta ${prem ? 'Premium ✨' : 'Padrão'}</b><small>${prem ? 'Vitalícia, com abertura de cinema e mini filme' : temRec(S, 'vit') ? 'Vitalícia: o link funciona para sempre' : 'Fica no ar por 1 mês'}</small></span><button class="link" id="trocarPlano">${prem ? 'Trocar' : 'Ver a Premium'}</button></div>`}
     ${pago || prem ? '' : `<div class="adic-res"><span><b>Adicionais</b><small>${extrasValidos(S.plano, S.extras).length ? EXTRAS.filter(e => extrasValidos(S.plano, S.extras).includes(e.id)).map(e => e.t).join(' · ') : 'Nenhum'}</small></span><button class="link" id="mudarAdic">${extrasValidos(S.plano, S.extras).length ? 'Mudar' : 'Adicionar'}</button></div>`}
-    ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? '<span class="tag">Premium · vitalícia</span>' : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
+    ${pago ? '' : `<div class="price"><strong>${brl(precoTotal(S.plano, S.extras))}</strong>${prem ? (PROMO_HOJE ? `<s>${brl(PROMO.de)}</s><span class="tag">Só hoje · Premium</span>` : '<span class="tag">Premium · vitalícia</span>') : extrasValidos(S.plano, S.extras).length ? `<span class="tag">Padrão + ${extrasValidos(S.plano, S.extras).length} adiciona${extrasValidos(S.plano, S.extras).length > 1 ? 'is' : 'l'}</span>` : `<s>${brl(PRICE_OLD)}</s><span class="tag">Preço de lançamento</span>`}</div>
     <p class="price-note">Pagamento único, no Pix ou no cartão.</p>`}
     <button class="link edit-link" id="editBtn">${ICON.edit} Editar alguma coisa</button>`;
 }
