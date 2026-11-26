@@ -1,4 +1,4 @@
-// "Tornar ela para sempre": quem abre uma carta Padrão que passou do prazo pode pagar R$ 4,99 no Pix
+// "Tornar ela para sempre": quem abre uma carta Padrão que passou do prazo pode pagar R$ 9,99 no Pix
 // e a carta volta a abrir, agora para sempre. POST cria o Pix; GET pergunta se já caiu.
 import { DESCRICAO, loja, resposta, idValido, mp, temRecurso, PRECO_RENOVA, refRenova, confirmarRenovacao } from "../lib/comum.mjs";
 

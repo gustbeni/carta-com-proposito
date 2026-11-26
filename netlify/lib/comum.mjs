@@ -164,7 +164,7 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
 
 // ===== Renovar a carta Padrão que passou do prazo: "Tornar ela para sempre" (26/11) =====
 // Pix separado, com external_reference "<id>.renova". Pago: a carta ganha o "vit" e volta a abrir para sempre.
-export const PRECO_RENOVA = 4.99;
+export const PRECO_RENOVA = 9.99;
 export const refRenova = id => id + ".renova";
 export async function confirmarRenovacao(id, reg) {
   if (!reg || reg.plano !== "padrao") return false;
@@ -195,7 +195,7 @@ export async function confirmarRenovacao(id, reg) {
     if (topico) {
       const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
       const q = new URLSearchParams({ title: "Obrigado Deus 💌🙏🏻", priority: "high", click: site + "/c/" + id });
-      await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, { method: "POST", body: "Carta renovada para sempre 💰R$ 4,99 💸\nToque para ver 👀" }), 5000);
+      await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, { method: "POST", body: "Carta renovada para sempre 💰R$ " + PRECO_RENOVA.toFixed(2).replace(".", ",") + " 💸\nToque para ver 👀" }), 5000);
     }
   } catch (e) { console.error("Aviso de renovação", e.message); }
   return true;

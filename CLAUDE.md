@@ -30,7 +30,7 @@ Site em **https://cartacomproposito.com.br** desde 22/11 (Registro.br, no CPF do
 | `fonte/montar.py` | Gera `public/index.html` (`python3 fonte/montar.py`). Tem o viewport (sem zoom). **Não edite o `public/index.html` à mão.** |
 | `netlify/lib/comum.mjs` | Preços, pacotes (`planoDe`, `valorDo`, `expirou`, `diasDe`, `limparCarta`), Mercado Pago, `confirmarPagamento`, Meta CAPI, `mandarEmail`, `avisarDono` (ntfy), `verPendentesZap`, Spotify→YouTube |
 | `netlify/lib/correio.mjs` | E-mail com link e QR code (Gmail/nodemailer) |
-| `netlify/functions/` | `pagar` (cria carta e Pix de 30 min `PT30M` ou cartão Checkout Pro), `status`, `aviso`, `carta`, `atualizar` (editar até 7 dias), `musica`, `buscar`, `config`, `acesso` (/meuacesso), `email`, `zap`, `ping`, `aviso-pagbank`, `renovar` (Padrão vencida: "Tornar ela para sempre", Pix de 4,99 com referência `<id>.renova`; pago, ganha `vit`) |
+| `netlify/functions/` | `pagar` (cria carta e Pix de 30 min `PT30M` ou cartão Checkout Pro), `status`, `aviso`, `carta`, `atualizar` (editar até 7 dias), `musica`, `buscar`, `config`, `acesso` (/meuacesso), `email`, `zap`, `ping`, `aviso-pagbank`, `renovar` (Padrão vencida: "Tornar ela para sempre", Pix de 9,99 com referência `<id>.renova`; pago, ganha `vit`) |
 | `netlify/desligado/lembrete.mjs` | Lembrete por e-mail de Pix não pago (desligado para não gastar créditos) |
 | `rascunhos/` | Coisas fora do site (ex.: carta de Natal, ainda não usada) |
 
