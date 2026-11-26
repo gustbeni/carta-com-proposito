@@ -2035,7 +2035,9 @@ const toName = () => (S.to || '').trim() || copyFor(S.recipient || 'amor', OCC[S
 /* 26/11: ordem e cores das ocasiões só na tela de escolha (a ordem de OCCASIONS fica igual, porque o [0] é o padrão das cartas antigas) */
 const OCC_ORDEM = { amor: ['te_amo', 'saudade', 'desculpas', 'pedido_namoro'] };
 const OCC_COR = { te_amo: 'ouro', saudade: 'azul', desculpas: 'amarelo', pedido_namoro: 'vermelho' };
-const occsNaTela = r => { const ord = OCC_ORDEM[r] || [], L = OCCASIONS[r]; return [...ord.map(id => L.find(o => o.id === id)).filter(Boolean), ...L.filter(o => !ord.includes(o.id))]; };
+/* 26/11: fora da tela de escolha (continuam valendo nas cartas que já usam) */
+const OCC_FORA = ['aniv_amor', 'aniv_casamento', 'dia_namorados', 'pedido_noivado'];
+const occsNaTela = r => { const ord = OCC_ORDEM[r] || [], L = OCCASIONS[r].filter(o => !OCC_FORA.includes(o.id) || o.id === S.occasion); return [...ord.map(id => L.find(o => o.id === id)).filter(Boolean), ...L.filter(o => !ord.includes(o.id))]; };
 const curOcc = () => OCC[S.occasion] || OCCASIONS[S.recipient || 'amor'][0];
 const curTheme = () => S.theme || (REC[S.recipient] || REC.amor).theme;
 
