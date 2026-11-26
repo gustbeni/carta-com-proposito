@@ -162,6 +162,45 @@ export async function confirmarPagamento(id, reg, { email = true } = {}) {
   return true;
 }
 
+// ===== Renovar a carta Padrão que passou do prazo: "Tornar ela para sempre" (26/11) =====
+// Pix separado, com external_reference "<id>.renova". Pago: a carta ganha o "vit" e volta a abrir para sempre.
+export const PRECO_RENOVA = 4.99;
+export const refRenova = id => id + ".renova";
+export async function confirmarRenovacao(id, reg) {
+  if (!reg || reg.plano !== "padrao") return false;
+  if (temRecurso(reg, "vit")) return true;
+  const ref = refRenova(id);
+  let aprovado = null;
+  if (reg.renova && reg.renova.order) {
+    try {
+      const o = await mp("/v1/orders/" + encodeURIComponent(reg.renova.order));
+      if (o.external_reference === ref && o.status === "processed" && Number(o.total_amount) >= PRECO_RENOVA - 0.01) aprovado = o.id;
+    } catch (e) {}
+  }
+  if (!aprovado) {
+    try {
+      const j = await mp("/v1/payments/search?sort=date_created&criteria=desc&external_reference=" + encodeURIComponent(ref));
+      const ok = (j.results || []).find(p => p.status === "approved" && p.external_reference === ref && Number(p.transaction_amount) >= PRECO_RENOVA - 0.01);
+      if (ok) aprovado = ok.id;
+    } catch (e) {}
+  }
+  if (!aprovado) return false;
+  const atual = await loja().get("c/" + id, { type: "json" }).catch(() => null) || reg;
+  if (temRecurso(atual, "vit")) return true;
+  atual.extras = [...(Array.isArray(atual.extras) ? atual.extras : []), "vit"];
+  atual.renova = { ...(atual.renova || {}), pagoEm: Date.now(), mpId: aprovado, valor: PRECO_RENOVA };
+  await loja().setJSON("c/" + id, atual);
+  try {
+    const topico = (process.env.NTFY_TOPICO || "").trim();
+    if (topico) {
+      const site = (process.env.URL || "https://cartacomproposito.com.br").replace(/\/$/, "");
+      const q = new URLSearchParams({ title: "Obrigado Deus 💌🙏🏻", priority: "high", click: site + "/c/" + id });
+      await prazo(fetch("https://ntfy.sh/" + encodeURIComponent(topico) + "?" + q, { method: "POST", body: "Carta renovada para sempre 💰R$ 4,99 💸\nToque para ver 👀" }), 5000);
+    }
+  } catch (e) { console.error("Aviso de renovação", e.message); }
+  return true;
+}
+
 // cartão: o pagamento mais recente deste pedido foi recusado pelo Mercado Pago (antifraude, saldo etc.)?
 export async function cartaoRecusado(id) {
   const j = await mp("/v1/payments/search?sort=date_created&criteria=desc&external_reference=" + encodeURIComponent(id));

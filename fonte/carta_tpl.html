@@ -3195,7 +3195,9 @@ async function abrirCartaRecebida(id) {
   }
   if (j && j.bloqueada) return telaEspera(j);
   if (j && j.expirada) {
-    v.innerHTML = `<div class="msg-page"><span class="seal"><span>${ICON.heartFill}</span></span><h1 class="h1">${j.p ? 'Uma carta para ' + esc(String(j.p).slice(0, 40)) : 'Esta carta'}</h1><p class="sub">Esta carta foi feita na versão Padrão, que fica no ar por um tempo limitado, e esse prazo acabou.</p><a class="btn btn-primary" href="/">Fazer uma carta</a></div>`;
+    v.innerHTML = `<div class="msg-page"><span class="seal"><span>${ICON.heartFill}</span></span><h1 class="h1">${j.p ? 'Uma carta para ' + esc(String(j.p).slice(0, 40)) : 'Esta carta'}</h1><p class="sub">Esta carta foi feita na versão Padrão, que fica no ar por um tempo limitado, e esse prazo acabou.</p><button class="btn btn-primary" id="renovaBtn">${ICON.heartFill}Tornar ela para sempre · + ${brl(4.99)}</button><p class="hint renova-hint">Ela volta a abrir na hora e nunca mais sai do ar.</p><a class="btn btn-ghost" href="/">Fazer uma carta</a></div>`;
+    pingE('carta-expirada-vista');
+    $('#renovaBtn').addEventListener('click', () => renovarCarta(id));
     return;
   }
   if (!j || !j.carta) {
@@ -3205,6 +3207,32 @@ async function abrirCartaRecebida(id) {
   const L = cartaDoServidor(j.carta);
   const abrir = () => openViewer(L, { mode: 'recipient', onMake: () => { location.href = '/'; }, onClose: abrir });
   abrir();
+}
+/* 26/11: carta Padrão que passou do prazo: "Tornar ela para sempre" (Pix de 4,99 em /api/renovar) */
+const pingE = n => { try { new Image().src = '/e.gif?s=' + encodeURIComponent(n); } catch (e) {} }; /* no link da carta o etapa() fica desligado */
+async function renovarCarta(id) {
+  const b = $('#renovaBtn'); if (b) { b.disabled = true; b.textContent = 'Gerando o Pix…'; }
+  pingE('renovar-tocou');
+  let j = null;
+  try { const r = await fetch(API + '/renovar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }); j = await r.json().catch(() => null); } catch (e) {}
+  if (b) { b.disabled = false; b.innerHTML = `${ICON.heartFill}Tornar ela para sempre · + ${brl(4.99)}`; }
+  if (j && j.pago) return abrirCartaRecebida(id);
+  if (!j || !j.pix || !j.pix.copia) { toast('Não conseguimos gerar o Pix agora. Tente de novo em instantes.'); return; }
+  pingE('renovar-pix');
+  const qr = String(j.pix.qr || '').replace(/[^A-Za-z0-9+/=]/g, ''), copia = String(j.pix.copia);
+  openSheet(`<p class="eyebrow">Pix · ${brl(4.99)}</p><h2 class="h2">Tornar a carta para sempre</h2>
+    <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
+    <button class="btn btn-ghost w" id="copyPixR">${ICON.copy}Copiar código Pix</button>
+    <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta abre aqui na hora, e fica no ar para sempre.</li></ol>
+    <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por 30 minutos</div>`);
+  $('#copyPixR').addEventListener('click', () => copyText(copia, 'Código Pix copiado'));
+  const fim = Date.now() + 31 * 60e3;
+  const ver = async () => {
+    if (!$('#copyPixR') || Date.now() > fim) return;
+    try { const r = await fetch(API + '/renovar?id=' + encodeURIComponent(id), { cache: 'no-store' }); const x = await r.json().catch(() => ({})); if (x.pago) { pingE('renovar-pago'); closeSheet && closeSheet(); return abrirCartaRecebida(id); } } catch (e) {}
+    setTimeout(ver, 4000);
+  };
+  setTimeout(ver, 4000);
 }
 /* cartas antigas podiam ter dia marcado para abrir */
 function telaEspera(j) {

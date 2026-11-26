@@ -1,5 +1,5 @@
 // O Mercado Pago avisa aqui quando um pagamento muda (libera a carta mesmo se a pessoa fechou o site)
-import { loja, resposta, idValido, mp, confirmarPagamento } from "../lib/comum.mjs";
+import { loja, resposta, idValido, mp, confirmarPagamento, confirmarRenovacao } from "../lib/comum.mjs";
 
 export default async (req) => {
   try {
@@ -12,7 +12,10 @@ export default async (req) => {
     if (/^ORD[A-Z0-9]+$/i.test(pid)) id = (await mp("/v1/orders/" + pid)).external_reference;
     else if (/^\d+$/.test(pid)) id = (await mp("/v1/payments/" + pid)).external_reference;
     else return resposta({ ok: true });
-    if (idValido(id)) { const reg = await loja().get("c/" + id, { type: "json" }); if (reg) await confirmarPagamento(id, reg); }
+    if (typeof id === "string" && id.endsWith(".renova")) { // "Tornar ela para sempre" de uma carta Padrão que passou do prazo
+      const base = id.slice(0, -7);
+      if (idValido(base)) { const reg = await loja().get("c/" + base, { type: "json" }); if (reg) await confirmarRenovacao(base, reg); }
+    } else if (idValido(id)) { const reg = await loja().get("c/" + id, { type: "json" }); if (reg) await confirmarPagamento(id, reg); }
   } catch (e) { console.error(e); }
   return resposta({ ok: true });
 };
