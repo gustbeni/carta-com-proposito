@@ -1936,8 +1936,8 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 /* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
    A Premium já vem com todos. */
 const EXTRAS = [
-  { id: 'cabine', preco: 4.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
-  { id: 'album', preco: 4.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
+  { id: 'cabine', preco: 1.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
+  { id: 'album', preco: 1.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
   { id: 'vit', preco: 3.99, t: 'Carta para sempre', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 15 dias).', separado: true }, // desde 18/11 sai da lista e é oferecido na janelinha depois de "Seguir para pagamento" (vitSheet)
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
@@ -2205,7 +2205,7 @@ const FAQ = [
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 15 dias depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
   ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 15 dias.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: cabine de fotos (+ R$ 4,99), álbum de ouro (+ R$ 4,99) e carta vitalícia (+ R$ 3,99).'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: cabine de fotos (+ R$ 1,99), álbum de ouro (+ R$ 1,99) e carta vitalícia (+ R$ 3,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -4963,7 +4963,7 @@ async function abrirCartaRecebida(id) {
   const abrir = () => openViewer(L, { mode: 'recipient', onMake: () => { location.href = '/'; }, onClose: abrir });
   abrir();
 }
-/* 26/11: carta Padrão que passou do prazo: "Tornar ela para sempre" (Pix de 4,99 em /api/renovar) */
+/* 26/11: carta Padrão que passou do prazo: "Tornar ela para sempre" (Pix de 9,97 em /api/renovar) */
 const PRECO_RENOVA = 9.97; /* só o texto; o cobrado é PRECO_RENOVA em comum.mjs */
 const pingE = n => { try { new Image().src = '/e.gif?s=' + encodeURIComponent(n); } catch (e) {} }; /* no link da carta o etapa() fica desligado */
 async function renovarCarta(id) {
