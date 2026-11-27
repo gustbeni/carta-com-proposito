@@ -93,7 +93,7 @@ export default async (req, context) => {
       corpo: {
         items: [{ id: plano === "premium" ? "carta-premium" : "carta", title: plano === "premium" ? DESCRICAO + " Premium" : DESCRICAO, quantity: 1, unit_price: PRECO, currency_id: "BRL" }],
         payer: { email: emailMP }, external_reference: id,
-        payment_methods: { excluded_payment_types: [{ id: "ticket" }] }, // sem boleto: demora dias e a carta é presente na hora
+        payment_methods: { excluded_payment_types: [{ id: "ticket" }], installments: 1, default_installments: 1 }, // sem boleto (demora dias); cartão só à vista, 1x (27/11: parcelado era muito recusado)
         back_urls: { success: site + "/?pedido=" + id, pending: site + "/?pedido=" + id, failure: site + "/?pedido=" + id },
         auto_return: "approved", statement_descriptor: "CARTA PROPOSITO",
         notification_url: site.startsWith("https://") ? site + "/api/aviso" : undefined,
