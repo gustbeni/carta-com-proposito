@@ -2385,11 +2385,11 @@ function bumpsHTML() {
     ${bumpsVisiveis(ex).map(e => `<label class="bump${ex.includes(e.id) ? ' on' : ''}"><input type="checkbox" data-extra="${e.id}"${ex.includes(e.id) ? ' checked' : ''}><span class="check-box" aria-hidden="true">${ICON.check}</span>
       <span class="bump-txt">${e.novo ? '<i class="bump-novo">Novidade</i>' : ''}<b>${e.t}</b><small>${e.d}</small>${e.id === 'album' ? `<button type="button" class="bump-previa" data-previa-album>${ICON.eye}Ver prévia do álbum</button>` : ''}${e.id === 'cabine' ? `<button type="button" class="bump-previa" data-previa-cabine>${ICON.eye}Ver prévia da cabine</button>` : ''}</span><strong>+ ${brl(e.preco)}</strong></label>`).join('')}
     ${ex.includes('fotos') || ex.includes('cine') || ex.includes('filme') || ex.includes('cabine') ? `<p class="hint bump-fotos">${ICON.image}No próximo passo você escolhe as fotos dos adicionais.</p>` : ''}
-    ${soma >= PRICE_PREMIUM - 0.01 ? `<div class="bump-comp" role="note">
+    ${soma >= PRICE_PREMIUM - 0.01 || ex.length >= 2 ? `<div class="bump-comp" role="note">
       <p class="bc-t">${ICON.sparkle}Compensa mais a <em>Premium</em></p>
-      <div class="bc-lin"><span>Padrão com ${ex.length > 1 ? 'esses adicionais' : 'esse adicional'}</span><s>${brl(soma)}</s></div>
+      <div class="bc-lin"><span>Padrão com ${ex.length > 1 ? 'esses adicionais' : 'esse adicional'}</span>${soma >= PRICE_PREMIUM - 0.01 ? `<s>${brl(soma)}</s>` : `<b>${brl(soma)}</b>`}</div>
       <div class="bc-lin prem"><span>Premium com tudo</span><b>${brl(PRICE_PREMIUM)}</b></div>
-      <p class="bc-eco">Você economiza ${brl(Math.round((soma - PRICE_PREMIUM) * 100) / 100)}</p>
+      ${soma >= PRICE_PREMIUM - 0.01 ? `<p class="bc-eco">Você economiza ${brl(Math.round((soma - PRICE_PREMIUM) * 100) / 100)}</p>` : `<p class="bc-eco">Só ${brl(Math.round((PRICE_PREMIUM - soma) * 100) / 100)} a mais</p>`}
       <p class="bc-s">A Premium já vem com a cabine de fotos, o álbum de ouro e a carta para sempre, e ainda tem a abertura de cinema, o mini filme e 6 fotos.</p>
       <button type="button" class="bc-btn" data-ir-premium>${ICON.sparkle}Quero a Premium por ${brl(PRICE_PREMIUM)}</button>
     </div>` : ''}
