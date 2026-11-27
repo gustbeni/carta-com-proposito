@@ -1751,3 +1751,4 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 .quem-emo.pulsa{animation:quemPulsa .9s ease-in-out infinite;transform-origin:50% 60%;filter:drop-shadow(0 0 6px rgba(255,40,60,.55))}
 @keyframes quemPulsa{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(255,40,60,.35))}14%{transform:scale(1.6);filter:drop-shadow(0 0 14px rgba(255,40,60,.95))}28%{transform:scale(1)}42%{transform:scale(1.45);filter:drop-shadow(0 0 12px rgba(255,40,60,.85))}60%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.hero-raio::before,.quem-emo.pulsa{animation:none}}
+.vit-sh .pv-comp{margin:14px 0 16px;text-align:left}
