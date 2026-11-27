@@ -1,6 +1,6 @@
 # Carta com Propósito
 
-Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 22,99** (era 21,99 até 26/11) e **Premium R$ 29,99** (promoção real de um dia em 26/11: 27,99, acaba sozinha à meia-noite via `PROMO`/`PROMO_PREMIUM`), com Pix ou cartão (Mercado Pago). Quem compra monta a carta no site; quem recebe abre por `/c/<id>` ou QR code.
+Site que vende uma **carta cristã digital personalizada**: **Padrão R$ 22,99** (era 21,99 até 26/11) e **Premium R$ 29,99** (a 27,99 de 26/11 até domingo 29/11 à meia-noite, sem anúncio de promoção no site; volta sozinha a 29,99 via `PROMO`/`PROMO_PREMIUM`), com Pix ou cartão (Mercado Pago). Quem compra monta a carta no site; quem recebe abre por `/c/<id>` ou QR code.
 
 - Site: https://cartacomproposito.com.br (antigo: carta-com-proposito.netlify.app) · Repo: github.com/gustbeni/carta-com-proposito (deploy automático no Netlify a cada push na `main`; siteId `ad41fbad-e2d7-48fe-8d45-b13d3d141d31`).
 - O dono (Gustavo Benites) fala português do Brasil e não é programador: responda sempre em português simples.

@@ -5,8 +5,8 @@ import { emailLigado, enviarCartaPorEmail } from "./correio.mjs";
 
 export const PRECO = Number(process.env.PRECO || "22.99"); // valor cobrado de verdade (carta Padrão)
 export const PRECO_PREMIUM = Number(process.env.PRECO_PREMIUM || "29.99"); // carta Premium
-// Promoção de verdade só em 26/11 (horário de MS): Premium por 27,99; acaba sozinha à meia-noite.
-export const PROMO_PREMIUM = { por: 27.99, ate: Date.parse("2026-11-27T04:00:00Z") };
+// Premium por 27,99 de 26/11 até domingo 29/11 (meia-noite de MS); volta sozinha a 29,99.
+export const PROMO_PREMIUM = { por: 27.99, ate: Date.parse("2026-11-30T04:00:00Z") }; // esticada até domingo 29/11 à meia-noite (MS), sem anúncio no site
 export const precoPremium = () => Date.now() < PROMO_PREMIUM.ate ? PROMO_PREMIUM.por : PRECO_PREMIUM;
 export const DIAS_PADRAO = 15; // a carta Padrão fica no ar por 15 dias depois do pagamento (pedidos desde 26/11; de 10/11 a 26/11 guardam 30; os anteriores, 90); a Premium é vitalícia
 export const diasDe = reg => (reg && reg.diasPadrao) || 90; // pedido sem diasPadrao é de antes de 10/11: 3 meses, como foi vendido

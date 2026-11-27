@@ -1928,9 +1928,9 @@ const seloSite = (t) => `<p class="site-oficial">${ICON.lock}<span>${t} · <b>${
 const PRICE = 22.99;       // só o texto mostrado; o valor cobrado de verdade é PRECO em netlify/lib/comum.mjs
 const PRICE_OLD = 34.90;
 /* Promoção de verdade, só em 26/11 (horário de MS): Premium de 29,99 por 27,99. Acaba sozinha à meia-noite (aqui e no servidor, PROMO_PREMIUM em comum.mjs). */
-const PROMO = { de: 29.99, por: 27.99, ate: Date.parse('2026-11-27T04:00:00Z') };
-const PROMO_HOJE = Date.now() < PROMO.ate;
-const PRICE_PREMIUM = PROMO_HOJE ? PROMO.por : PROMO.de; // só o texto; o valor cobrado é precoPremium() em netlify/lib/comum.mjs
+const PROMO = { de: 29.99, por: 27.99, ate: Date.parse('2026-11-30T04:00:00Z') }; /* 26/11 23h: o dono esticou o 27,99 até domingo 29/11 (meia-noite de MS), sem anunciar no site */
+const PROMO_HOJE = false; /* sem preço riscado nem "só hoje": o 27,99 aparece como o preço da Premium até acabar */
+const PRICE_PREMIUM = Date.now() < PROMO.ate ? PROMO.por : PROMO.de; // só o texto; o valor cobrado é precoPremium() em netlify/lib/comum.mjs
 const promoSelo = () => PROMO_HOJE ? `<p class="promo-hoje">🔥 <b>Só hoje:</b> Premium de <s>${brl(PROMO.de)}</s> por <b>${brl(PROMO.por)}</b></p>` : '';
 const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
 /* adicionais avulsos da carta Padrão (order bump na tela da carta pronta). O valor cobrado de verdade é EXTRAS em netlify/lib/comum.mjs.
