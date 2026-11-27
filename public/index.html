@@ -1768,6 +1768,13 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 @media (prefers-reduced-motion:reduce){.hero-raio::before,.quem-emo.pulsa{animation:none}}
 .vit-sh .pv-comp{margin:14px 0 16px;text-align:left}
 
+/* 27/11: prévia da cabine menor (dá para ver o X) e com "Voltar" */
+.bt-previa .bt{width:78%;margin:0 auto}
+.bt-previa .bt-placa b{font-size:clamp(12px,3.5vw,17px)}
+.bt-previa .bt-placa small{font-size:12px}
+.sh-voltar{display:inline-flex;align-items:center;gap:4px;margin:0 0 8px -6px;padding:6px 12px 6px 6px;border:1px solid rgba(236,193,107,.35);border-radius:999px;background:rgba(255,255,255,.06);color:#F7D995;font:600 14px/1 var(--f-sans,'DM Sans',sans-serif)}
+.sh-voltar svg{width:18px;height:18px}
+
 </style></head><body>
 <div class="app" id="app">
   <header class="top">
@@ -3107,12 +3114,13 @@ function rodarCabine(bt, onFim, timers = [], opt = {}) {
 function previaCabine() {
   etapa('previa-cabine');
   const fs = [6, 1, 5, 2, 7, 3, 4, 2].map(EXEMPLO_FOTOS), L = { to: 'Ana', from: 'João' };
-  const card = openSheet(`<p class="eyebrow">Novidade ✨</p><h2 class="h2">Cabine de <em>fotos</em></h2>
+  const card = openSheet(`<button type="button" class="sh-voltar" id="cabVoltar">${ICON.back}Voltar</button><p class="eyebrow">Novidade ✨</p><h2 class="h2">Cabine de <em>fotos</em></h2>
     <div class="bt-previa lt" data-theme="rosa">${boothHTML(fs, L)}</div>
     <button class="btn btn-ghost w" id="cabDeNovo" style="margin-top:14px" hidden>Ver de novo</button>`);
   const host = card.querySelector('.bt-previa'), b = card.querySelector('#cabDeNovo');
   const rodar = () => { b.hidden = true; host.innerHTML = boothHTML(fs, L); setTimeout(() => rodarCabine(host.querySelector('.bt'), () => { b.hidden = false; }), 700); };
   b.addEventListener('click', rodar);
+  card.querySelector('#cabVoltar').addEventListener('click', closeSheet);
   setTimeout(() => rodarCabine(host.querySelector('.bt'), () => { b.hidden = false; }), 700);
 }
 

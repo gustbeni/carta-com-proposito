@@ -1752,3 +1752,10 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 @keyframes quemPulsa{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(255,40,60,.35))}14%{transform:scale(1.6);filter:drop-shadow(0 0 14px rgba(255,40,60,.95))}28%{transform:scale(1)}42%{transform:scale(1.45);filter:drop-shadow(0 0 12px rgba(255,40,60,.85))}60%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.hero-raio::before,.quem-emo.pulsa{animation:none}}
 .vit-sh .pv-comp{margin:14px 0 16px;text-align:left}
+
+/* 27/11: prévia da cabine menor (dá para ver o X) e com "Voltar" */
+.bt-previa .bt{width:78%;margin:0 auto}
+.bt-previa .bt-placa b{font-size:clamp(12px,3.5vw,17px)}
+.bt-previa .bt-placa small{font-size:12px}
+.sh-voltar{display:inline-flex;align-items:center;gap:4px;margin:0 0 8px -6px;padding:6px 12px 6px 6px;border:1px solid rgba(236,193,107,.35);border-radius:999px;background:rgba(255,255,255,.06);color:#F7D995;font:600 14px/1 var(--f-sans,'DM Sans',sans-serif)}
+.sh-voltar svg{width:18px;height:18px}
