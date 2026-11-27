@@ -4824,7 +4824,7 @@ function next() {
     if (!st.ok()) return;
     track('passo_' + st.id);
     if (st.id === 'premium') { S.plano = 'premium'; save(); track('escolheu_premium'); return go(idxPasso('extras'), 'fwd'); } // o botão de baixo é o "Quero a versão Premium"
-    if (st.id === 'adicionais' && (temRec(S, 'fotos') || temRec(S, 'filme'))) return go(idxPasso('extras'), 'fwd');
+    if (st.id === 'adicionais' && (temRec(S, 'fotos') || temRec(S, 'filme') || temRec(S, 'cabine'))) return go(idxPasso('extras'), 'fwd');
     if (st.id === 'adicionais') { ui.editando = false; return verCartaFinal(); }
     if (ui.editando) return voltarParaPronta();
     const prox = passosValidos().find(i => i > S.step);
