@@ -4588,7 +4588,7 @@ function emailSheet() {
     <p class="group-label" style="margin-top:18px">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
-      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b>${BANDEIRAS}<small>À vista (1x), de qualquer banco: Nubank, Itaú, Bradesco, Santander, BB, Caixa e outros</small><small class="mp-seguro">${ICON.lock}Ambiente seguro Mercado Pago</small></span>${ICON.card}</button>
+      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b>${BANDEIRAS}<small>De qualquer banco: Nubank, Itaú, Bradesco, Santander, BB, Caixa e outros</small><small class="mp-seguro">${ICON.lock}Ambiente seguro Mercado Pago</small></span>${ICON.card}</button>
     </div>
     <div class="sh-fim"><div class="ir-wrap${S.plano === 'premium' && !editavel() ? ' prem' : ''}"><button class="btn btn-primary w sh-ir${S.plano === 'premium' && !editavel() ? ' sh-prem' : ''}" id="shIr"></button></div>${linkPadrao()}<p class="sh-buque">Mais barato que um buquê de flores, e não murcha com o tempo</p></div>`);
   card.classList.add('sh-fin'); /* letras 10% menores nesta janela (18/11), menos a frase do buquê */
@@ -4647,7 +4647,7 @@ function zapSheet() {
     <p class="group-label" style="margin-top:18px">Forma de pagamento</p>
     <div class="pay">
       <button class="payopt" data-shpay="pix" aria-pressed="${S.pay !== 'card'}"><span class="radio"></span><span><b>Pix</b><small>Aprovado na hora</small></span><span class="badge">Mais rápido</span></button>
-      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b>${BANDEIRAS}<small>À vista (1x), de qualquer banco: Nubank, Itaú, Bradesco, Santander, BB, Caixa e outros</small><small class="mp-seguro">${ICON.lock}Ambiente seguro Mercado Pago</small></span>${ICON.card}</button>
+      <button class="payopt" data-shpay="card" aria-pressed="${S.pay === 'card'}"${cfg.reserva ? ' hidden' : ''}><span class="radio"></span><span><b>Cartão de crédito</b>${BANDEIRAS}<small>De qualquer banco: Nubank, Itaú, Bradesco, Santander, BB, Caixa e outros</small><small class="mp-seguro">${ICON.lock}Ambiente seguro Mercado Pago</small></span>${ICON.card}</button>
     </div>
     <div class="sh-fim"><div class="ir-wrap${S.plano === 'premium' && !editavel() ? ' prem' : ''}"><button class="btn btn-primary w sh-ir${S.plano === 'premium' && !editavel() ? ' sh-prem' : ''}" id="zpIr"></button></div>${linkPadrao()}<p class="sh-buque">Mais barato que um buquê de flores, e não murcha com o tempo</p></div>`);
   card.classList.add('sh-fin');
