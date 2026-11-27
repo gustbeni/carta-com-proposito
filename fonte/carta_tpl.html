@@ -2819,7 +2819,7 @@ async function pay(daJanela) {
   } catch (e) { etapa('erro-pagar'); closeSheet(); if (e.dados && e.dados.erro === 'pix_recusado') pixRecusadoSheet(); else if (e.tipo === 'upload') { ocupado = false; refreshBar(); setTimeout(internetFracaSheet, 250); return; } else toast(erroTexto(e)); }
   ocupado = false; refreshBar();
 }
-const PIX_MS = 30 * 60e3; /* 30 minutos (desde 14/11; antes 2 horas) */
+const PIX_MS = 15 * 60e3; /* 15 minutos (desde 27/11; de 14/11 a 27/11, 30 minutos; antes 2 horas) */
 /* quem toca em pagar sem e-mail: em vez de só rolar a tela até o campo (muita gente desistia ali), abre uma janela pedindo o e-mail e já gera o Pix */
 function emailSheet() {
   if (cfg.reserva && S.pay === 'card') { S.pay = 'pix'; save(); }
@@ -2964,10 +2964,10 @@ function openPix(pix, ate) {
     <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
     <button class="btn btn-ghost w" id="copyPix">${ICON.copy}Copiar código Pix</button>
     <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta é liberada aqui mesmo, na hora.</li></ol>
-    <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por <b id="pixTimer">30:00</b></div>
+    <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por <b id="pixTimer">15:00</b></div>
     <p class="hint pix-note">Pode sair do site para pagar. Quando você voltar, a carta é liberada aqui.</p>${/Instagram|FBAN|FBAV|FB_IAB/i.test(navigator.userAgent) ? `<p class="hint pix-note pix-ig">Se, ao voltar do banco, o Instagram fechar esta página, é só tocar de novo no anúncio ou no link do perfil @carta.comproposito: este Pix e a sua carta abrem sozinhos aqui.${pedido && pedido.querEmail ? ' A carta também chega no seu e-mail.' : ''}</p>` : ''}`, () => clearInterval(timer));
   $('#copyPix').addEventListener('click', () => copyText(copia, 'Código Pix copiado'));
-  /* o Pix vale por 30 minutos (PT30M no pagar.mjs); depois disso o Mercado Pago cancela e é preciso gerar outro */
+  /* o Pix vale por 15 minutos (PT15M no pagar.mjs); depois disso o Mercado Pago cancela e é preciso gerar outro */
   const end = ate || Date.now() + PIX_MS;
   const timer = setInterval(() => {
     const left = Math.max(0, end - Date.now()), t = $('#pixTimer'); if (!t) return clearInterval(timer);
@@ -3010,7 +3010,7 @@ async function esperarPagamento(n) {
     const j = await api('/status?id=' + encodeURIComponent(pedido.id)); if (j.pago) return approve(j);
     if (j.recusado && pedido.metodo !== 'pix' && !pedido.recusaVista) { pedido.recusaVista = true; store.set(PED, pedido); return cartaoRecusadoSheet(); }
   } catch (e) {}
-  /* 10 minutos de 4 em 4 segundos, depois de 8 em 8 até completar os 30 minutos do Pix */
+  /* 10 minutos de 4 em 4 segundos, depois de 8 em 8 até completar o prazo do Pix */
   if (n < 150 + (PIX_MS - 600e3) / 8000) esperando = setTimeout(() => esperarPagamento(n + 1), n < 150 ? 4000 : 8000);
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && pedido && !pedido.pago) esperarPagamento(0); });
@@ -3248,9 +3248,9 @@ async function renovarCarta(id) {
     <div class="pix-qr">${qr ? `<img alt="QR code do Pix" src="data:image/png;base64,${qr}">` : ''}</div>
     <button class="btn btn-ghost w" id="copyPixR">${ICON.copy}Copiar código Pix</button>
     <ol class="steps-ol"><li>Abra o app do seu banco e escolha Pix.</li><li>Leia o QR code ou use o Pix Copia e Cola.</li><li>Pronto: a carta abre aqui na hora, e fica no ar para sempre.</li></ol>
-    <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por 30 minutos</div>`);
+    <div class="waiting"><span class="spin"></span>Aguardando pagamento · o Pix vale por 15 minutos</div>`);
   $('#copyPixR').addEventListener('click', () => copyText(copia, 'Código Pix copiado'));
-  const fim = Date.now() + 31 * 60e3;
+  const fim = Date.now() + 16 * 60e3;
   const ver = async () => {
     if (!$('#copyPixR') || Date.now() > fim) return;
     try { const r = await fetch(API + '/renovar?id=' + encodeURIComponent(id), { cache: 'no-store' }); const x = await r.json().catch(() => ({})); if (x.pago) { pingE('renovar-pago'); closeSheet && closeSheet(); return abrirCartaRecebida(id); } } catch (e) {}

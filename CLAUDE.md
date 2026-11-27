@@ -30,7 +30,7 @@ Site em **https://cartacomproposito.com.br** desde 22/11 (Registro.br, no CPF do
 | `fonte/montar.py` | Gera `public/index.html` (`python3 fonte/montar.py`). Tem o viewport (sem zoom). **Não edite o `public/index.html` à mão.** |
 | `netlify/lib/comum.mjs` | Preços, pacotes (`planoDe`, `valorDo`, `expirou`, `diasDe`, `limparCarta`), Mercado Pago, `confirmarPagamento`, Meta CAPI, `mandarEmail`, `avisarDono` (ntfy), `verPendentesZap`, Spotify→YouTube |
 | `netlify/lib/correio.mjs` | E-mail com link e QR code (Gmail/nodemailer) |
-| `netlify/functions/` | `pagar` (cria carta e Pix de 30 min `PT30M` ou cartão Checkout Pro), `status`, `aviso`, `carta`, `atualizar` (editar até 7 dias), `musica`, `buscar`, `config`, `acesso` (/meuacesso), `email`, `zap`, `ping`, `aviso-pagbank`, `renovar` (Padrão vencida: "Tornar ela para sempre", Pix de 9,97 com referência `<id>.renova`; pago, ganha `vit`) |
+| `netlify/functions/` | `pagar` (cria carta e Pix de 15 min `PT15M`, desde 27/11; antes 30 ou cartão Checkout Pro), `status`, `aviso`, `carta`, `atualizar` (editar até 7 dias), `musica`, `buscar`, `config`, `acesso` (/meuacesso), `email`, `zap`, `ping`, `aviso-pagbank`, `renovar` (Padrão vencida: "Tornar ela para sempre", Pix de 9,97 com referência `<id>.renova`; pago, ganha `vit`) |
 | `netlify/desligado/lembrete.mjs` | Lembrete por e-mail de Pix não pago (desligado para não gastar créditos) |
 | `rascunhos/` | Coisas fora do site (ex.: carta de Natal, ainda não usada) |
 
@@ -48,7 +48,7 @@ Cartas no Netlify Blobs, store `cartas`, chave `c/<id>`. Fotos no Cloudinary (`k
 Criador passo a passo (sem "Passo X de Y" no topo) → oferta Premium → adicionais (Padrão) → carta pronta → tela de pagamento (`checkoutView`: miniatura com fotos passando em moldura de ouro, "Vai tudo nela", 3 selos, "Finalizar minha carta") → janela **"Finalizar presente"** (`emailSheet`: e-mail, caixinha "Não tenho e-mail", aviso, Pix/cartão, "Seguir para pagamento · R$ X", frase do buquê) → se sem e-mail, janela do **WhatsApp** (`zapSheet`) → na Padrão sem `vit`, `vitSheet` → `pay(true)` → Pix (tela que reabre se o Instagram fechar) ou cartão → **Meu acesso** com a carta paga (link, WhatsApp, QR code, abrir, editar).
 
 - E-mail vazio no "Seguir" = segue como sem e-mail (`S.emailPulado`). Sem e-mail: `reg.semEmail`, e-mail genérico `cliente.<id>@cartacomproposito.com.br` no Mercado Pago.
-- WhatsApp (só Pix): `reg.whats`; 20 min sem pagar → ntfy "Pix não pago ⏳" com botão "Mandar WhatsApp" (`/api/zap`).
+- WhatsApp (só Pix): `reg.whats`; 10 min sem pagar → ntfy "Pix não pago ⏳" com botão "Mandar WhatsApp" (`/api/zap`).
 - Pix recusado pelo antifraude: 3 tentativas, depois `pixRecusadoSheet`. Cartão recusado: `cartaoRecusadoSheet`.
 - Plano B PagBank (só Pix, pede CPF): pronto e **desligado** (liga com `PAGAMENTO=pagbank` + `PAGBANK_TOKEN`).
 

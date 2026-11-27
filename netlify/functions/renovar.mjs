@@ -21,7 +21,7 @@ export default async (req) => {
       corpo: {
         type: "online", processing_mode: "automatic", total_amount: valor, external_reference: refRenova(id),
         description: DESCRICAO + " para sempre", payer: { email },
-        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT30M" }] },
+        transactions: { payments: [{ amount: valor, payment_method: { id: "pix", type: "bank_transfer" }, expiration_time: "PT15M" }] },
       },
     });
     const pm = (((o.transactions || {}).payments || [])[0] || {}).payment_method || {};
