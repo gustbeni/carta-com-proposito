@@ -40,7 +40,7 @@ Cartas no Netlify Blobs, store `cartas`, chave `c/<id>`. Fotos no Cloudinary (`k
 
 - **Padrão R$ 22,99:** 4 fotos (3 polaroides + foto final na câmera). Fica no ar **15 dias** (`reg.diasPadrao` = 15 desde 26/11; de 10/11 a 26/11 = 30; antes de 10/11, 3 meses; antes dos pacotes, para sempre).
 - **Premium R$ 29,99:** vitalícia, abertura de cinema, 6 fotos no álbum de ouro, **cabine de fotos** e mini filme (até 7 fotos). Quem decide é o pedido (`reg.plano`), nunca a carta.
-- **Adicionais da Padrão à venda:** Cabine de fotos 1,99 (`cabine`), Álbum de ouro 1,99 (`album`) (eram 4,99 até 26/11). **Carta para sempre** 3,99 (`vit`, `separado`) não fica na lista: aparece na janelinha `vitSheet` antes de pagar. Fora de venda mas válidos em cartas antigas: `filme`, `fotos`, `cine`, `grandes` (`oculto`). Quando a Padrão com adicionais passa da Premium aparece "Compensa mais a Premium".
+- **Adicionais da Padrão à venda:** Cabine de fotos 1,99 (`cabine`; era 4,99 até 26/11). Álbum de ouro saiu de venda em 27/11 (`oculto`). **Carta para sempre** 3,99 (`vit`, `separado`) não fica na lista: aparece na janelinha `vitSheet` antes de pagar. Fora de venda mas válidos em cartas antigas: `album`, `filme`, `fotos`, `cine`, `grandes` (`oculto`). A Premium é oferecida depois do "Sim, quero para sempre" (`premiumDepoisVit`), só se a pessoa não marcou a cabine.
 - Slots de foto no rascunho: 0-2 polaroides, 3 foto final, 4-6 extras, 7-13 mini filme, 14 4ª da abertura, 15-18 cabine (`NFOTOS` = 19).
 
 ## Caminho da compra

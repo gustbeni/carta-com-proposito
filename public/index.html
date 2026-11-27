@@ -1938,7 +1938,7 @@ const precoDe = plano => plano === 'premium' ? PRICE_PREMIUM : PRICE;
    A Premium já vem com todos. */
 const EXTRAS = [
   { id: 'cabine', preco: 1.99, t: 'Cabine de fotos', d: 'No fim da carta, no lugar da foto grande, uma cabine com luzes e flashes revela 8 fotos de vocês em duas tiras. Você escolhe mais 4 fotos.', novo: true },
-  { id: 'album', preco: 1.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true },
+  { id: 'album', preco: 1.99, t: 'Álbum de ouro', d: 'As fotos da carta aparecem num álbum de ouro que abre e vira as páginas com luz e faíscas.', novo: true, oculto: true }, // 27/11: fora de venda (só a cabine fica); continua valendo nas cartas que já têm
   { id: 'vit', preco: 3.99, t: 'Carta para sempre', d: '<span class="bump-ouro">A carta funciona para sempre</span> (a Padrão fica no ar por 15 dias).', separado: true }, // desde 18/11 sai da lista e é oferecido na janelinha depois de "Seguir para pagamento" (vitSheet)
   { id: 'filme', preco: 3.99, t: 'Mini filme do casal', d: 'As fotos da carta e mais 3 viram um filminho com transições, frases, música e tela final.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
   { id: 'fotos', preco: 3.99, t: 'Mais 3 fotos do casal', d: 'Mais 3 polaroides penduradas junto com as outras, 6 no total.', oculto: true }, // tirado da venda em 16/11; fica para as cartas que já compraram
@@ -2206,7 +2206,7 @@ const FAQ = [
   ['Posso mudar a carta depois de pagar?', 'Pode. O link continua o mesmo e as mudanças aparecem na hora.'],
   ['Por quanto tempo o link funciona?', 'Na carta Padrão, por 15 dias depois do pagamento. Na Premium, para sempre: a carta é vitalícia.'],
   ['Qual a diferença entre Padrão e Premium?', 'A Premium tem abertura de cinema, 7 fotos (6 num álbum de ouro e 1 revelada na câmera), o mini filme do casal com mais 7 fotos e é vitalícia. A Padrão tem 4 fotos e fica no ar por 15 dias.'],
-  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: cabine de fotos (+ R$ 1,99), álbum de ouro (+ R$ 1,99) e carta vitalícia (+ R$ 3,99).'],
+  ['Dá para colocar só alguns recursos na Padrão?', 'Sim. Depois de escolher a Padrão, você pode adicionar: cabine de fotos (+ R$ 1,99) e carta vitalícia (+ R$ 3,99).'],
   ['E se eu me arrepender?', 'Você tem 7 dias para pedir o reembolso, como garante o Código de Defesa do Consumidor.'],
   ['Qual Bíblia vocês usam?', 'A Bíblia Livre (BLIVRE), uma tradução em português do Brasil baseada em Almeida, de uso livre com os devidos créditos.']
 ];
@@ -4685,7 +4685,7 @@ function vitSheet() {
     <button class="btn btn-ghost w vit-nao" id="vitNao">Não, seguir com 15 dias · ${brl(sem)}</button></div>`);
   card.querySelector('#vitSim').addEventListener('click', () => {
     S.extras = EXTRAS.map(e => e.id).filter(x => (S.extras || []).includes(x) || x === 'vit'); save(); etapa('vit-sim'); track('adicional_vit');
-    closeSheet(); render(); refreshBar(); setTimeout(() => premiumDepoisVit(com), 250);
+    closeSheet(); render(); refreshBar(); setTimeout(() => (S.extras || []).some(x => x !== 'vit') ? pay(true) : premiumDepoisVit(com), 250); /* com a cabine, segue direto: não oferece a Premium */
   });
   card.querySelector('#vitNao').addEventListener('click', () => { etapa('vit-nao'); closeSheet(); setTimeout(() => pay(true), 250); });
 }
@@ -4882,7 +4882,7 @@ function updateChrome() {
 function querPremiumDosAdicionais() { S.plano = 'premium'; save(); track('escolheu_premium'); toast('Agora é Premium ✨'); go(idxPasso('extras'), 'fwd'); }
 function refreshBar() {
   const bar = $('#bar'), nx = $('#nextBtn'), note = $('#barNote'), eye = $('#eyeBtn'), bp = $('#barPrem');
-  const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => bumpsVisiveis(ex).every(e => ex.includes(e.id)) || precoTotal('padrao', ex) >= PRICE_PREMIUM - 0.01)(extrasValidos(S.plano, S.extras)); /* todos marcados, ou a soma já chegou no preço da Premium */
+  const todos = S.view === 'step' && STEPS[S.step] && STEPS[S.step].id === 'adicionais' && (ex => precoTotal('padrao', ex) >= PRICE_PREMIUM - 0.01)(extrasValidos(S.plano, S.extras)); /* só quando a soma já chegou no preço da Premium (27/11: marcar a cabine não oferece mais a Premium) */
   document.body.classList.toggle('bar-junto', S.view === 'step' && !!STEPS[S.step] && STEPS[S.step].id === 'adicionais'); /* nos adicionais, os botões ficam logo abaixo do texto */
   const somaEx = precoTotal('padrao', extrasValidos(S.plano, S.extras));
   if (bp) { bp.hidden = !todos; bp.innerHTML = `${ICON.sparkle}<span class="bp-t">QUERO A VERSÃO PREMIUM<small>${somaEx > PRICE_PREMIUM ? `de <s>${brl(somaEx)}</s> por ${brl(PRICE_PREMIUM)} · com tudo` : `${brl(PRICE_PREMIUM)} · vitalícia, com tudo`}</small></span>`; note.hidden = todos; bar.classList.toggle('com-prem', todos); }
