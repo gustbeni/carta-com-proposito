@@ -2953,7 +2953,7 @@ function premiumDepoisVit(com) {
     <button class="btn btn-ghost w vit-nao" id="pvNao">Seguir com a Padrão · ${brl(com)}</button></div>`);
   card.querySelector('#pvSim').addEventListener('click', () => {
     S.plano = 'premium'; S.extras = []; save(); etapa('vit-virou-premium'); track('escolheu_premium');
-    closeSheet(); render(); refreshBar(); setTimeout(() => pay(true), 250);
+    closeSheet(); toast('Agora é Premium ✨ Coloque as fotos a mais'); go(idxPasso('extras'), 'fwd'); /* a Premium tem álbum, cabine e mini filme: abre a tela das fotos a mais */
   });
   card.querySelector('#pvNao').addEventListener('click', () => { etapa('vit-ficou-padrao'); closeSheet(); setTimeout(() => pay(true), 250); });
 }
